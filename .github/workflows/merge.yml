@@ -73,7 +73,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run integration tests
-        run: BASE_URL=https://quickstart-openshift-test-backend.apps.silver.devops.gov.bc.ca API_NAME=nest  node src/main.js
+        run: BASE_URL=https://nr-compliance-enforcement-cm-test-backend.apps.silver.devops.gov.bc.ca API_NAME=nest  node src/main.js
 
   cypress-e2e:
     name: Cypress end to end test
@@ -103,7 +103,7 @@ jobs:
       - uses: cypress-io/github-action@v6
         name: Cypress run
         with:
-          config: pageLoadTimeout=10000,baseUrl=https://quickstart-openshift-test-frontend.apps.silver.devops.gov.bc.ca/
+          config: pageLoadTimeout=10000,baseUrl=https://nr-compliance-enforcement-cm-test-frontend.apps.silver.devops.gov.bc.ca/
           working-directory: ./frontend
           browser: ${{ matrix.browser }}
       - uses: actions/upload-artifact@v3
