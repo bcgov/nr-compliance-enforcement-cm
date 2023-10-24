@@ -8,7 +8,7 @@ export default function Header() {
     <AppBar position="fixed" style={{ flexShrink: 0 }}>
       <Toolbar sx={{ justifyContent: 'space-between' }}>
         <img alt="Logo" src={BCGovLogo} />
-        <Typography>Quickstart OpenShift</Typography>
+        <Typography>Compliance and Enforcement - Case Management</Typography>
         <a href={'/'} target={'_self'}>
           <IconButton style={{ backgroundColor: '#FFFFFF' }}>
             <HomeRounded color="primary"></HomeRounded>
