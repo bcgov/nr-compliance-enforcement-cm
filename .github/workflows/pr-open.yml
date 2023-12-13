@@ -80,7 +80,6 @@ jobs:
           tag: ${{ needs.vars.outputs.pr }}
           tag_fallback: latest
           triggers: ('${{ matrix.package }}/')
-  
 
   # https://github.com/bcgov-nr/action-deployer-openshift
   # deploys:
