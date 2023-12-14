@@ -81,7 +81,7 @@ jobs:
           tag_fallback: latest
           triggers: ('${{ matrix.package }}/')
 
-   deploys:
+  deploys:
     name: Deploys
     needs: [builds, vars]
     uses: ./.github/workflows/.push-to-artifactory.yml
