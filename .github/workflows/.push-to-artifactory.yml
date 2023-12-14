@@ -99,6 +99,9 @@ jobs:
           ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }} # Set this in your GitHub repo secrets
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }} # Set this in your GitHub repo secrets
         run: |
-          helm repo add my-artifactory ${ARTIFACTORY_URL}/${REPO_NAME} --username ${ARTIFACTORY_USER} --password ${ARTIFACTORY_PASSWORD}
-          helm package charts/nr-compliance-enforcement-cm
-          helm push my-chart-version.tgz my-artifactory
+          curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_PASSWORD} -T "charts/nr-compliance-enforcement-cm" "https://artifacts.developer.gov.bc.ca/artifactory/${cdc0-briefcase-helm-local}/my-chart-version.tgz"
+
+#          run: |
+#          helm repo add my-artifactory ${ARTIFACTORY_URL}/${REPO_NAME} --username ${ARTIFACTORY_USER} --password $# {ARTIFACTORY_PASSWORD}
+#          helm package charts/nr-compliance-enforcement-cm
+#          helm push my-chart-version.tgz my-artifactory
