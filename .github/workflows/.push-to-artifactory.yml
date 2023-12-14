@@ -92,12 +92,18 @@ jobs:
           # If here skip deployment
           echo "No triggers have fired, deployment skipped"
 
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: '3.x'
+
       - name: Push Helm Chart to Artifactory
         env:
           ARTIFACTORY_URL: ${{ vars.ARTIFACTORY_URL }} # Set this in your GitHub repo secrets
+          REPO_NAME: cdc0-briefcase-helm-local
           ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }} # Set this in your GitHub repo secrets
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }} # Set this in your GitHub repo secrets
         run: |
-          helm repo add cdc0-briefcase-helm-local ${ARTIFACTORY_URL} --username ${ARTIFACTORY_USER} --password ${ARTIFACTORY_PASSWORD}
+          helm repo add my-artifactory ${ARTIFACTORY_URL}/${REPO_NAME} --username ${ARTIFACTORY_USER} --password ${ARTIFACTORY_PASSWORD}
           helm package charts/nr-compliance-enforcement-cm
-          helm push my-chart-version.tgz cdc0-briefcase-helm-local
+          helm push my-chart-version.tgz my-artifactory
