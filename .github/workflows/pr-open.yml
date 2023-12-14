@@ -81,6 +81,18 @@ jobs:
           tag_fallback: latest
           triggers: ('${{ matrix.package }}/')
 
+   deploys:
+    name: Deploys
+    needs: [builds, vars]
+    uses: ./.github/workflows/.push-to-artifactory.yml
+    secrets: inherit
+    with:
+      autoscaling: false
+      directory: charts/nr-compliance-enforcement-cm
+      tag: ${{ needs.vars.outputs.pr }}
+      release: ${{ needs.vars.outputs.pr }}
+      triggers: ('backend/' 'frontend/' 'migrations/' 'charts/')
+
   # https://github.com/bcgov-nr/action-deployer-openshift
   # deploys:
   #  name: Deploys
