@@ -94,7 +94,7 @@ jobs:
 
       - name: Push Helm Chart to Artifactory
         env:
-          ARTIFACTORY_URL: ${{ secrets.ARTIFACTORY_URL }} # Set this in your GitHub repo secrets
+          ARTIFACTORY_URL: ${{ vars.ARTIFACTORY_URL }} # Set this in your GitHub repo secrets
           ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }} # Set this in your GitHub repo secrets
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }} # Set this in your GitHub repo secrets
         run: |
