@@ -106,7 +106,7 @@ jobs:
           config: pageLoadTimeout=10000,baseUrl=https://nr-compliance-enforcement-cm-test-frontend.apps.silver.devops.gov.bc.ca/
           working-directory: ./frontend
           browser: ${{ matrix.browser }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-screenshots
