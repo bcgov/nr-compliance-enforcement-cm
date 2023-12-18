@@ -92,12 +92,7 @@ jobs:
           # If here skip deployment
           echo "No triggers have fired, deployment skipped"
 
-      - name: Push Helm Chart to Artifactory
-        env:
-          ARTIFACTORY_URL: ${{ vars.ARTIFACTORY_URL }} # Set this in your GitHub repo secrets
-          REPO_NAME: cdc0-briefcase-helm-local
-          ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }} # Set this in your GitHub repo secrets
-          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }} # Set this in your GitHub repo secrets
+      - name: Package Helm Chart
         if: ${{ steps.triggers.outputs.triggered == 'true' }}
         working-directory: ${{ inputs.directory }}
         shell: bash
@@ -106,7 +101,12 @@ jobs:
           helm dependency update
           helm package --app-version="${{ env.package_tag }}" --version=${{ inputs.tag }} .
 
-      - name: Push Helm chart to JFrog Artifactory
+      - name: Push Helm Chart to JFrog Artifactory
+        env:
+          ARTIFACTORY_URL: ${{ vars.ARTIFACTORY_URL }} # Set this in your GitHub repo secrets
+          REPO_NAME: cdc0-briefcase-helm-local
+          ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }} # Set this in your GitHub repo secrets
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }} # Set this in your GitHub repo secrets
         run: |
           helm repo add myrepo ${{ secrets.ARTIFACTORY_URL }} --username ${{ secrets.ARTIFACTORY_USERNAME }} --password ${{ secrets.ARTIFACTORY_PASSWORD }}
           helm push nr-compliance-enforcement-cm-*.tgz myrepo
