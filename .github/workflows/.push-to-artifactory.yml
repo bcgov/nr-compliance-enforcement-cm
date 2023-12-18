@@ -108,5 +108,5 @@ jobs:
           ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }} # Set this in your GitHub repo secrets
           ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }} # Set this in your GitHub repo secrets
         run: |
-          helm repo add myrepo ${{ env.ARTIFACTORY_URL }} --username ${{ env.ARTIFACTORY_USER }} --password ${{ env.ARTIFACTORY_PASSWORD }}
+          helm repo add myrepo ${{ env.ARTIFACTORY_URL }}/${{ env.REPO_NAME}} --username ${{ env.ARTIFACTORY_USER }} --password ${{ env.ARTIFACTORY_PASSWORD }}
           helm push nr-compliance-enforcement-cm-*.tgz myrepo
