@@ -99,7 +99,7 @@ jobs:
       - name: Package Helm Chart - Package
         working-directory: ${{ inputs.directory }}
         run: 
-          helm package ./${{ github.event.repository.name }}-${{ inputs.tag }} --app-version="${{ env.package_tag }}" --version=${{ inputs.tag }} .
+          helm package --app-version="${{ env.package_tag }}" --version=${{ inputs.tag }} .
       - name: Login to GitHub Container Registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Push Helm Chart
