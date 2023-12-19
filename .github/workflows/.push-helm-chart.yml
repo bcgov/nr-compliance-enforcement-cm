@@ -91,16 +91,10 @@ jobs:
 
           # If here skip deployment
           echo "No triggers have fired, deployment skipped"
-      - name: Uninstall existing Helm
-        run: |
-          sudo rm -f /usr/local/bin/helm
-      - name: Install latest Helm
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-      - name: Echo Helm Version
-        run: helm version
       - name: Enable OCI Experimental
         run: echo "HELM_EXPERIMENTAL_OCI=1" >> $GITHUB_ENV
+      - name: Echo Helm Version
+        run: helm version
       - name: Package Helm Chart - Update
         working-directory: ${{ inputs.directory }}
         run: 
