@@ -117,8 +117,12 @@ jobs:
           cp -r ./charts/* ./helm-chart/
           cd target-repo
 
-      - name: Commit and Push Changes
+      - name: Commit and Push Changes to Target Repository
         run: |
+          cd target-repo
+          git config user.name "${{ vars.GLOBAL_USER}}"
+          git config user.email "${{ vars.GLOBAL_EMAIL}}"
+          git checkout -b update-helm-chart
           git add .
           git commit -m "Update Helm chart"
           git push --set-upstream origin update-helm-chart
