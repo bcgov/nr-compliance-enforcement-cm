@@ -103,7 +103,7 @@ jobs:
              --set-string backend.initContainers[0].tag="${{ env.package_tag }}" \
              --set-string frontend.containers[0].tag="${{ env.package_tag }}" \
              ${{ inputs.params }} \
-             --install --wait --atomic  ${{ env.repo_release }} \
+             --install --atomic  ${{ env.repo_release }} \
              --timeout ${{ inputs.timeout-minutes }}m \
              --values ${{ inputs.values }} \
              ./${{ github.event.repository.name }}-${{ inputs.tag }}.tgz
