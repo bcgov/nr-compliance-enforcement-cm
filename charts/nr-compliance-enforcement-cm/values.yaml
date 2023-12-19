@@ -5,9 +5,9 @@ global:
   #-- the registry where the images are stored. override during runtime for other registry at global level or individual level.
   repository:
   #-- the registry where the images are stored. override during runtime for other registry at global level or individual level. default is ghcr.io
-  registry: ghcr.io
+  registry: artifacts.developer.gov.bc.ca #:443/artifactory/github-docker-remote/bcgov/nr-compliance-enforcement-cm/
   #-- the tag of the image, it can be latest, 1.0.0 etc..., or the sha256 hash
-  tag: ~
+  tag: latest
   #-- turn off autoscaling for the entire suite by setting this to false. default is true.
   autoscaling: true
   #-- global secrets, can be accessed by sub-charts.
@@ -19,7 +19,7 @@ global:
     annotation:
       helm.sh/policy: "keep"
   #-- domain of the application, it is required, apps.silver.devops.gov.bc.ca for silver cluster and apps.devops.gov.bc.ca for gold cluster
-  domain: "apps.silver.devops.gov.bc.ca"
+  domain: "apps.emerald.devops.gov.bc.ca"
   #-- the image registry of OpenShift. It is used in conjunction with ImageStreams which is a OpenShift specific resource.
   openshiftImageRegistry: "image-registry.openshift-image-registry.svc:5000"
   #-- the database Alias gives a nice way to switch to different databases, crunchy, patroni ... etc.
