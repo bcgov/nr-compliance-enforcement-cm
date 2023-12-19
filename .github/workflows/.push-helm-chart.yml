@@ -101,6 +101,11 @@ jobs:
           chmod 600 ~/.ssh/id_rsa.pub
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
+      - name: Setup Git Config
+        run: |
+          git config --global user.name "${{ vars.GLOBAL_USER}}"
+          git config --global user.email "${{ vars.GLOBAL_EMAIL}}"
+
       - name: Clone Target Repository
         run: |
           git clone git@github.com:${{ vars.GITOPS_REPO}}.git target-repo
