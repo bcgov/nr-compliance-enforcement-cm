@@ -1,0 +1,101 @@
+name: .Deploys
+
+on:
+  workflow_call:
+    inputs:
+      ### Required
+      release:
+        description: Deployment release; usually PR number, test or prod
+        required: true
+        type: string
+
+      ### Typical / recommended
+      autoscaling:
+        description: Autoscaling enabled or not for the deployments
+        required: false
+        type: string
+        default: true
+      environment:
+        description: Environment name; omit for PRs
+        required: false
+        type: string
+      tag:
+        description: Container tag; usually PR number
+        required: false
+        type: string
+        default: ${{ github.event.number }}
+      triggers:
+        description: Paths to trigger a deploy; omit=always; e.g. ('backend/' 'frontend/')
+        required: false
+        type: string
+
+      ### Usually a bad idea / not recommended
+      directory:
+        description: 'Chart directory'
+        default: 'charts/${{ github.event.repository.name }}'
+        required: false
+        type: string
+      timeout-minutes:
+        description: 'Timeout minutes'
+        default: 10
+        required: false
+        type: number
+      values:
+        description: 'Values file'
+        default: 'values.yaml'
+        required: false
+        type: string
+      params:
+        description: 'Extra parameters to pass to helm upgrade'
+        default: ''
+        required: false
+        type: string
+
+env:
+  repo_release: ${{ github.event.repository.name }}-${{ inputs.release }}
+  package_tag: ${{ inputs.tag }}
+
+jobs:
+  deploys:
+    name: Helm
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Deployment Triggers
+        id: triggers
+        run: |
+          # Expand for trigger processing
+
+          # Always deploy if no triggers are provided
+          if [ -z "${{ inputs.triggers }}" ]; then
+            echo "Always deploy when no triggers are provided"
+            echo "triggered=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Deploy if changed files (git diff) match triggers
+          TRIGGERS=${{ inputs.triggers }}
+          git fetch origin ${{ github.event.repository.default_branch }}
+          while read -r check; do
+            for t in "${TRIGGERS[@]}"; do
+              if [[ "${check}" =~ "${t}" ]]; then
+                  echo "Build triggered based on git diff"
+                  echo -e "${t}\n --> ${check}"
+                  echo "triggered=true" >> $GITHUB_OUTPUT
+                  exit 0
+              fi
+            done
+          done < <(git diff origin/${{ github.event.repository.default_branch }} --name-only)
+
+          # If here skip deployment
+          echo "No triggers have fired, deployment skipped"
+
+      - name: Package Helm Chart
+        working-directory: ${{ inputs.directory }}
+        run: helm package --app-version="${{ env.package_tag }}" --version=${{ inputs.tag }} .
+      - name: Login to GitHub Container Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Push Helm Chart
+        run: helm push nr-compliance-enforcement-cm.tgz oci://ghcr.io/${{ github.repository_owner }}/nr-compliance-enforcement-cm

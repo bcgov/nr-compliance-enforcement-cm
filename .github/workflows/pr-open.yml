@@ -84,7 +84,7 @@ jobs:
   deploys:
     name: Deploys
     needs: [builds, vars]
-    uses: ./.github/workflows/.push-to-artifactory.yml
+    uses: ./.github/workflows/.push-helm-chart.yml
     secrets: inherit
     with:
       autoscaling: false
@@ -92,16 +92,3 @@ jobs:
       tag: ${{ needs.vars.outputs.pr }}
       release: ${{ needs.vars.outputs.pr }}
       triggers: ('backend/' 'frontend/' 'migrations/' 'charts/')
-
-  # https://github.com/bcgov-nr/action-deployer-openshift
-  # deploys:
-  #  name: Deploys
-  #  needs: [builds, vars]
-  #  uses: ./.github/workflows/.deploy.yml
-  #  secrets: inherit
-  #  with:
-  #    autoscaling: false
-  #    directory: charts/nr-compliance-enforcement-cm
-  #    tag: ${{ needs.vars.outputs.pr }}
-  #    release: ${{ needs.vars.outputs.pr }}
-  #    triggers: ('backend/' 'frontend/' 'migrations/' 'charts/')
