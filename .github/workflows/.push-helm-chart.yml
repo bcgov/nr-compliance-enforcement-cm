@@ -91,7 +91,10 @@ jobs:
 
           # If here skip deployment
           echo "No triggers have fired, deployment skipped"
-
+      - name: Echo Helm Version
+        run: helm version
+      - name: Enable OCI Experimental
+        run: echo "HELM_EXPERIMENTAL_OCI=1" >> $GITHUB_ENV
       - name: Package Helm Chart - Update
         working-directory: ${{ inputs.directory }}
         run: 
