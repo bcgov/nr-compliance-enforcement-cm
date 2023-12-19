@@ -95,26 +95,25 @@ jobs:
       - name: Package Helm Chart - Update
         working-directory: ${{ inputs.directory }}
         run: 
-             helm dependency update
+          helm dependency update
       - name: Package Helm Chart - Package
         working-directory: ${{ inputs.directory }}
         run: 
-             helm package --app-version="${{ env.package_tag }}" --version=${{ inputs.tag }} .
+          helm package --app-version="${{ env.package_tag }}" --version=${{ inputs.tag }} .
       - name: Package Helm Chart - Upgrade
         working-directory: ${{ inputs.directory }}
-        run:              
-             helm upgrade \
-             --set global.autoscaling=${{ inputs.autoscaling }} \
-             --set-string global.repository=${{ github.repository }} \
-             --set-string global.secrets.databasePassword=${{ secrets.DB_PASSWORD }} \
-             --set-string backend.containers[0].tag="${{ env.package_tag }}" \
-             --set-string backend.initContainers[0].tag="${{ env.package_tag }}" \
-             --set-string frontend.containers[0].tag="${{ env.package_tag }}" \
-             ${{ inputs.params }} \
-             --install ${{ env.repo_release }} \
-             --timeout ${{ inputs.timeout-minutes }}m \
-             --values ${{ inputs.values }} \
-             ./${{ github.event.repository.name }}-${{ inputs.tag }}.tgz
+        run: |
+          helm upgrade ${{ env.repo_release }} ./${{ github.event.repository.name }}-${{ inputs.tag }}-${{ inputs.chart_version }}.tgz \
+          --install \
+          --set global.autoscaling=${{ inputs.autoscaling }} \
+          --set-string global.repository=${{ github.repository }} \
+          --set-string global.secrets.databasePassword=${{ secrets.DB_PASSWORD }} \
+          --set-string backend.containers[0].tag="${{ env.package_tag }}" \
+          --set-string backend.initContainers[0].tag="${{ env.package_tag }}" \
+          --set-string frontend.containers[0].tag="${{ env.package_tag }}" \
+          --values ${{ inputs.values }} \
+          --timeout ${{ inputs.timeout-minutes }}m \
+          ${{ inputs.params }}
       - name: Login to GitHub Container Registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Push Helm Chart
