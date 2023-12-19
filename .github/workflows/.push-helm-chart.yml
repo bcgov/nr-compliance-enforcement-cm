@@ -125,7 +125,7 @@ jobs:
           git commit -m "Update Helm chart" || echo "No changes to commit"
           git push --set-upstream origin update-helm-chart
 
-      - name: Create Pull Request
+      - name: Create Pull Request in Target Repository
         uses: repo-sync/pull-request@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
