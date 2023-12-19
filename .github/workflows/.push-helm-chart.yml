@@ -101,7 +101,7 @@ jobs:
           helm dependency update
       - name: Package Helm Chart
         working-directory: ${{ inputs.directory }}
-        run: export CHART_FILE=`helm package ./charts/nr-compliance-enforcement-cm/ | awk -F'[:]' '{gsub(/ /, "", $2); print $2}'`
+        run: export CHART_FILE=`helm package --app-version="${{ env.package_tag }}" --version=${{ inputs.tag }} . | awk -F'[:]' '{gsub(/ /, "", $2); print $2}'`
       - name: Login to GitHub Container Registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Push Helm Chart as OCI Artifact
