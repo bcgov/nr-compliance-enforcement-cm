@@ -91,8 +91,6 @@ jobs:
 
           # If here skip deployment
           echo "No triggers have fired, deployment skipped"
-      - name: Enable OCI Experimental
-        run: echo "HELM_EXPERIMENTAL_OCI=1" >> $GITHUB_ENV
       - name: Echo Helm Version
         run: helm version
       - name: Package Helm Chart - Update
@@ -101,8 +99,8 @@ jobs:
           helm dependency update
       - name: Package Helm Chart
         working-directory: ${{ inputs.directory }}
-        run: export CHART_FILE=`helm package --app-version="${{ env.package_tag }}" --version=${{ inputs.tag }} . | awk -F'[:]' '{gsub(/ /, "", $2); print $2}'`
+        run: helm package --app-version="${{ env.package_tag }}" --version=${{ inputs.tag }} .
       - name: Login to GitHub Container Registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Push Helm Chart as OCI Artifact
-        run: helm push $CHART_FILE oci://ghcr.io/${{ github.repository_owner }}/nr-compliance-enforcement-cm:${{ inputs.tag }}
+        run: helm push ./charts/nr-compliance-enforcement-cm/nr-compliance-enforcement-cm-${{ inputs.tag }}.tgz oci://ghcr.io/${{ github.repository_owner }}/nr-compliance-enforcement-cm:${{ inputs.tag }}
