@@ -106,17 +106,15 @@ jobs:
           git config --global user.name "${{ vars.GLOBAL_USER}}"
           git config --global user.email "${{ vars.GLOBAL_EMAIL}}"
 
+
       - name: Clone Target Repository
         run: |
           git clone git@github.com:${{ vars.GITOPS_REPO}}.git target-repo
-          cd target-repo
-          git checkout -b update-helm-chart
-
+  
       - name: Copy Helm Chart
         run: |
-          cp -r ./charts/* ./helm-chart/
-          cd target-repo
-
+          cp -r ./charts/* target-repo/helm-chart/
+  
       - name: Commit and Push Changes to Target Repository
         run: |
           cd target-repo
