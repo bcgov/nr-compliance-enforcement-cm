@@ -103,5 +103,5 @@ jobs:
       - name: Login to GitHub Container Registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Push Helm Chart
-      run: helm push ${{ github.event.repository.name }}-${{ inputs.tag }}-${{ inputs.chart_version }}.tgz oci://ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
+        run: helm push ${{ github.event.repository.name }}-${{ inputs.tag }}-${{ inputs.chart_version }}.tgz oci://ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
         
