@@ -92,11 +92,17 @@ jobs:
           # If here skip deployment
           echo "No triggers have fired, deployment skipped"
 
-      - name: Package Helm Chart
+      - name: Package Helm Chart - Update
         working-directory: ${{ inputs.directory }}
         run: 
              helm dependency update
-             helm package .
+      - name: Package Helm Chart - Package
+        working-directory: ${{ inputs.directory }}
+        run: 
+             helm package --app-version="${{ env.package_tag }}" --version=${{ inputs.tag }} .
+      - name: Package Helm Chart - Upgrade
+        working-directory: ${{ inputs.directory }}
+        run:              
              helm upgrade \
              --set global.autoscaling=${{ inputs.autoscaling }} \
              --set-string global.repository=${{ github.repository }} \
