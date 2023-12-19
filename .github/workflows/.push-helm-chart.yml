@@ -101,10 +101,8 @@ jobs:
           helm dependency update
       - name: Package Helm Chart
         working-directory: ${{ inputs.directory }}
-        run: helm package --app-version="${{ env.package_tag }}" --version=${{ inputs.tag }} .
-      - name: Save Helm Chart as OCI Artifact
-        run: helm chart save ./charts/nr-compliance-enforcement-cm/nr-compliance-enforcement-cm-${{ inputs.tag }}.tgz oci://ghcr.io/${{ github.repository_owner }}/nr-compliance-enforcement-cm:${{ inputs.tag }}
+        run: export CHART_FILE=`helm package ./charts/nr-compliance-enforcement-cm/ | awk -F'[:]' '{gsub(/ /, "", $2); print $2}'`
       - name: Login to GitHub Container Registry
         run: echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Push Helm Chart as OCI Artifact
-        run: helm push ./charts/nr-compliance-enforcement-cm/nr-compliance-enforcement-cm-${{ inputs.tag }}.tgz oci://ghcr.io/${{ github.repository_owner }}/nr-compliance-enforcement-cm:${{ inputs.tag }}
+        run: helm push $CHART_FILE oci://ghcr.io/${{ github.repository_owner }}/nr-compliance-enforcement-cm:${{ inputs.tag }}
