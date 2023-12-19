@@ -96,7 +96,7 @@ jobs:
         working-directory: ${{ inputs.directory }}
         run: 
              helm dependency update
-             helm package ---version=${{ inputs.tag }} .
+             helm package --version=${{ inputs.tag }} .
              helm upgrade \
              --set global.autoscaling=${{ inputs.autoscaling }} \
              --set-string global.repository=${{ github.repository }} \
