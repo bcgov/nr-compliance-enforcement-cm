@@ -3,9 +3,9 @@
 #-- global variables, can be accessed by sub-charts.
 global:
   #-- the registry where the images are stored. override during runtime for other registry at global level or individual level.
-  repository:
+  repository: artifactory/github-docker-remote/bcgov/nr-compliance-enforcement-cm/
   #-- the registry where the images are stored. override during runtime for other registry at global level or individual level. default is ghcr.io
-  registry: artifacts.developer.gov.bc.ca/artifactory/github-docker-remote/bcgov/nr-compliance-enforcement-cm/
+  registry: artifacts.developer.gov.bc.ca
   #-- the tag of the image, it can be latest, 1.0.0 etc..., or the sha256 hash
   tag: latest
   #-- turn off autoscaling for the entire suite by setting this to false. default is true.
