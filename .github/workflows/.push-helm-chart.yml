@@ -146,7 +146,7 @@ jobs:
           fi
       - name: Create Pull Request via GitHub API
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITOPS_PAT }}
         run: |
           curl \
             -X POST \
