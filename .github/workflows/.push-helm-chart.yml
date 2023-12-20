@@ -129,9 +129,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl \
-            -X POST \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${{ vars.GITOPS_REPO }}/pulls \
-            -d "{\"title\": \"Update Helm Chart\", \"head\": \"update-helm-chart\", \"base\": \"main\", \"body\": \"Automated update of Helm chart\"}"
+          gh auth login --with-token < $GITHUB_TOKEN
+          gh pr create \
+          --body "Automated update of Helm chart" \
+          --title "Update Helm Chart" \
+          --head "update-helm-chart" \
+          --base "main"
