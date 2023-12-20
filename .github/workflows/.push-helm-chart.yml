@@ -137,9 +137,13 @@ jobs:
           git stash pop || true
 
           git add .
-          git commit -m "Update Helm chart"
-          git push --set-upstream origin update-helm-chart-${{ inputs.tag }}
-
+          # Check if there are any changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update Helm chart"
+            git push --set-upstream origin "update-helm-chart-${{ inputs.tag }}"
+          fi
       - name: Create Pull Request via GitHub API
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
