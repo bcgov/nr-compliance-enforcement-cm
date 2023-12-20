@@ -120,8 +120,14 @@ jobs:
           cd target-repo
           git config user.name "${{ vars.GLOBAL_USER}}"
           git config user.email "${{ vars.GLOBAL_EMAIL}}"
-          git checkout -b update-helm-chart-${{ inputs.tag }}
-          git pull origin "update-helm-chart-${{ inputs.tag }}"
+          # Check if the branch exists
+          if git ls-remote --heads origin "update-helm-chart-${{ inputs.tag }}" ; then
+            # If branch exists, just check it out
+            git checkout "update-helm-chart-${{ inputs.tag }}"
+          else
+            # If branch doesn't exist, create a new one
+            git checkout -b "update-helm-chart-${{ inputs.tag }}"
+          fi
           git add .
           git commit -m "Update Helm chart"
           git push --set-upstream origin update-helm-chart-${{ inputs.tag }}
