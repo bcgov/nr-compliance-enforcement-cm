@@ -120,6 +120,10 @@ jobs:
           cd target-repo
           git config user.name "${{ vars.GLOBAL_USER}}"
           git config user.email "${{ vars.GLOBAL_EMAIL}}"
+
+          # Stash any changes in the working directory
+          git stash --include-untracked
+
           # Check if the branch exists
           if git ls-remote --heads origin "update-helm-chart-${{ inputs.tag }}" ; then
             # If branch exists, just check it out
@@ -128,6 +132,10 @@ jobs:
             # If branch doesn't exist, create a new one
             git checkout -b "update-helm-chart-${{ inputs.tag }}"
           fi
+
+          # Apply stashed changes, if any
+          git stash pop || true
+
           git add .
           git commit -m "Update Helm chart"
           git push --set-upstream origin update-helm-chart-${{ inputs.tag }}
