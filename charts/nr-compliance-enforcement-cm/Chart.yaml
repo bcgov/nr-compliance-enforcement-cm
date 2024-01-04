@@ -28,13 +28,13 @@ dependencies:
   - name: component
     condition: backend.enabled
     version: 0.2.3
-    repository: https://artifacts.developer.gov.bc.ca:443/artifactory/github-docker-remote/bcgov/nr-compliance-enforcement-cm
+    repository: https://bcgov.github.io/helm-service
     alias: backend
 
   - name: component
     condition: frontend.enabled
     version: 0.2.3
-    repository: https://artifacts.developer.gov.bc.ca:443/artifactory/github-docker-remote/bcgov/nr-compliance-enforcement-cm
+    repository: https://bcgov.github.io/helm-service
     alias: frontend
 
   - name: postgresql
@@ -46,7 +46,7 @@ dependencies:
   - name: component
     condition: backup.enabled
     version: 0.2.3
-    repository: https://artifacts.developer.gov.bc.ca:443/artifactory/github-docker-remote/bcgov/nr-compliance-enforcement-cm
+    repository: https://bcgov.github.io/helm-service
     alias: backup
 maintainers:
   - name: Om Mishra
