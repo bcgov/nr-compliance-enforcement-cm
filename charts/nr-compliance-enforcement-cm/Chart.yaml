@@ -28,13 +28,13 @@ dependencies:
   - name: component
     condition: backend.enabled
     version: 0.2.3
-    repository: https://bcgov.github.io/helm-service
+    repository: https://github.com/bcgov/helm-service/tree/gh-pages
     alias: backend
 
   - name: component
     condition: frontend.enabled
     version: 0.2.3
-    repository: https://bcgov.github.io/helm-service
+    repository: https://github.com/bcgov/helm-service/tree/gh-pages
     alias: frontend
 
   - name: postgresql
@@ -46,7 +46,7 @@ dependencies:
   - name: component
     condition: backup.enabled
     version: 0.2.3
-    repository: https://bcgov.github.io/helm-service
+    repository: https://github.com/bcgov/helm-service/tree/gh-pages
     alias: backup
 maintainers:
   - name: Om Mishra
