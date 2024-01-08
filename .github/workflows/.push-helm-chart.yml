@@ -105,7 +105,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: ${{ vars.GITOPS_REPO}}
-          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
           path: 'target-repo'
 
 
