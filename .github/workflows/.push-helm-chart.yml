@@ -101,56 +101,45 @@ jobs:
           chmod 600 ~/.ssh/id_rsa.pub
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-      - name: Setup Git Config
+      - name: Checkout target repository using SSH
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ vars.GITOPS_REPO}}
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          path: 'target-repo'
+
+
+      - name: Copy Helm Chart
+        run: |
+          cp -r ./charts/* target-repo/helm-chart/
+
+      - name: Setup Git Config so that we can commit with a name
         run: |
           git config --global user.name "${{ vars.GLOBAL_USER}}"
           git config --global user.email "${{ vars.GLOBAL_EMAIL}}"
 
-
-      - name: Clone Target Repository
-        run: |
-          git clone git@github.com:${{ vars.GITOPS_REPO}}.git target-repo
-  
-      - name: Copy Helm Chart
-        run: |
-          cp -r ./charts/* target-repo/helm-chart/
-  
-      - name: Commit and Push Changes to Target Repository
+      - name: Check if branch exists and update
         run: |
           cd target-repo
-          git config user.name "${{ vars.GLOBAL_USER}}"
-          git config user.email "${{ vars.GLOBAL_EMAIL}}"
-
-          # Stash any changes in the working directory
-          git stash --include-untracked
-
-          # Check if the branch exists
-          if git ls-remote --heads origin "update-helm-chart-${{ inputs.tag }}" ; then
-            # If branch exists, just check it out
-            git checkout "update-helm-chart-${{ inputs.tag }}"
+          git fetch
+          if git rev-parse --verify origin/update-helm-chart-${{ inputs.tag }}; then
+            git checkout update-helm-chart-${{ inputs.tag }}
+            git pull origin update-helm-chart-${{ inputs.tag }}
           else
-            # If branch doesn't exist, create a new one
-            git checkout -b "update-helm-chart-${{ inputs.tag }}"
+            git checkout -b update-helm-chart-${{ inputs.tag }}
           fi
-
-          # Apply stashed changes, if any
-          git stash pop || true
-
-          git add .
-          # Check if there are any changes
-          if git diff --staged --quiet; then
-            echo "No changes to commit."
-          else
-            git commit -m "Update Helm chart"
-            git push --set-upstream origin "update-helm-chart-${{ inputs.tag }}"
-          fi
-      - name: Create Pull Request via GitHub API
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITOPS_PAT }}
+  
+      - name: Commit and Push changes
         run: |
-          curl \
-            -X POST \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${{ vars.GITOPS_REPO }}/pulls \
-            -d "{\"title\": \"Update Helm Chart\", \"head\": \"update-helm-chart-${{ inputs.tag }}\", \"base\": \"main\", \"body\": \"Automated update of Helm chart\"}"
+          cd target-repo
+          git add .
+          git commit -m "update helm chart ${{ inputs.tag }}"
+          git push origin update-helm-chart-${{ inputs.tag }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          branch: update-helm-chart-${{ inputs.tag }}
+          title: "feat: update helm ${{ inputs.tag }}"
+          body: "Helm updates"
+          token: ${{ secrets.GITOPS_PAT }}  # GITHUB_TOKEN is still needed for PR creation
