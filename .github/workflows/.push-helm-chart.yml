@@ -103,6 +103,7 @@ jobs:
           else
             echo "Directory 'charts' does not exist in source repository"
             exit 1
+          fi
 
       - name: Setup Git Config so that we can commit with a name
         run: |
