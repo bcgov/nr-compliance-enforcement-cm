@@ -62,35 +62,16 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: ${{ inputs.timeout-minutes }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Check Deployment Triggers
-        id: triggers
+      - name: Checkout source repository
+        uses: actions/checkout@v2
+        with:
+          path: source-repo
+
+      - name: Clean up target repository directory
         run: |
-          # Expand for trigger processing
-
-          # Always deploy if no triggers are provided
-          if [ -z "${{ inputs.triggers }}" ]; then
-            echo "Always deploy when no triggers are provided"
-            echo "triggered=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
-          # Deploy if changed files (git diff) match triggers
-          TRIGGERS=${{ inputs.triggers }}
-          git fetch origin ${{ github.event.repository.default_branch }}
-          while read -r check; do
-            for t in "${TRIGGERS[@]}"; do
-              if [[ "${check}" =~ "${t}" ]]; then
-                  echo "Build triggered based on git diff"
-                  echo -e "${t}\n --> ${check}"
-                  echo "triggered=true" >> $GITHUB_OUTPUT
-                  exit 0
-              fi
-            done
-          done < <(git diff origin/${{ github.event.repository.default_branch }} --name-only)
-
-          # If here skip deployment
-          echo "No triggers have fired, deployment skipped"
+          if [ -d "target-repo" ]; then
+            rm -rf target-repo
+          fi  
 
       - name: Setup SSH for Target Repository
         run: |
@@ -101,12 +82,6 @@ jobs:
           chmod 600 ~/.ssh/id_rsa.pub
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-      - name: Clean up target repository directory
-        run: |
-          if [ -d "target-repo" ]; then
-            rm -rf target-repo
-          fi
-
       - name: Checkout target repository using SSH
         uses: actions/checkout@v2
         with:
@@ -114,6 +89,11 @@ jobs:
           ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
           path: 'target-repo'
 
+      - name: Create new branch in target repository
+        run: |
+          cd target-repo
+          BRANCH_NAME="update-helm-chart-${{ inputs.tag }}"
+          git checkout -b $BRANCH_NAME
 
       - name: Copy Helm Chart
         run: |
@@ -123,24 +103,12 @@ jobs:
         run: |
           git config --global user.name "${{ vars.GLOBAL_USER}}"
           git config --global user.email "${{ vars.GLOBAL_EMAIL}}"
-
-      - name: Check if branch exists and update
-        run: |
-          cd target-repo
-          git fetch
-          if git rev-parse --verify origin/update-helm-chart-${{ inputs.tag }}; then
-            git checkout update-helm-chart-${{ inputs.tag }}
-            git pull origin update-helm-chart-${{ inputs.tag }}
-          else
-            git checkout -b update-helm-chart-${{ inputs.tag }}
-          fi
-  
       - name: Commit and Push changes
         run: |
           cd target-repo
           git add .
           git commit -m "update helm chart ${{ inputs.tag }}"
-          git push origin update-helm-chart-${{ inputs.tag }}
+          git push --set-upstream origin $BRANCH_NAME
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
