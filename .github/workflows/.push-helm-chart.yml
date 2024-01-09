@@ -105,7 +105,7 @@ jobs:
         run: |
           if [ -d "source-repo/charts" ]; then
             mkdir -p target-repo/helm-chart
-            cp -r source-repo/charts/* target-repo/helm-chart/
+            cp -r source-repo/charts/nr-compliance-enforcement-cm/* target-repo/helm-chart/
           else
             echo "Directory 'charts' does not exist in source repository"
             exit 1
