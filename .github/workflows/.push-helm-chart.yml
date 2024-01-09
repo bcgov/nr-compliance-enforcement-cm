@@ -92,8 +92,7 @@ jobs:
       - name: Create new branch in target repository
         run: |
           cd target-repo
-          BRANCH_NAME="update-helm-chart-${{ inputs.tag }}"
-          git checkout -b $BRANCH_NAME
+          git checkout -b update-helm-chart-${{ inputs.tag }}
 
       - name: Copy folder from source to target
         run: |
@@ -112,12 +111,12 @@ jobs:
           git config --global user.email "${{ vars.GLOBAL_EMAIL}}"
           git add .
           git commit -m "update helm chart ${{ inputs.tag }}"
-          git push --set-upstream origin $BRANCH_NAME
+          git push --set-upstream origin update-helm-chart-${{ inputs.tag }}
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
-          branch: ${{ env.BRANCH_NAME }}
+          branch: update-helm-chart-${{ inputs.tag }}
           title: "feat: update helm ${{ inputs.tag }}"
           body: "Helm updates"
           token: ${{ secrets.GITOPS_PAT }}  # GITHUB_TOKEN is still needed for PR creation
