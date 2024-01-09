@@ -105,13 +105,11 @@ jobs:
             exit 1
           fi
 
-      - name: Setup Git Config so that we can commit with a name
-        run: |
-          git config --global user.name "${{ vars.GLOBAL_USER}}"
-          git config --global user.email "${{ vars.GLOBAL_EMAIL}}"
       - name: Commit and Push changes
         run: |
           cd target-repo
+          git config --global user.name "${{ vars.GLOBAL_USER}}"
+          git config --global user.email "${{ vars.GLOBAL_EMAIL}}"
           git add .
           git commit -m "update helm chart ${{ inputs.tag }}"
           git push --set-upstream origin $BRANCH_NAME
@@ -119,7 +117,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
-          branch: update-helm-chart-${{ inputs.tag }}
+          branch: ${{ env.BRANCH_NAME }}
           title: "feat: update helm ${{ inputs.tag }}"
           body: "Helm updates"
           token: ${{ secrets.GITOPS_PAT }}  # GITHUB_TOKEN is still needed for PR creation
