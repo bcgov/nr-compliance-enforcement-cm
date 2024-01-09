@@ -95,9 +95,14 @@ jobs:
           BRANCH_NAME="update-helm-chart-${{ inputs.tag }}"
           git checkout -b $BRANCH_NAME
 
-      - name: Copy Helm Chart
+      - name: Copy folder from source to target
         run: |
-          cp -r ./charts/* target-repo/helm-chart/
+          if [ -d "source-repo/charts" ]; then
+            mkdir -p target-repo/helm-chart
+            cp -r source-repo/charts/* target-repo/helm-chart/
+          else
+            echo "Directory 'charts' does not exist in source repository"
+            exit 1
 
       - name: Setup Git Config so that we can commit with a name
         run: |
