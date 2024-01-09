@@ -89,11 +89,17 @@ jobs:
           ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
           path: 'target-repo'
 
-      - name: Create new branch in target repository
+      - name: Create new branch or checkout existing branch in target repository
         run: |
           cd target-repo
-          git checkout -b update-helm-chart-${{ inputs.tag }}
-
+          BRANCH_NAME="update-helm-chart-${{ env.package_tag }}"
+          if git rev-parse --verify origin/$BRANCH_NAME; then
+            git checkout $BRANCH_NAME
+            git pull origin $BRANCH_NAME
+          else
+            git checkout -b $BRANCH_NAME
+          fi
+  
       - name: Copy folder from source to target
         run: |
           if [ -d "source-repo/charts" ]; then
