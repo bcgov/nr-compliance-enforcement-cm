@@ -101,11 +101,11 @@ jobs:
           chmod 600 ~/.ssh/id_rsa.pub
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
-      - name: Clean up
+      - name: Clean up target repository directory
         run: |
-          git clean -fdx
-          git reset --hard HEAD
-        
+          if [ -d "target-repo" ]; then
+            rm -rf target-repo
+          fi
 
       - name: Checkout target repository using SSH
         uses: actions/checkout@v2
