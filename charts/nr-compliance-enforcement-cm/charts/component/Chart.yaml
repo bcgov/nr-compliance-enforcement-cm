@@ -1,6 +1,0 @@
-apiVersion: v2
-appVersion: 1.0.0
-description: A Helm chart template for supporting different kind of application deployment.
-name: component
-type: application
-version: 0.2.3
