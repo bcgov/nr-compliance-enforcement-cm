@@ -1,0 +1,132 @@
+name: .Deploys
+
+on:
+  workflow_call:
+    inputs:
+      ### Required
+      release:
+        description: Deployment release; usually PR number, test or prod
+        required: true
+        type: string
+
+      ### Typical / recommended
+      autoscaling:
+        description: Autoscaling enabled or not for the deployments
+        required: false
+        type: string
+        default: true
+      environment:
+        description: Environment name; omit for PRs
+        required: false
+        type: string
+      tag:
+        description: Container tag; usually PR number
+        required: false
+        type: string
+        default: ${{ github.event.number }}
+      triggers:
+        description: Paths to trigger a deploy; omit=always; e.g. ('backend/' 'frontend/')
+        required: false
+        type: string
+
+      ### Usually a bad idea / not recommended
+      directory:
+        description: 'Chart directory'
+        default: 'charts/${{ github.event.repository.name }}'
+        required: false
+        type: string
+      timeout-minutes:
+        description: 'Timeout minutes'
+        default: 10
+        required: false
+        type: number
+      values:
+        description: 'Values file'
+        default: 'values.yaml'
+        required: false
+        type: string
+      params:
+        description: 'Extra parameters to pass to helm upgrade'
+        default: ''
+        required: false
+        type: string
+
+env:
+  repo_release: ${{ github.event.repository.name }}-${{ inputs.release }}
+  package_tag: ${{ inputs.tag }}
+
+jobs:
+  deploys:
+    name: Helm
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@v2
+        with:
+          path: source-repo
+
+      - name: Clean up target repository directory
+        run: |
+          if [ -d "target-repo" ]; then
+            rm -rf target-repo
+          fi  
+
+      - name: Setup SSH for Target Repository
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.MANIFEST_REPO_DEPLOY_KEY_PUB }}" > ~/.ssh/id_rsa.pub
+          chmod 600 ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa.pub
+          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+
+      - name: Checkout target repository using SSH
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ vars.GITOPS_REPO}}
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+          path: 'target-repo'
+
+      - name: Create or Checkout Existing Branch in Target Repository
+        run: |
+          cd target-repo
+          BRANCH_NAME="update-helm-chart-${{ env.package_tag }}"
+          git fetch origin
+          if git rev-parse --verify origin/$BRANCH_NAME; then
+            git checkout $BRANCH_NAME
+            git merge origin/$BRANCH_NAME -X ours
+          else
+            git checkout -b $BRANCH_NAME
+          fi
+  
+      - name: Copy folder from source to target
+        run: |
+          if [ -d "source-repo/charts" ]; then
+            mkdir -p target-repo/helm-chart
+            cp -r source-repo/charts/nr-compliance-enforcement-cm/* target-repo/helm-chart/
+          else
+            echo "Directory 'charts' does not exist in source repository"
+            exit 1
+          fi
+
+      - name: Commit and Push changes
+        run: |
+          cd target-repo
+          git config --global user.name "${{ vars.GLOBAL_USER}}"
+          git config --global user.email "${{ vars.GLOBAL_EMAIL}}"
+          git add .
+          git commit -m "update helm chart ${{ inputs.tag }}" || true  # Avoids failure if there's nothing to commit
+          git push --set-upstream origin update-helm-chart-${{ inputs.tag }}
+
+      - name: Create Pull Request via GitHub API
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITOPS_PAT }}
+        run: |
+          curl \
+            -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ vars.GITOPS_REPO }}/pulls \
+            -d "{\"title\": \"Update Helm Chart\", \"head\": \"update-helm-chart-${{ inputs.tag }}\", \"base\": \"main\", \"body\": \"Automated update of Helm chart\"}"
