@@ -1,7 +1,9 @@
 [![MIT License](https://img.shields.io/github/license/bcgov/quickstart-openshift.svg)](/LICENSE.md)
 [![Lifecycle](https://img.shields.io/badge/Lifecycle-Experimental-339999)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
-[![Merge](https://github.com/bcgov/quickstart-openshift/actions/workflows/merge.yml/badge.svg)](https://github.com/bcgov/quickstart-openshift/actions/workflows/merge-main.yml)
+
+[![Merge](https://github.com/bcgov/quickstart-openshift/actions/workflows/merge.yml/badge.svg)](https://github.com/bcgov/quickstart-openshift/actions/workflows/merge.yml)
 [![Analysis](https://github.com/bcgov/quickstart-openshift/actions/workflows/analysis.yml/badge.svg)](https://github.com/bcgov/quickstart-openshift/actions/workflows/analysis.yml)
+[![Scheduled](https://github.com/bcgov/quickstart-openshift/actions/workflows/scheduled.yml/badge.svg)](https://github.com/bcgov/quickstart-openshift/actions/workflows/scheduled.yml)
 
 ##### Frontend (JavaScript/TypeScript)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=quickstart-openshift_frontend&metric=bugs)](https://sonarcloud.io/summary/new_code?id=quickstart-openshift_frontend)
@@ -36,9 +38,10 @@ Features:
 * Sandboxed development environments
 * Gateable production deployments
 * Container publishing (ghcr.io) and importing (OpenShift)
-* Security, vulnerability, infrastructure and container scan tools
+* Security, vulnerability, infrastructure, and container scan tools
 * Automatic dependency patching available from [bcgov/nr-renovate](https://github.com/bcgov/nr-renovate)
 * Enforced code reviews and workflow jobs (pass|fail)
+* Helm Package Manager for atomic deployments
 * Sample application stack:
     * Database: Postgres, PostGIS, backups
     * Frontend: TypeScript, Caddy Server
@@ -164,23 +167,23 @@ Environments provide a [number of features](https://docs.github.com/en/actions/d
 
 Dependabot and Mend Renovate can both provide dependency updates using pull requests.  Dependabot is simpler to configure, while Renovate is much more configurable and lighter on resources.
 
-### Self-Hosted Renovate
+### Renovate
 
-Renovate is provided by DevOps at the Natural Resources.  Support is best effort.  It is our recommended path, due to being highly configurable and light on resources.
+A config file (`renovate.json`) is included with this template.  It can source config from our [renovate repository](https://github.com/bcgov/renovate-config).  Renovate can be [self-hosted](https://github.com/renovatebot/github-action) or run using the GitHub App managed at the organization level.  For BC Government the OCIO controls this application, so please opt in with them using a GitHub issue.
 
 To opt-in:
- * Provide our bot, `bcgov-renovate`, write access to a repository
- * Sign up with us by [pick one]:
-    * Add your repository to our [list](https://github.com/bcgov/nr-renovate/blob/main/renovate.json#L21) using a pull request
-    * OR write us [an issue](https://github.com/bcgov/nr-renovate/issues/new/choose) providing your repository name
+* Visit [BCDevOps Requests](https://github.com/BCDevOps/devops-requests)
+* Select [Issues](https://github.com/BCDevOps/devops-requests/issues)
+* Select [New Issue](https://github.com/BCDevOps/devops-requests/issues/new/choose)
+* Select [Request for integrating a GitHub App](https://github.com/BCDevOps/devops-requests/issues/new?assignees=MonicaG%2C+oomIRL%2C+SHIHO-I&labels=github-app%2C+pending&projects=&template=github_integration_request.md&title=)
+* Create a meaningful title, e.g. `Request to add X repo to Renovate App`
+* Fill out the description providing a repository name
+* Select "Submit new issue"
+* Wait for Renovate to start sending pull requests to your repository
 
 ### Dependabot
 
-Dependabot is configurable from the following file.  More information is available [here](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/keeping-your-actions-up-to-date-with-dependabot).
-
-Please be aware that Dependabot requires its own set of secrets to be configured.  Navigation:
-
-> Click Settings > Secrets and Variables > Actions > Variables > New repository variable
+Dependabot is no longer recommended as an alternative to Renovate for generating security, vulnerability and dependency pull requests.  It can still be used to generate warnings under the GitHub Security tab, which is only viewable by repository administrators.
 
 ## Repository Configuration
 
