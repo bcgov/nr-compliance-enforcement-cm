@@ -103,7 +103,7 @@ jobs:
   
       - name: Update Helm Chart Tag
         run: |
-          sed -i 's/global.tag:.*/global.tag: \"${{ inputs.tag }}\"/' target-repo/helm-chart/values.yaml
+          sed -i 's/global.tag:.*/global.tag: \"${{ inputs.tag }}\"/' target-repo/charts/nr-compliance-enforcement-cm/values.yaml
   
       - name: Commit and Push changes
         run: |
