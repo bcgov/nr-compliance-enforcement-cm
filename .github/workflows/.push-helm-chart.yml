@@ -101,15 +101,10 @@ jobs:
             git checkout -b $BRANCH_NAME
           fi
   
-      - name: Copy folder from source to target
+      - name: Update Helm Chart Tag
         run: |
-          if [ -d "source-repo/charts" ]; then
-            mkdir -p target-repo/helm-chart
-            cp -r source-repo/charts/nr-compliance-enforcement-cm/* target-repo/helm-chart/
-          else
-            echo "Directory 'charts' does not exist in source repository"
-            exit 1
-          fi
+          sed -i 's/global.tag:.*/global.tag: \"${{ inputs.tag }}\"/' target-repo/helm-chart/values.yaml
+  
 
       - name: Commit and Push changes
         run: |
