@@ -105,7 +105,6 @@ jobs:
         run: |
           sed -i 's/global.tag:.*/global.tag: \"${{ inputs.tag }}\"/' target-repo/helm-chart/values.yaml
   
-
       - name: Commit and Push changes
         run: |
           cd target-repo
