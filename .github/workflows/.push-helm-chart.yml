@@ -101,10 +101,10 @@ jobs:
             git checkout -b $BRANCH_NAME
           fi
   
-      - name: Update Helm Chart Tag
+      - name: Replace all instances of TAG_PLACEHOLDER
         run: |
-          sed -i 's/global.tag:.*/global.tag: \"${{ inputs.tag }}\"/' target-repo/charts/nr-compliance-enforcement-cm/values.yaml
-  
+          sed -i 's/TAG_PLACEHOLDER/${{ inputs.tag }}/g' target-repo/charts/nr-compliance-enforcement-cm/values.yaml
+   
       - name: Commit and Push changes
         run: |
           cd target-repo
