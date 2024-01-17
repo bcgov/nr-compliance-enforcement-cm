@@ -358,8 +358,9 @@ frontend:
     #-- enable or disable the route.
     enabled: true
     #-- the hostname for the route. this will be the URL for the application, you can access by https://{{ .Release.Name }}-frontend.{{ .Values.global.domain }}
-    host: "{{ .Release.Name }}-frontend.{{ .Values.global.domain }}"
+    host: "{{ .Release.Name }}-backend.{{ .Values.global.domain }}"
     #-- the target port of the service. this is the port where the service is listening on. The name is mapped to the port name in the service.
+    path: "/api"
     targetPort: http
 
 crunchy: # enable it for TEST and PROD, for PR based pipelines simply use single postgres
