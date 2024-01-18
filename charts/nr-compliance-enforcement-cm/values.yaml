@@ -3,19 +3,16 @@
 #-- global variables, can be accessed by sub-charts.
 global:
   #-- the registry where the images are stored. override during runtime for other registry at global level or individual level.
-  repository: artifactory/github-docker-remote/bcgov/nr-compliance-enforcement-cm/
+  repository: github-docker-remote/bcgov/nr-compliance-enforcement-cm
   #-- the registry where the images are stored. override during runtime for other registry at global level or individual level. default is ghcr.io
   registry: artifacts.developer.gov.bc.ca
   #-- the tag of the image, it can be latest, 1.0.0 etc..., or the sha256 hash
-  tag: latest
+  tag: TAG_PLACEHOLDER
   #-- turn off autoscaling for the entire suite by setting this to false. default is true.
   autoscaling: true
   #-- global secrets, can be accessed by sub-charts.
   secrets:
     enabled: true
-    databasePassword: ~
-    databaseUser: ~
-    databaseName: ~
     annotation:
       helm.sh/policy: "keep"
   #-- domain of the application, it is required, apps.silver.devops.gov.bc.ca for silver cluster and apps.devops.gov.bc.ca for gold cluster
@@ -34,6 +31,8 @@ backend:
   #-- can be either a statefulSet or a deployment not both. TBD (StatefulSet)
   deployment: # can be either a statefulSet or a deployment not both
     enabled: true
+    podLabels:
+      DataClass: "Low"
   #-- the deployment strategy, can be "Recreate" or "RollingUpdate"
   deploymentStrategy:
     type: Recreate
@@ -205,163 +204,17 @@ backend:
         #-- the container port where the application is listening on.
         targetPort: 3000
         protocol: TCP
-  nodeSelector: { }
-  tolerations: [ ]
-  affinity: { }
-
-frontend:
-  # -- enable or disable a component deployment.
-  enabled: true
-  # -- can be either a statefulSet or a deployment not both. TBD (StatefulSet)
-  deployment: # can be either a statefulSet or a deployment not both
-    enabled: true
-  # -- the deployment strategy, can be "Recreate" or "RollingUpdate"
-  deploymentStrategy:
-    type: Recreate
-  # -- the configmap specific to the component.
-  configmap:
-    # -- enable or disable the configmap.
-    enabled: true
-    # -- dat contains key value pairs for the configmap. can contain multiple files. value can be piped as string.
-    data:
-      #-- sample to create a config.js object.
-      config.js: |-
-        const envConfig = (() => {
-          return {
-            "VITE_DEPLOY_ENVIRONMENT":"{{ .Release.Name }}-{{ .Release.Namespace }}"
-          };
-        })();
-      #-- sample to create a config.prod.js object.
-      config.prod.js: |-
-        const envConfig = (() => {
-          return {
-            "VITE_DEPLOY_ENVIRONMENT":"static"
-          };
-        })();
-  # -- the containers specific to the component. one or many containers can be defined.
-  containers:
-    #-- name of the container.
-    - name: frontend
-      #-- the registry where the image is stored. override during runtime for other registry at global level or individual level.
-      registry: '{{ .Values.global.registry }}'
-      #-- the repository where the image is stored. override during runtime for other repository at global level or individual level.
-      repository: '{{ .Values.global.repository }}' # example, it includes registry and repository
-      #-- the exact component name, in this case frontend.
-      image: frontend
-      #-- the tag of the image, it can be latest, 1.0.0 etc..., or the sha256 hash
-      tag: '{{ .Values.global.tag }}'
-      #-- the security context for the container. it is optional and is an object.
-      securityContext:
-        capabilities:
-          add: [ "NET_BIND_SERVICE" ]
-      #-- the environment variables for the container. it is optional and is an object.
-      env:
-        #-- the environment variables from values, these are interpolated during runtime and can contain tpl.
-        fromValues:
-          - name: BACKEND_URL
-            value: "http://{{ .Release.Name }}-backend"
-          - name: LOG_LEVEL
-            value: "info"
-        #-- the environment variables from local configmap(configmap associated to the component), these are interpolated during runtime and can contain tpl.
-        fromLocalConfigmap:
-          - name: frontend-configmap
-            key: config.js
-          - name: frontend-prod-configmap
-            key: config.prod.js
-      #-- the ports for the container. it is optional and is an array of objects.
-      ports:
-        - name: http
-          containerPort: 3000
-          protocol: TCP
-        - name: http2
-          containerPort: 3001
-          protocol: TCP
-      #-- the resources for the container. it is optional and is an object. for default values check this link: https://github.com/bcgov/helm-service/blob/main/charts/component/templates/deployment.yaml#L298-L304
-      resources:
-        limits:
-          cpu: 100m
-          memory: 150Mi
-        requests:
-          cpu: 30m
-          memory: 50Mi
-      #-- the readiness probe for the container. it is optional and is an object. for default values check this link: https://github.com/bcgov/helm-service/blob/main/charts/component/templates/deployment.yaml#L312-L316
-      readinessProbe:
-        httpGet:
-          path: /health
-          port: 3001
-          scheme: HTTP
-        initialDelaySeconds: 5
-        periodSeconds: 2
-        timeoutSeconds: 2
-        successThreshold: 1
-        failureThreshold: 30
-      #-- the liveness probe for the container. it is optional and is an object. for default values check this link: https://github.com/bcgov/helm-service/blob/main/charts/component/templates/deployment.yaml#L324-L328
-      livenessProbe:
-        successThreshold: 1
-        failureThreshold: 3
-        httpGet:
-          path: /health
-          port: 3001
-          scheme: HTTP
-        initialDelaySeconds: 15
-        periodSeconds: 30
-        timeoutSeconds: 5
-  #-- autoscaling for the component. it is optional and is an object.
-  autoscaling:
-    #-- enable or disable autoscaling.
-    enabled: true
-    #-- the minimum number of replicas.
-    minReplicas: 3
-    #-- the maximum number of replicas.
-    maxReplicas: 7
-    #-- the target cpu utilization percentage, is from request cpu and NOT LIMIT CPU.
-    targetCPUUtilizationPercentage: 80
-    #-- the behavior for the autoscaling. it is optional and is an object.
-    behavior:
-      scaleDown:
-        stabilizationWindowSeconds: 300
-        policies:
-          - type: Percent
-            value: 10
-            periodSeconds: 60
-          - type: Pods
-            value: 2
-            periodSeconds: 60
-        selectPolicy: Min
-      scaleUp:
-        stabilizationWindowSeconds: 0
-        policies:
-          - type: Percent
-            value: 100
-            periodSeconds: 30
-          - type: Pods
-            value: 2
-            periodSeconds: 30
-        selectPolicy: Max
-  #-- the service for the component. for inter namespace communication, use the service name as the hostname.
-  service:
-    #-- enable or disable the service.
-    enabled: true
-    #-- the type of the service. it can be ClusterIP, NodePort, LoadBalancer, ExternalName. ClusterIP is the default and is recommended.
-    type: ClusterIP
-    #-- the ports for the service.
-    ports:
-      - name: http
-        #-- the port for the service. the service will be accessible on this port within the namespace.
-        port: 80
-        #-- the container port where the application is listening on
-        targetPort: 3000
-        #-- the protocol for the port. it can be TCP or UDP. TCP is the default and is recommended.
-        protocol: TCP
-  #-- the route for the component. it is optional and is an object. To make the application accessible from internet, use the route.
+    #-- the route for the component. it is optional and is an object. To make the application accessible from internet, use the route.
   route:
     #-- enable or disable the route.
     enabled: true
     #-- the hostname for the route. this will be the URL for the application, you can access by https://{{ .Release.Name }}-frontend.{{ .Values.global.domain }}
     host: "{{ .Release.Name }}-backend.{{ .Values.global.domain }}"
     #-- the target port of the service. this is the port where the service is listening on. The name is mapped to the port name in the service.
-    path: "/api"
     targetPort: http
+  nodeSelector: { }
+  tolerations: [ ]
+  affinity: { }
 
 crunchy: # enable it for TEST and PROD, for PR based pipelines simply use single postgres
   enabled: false
@@ -458,11 +311,12 @@ crunchy: # enable it for TEST and PROD, for PR based pipelines simply use single
         cpu: 50m
         memory: 128Mi
 
-bitnami-pg:
+postgresql:
   enabled: true
+  nameOverride: "bitnami-pg"
   image:
-    registry: ghcr.io
-    repository: bcgov/nr-containers/bitnami/postgresql
+    registry: artifacts.developer.gov.bc.ca
+    repository: github-docker-remote/bcgov/nr-containers/bitnami/postgresql
     tag: 15.5.0
   auth:
     existingSecret: '{{ .Release.Name }}'
@@ -501,7 +355,8 @@ bitnami-pg:
       limits:
         cpu: 150m
         memory: 250Mi
-
+    podLabels:
+      DataClass: "Medium"
 backup:
   enabled: true
   pvc:
