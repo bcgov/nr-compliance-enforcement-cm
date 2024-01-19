@@ -101,10 +101,10 @@ jobs:
             git checkout -b $BRANCH_NAME
           fi
   
-      - name: Replace all instances of TAG_PLACEHOLDER
+      - name: Set tag
         run: |
-          sed -i 's/tag: .*/tag: ${{ inputs.tag }}/g' target-repo/charts/nr-compliance-enforcement-cm/values.yaml
-   
+          sed -i '0,/tag: .*/s//tag: ${{ inputs.tag }}/' target-repo/charts/nr-compliance-enforcement-cm/values.yaml
+  
       - name: Commit and Push changes
         run: |
           cd target-repo
