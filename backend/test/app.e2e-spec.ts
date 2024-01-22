@@ -18,6 +18,6 @@ describe('AppController (e2e)', () => {
   it('/ (GET)', () => request(app.getHttpServer())
     .get('/')
     .expect(200)
-    .expect('Hello from Emerald!!'))
+    .expect('Hello from Emerald!'))
 })
 
