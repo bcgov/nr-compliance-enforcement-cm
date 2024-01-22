@@ -91,18 +91,3 @@ jobs:
       tag: ${{ needs.vars.outputs.pr }}
       release: ${{ needs.vars.outputs.pr }}
       triggers: ('backend/' 'migrations/' 'charts/')
-
-  update_images:
-      name: Update Images
-      needs: [deploys]
-      runs-on: ubuntu-latest
-      timeout-minutes: 10
-      steps:
-        - name: Clean up Helm Releases
-          run: |
-            oc login --token=${{ secrets.OC_TOKEN }} --server=${{ vars.OC_SERVER }}
-            oc project ${{ vars.OC_NAMESPACE }} # Safeguard!
-          
-            helm upgrade
-
-            done
