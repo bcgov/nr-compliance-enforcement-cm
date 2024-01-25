@@ -4,7 +4,7 @@ import {Logger} from "@nestjs/common";
 
 const logger = new Logger('NestApplication');
 bootstrap().then(async (app: NestExpressApplication) => {
-  await app.listen(3000);
+  await app.listen(3002);
   logger.log(`Listening on ${await app.getUrl()}`);
 }).catch(err=>{
   logger.error(err);
