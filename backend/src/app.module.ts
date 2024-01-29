@@ -5,14 +5,19 @@ import {AppController} from "./app.controller";
 import {AppService} from "./app.service";
 import { HTTPLoggerMiddleware } from './middleware/req.res.logger';
 import { UsersModule } from "./users/users.module";
-import { PrismaService } from "./prisma/prisma.service";
 import { PrismaModule } from "./prisma/prisma.module";
+import { GraphQLModule } from "@nestjs/graphql";
+import { ApolloDriver } from "@nestjs/apollo";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     UsersModule,
-    PrismaModule
+    PrismaModule,
+    GraphQLModule.forRoot({
+      driver: ApolloDriver,
+      autoSchemaFile: 'schema.gql',
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
