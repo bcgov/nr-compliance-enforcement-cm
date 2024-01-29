@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service'; // Adjust the path as per your project structure
+import { PrismaService } from "nestjs-prisma";
 import { User, Prisma } from '@prisma/client';
 
 @Injectable()
