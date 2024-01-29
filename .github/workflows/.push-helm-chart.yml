@@ -101,10 +101,16 @@ jobs:
             git checkout -b $BRANCH_NAME
           fi
   
-      - name: Set tag
+      - name: Copy folder from source to target
         run: |
-          sed -i '0,/tag: .*/s//tag: ${{ inputs.tag }}/' target-repo/charts/nr-compliance-enforcement-cm/values.yaml
-  
+          if [ -d "source-repo/charts" ]; then
+            mkdir -p target-repo/helm-chart
+            cp -r source-repo/charts/nr-compliance-enforcement-cm/* target-repo/helm-chart/
+          else
+            echo "Directory 'charts' does not exist in source repository"
+            exit 1
+          fi
+
       - name: Commit and Push changes
         run: |
           cd target-repo

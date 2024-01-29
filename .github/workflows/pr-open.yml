@@ -40,7 +40,8 @@ jobs:
             Thanks for the PR!
 
             Deployments, as required, will be available below:
-            - [Backend](https://${{ env.PREFIX }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}/api)
+            - [Frontend](https://${{ env.PREFIX }}-${{ github.event.number }}-frontend.${{ env.DOMAIN }})
+            - [Backend](https://${{ env.PREFIX }}-${{ github.event.number }}-frontend.${{ env.DOMAIN }}/api)
 
             Please create PRs in draft mode.  Mark as ready to enable:
             - [Analysis Workflow](https://github.com/${{ github.repository }}/actions/workflows/analysis.yml)
@@ -74,7 +75,7 @@ jobs:
       packages: write
     strategy:
       matrix:
-        package: [migrations, backend]
+        package: [migrations, backend, frontend]
     timeout-minutes: 10
     steps:
       - uses: bcgov-nr/action-builder-ghcr@v2.0.1
@@ -95,4 +96,4 @@ jobs:
       directory: charts/nr-compliance-enforcement-cm
       tag: ${{ needs.vars.outputs.pr }}-${{ needs.vars.outputs.commit-hash }}
       release: ${{ needs.vars.outputs.pr }}
-      triggers: ('backend/' 'migrations/' 'charts/')
+      triggers: ('backend/' 'frontend/' 'migrations/' 'charts/')
