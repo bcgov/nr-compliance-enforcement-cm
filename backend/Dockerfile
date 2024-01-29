@@ -20,8 +20,8 @@ COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 
 # Ports, health check and non-root user
-EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost/:3000/api || exit 1
+EXPOSE 3002
+HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost/:3002/api || exit 1
 USER app
 
 # Start up command with 50MB of heap size, each application needs to determine what is the best value. DONT use default as it is 4GB.
