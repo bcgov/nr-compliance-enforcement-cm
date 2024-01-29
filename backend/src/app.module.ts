@@ -7,14 +7,14 @@ import { HTTPLoggerMiddleware } from './middleware/req.res.logger';
 import { UsersModule } from "./users/users.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { GraphQLModule } from "@nestjs/graphql";
-import { ApolloDriver } from "@nestjs/apollo";
+import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     UsersModule,
     PrismaModule,
-    GraphQLModule.forRoot({
+    GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
     }),
