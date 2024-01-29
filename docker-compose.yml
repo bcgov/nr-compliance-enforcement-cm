@@ -35,7 +35,7 @@ services:
       FLYWAY_USER: *POSTGRES_USER
       FLYWAY_PASSWORD: *POSTGRES_PASSWORD
       FLYWAY_BASELINE_ON_MIGRATE: true
-      FLYWAY_DEFAULT_SCHEMA: USERS
+      FLYWAY_DEFAULT_SCHEMA: case_management
     depends_on:
       database:
         condition: service_healthy
