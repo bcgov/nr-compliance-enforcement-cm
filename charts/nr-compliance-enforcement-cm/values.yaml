@@ -125,7 +125,7 @@ backend:
           - name: FLYWAY_BASELINE_ON_MIGRATE
             value: "true"
           - name: FLYWAY_DEFAULT_SCHEMA
-            value: "USERS"
+            value: "case_management"
           - name: FLYWAY_CONNECT_RETRIES
             value: "30"
       #-- the resources for the container. it is optional and is an object. for default values check this link:
@@ -465,8 +465,8 @@ bitnami-pg:
     tag: 15.5.0
   auth:
     existingSecret: '{{ .Release.Name }}'
-    username: 'quickstart'
-    database: quickstart
+    username: 'case_management'
+    database: case_management
   shmVolume:
     enabled: false
   backup:
