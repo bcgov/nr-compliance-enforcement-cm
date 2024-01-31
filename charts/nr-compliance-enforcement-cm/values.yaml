@@ -58,6 +58,8 @@ backend:
             key: databaseUser
           - name: POSTGRES_DATABASE
             key: databaseName
+          - name: POSTGRESQL_URL # required for prisma
+            key: databaseURL
         #-- the environment variables from values, these are interpolated during runtime and can contain tpl.
         fromValues:
           - name: POSTGRES_HOST
