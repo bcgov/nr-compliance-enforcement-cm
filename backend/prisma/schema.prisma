@@ -1,9 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
-  output = "../node_modules/.prisma/client"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -11,10 +8,145 @@ datasource db {
   url      = env("POSTGRESQL_URL")
 }
 
-model User {
-  id    Int    @id @default(autoincrement()) @map("id")
-  name  String @map("name")
-  email String
+model age_code {
+  age_code             String   @id(map: "PK_agecode") @db.VarChar(10)
+  short_description    String   @db.VarChar(50)
+  long_description     String?  @db.VarChar(250)
+  display_order        Int
+  active_ind           Boolean
+  create_user_id       String   @db.VarChar(32)
+  create_user_guid     String?  @db.Uuid
+  create_utc_timestamp DateTime @db.Timestamp(6)
+  update_user_id       String   @db.VarChar(32)
+  update_user_guid     String?  @db.Uuid
+  update_utc_timestamp DateTime @db.Timestamp(6)
+}
+
+model conflict_history_code {
+  conflict_history_code String   @id(map: "PK_cnfthistcd") @db.VarChar(10)
+  short_description     String   @db.VarChar(50)
+  long_description      String?  @db.VarChar(250)
+  display_order         Int
+  active_ind            Boolean
+  create_user_id        String   @db.VarChar(32)
+  create_user_guid      String?  @db.Uuid
+  create_utc_timestamp  DateTime @db.Timestamp(6)
+  update_user_id        String   @db.VarChar(32)
+  update_user_guid      String?  @db.Uuid
+  update_utc_timestamp  DateTime @db.Timestamp(6)
+}
+
+model drug_code {
+  drug_code            String   @id(map: "PK_drugcode") @db.VarChar(10)
+  short_description    String   @db.VarChar(50)
+  long_description     String?  @db.VarChar(250)
+  display_order        Int
+  active_ind           Boolean
+  create_user_id       String   @db.VarChar(32)
+  create_user_guid     String?  @db.Uuid
+  create_utc_timestamp DateTime @db.Timestamp(6)
+  update_user_id       String   @db.VarChar(32)
+  update_user_guid     String?  @db.Uuid
+  update_utc_timestamp DateTime @db.Timestamp(6)
+}
+
+model drug_method_code {
+  drug_method_code     String   @id(map: "PK_drgmethdcd") @db.VarChar(10)
+  short_description    String   @db.VarChar(50)
+  long_description     String?  @db.VarChar(250)
+  display_order        Int
+  active_ind           Boolean
+  create_user_id       String   @db.VarChar(32)
+  create_user_guid     String?  @db.Uuid
+  create_utc_timestamp DateTime @db.Timestamp(6)
+  update_user_id       String   @db.VarChar(32)
+  update_user_guid     String?  @db.Uuid
+  update_utc_timestamp DateTime @db.Timestamp(6)
+}
+
+model drug_remaining_outcome_code {
+  drug_remaining_outcome_code String   @id(map: "PK_drgrmotccd") @db.VarChar(10)
+  short_description           String   @db.VarChar(50)
+  long_description            String?  @db.VarChar(250)
+  display_order               Int
+  active_ind                  Boolean
+  create_user_id              String   @db.VarChar(32)
+  create_user_guid            String?  @db.Uuid
+  create_utc_timestamp        DateTime @db.Timestamp(6)
+  update_user_id              String   @db.VarChar(32)
+  update_user_guid            String?  @db.Uuid
+  update_utc_timestamp        DateTime @db.Timestamp(6)
+}
+
+model ear_code {
+  ear_code             String   @id(map: "PK_earcode") @db.VarChar(10)
+  short_description    String   @db.VarChar(50)
+  long_description     String?  @db.VarChar(250)
+  display_order        Int
+  active_ind           Boolean
+  create_user_id       String   @db.VarChar(32)
+  create_user_guid     String?  @db.Uuid
+  create_utc_timestamp DateTime @db.Timestamp(6)
+  update_user_id       String   @db.VarChar(32)
+  update_user_guid     String?  @db.Uuid
+  update_utc_timestamp DateTime @db.Timestamp(6)
+}
+
+model flyway_schema_history {
+  installed_rank Int      @id(map: "flyway_schema_history_pk")
+  version        String?  @db.VarChar(50)
+  description    String   @db.VarChar(200)
+  type           String   @db.VarChar(20)
+  script         String   @db.VarChar(1000)
+  checksum       Int?
+  installed_by   String   @db.VarChar(100)
+  installed_on   DateTime @default(now()) @db.Timestamp(6)
+  execution_time Int
+  success        Boolean
+
+  @@index([success], map: "flyway_schema_history_s_idx")
+}
+
+model hwcr_outcome_code {
+  hwcr_outcome_code    String   @id(map: "PK_hwcrotcmcd") @db.VarChar(10)
+  short_description    String   @db.VarChar(50)
+  long_description     String?  @db.VarChar(250)
+  display_order        Int
+  active_ind           Boolean
+  create_user_id       String   @db.VarChar(32)
+  create_user_guid     String?  @db.Uuid
+  create_utc_timestamp DateTime @db.Timestamp(6)
+  update_user_id       String   @db.VarChar(32)
+  update_user_guid     String?  @db.Uuid
+  update_utc_timestamp DateTime @db.Timestamp(6)
+}
+
+model sex_code {
+  sex_code             String   @id(map: "PK_sexcode") @db.VarChar(10)
+  short_description    String   @db.VarChar(50)
+  long_description     String?  @db.VarChar(250)
+  display_order        Int
+  active_ind           Boolean
+  create_user_id       String   @db.VarChar(32)
+  create_user_guid     String?  @db.Uuid
+  create_utc_timestamp DateTime @db.Timestamp(6)
+  update_user_id       String   @db.VarChar(32)
+  update_user_guid     String?  @db.Uuid
+  update_utc_timestamp DateTime @db.Timestamp(6)
+}
+
+model threat_level_code {
+  threat_level_code    String   @id(map: "PK_thrtlvlcd") @db.VarChar(10)
+  short_description    String   @db.VarChar(50)
+  long_description     String?  @db.VarChar(250)
+  display_order        Int
+  active_ind           Boolean
+  create_user_id       String   @db.VarChar(32)
+  create_user_guid     String?  @db.Uuid
+  create_utc_timestamp DateTime @db.Timestamp(6)
+  update_user_id       String   @db.VarChar(32)
+  update_user_guid     String?  @db.Uuid
+  update_utc_timestamp DateTime @db.Timestamp(6)
 
   @@map("users")
 }

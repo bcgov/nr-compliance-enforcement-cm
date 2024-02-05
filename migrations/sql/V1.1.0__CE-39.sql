@@ -1,8 +1,15 @@
 --
+-- Drop PoC Table
+--
+
+DROP TABLE
+  case_management.users;
+
+--
 -- CREATE TABLE sex_code
 --
 CREATE TABLE
-  public.sex_code (
+  case_management.sex_code (
     sex_code varchar(10) NOT NULL,
     short_description varchar(50) NOT NULL,
     long_description varchar(250) NULL,
@@ -21,7 +28,7 @@ CREATE TABLE
 -- CREATE TABLE age_code
 --
 CREATE TABLE
-  public.age_code (
+  case_management.age_code (
     age_code varchar(10) NOT NULL,
     short_description varchar(50) NOT NULL,
     long_description varchar(250) NULL,
@@ -40,7 +47,7 @@ CREATE TABLE
 -- CREATE TABLE threat_level_code
 --
 CREATE TABLE
-  public.threat_level_code (
+  case_management.threat_level_code (
     threat_level_code varchar(10) NOT NULL,
     short_description varchar(50) NOT NULL,
     long_description varchar(250) NULL,
@@ -59,7 +66,7 @@ CREATE TABLE
 -- CREATE TABLE conflict_history_code
 --
 CREATE TABLE
-  public.conflict_history_code (
+  case_management.conflict_history_code (
     conflict_history_code varchar(10) NOT NULL,
     short_description varchar(50) NOT NULL,
     long_description varchar(250) NULL,
@@ -78,7 +85,7 @@ CREATE TABLE
 -- CREATE TABLE ear_code
 --
 CREATE TABLE
-  public.ear_code (
+  case_management.ear_code (
     ear_code varchar(10) NOT NULL,
     short_description varchar(50) NOT NULL,
     long_description varchar(250) NULL,
@@ -97,7 +104,7 @@ CREATE TABLE
 -- CREATE TABLE drug_code
 --
 CREATE TABLE
-  public.drug_code (
+  case_management.drug_code (
     drug_code varchar(10) NOT NULL,
     short_description varchar(50) NOT NULL,
     long_description varchar(250) NULL,
@@ -116,7 +123,7 @@ CREATE TABLE
 -- CREATE TABLE drug_method_code
 --
 CREATE TABLE
-  public.drug_method_code (
+  case_management.drug_method_code (
     drug_method_code varchar(10) NOT NULL,
     short_description varchar(50) NOT NULL,
     long_description varchar(250) NULL,
@@ -135,7 +142,7 @@ CREATE TABLE
 -- CREATE TABLE drug_remaining_outcome_code
 --
 CREATE TABLE
-  public.drug_remaining_outcome_code (
+  case_management.drug_remaining_outcome_code (
     drug_remaining_outcome_code varchar(10) NOT NULL,
     short_description varchar(50) NOT NULL,
     long_description varchar(250) NULL,
@@ -154,7 +161,7 @@ CREATE TABLE
 -- CREATE TABLE hwcr_outcome_code
 --
 CREATE TABLE
-  public.hwcr_outcome_code (
+  case_management.hwcr_outcome_code (
     hwcr_outcome_code varchar(10) NOT NULL,
     short_description varchar(50) NOT NULL,
     long_description varchar(250) NULL,
