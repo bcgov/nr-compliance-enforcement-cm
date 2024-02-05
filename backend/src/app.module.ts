@@ -8,6 +8,8 @@ import { UsersModule } from "./users/users.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
+import * as os from 'os';
+import * as path from 'path'
 
 @Module({
   imports: [
@@ -16,7 +18,7 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
     PrismaModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: 'schema.gql',
+      autoSchemaFile: path.join(os.tmpdir(), 'schema.gql')
     }),
   ],
   controllers: [AppController],

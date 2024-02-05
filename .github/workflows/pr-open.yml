@@ -53,12 +53,17 @@ jobs:
     name: Set Variables
     outputs:
       pr: ${{ steps.pr.outputs.pr }}
+      commit-hash: ${{ steps.commit-hash.outputs.hash}}
     runs-on: ubuntu-22.04
     steps:
       # Get PR number for merge queues, otherwise use github.event.number
       - name: PR Number
         id: pr
         uses: bcgov-nr/action-get-pr@v0.0.1
+      - name: Get the commit hash
+        id: commit-hash
+        run: echo "::set-output name=hash::$(git rev-parse --short HEAD)"
+  
 
   # https://github.com/bcgov-nr/action-builder-ghcr
   builds:
@@ -76,7 +81,7 @@ jobs:
         with:
           keep_versions: 50
           package: ${{ matrix.package }}
-          tag: ${{ needs.vars.outputs.pr }}
+          tag: ${{ needs.vars.outputs.pr }}-${{ needs.vars.outputs.commit-hash }}
           tag_fallback: latest
           triggers: ('${{ matrix.package }}/')
 
@@ -88,6 +93,6 @@ jobs:
     with:
       autoscaling: false
       directory: charts/nr-compliance-enforcement-cm
-      tag: ${{ needs.vars.outputs.pr }}
+      tag: ${{ needs.vars.outputs.pr }}-${{ needs.vars.outputs.commit-hash }}
       release: ${{ needs.vars.outputs.pr }}
       triggers: ('backend/' 'migrations/' 'charts/')

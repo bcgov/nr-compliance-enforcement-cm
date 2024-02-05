@@ -49,7 +49,7 @@ services:
     environment:
       <<: *postgres-vars
       NODE_ENV: development
-      DATABASE_URL: "postgresql://postgres:default@cm-database:5432/postgres?schema=case_management"
+      POSTGRESQL_URL: "postgresql://postgres:default@cm-database:5432/postgres?schema=case_management"
       BACKEND_PORT: "3000"
     image: node:20-bullseye
     ports: ["3003:3000"]
