@@ -9,6 +9,7 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { AgeCodeModule } from './age_code/age_code.module';
 import { join } from 'path';
+import { EquipmentCodeModule } from './equipment_code/equipment_code.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { join } from 'path';
       typePaths: ['./**/*.graphql'],
     }),
     AgeCodeModule,
+    EquipmentCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

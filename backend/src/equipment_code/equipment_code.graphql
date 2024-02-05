@@ -1,0 +1,12 @@
+type EquipmentCode {
+  equipment_code: String
+  short_description: String
+  long_description: String
+  display_order: Int
+}
+
+type Query {
+  equipmentCodes: [EquipmentCode]!
+  equipmentCode(equipment_code: String): EquipmentCode
+}
+
