@@ -15,6 +15,7 @@ import { ThreatLevelCodeModule } from './threat_level_code/threat_level_code.mod
 import { ConflictHistoryCodeModule } from './conflict_history_code/conflict_history_code.module';
 import { EarCodeModule } from './ear_code/ear_code.module';
 import { DrugCodeModule } from './drug_code/drug_code.module';
+import { DrugMethodCodeModule } from './drug_method_code/drug_method_code.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { DrugCodeModule } from './drug_code/drug_code.module';
     ConflictHistoryCodeModule,
     EarCodeModule,
     DrugCodeModule,
+    DrugMethodCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
