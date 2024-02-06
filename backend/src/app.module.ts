@@ -11,6 +11,7 @@ import { AgeCodeModule } from './age_code/age_code.module';
 import { join } from 'path';
 import { EquipmentCodeModule } from './equipment_code/equipment_code.module';
 import { SexCodeModule } from './sex_code/sex_code.module';
+import { ThreatLevelCodeModule } from './threat_level_code/threat_level_code.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SexCodeModule } from './sex_code/sex_code.module';
     AgeCodeModule,
     EquipmentCodeModule,
     SexCodeModule,
+    ThreatLevelCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
