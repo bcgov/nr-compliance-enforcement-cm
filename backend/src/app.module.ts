@@ -16,6 +16,7 @@ import { ConflictHistoryCodeModule } from './conflict_history_code/conflict_hist
 import { EarCodeModule } from './ear_code/ear_code.module';
 import { DrugCodeModule } from './drug_code/drug_code.module';
 import { DrugMethodCodeModule } from './drug_method_code/drug_method_code.module';
+import { DrugRemainingOutcomeCodeModule } from './drug_remaining_outcome_code/drug_remaining_outcome_code.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { DrugMethodCodeModule } from './drug_method_code/drug_method_code.module
     EarCodeModule,
     DrugCodeModule,
     DrugMethodCodeModule,
+    DrugRemainingOutcomeCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

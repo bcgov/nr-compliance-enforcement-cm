@@ -223,20 +223,20 @@ values('DART', 'Dart', 'Dart', 1, true, 'FLYWAY', now(), 'FLYWAY', now()),
 -- INSERT INTO drug_remaining_outcome_code
 --
 insert into drug_remaining_outcome_code (drug_remaining_outcome_code, short_description, long_description, display_order, active_ind, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-values('DISC', 'Male', 'Male', 1, true, 'FLYWAY', now(), 'FLYWAY', now()),
-      ('STOR', 'Female', 'Female', 2, true, 'FLYWAY', now(), 'FLYWAY', now()),
-      ('RDIS', 'Unknown', 'Unknown', 3, true, 'FLYWAY', now(), 'FLYWAY', now());
+values('DISC', 'Discarded', 'Discarded', 1, true, 'FLYWAY', now(), 'FLYWAY', now()),
+      ('STOR', 'Storage', 'Storage', 2, true, 'FLYWAY', now(), 'FLYWAY', now()),
+      ('RDIS', 'Reverse distribution', 'Reverse distribution', 3, true, 'FLYWAY', now(), 'FLYWAY', now());
 
 
 --
 -- INSERT INTO hwcr_outcome_code
 --
 insert into hwcr_outcome_code (hwcr_outcome_code, short_description, long_description, display_order, active_ind, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-values('DEADONARR', 'Dead on arrival', '', 1, true, 'FLYWAY', now(), 'FLYWAY', now()),
-      ('DESTRYCOS', 'Destroyed by COS', '', 2, true, 'FLYWAY', now(), 'FLYWAY', now()),
-      ('DESTRYOTH', 'Destroyed by other', '', 3, true, 'FLYWAY', now(), 'FLYWAY', now()),
-      ('GONEONARR', 'Gone on arrival', '', 4, true, 'FLYWAY', now(), 'FLYWAY', now()),
-      ('REFRTOBIO', 'Referred to biologist', '', 5, true, 'FLYWAY', now(), 'FLYWAY', now()),      
-      ('SHRTRELOC', 'Short-distance relocation', '', 6, true, 'FLYWAY', now(), 'FLYWAY', now()),
-      ('TRANSLCTD', 'Translocated', '', 7, true, 'FLYWAY', now(), 'FLYWAY', now()),
-      ('TRANSREHB', 'Transfer to rehab', '', 8, true, 'FLYWAY', now(), 'FLYWAY', now());
+values('DEADONARR', 'Dead on arrival', 'Dead on arrival', 1, true, 'FLYWAY', now(), 'FLYWAY', now()),
+      ('DESTRYCOS', 'Destroyed by COS', 'Destroyed by COS', 2, true, 'FLYWAY', now(), 'FLYWAY', now()),
+      ('DESTRYOTH', 'Destroyed by other', 'Destroyed by other', 3, true, 'FLYWAY', now(), 'FLYWAY', now()),
+      ('GONEONARR', 'Gone on arrival', 'Gone on arrival', 4, true, 'FLYWAY', now(), 'FLYWAY', now()),
+      ('REFRTOBIO', 'Referred to biologist', 'Referred to biologist', 5, true, 'FLYWAY', now(), 'FLYWAY', now()),      
+      ('SHRTRELOC', 'Short-distance relocation', 'Short-distance relocation', 6, true, 'FLYWAY', now(), 'FLYWAY', now()),
+      ('TRANSLCTD', 'Translocated', 'Translocated', 7, true, 'FLYWAY', now(), 'FLYWAY', now()),
+      ('TRANSREHB', 'Transfer to rehab', 'Transfer to rehab', 8, true, 'FLYWAY', now(), 'FLYWAY', now());
