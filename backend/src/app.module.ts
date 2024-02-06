@@ -12,6 +12,7 @@ import { join } from 'path';
 import { EquipmentCodeModule } from './equipment_code/equipment_code.module';
 import { SexCodeModule } from './sex_code/sex_code.module';
 import { ThreatLevelCodeModule } from './threat_level_code/threat_level_code.module';
+import { ConflictHistoryCodeModule } from './conflict_history_code/conflict_history_code.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ThreatLevelCodeModule } from './threat_level_code/threat_level_code.mod
     EquipmentCodeModule,
     SexCodeModule,
     ThreatLevelCodeModule,
+    ConflictHistoryCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
