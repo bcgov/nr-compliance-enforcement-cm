@@ -1,0 +1,12 @@
+type HWCROutcomeCode {
+  hwcr_outcome_code: String
+  short_description: String
+  long_description: String
+  display_order: Int
+}
+
+type Query {
+  HWCROutcomeCodes: [HWCROutcomeCode]!
+  HWCROutcomeCode(hwcr_outcome_code: String): HWCROutcomeCode
+}
+
