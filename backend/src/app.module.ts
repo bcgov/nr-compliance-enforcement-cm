@@ -10,6 +10,7 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { AgeCodeModule } from './age_code/age_code.module';
 import { join } from 'path';
 import { EquipmentCodeModule } from './equipment_code/equipment_code.module';
+import { SexCodeModule } from './sex_code/sex_code.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { EquipmentCodeModule } from './equipment_code/equipment_code.module';
     }),
     AgeCodeModule,
     EquipmentCodeModule,
+    SexCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
