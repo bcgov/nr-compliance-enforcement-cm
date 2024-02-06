@@ -13,6 +13,7 @@ import { EquipmentCodeModule } from './equipment_code/equipment_code.module';
 import { SexCodeModule } from './sex_code/sex_code.module';
 import { ThreatLevelCodeModule } from './threat_level_code/threat_level_code.module';
 import { ConflictHistoryCodeModule } from './conflict_history_code/conflict_history_code.module';
+import { EarCodeModule } from './ear_code/ear_code.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ConflictHistoryCodeModule } from './conflict_history_code/conflict_hist
     SexCodeModule,
     ThreatLevelCodeModule,
     ConflictHistoryCodeModule,
+    EarCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
