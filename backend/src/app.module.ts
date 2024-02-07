@@ -24,7 +24,7 @@ import { HwcrOutcomeCodeModule } from './hwcr_outcome_code/hwcr_outcome_code.mod
     PrismaModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      typePaths: ['./**/*.graphql'],
+      typePaths: ['./dist/**/*.graphql', './src/**/*.graphql'],
     }),
     AgeCodeModule,
     EquipmentCodeModule,
