@@ -18,6 +18,8 @@ import { DrugCodeModule } from './drug_code/drug_code.module';
 import { DrugMethodCodeModule } from './drug_method_code/drug_method_code.module';
 import { DrugRemainingOutcomeCodeModule } from './drug_remaining_outcome_code/drug_remaining_outcome_code.module';
 import { HwcrOutcomeCodeModule } from './hwcr_outcome_code/hwcr_outcome_code.module';
+import * as os from 'os';
+import * as path from 'path'
 
 @Module({
   imports: [
@@ -25,7 +27,7 @@ import { HwcrOutcomeCodeModule } from './hwcr_outcome_code/hwcr_outcome_code.mod
     PrismaModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      typePaths: ['./**/*.graphql'],
+      typePaths: [path.join(os.tmpdir(), '**/*.graphql'), './**/*.graphql'],
     }),
     AgeCodeModule,
     EquipmentCodeModule,
