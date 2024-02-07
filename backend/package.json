@@ -5,7 +5,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "prisma-generate": "prisma generate",
-    "build": "nest build",
+    "build": "nest build && copyfiles -u 1 \"src/**/*.graphql\" dist",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
