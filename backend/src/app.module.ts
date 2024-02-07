@@ -8,7 +8,6 @@ import { PrismaModule } from "./prisma/prisma.module";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { AgeCodeModule } from './age_code/age_code.module';
-import { join } from 'path';
 import { EquipmentCodeModule } from './equipment_code/equipment_code.module';
 import { SexCodeModule } from './sex_code/sex_code.module';
 import { ThreatLevelCodeModule } from './threat_level_code/threat_level_code.module';
@@ -18,8 +17,6 @@ import { DrugCodeModule } from './drug_code/drug_code.module';
 import { DrugMethodCodeModule } from './drug_method_code/drug_method_code.module';
 import { DrugRemainingOutcomeCodeModule } from './drug_remaining_outcome_code/drug_remaining_outcome_code.module';
 import { HwcrOutcomeCodeModule } from './hwcr_outcome_code/hwcr_outcome_code.module';
-import * as os from 'os';
-import * as path from 'path'
 
 @Module({
   imports: [
@@ -27,7 +24,7 @@ import * as path from 'path'
     PrismaModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      typePaths: [path.join(os.tmpdir(), '**/*.graphql'), './**/*.graphql'],
+      typePaths: ['./**/*.graphql'],
     }),
     AgeCodeModule,
     EquipmentCodeModule,
