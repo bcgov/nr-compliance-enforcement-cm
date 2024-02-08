@@ -6,7 +6,7 @@ type AgeCode {
 }
 
 type Query {
-  ageCodes: [AgeCode]!
-  ageCode(age_code: String): AgeCode
+  getAllActiveAgeCodes: [AgeCode]!
+  getAgeCode(age_code: String): AgeCode
 }
 

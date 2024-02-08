@@ -6,7 +6,7 @@ type ConflictHistoryCode {
 }
 
 type Query {
-  conflictHistoryCodes: [ConflictHistoryCode]!
-  conflictHistoryCode(conflict_history_code: String): ConflictHistoryCode
+  getAllActiveConflictHistoryCodes: [ConflictHistoryCode]!
+  getConflictHistoryCode(conflict_history_code: String): ConflictHistoryCode
 }
 

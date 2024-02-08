@@ -11,7 +11,10 @@ export class ThreatLevelCodeService {
 
     findOne(id: string) {
         return this.prisma.threat_level_code.findUnique({
-            where: { threat_level_code: id },
+            where: {
+                threat_level_code: id,
+                active_ind: true
+            },
         });
     }
 }

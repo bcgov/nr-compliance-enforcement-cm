@@ -11,7 +11,9 @@ export class HwcrOutcomeCodeService {
   
     findOne(id: string) {
       return this.prisma.hwcr_outcome_code.findUnique({
-        where: { hwcr_outcome_code: id },
+        where: { hwcr_outcome_code: id,
+          active_ind: true,
+        },
       });
     }
   

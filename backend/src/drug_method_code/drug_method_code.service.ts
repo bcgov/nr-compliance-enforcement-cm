@@ -11,7 +11,10 @@ export class DrugMethodCodeService {
     
       findOne(id: string) {
         return this.prisma.drug_method_code.findUnique({
-          where: { drug_method_code: id },
+          where: { 
+            drug_method_code: id,
+            active_ind: true
+          },
         });
       }
 }

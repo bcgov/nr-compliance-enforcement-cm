@@ -6,6 +6,6 @@ type DrugRemainingOutcomeCode {
 }
 
 type Query {
-  drugRemainingOutcomeCodes: [DrugRemainingOutcomeCode]!
-  drugRemainingOutcomeCode(drug_remaining_outcome_code: String): DrugRemainingOutcomeCode
+  getAllActiveDrugRemainingOutcomeCodes: [DrugRemainingOutcomeCode]!
+  getDrugRemainingOutcomeCode(drug_remaining_outcome_code: String): DrugRemainingOutcomeCode
 }

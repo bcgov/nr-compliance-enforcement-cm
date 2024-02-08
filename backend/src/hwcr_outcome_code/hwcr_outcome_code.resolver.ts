@@ -5,12 +5,12 @@ import { HwcrOutcomeCodeService } from './hwcr_outcome_code.service';
 export class HwcrOutcomeCodeResolver {
   constructor(private readonly hwcrOutcomeCodeService: HwcrOutcomeCodeService) {}
 
-  @Query('HWCROutcomeCodes')
+  @Query('getAllActiveHWCROutcomeCodes')
   findAll() {
     return this.hwcrOutcomeCodeService.findAll();
   }
 
-  @Query('HWCROutcomeCode')
+  @Query('getHWCROutcomeCode')
   findOne(@Args('hwcr_outcome_code') hwcr_outcome_code: string) {
     return this.hwcrOutcomeCodeService.findOne(hwcr_outcome_code);
   }

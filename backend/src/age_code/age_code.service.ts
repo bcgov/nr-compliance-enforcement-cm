@@ -11,7 +11,10 @@ export class AgeCodeService {
 
   findOne(id: string) {
     return this.prisma.age_code.findUnique({
-      where: { age_code: id },
+      where: {  
+        age_code: id,
+        active_ind: true 
+      },
     });
   }
 

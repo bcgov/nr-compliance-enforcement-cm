@@ -5,12 +5,12 @@ import { ConflictHistoryCodeService } from './conflict_history_code.service';
 export class ConflictHistoryCodeResolver {
   constructor(private readonly conflictHistoryCodeService: ConflictHistoryCodeService) {}
 
-  @Query('conflictHistoryCodes')
+  @Query('getAllActiveConflictHistoryCodes')
   findAll() {
     return this.conflictHistoryCodeService.findAll();
   }
 
-  @Query('conflictHistoryCode')
+  @Query('getConflictHistoryCode')
   findOne(@Args('conflict_history_code') conflict_history_code: string) {
     return this.conflictHistoryCodeService.findOne(conflict_history_code);
   }

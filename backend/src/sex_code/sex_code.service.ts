@@ -11,7 +11,10 @@ export class SexCodeService {
 
     findOne(id: string) {
         return this.prisma.sex_code.findUnique({
-            where: { sex_code: id },
+            where: {
+                sex_code: id,
+                active_ind: true
+            },
         });
     }
 }

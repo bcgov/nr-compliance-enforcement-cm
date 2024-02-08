@@ -5,12 +5,12 @@ import { EquipmentCodeService } from './equipment_code.service';
 export class EquipmentCodeResolver {
   constructor(private readonly equipmentCodeService: EquipmentCodeService) {}
 
-  @Query('equipmentCodes')
+  @Query('getAllActiveEquipmentCodes')
   findAll() {
     return this.equipmentCodeService.findAll();
   }
 
-  @Query('equipmentCode')
+  @Query('getEquipmentCode')
   findOne(@Args('equipment_code') equipment_code: string) {
     return this.equipmentCodeService.findOne(equipment_code);
   }

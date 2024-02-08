@@ -11,7 +11,10 @@ export class DrugRemainingOutcomeCodeService {
     
       findOne(id: string) {
         return this.prisma.drug_remaining_outcome_code.findUnique({
-          where: { drug_remaining_outcome_code: id },
+          where: {
+            drug_remaining_outcome_code: id,
+            active_ind: true
+          },
         });
       }
 }

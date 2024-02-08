@@ -5,12 +5,12 @@ import { ThreatLevelCodeService } from './threat_level_code.service';
 export class ThreatLevelCodeResolver {
   constructor(private readonly threatLevelCodeService: ThreatLevelCodeService) {}
 
-  @Query('threatLevelCodes')
+  @Query('getAllActiveThreatLevelCodes')
   findAll() {
     return this.threatLevelCodeService.findAll();
   }
 
-  @Query('threatLevelCode')
+  @Query('getThreatLevelCode')
   findOne(@Args('threat_level_code') threat_level_code: string) {
     return this.threatLevelCodeService.findOne(threat_level_code);
   }

@@ -11,7 +11,10 @@ export class EquipmentCodeService {
 
   findOne(id: string) {
     return this.prisma.equipment_code.findUnique({
-      where: { equipment_code: id },
+      where: {
+        equipment_code: id,
+        active_ind: true
+      },
     });
   }
 }

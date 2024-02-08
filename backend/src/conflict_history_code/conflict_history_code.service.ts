@@ -11,7 +11,10 @@ export class ConflictHistoryCodeService {
   
     findOne(id: string) {
       return this.prisma.conflict_history_code.findUnique({
-        where: { conflict_history_code: id },
+        where: { 
+          conflict_history_code: id,
+          active_ind: true 
+        },
       });
     }
 }

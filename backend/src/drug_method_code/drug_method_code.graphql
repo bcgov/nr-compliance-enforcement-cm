@@ -6,6 +6,6 @@ type DrugMethodCode {
 }
 
 type Query {
-  drugMethodCodes: [DrugMethodCode]!
-  drugMethodCode(drug_method_code: String): DrugMethodCode
+  getAllActiveDrugMethodCodes: [DrugMethodCode]!
+  getDrugMethodCode(drug_method_code: String): DrugMethodCode
 }

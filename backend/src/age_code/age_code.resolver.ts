@@ -6,12 +6,12 @@ import { AgeCodeService } from './age_code.service';
 export class AgeCodeResolver {
   constructor(private readonly ageCodeService: AgeCodeService) {}
 
-  @Query('ageCodes')
+  @Query('getAllActiveAgeCodes')
   findAll() {
     return this.ageCodeService.findAll();
   }
 
-  @Query('ageCode')
+  @Query('getAgeCode')
   findOne(@Args('age_code') age_code: string) {
     return this.ageCodeService.findOne(age_code);
   }

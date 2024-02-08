@@ -5,12 +5,12 @@ import { EarCodeService } from './ear_code.service';
 export class EarCodeResolver {
   constructor(private readonly earCodeService: EarCodeService) {}
 
-  @Query('earCodes')
+  @Query('getAllActiveEarCodes')
   findAll() {
     return this.earCodeService.findAll();
   }
 
-  @Query('earCode')
+  @Query('getEarCode')
   findOne(@Args('ear_code') ear_code: string) {
     return this.earCodeService.findOne(ear_code);
   }

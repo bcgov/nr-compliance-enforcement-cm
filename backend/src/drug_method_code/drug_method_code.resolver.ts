@@ -5,12 +5,12 @@ import { DrugMethodCodeService } from './drug_method_code.service';
 export class DrugMethodCodeResolver {
   constructor(private readonly drugMethodCodeService: DrugMethodCodeService) {}
 
-  @Query('drugMethodCodes')
+  @Query('getAllActiveDrugMethodCodes')
   findAll() {
     return this.drugMethodCodeService.findAll();
   }
 
-  @Query('drugMethodCode')
+  @Query('getDrugMethodCode')
   findOne(@Args('drug_method_code') drug_method_code: string) {
     return this.drugMethodCodeService.findOne(drug_method_code);
   }

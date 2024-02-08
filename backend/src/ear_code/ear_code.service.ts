@@ -11,7 +11,10 @@ export class EarCodeService {
   
     findOne(id: string) {
       return this.prisma.ear_code.findUnique({
-        where: { ear_code: id },
+        where: {
+          ear_code: id,
+          active_ind: true
+        },
       });
     }
   

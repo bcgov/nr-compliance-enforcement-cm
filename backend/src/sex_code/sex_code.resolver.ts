@@ -5,12 +5,12 @@ import { SexCodeService } from './sex_code.service';
 export class SexCodeResolver {
   constructor(private readonly sexCodeService: SexCodeService) {}
 
-  @Query('sexCodes')
+  @Query('getAllActiveSexCodes')
   findAll() {
     return this.sexCodeService.findAll();
   }
 
-  @Query('sexCode')
+  @Query('getSexCode')
   findOne(@Args('sex_code') sex_code: string) {
     return this.sexCodeService.findOne(sex_code);
   }

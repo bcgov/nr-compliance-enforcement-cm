@@ -6,7 +6,7 @@ type EarCode {
 }
 
 type Query {
-  earCodes: [EarCode]!
-  earCode(ear_code: String): EarCode
+  getAllActiveEarCodes: [EarCode]!
+  getEarCode(ear_code: String): EarCode
 }
 

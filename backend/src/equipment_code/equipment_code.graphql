@@ -6,7 +6,7 @@ type EquipmentCode {
 }
 
 type Query {
-  equipmentCodes: [EquipmentCode]!
-  equipmentCode(equipment_code: String): EquipmentCode
+  getAllActiveEquipmentCodes: [EquipmentCode]!
+  getEquipmentCode(equipment_code: String): EquipmentCode
 }
 

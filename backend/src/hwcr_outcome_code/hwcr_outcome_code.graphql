@@ -6,7 +6,7 @@ type HWCROutcomeCode {
 }
 
 type Query {
-  HWCROutcomeCodes: [HWCROutcomeCode]!
-  HWCROutcomeCode(hwcr_outcome_code: String): HWCROutcomeCode
+  getAllActiveHWCROutcomeCodes: [HWCROutcomeCode]!
+  getHWCROutcomeCode(hwcr_outcome_code: String): HWCROutcomeCode
 }
 

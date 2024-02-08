@@ -6,7 +6,7 @@ type SexCode {
 }
 
 type Query {
-  sexCodes: [SexCode]!
-  sexCode(sex_code: String): SexCode
+  getAllActiveSexCodes: [SexCode]!
+  getSexCode(sex_code: String): SexCode
 }
 

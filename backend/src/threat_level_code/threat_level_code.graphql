@@ -6,7 +6,7 @@ type ThreatLevelCode {
 }
 
 type Query {
-  threatLevelCodes: [ThreatLevelCode]!
-  threatLevelCode(threat_level_code: String): ThreatLevelCode
+  getAllActiveThreatLevelCodes: [ThreatLevelCode]!
+  getThreatLevelCode(threat_level_code: String): ThreatLevelCode
 }
 
