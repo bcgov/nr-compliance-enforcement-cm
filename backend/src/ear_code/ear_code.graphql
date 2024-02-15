@@ -1,0 +1,12 @@
+type EarCode {
+  ear_code: String
+  short_description: String
+  long_description: String
+  display_order: Int
+}
+
+type Query {
+  getAllActiveEarCodes: [EarCode]!
+  getEarCode(ear_code: String): EarCode
+}
+

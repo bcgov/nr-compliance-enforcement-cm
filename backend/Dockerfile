@@ -16,6 +16,7 @@ WORKDIR /app
 COPY *.json ./
 COPY ./src ./src
 COPY ./prisma ./prisma
+RUN ls -la /app/src/**
 RUN npm ci --ignore-scripts --no-update-notifier --omit=dev
 
 # COPY over few dependencies from buildWithDevDeps

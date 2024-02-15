@@ -26,9 +26,12 @@ services:
     ports: ["5433:5432"]
 
   migrations:
-    image: flyway/flyway:9-alpine
-    container_name: migrations
-    command: info migrate info
+    image: flyway/flyway:9.22-alpine
+    container_name: case-management-migrations
+    command:
+      - info
+      - migrate
+      - -outOfOrder=true
     volumes: ["./migrations/sql:/flyway/sql:ro"]
     environment:
       FLYWAY_URL: jdbc:postgresql://cm-database:5432/postgres

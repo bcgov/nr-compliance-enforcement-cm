@@ -1,0 +1,11 @@
+type DrugCode {
+  drug_code: String
+  short_description: String
+  long_description: String
+  display_order: Int
+}
+
+type Query {
+  getAllActiveDrugCodes: [DrugCode]!
+  getDrugCode(drug_code: String): DrugCode
+}
