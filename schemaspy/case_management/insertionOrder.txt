@@ -1,2 +1,11 @@
+age_code
+conflict_history_code
+drug_code
+drug_method_code
+drug_remaining_outcome_code
+ear_code
+equipment_code
 flyway_schema_history
-users
+hwcr_outcome_code
+sex_code
+threat_level_code
