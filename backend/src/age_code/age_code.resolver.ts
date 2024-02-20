@@ -1,7 +1,9 @@
 import { Resolver, Query, Args } from '@nestjs/graphql';
 import { AgeCodeService } from './age_code.service';
+import { JwtAuthGuard } from "../auth/jwtauth.guard";
+import { UseGuards } from "@nestjs/common";
 
-
+@UseGuards(JwtAuthGuard)
 @Resolver('AgeCode')
 export class AgeCodeResolver {
   constructor(private readonly ageCodeService: AgeCodeService) {}

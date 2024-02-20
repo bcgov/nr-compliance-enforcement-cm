@@ -3,6 +3,7 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import {ConfigModule} from "@nestjs/config";
 import {AppController} from "./app.controller";
 import {AppService} from "./app.service";
+import { JwtAuthModule } from "./auth/jwtauth.module";
 import { HTTPLoggerMiddleware } from './middleware/req.res.logger';
 import { PrismaModule } from "./prisma/prisma.module";
 import { GraphQLModule } from "@nestjs/graphql";
@@ -26,6 +27,7 @@ import { HwcrOutcomeCodeModule } from './hwcr_outcome_code/hwcr_outcome_code.mod
       driver: ApolloDriver,
       typePaths: ['./dist/**/*.graphql', './src/**/*.graphql'],
     }),
+    JwtAuthModule,
     AgeCodeModule,
     EquipmentCodeModule,
     SexCodeModule,
