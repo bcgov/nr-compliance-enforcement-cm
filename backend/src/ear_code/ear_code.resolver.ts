@@ -10,7 +10,7 @@ import { Roles } from "../auth/decorators/roles.decorator";
 export class EarCodeResolver {
   constructor(private readonly earCodeService: EarCodeService) {}
 
-  @Query('getAllActiveEarCodes')
+  @Query('getAllEarCodes')
   @Roles(Role.COS_OFFICER)
   findAll() {
     return this.earCodeService.findAll();

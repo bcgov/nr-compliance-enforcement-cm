@@ -10,7 +10,7 @@ import { Roles } from "../auth/decorators/roles.decorator";
 export class DrugRemainingOutcomeCodeResolver {
   constructor(private readonly drugRemainingOutcomeCodeService: DrugRemainingOutcomeCodeService) {}
 
-  @Query('getAllActiveDrugRemainingOutcomeCodes')
+  @Query('getAllDrugRemainingOutcomeCodes')
   @Roles(Role.COS_OFFICER)
   findAll() {
     return this.drugRemainingOutcomeCodeService.findAll();

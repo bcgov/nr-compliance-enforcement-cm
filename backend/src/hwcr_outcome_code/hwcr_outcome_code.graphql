@@ -3,10 +3,11 @@ type HWCROutcomeCode {
   short_description: String
   long_description: String
   display_order: Int
+  active_ind: Boolean
 }
 
 type Query {
-  getAllActiveHWCROutcomeCodes: [HWCROutcomeCode]!
+  getAllHWCROutcomeCodes: [HWCROutcomeCode]!
   getHWCROutcomeCode(hwcr_outcome_code: String): HWCROutcomeCode
 }
 

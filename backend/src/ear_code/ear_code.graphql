@@ -3,10 +3,11 @@ type EarCode {
   short_description: String
   long_description: String
   display_order: Int
+  active_ind: Boolean
 }
 
 type Query {
-  getAllActiveEarCodes: [EarCode]!
+  getAllEarCodes: [EarCode]!
   getEarCode(ear_code: String): EarCode
 }
 

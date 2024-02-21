@@ -3,10 +3,11 @@ type ThreatLevelCode {
   short_description: String
   long_description: String
   display_order: Int
+  active_ind: Boolean
 }
 
 type Query {
-  getAllActiveThreatLevelCodes: [ThreatLevelCode]!
+  getAllThreatLevelCodes: [ThreatLevelCode]!
   getThreatLevelCode(threat_level_code: String): ThreatLevelCode
 }
 

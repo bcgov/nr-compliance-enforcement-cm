@@ -10,7 +10,7 @@ import { Roles } from "../auth/decorators/roles.decorator";
 export class EquipmentCodeResolver {
   constructor(private readonly equipmentCodeService: EquipmentCodeService) {}
 
-  @Query('getAllActiveEquipmentCodes')
+  @Query('getAllEquipmentCodes')
   @Roles(Role.COS_OFFICER)
   findAll() {
     return this.equipmentCodeService.findAll();

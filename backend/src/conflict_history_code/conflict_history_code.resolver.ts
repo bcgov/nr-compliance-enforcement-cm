@@ -10,7 +10,7 @@ import { Roles } from "../auth/decorators/roles.decorator";
 export class ConflictHistoryCodeResolver {
   constructor(private readonly conflictHistoryCodeService: ConflictHistoryCodeService) {}
 
-  @Query('getAllActiveConflictHistoryCodes')
+  @Query('getAllConflictHistoryCodes')
   @Roles(Role.COS_OFFICER)
   findAll() {
     return this.conflictHistoryCodeService.findAll();
