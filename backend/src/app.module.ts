@@ -23,11 +23,11 @@ import { HwcrOutcomeCodeModule } from './hwcr_outcome_code/hwcr_outcome_code.mod
   imports: [
     ConfigModule.forRoot(),
     PrismaModule,
+    JwtAuthModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ['./dist/**/*.graphql', './src/**/*.graphql'],
     }),
-    JwtAuthModule,
     AgeCodeModule,
     EquipmentCodeModule,
     SexCodeModule,
