@@ -3,7 +3,7 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import {ConfigModule} from "@nestjs/config";
 import {AppController} from "./app.controller";
 import {AppService} from "./app.service";
-import { JwtAuthModule } from "./auth/jwtauth.module";
+import { JwtAuthModule } from './auth/jwtauth.module';
 import { HTTPLoggerMiddleware } from './middleware/req.res.logger';
 import { PrismaModule } from "./prisma/prisma.module";
 import { GraphQLModule } from "@nestjs/graphql";
