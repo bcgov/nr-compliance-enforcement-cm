@@ -3,10 +3,11 @@ type SexCode {
   short_description: String
   long_description: String
   display_order: Int
+  active_ind: Boolean
 }
 
 type Query {
-  getAllActiveSexCodes: [SexCode]!
+  getAllSexCodes: [SexCode]!
   getSexCode(sex_code: String): SexCode
 }
 

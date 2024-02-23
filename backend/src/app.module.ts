@@ -7,6 +7,7 @@ import { HTTPLoggerMiddleware } from './middleware/req.res.logger';
 import { PrismaModule } from "./prisma/prisma.module";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
+import { JwtAuthModule } from './auth/jwtauth.module';
 import { AgeCodeModule } from './age_code/age_code.module';
 import { EquipmentCodeModule } from './equipment_code/equipment_code.module';
 import { SexCodeModule } from './sex_code/sex_code.module';
@@ -26,6 +27,7 @@ import { HwcrOutcomeCodeModule } from './hwcr_outcome_code/hwcr_outcome_code.mod
       driver: ApolloDriver,
       typePaths: ['./dist/**/*.graphql', './src/**/*.graphql'],
     }),
+    JwtAuthModule,
     AgeCodeModule,
     EquipmentCodeModule,
     SexCodeModule,
