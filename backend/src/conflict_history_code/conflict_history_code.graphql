@@ -3,10 +3,11 @@ type ConflictHistoryCode {
   short_description: String
   long_description: String
   display_order: Int
+  active_ind: Boolean
 }
 
 type Query {
-  getAllActiveConflictHistoryCodes: [ConflictHistoryCode]!
+  getAllConflictHistoryCodes: [ConflictHistoryCode]!
   getConflictHistoryCode(conflict_history_code: String): ConflictHistoryCode
 }
 

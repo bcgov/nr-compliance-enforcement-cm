@@ -3,9 +3,10 @@ type DrugRemainingOutcomeCode {
   short_description: String
   long_description: String
   display_order: Int
+  active_ind: Boolean
 }
 
 type Query {
-  getAllActiveDrugRemainingOutcomeCodes: [DrugRemainingOutcomeCode]!
+  getAllDrugRemainingOutcomeCodes: [DrugRemainingOutcomeCode]!
   getDrugRemainingOutcomeCode(drug_remaining_outcome_code: String): DrugRemainingOutcomeCode
 }

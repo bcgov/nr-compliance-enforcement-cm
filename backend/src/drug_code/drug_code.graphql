@@ -3,9 +3,10 @@ type DrugCode {
   short_description: String
   long_description: String
   display_order: Int
+  active_ind: Boolean
 }
 
 type Query {
-  getAllActiveDrugCodes: [DrugCode]!
+  getAllDrugCodes: [DrugCode]!
   getDrugCode(drug_code: String): DrugCode
 }
