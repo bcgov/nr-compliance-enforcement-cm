@@ -48,7 +48,7 @@ jobs:
       - name: Checkout CD repo
         uses: actions/checkout@v4
         with:
-          repository: bcgov-c/tenant-gitops-a7469b
+          repository: bcgov-c/tenant-gitops-dc0a4a
           ssh-key: ${{ secrets.DEPLOY_KEY }}
           ref: main
       - name: Calculate Deployment Number
