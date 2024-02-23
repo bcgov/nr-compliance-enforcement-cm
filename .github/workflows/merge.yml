@@ -48,7 +48,7 @@ jobs:
 
       - name: Update image tag And Enable it for deployment
         run: |
-          cd charts/quickstart-openshift-emerald
+          cd charts/nr-compliance-enforcement-cm
           yq eval '.global.tag="${{ needs.vars.outputs.pr }}"' -i values.yaml
 
 
@@ -77,7 +77,7 @@ jobs:
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Update image tag And Enable it for deployment
         run: |
-          cd charts/quickstart-openshift-emerald
+          cd charts/nr-compliance-enforcement-cm
           yq eval '.global.tag="${{ needs.vars.outputs.pr }}"' -i values-prod.yaml
 
 

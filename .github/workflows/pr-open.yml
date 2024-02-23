@@ -69,7 +69,7 @@ jobs:
       - name: Update image tag And Enable it for deployment
         run: |
           DEPLOYMENT_NUMBER=${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}
-          cd charts/quickstart-openshift-emerald
+          cd charts/nr-compliance-enforcement-cm
           yq eval '.global.enabled=true' -i values-"$DEPLOYMENT_NUMBER".yaml
           yq eval '.global.tag="${{ needs.builds.outputs.sha }}"' -i values-"$DEPLOYMENT_NUMBER".yaml
 
