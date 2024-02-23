@@ -18,13 +18,13 @@ jobs:
       - name: Setup gitops repo access
         uses: webfactory/ssh-agent@v0.8.0
         with:
-          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+          ssh-private-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
 
       - name: Checkout CD repo
         uses: actions/checkout@v4
         with:
           repository: bcgov-c/tenant-gitops-dc0a4a
-          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
           ref: main
 
       - name: Calculate Deployment Number
