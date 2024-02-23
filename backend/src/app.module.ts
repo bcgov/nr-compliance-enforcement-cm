@@ -17,6 +17,10 @@ import { DrugCodeModule } from './drug_code/drug_code.module';
 import { DrugMethodCodeModule } from './drug_method_code/drug_method_code.module';
 import { DrugRemainingOutcomeCodeModule } from './drug_remaining_outcome_code/drug_remaining_outcome_code.module';
 import { HwcrOutcomeCodeModule } from './hwcr_outcome_code/hwcr_outcome_code.module';
+import { ActionTypeActionXrefModule } from "./action_type_action_xref/action_type_action_xref.module";
+import { CaseFileModule } from "./case_file/case_file.module";
+import { InactionReasonCodeModule } from "./inaction_reason_code/inaction_reason_code.module";
+import { DateScalar } from "./common/custom_scalars";
 
 @Module({
   imports: [
@@ -36,9 +40,12 @@ import { HwcrOutcomeCodeModule } from './hwcr_outcome_code/hwcr_outcome_code.mod
     DrugMethodCodeModule,
     DrugRemainingOutcomeCodeModule,
     HwcrOutcomeCodeModule,
+    ActionTypeActionXrefModule,
+    CaseFileModule,
+    InactionReasonCodeModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, DateScalar],
 })
 export class AppModule { // let's add a middleware on all routes
   configure(consumer: MiddlewareConsumer) {

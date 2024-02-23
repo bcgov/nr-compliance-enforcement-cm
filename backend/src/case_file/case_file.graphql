@@ -1,0 +1,44 @@
+scalar Date
+
+type CaseFile {
+  case_file_guid : String
+  lead_identifier: String
+  assessment_details: Assessment
+}
+
+type Assessment {
+  action_not_required_ind: String
+  inaction_reason_code: String
+  short_description: String
+  long_description: String
+  active_ind: Boolean
+  assessment_actions: [AssessmentAction]
+}
+
+type AssessmentAction{
+  actor_guid: String!
+  action_date: Date!
+  action_code: String!
+  short_description: String
+  long_description: String
+  active_ind: Boolean
+}
+
+input CreateCaseFileInput {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input UpdateCaseFileInput {
+  id: Int!
+}
+
+type Query {
+  getCaseFile( case_guid: String!): CaseFile
+}
+
+type Mutation {
+  createCaseFile(createCaseFileInput: CreateCaseFileInput!): CaseFile!
+  updateCaseFile(updateCaseFileInput: UpdateCaseFileInput!): CaseFile!
+  removeCaseFile(id: Int!): CaseFile
+}
