@@ -2,10 +2,12 @@ import {
   Injectable,
   ExecutionContext,
   Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
+import { IS_PUBLIC_KEY } from './decorators/public.decorator';
 
 
 @Injectable()
@@ -20,9 +22,24 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     super();
   } 
   
-  getRequest (context: ExecutionContext) {
-    const ctx = GqlExecutionContext.create (context);
-    return ctx.getContext().req;
+  // returns true if the api is @Public.  Otherwise, the api will require a valid token as per the Passport strategy jwtauth.stratagy
+  canActivate(context: ExecutionContext) {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    
+    if (isPublic) {
+      return true;
+    } else {
+      return super.canActivate(context);
+    }
+    
+  } handleRequest(err, user, info) {
+    if (err || !user) {
+      this.logger.error(`JWT is not Valid.  Err: ${err}. - User ${user}. - Info. ${info}`);
+      throw err || new UnauthorizedException();
+    }
+    return user;
   }
-
 }
