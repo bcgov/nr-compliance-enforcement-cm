@@ -25,6 +25,7 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy) {
     this.logger.debug(`JWK_URI: ${process.env.JWKS_URI}`);
     this.logger.debug(`KEYCLOCK_CLIENT_ID: ${process.env.KEYCLOCK_CLIENT_ID}`);
     this.logger.debug(`JWT_ISSUER: ${process.env.JWT_ISSUER}`);
+    
   }validate(payload: unknown): unknown {
     return payload;
   }
