@@ -4,7 +4,7 @@ import { JwtRoleGuard } from "../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
 import { Role } from "../enum/role.enum";
 import { Roles } from "../auth/decorators/roles.decorator";
-import { JwtAuthGuard } from 'src/auth/jwtauth.guard';
+import { JwtAuthGuard } from '../auth/jwtauth.guard';
 
 @UseGuards(JwtAuthGuard, JwtRoleGuard) 
 @Resolver('EquipmentCode')
