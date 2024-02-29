@@ -22,5 +22,4 @@ export class EquipmentCodeResolver {
   findOne(@Args('equipment_code') equipment_code: string) {
     return this.equipmentCodeService.findOne(equipment_code);
   }
-
 }
