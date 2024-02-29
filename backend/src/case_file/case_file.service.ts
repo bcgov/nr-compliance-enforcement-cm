@@ -2,12 +2,98 @@ import { Injectable } from '@nestjs/common';
 import { CreateCaseFileInput } from './dto/create-case_file.input';
 import { UpdateCaseFileInput } from './dto/update-case_file.input';
 import { PrismaService } from "nestjs-prisma";
+import { CaseFile } from './entities/case_file.entity';
+import { AssessmentAction } from './entities/assessment-action.entity';
+import { GraphQLError } from 'graphql';
 
 @Injectable()
 export class CaseFileService {
   constructor(private prisma: PrismaService) { }
-  create(createCaseFileInput: CreateCaseFileInput) {
-    return 'This action adds a new caseFile';
+
+  async create(createCaseFileInput: CreateCaseFileInput): Promise<CaseFile> {
+
+    let actiontypeCode: string = createCaseFileInput.action_type_code ?? "COMPASSESS";
+    let agencyCode: string = createCaseFileInput.agency_code ?? "COS";
+    let caseCode: string = createCaseFileInput.case_code ?? "HWCR";
+    let caseFileGuid: string;
+    let caseFileOutput = new CaseFile();
+
+    try {
+      await this.prisma.$transaction(async (db) => {
+
+        let case_file = await db.case_file.create({
+          data: {
+            agency_code: {
+              connect: {
+                agency_code: agencyCode
+              }
+            },
+            inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: {
+              connect: {
+                inaction_reason_code: createCaseFileInput.assessment_details.inaction_reason_code
+              }
+            },
+            create_user_id: createCaseFileInput.create_user_id,
+            create_utc_timestamp: new Date(),
+            action_not_required_ind: createCaseFileInput.assessment_details.action_not_required_ind,
+            note_text: createCaseFileInput.note_text,
+            review_required_ind: createCaseFileInput.review_required_ind ?? false,
+            case_code_case_file_case_codeTocase_code: {
+              connect: {
+                case_code: caseCode
+              }
+            },
+          }
+        });
+
+        caseFileGuid = case_file.case_file_guid;
+
+        let action_codes_objects = await db.action_type_action_xref.findMany({
+          where: { action_type_code: actiontypeCode },
+          select: { action_code: true }
+        });
+        let action_codes: Array<string> = [];
+        for (const action_code_object of action_codes_objects) {
+          action_codes.push(action_code_object.action_code);
+        }
+        for (const action of createCaseFileInput.assessment_details.assessment_actions) {
+          if (action_codes.indexOf(action.action_code) === -1) {
+            throw "Some action code values where not passed from the client";
+          };
+        }
+
+        for (const action of createCaseFileInput.assessment_details.assessment_actions) {
+          let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
+            where: {
+              action_type_code: actiontypeCode,
+              action_code: action.action_code
+            },
+            select: {
+              action_type_action_xref_guid: true
+            }
+          });
+          await db.action.create({
+            data: {
+              case_guid: caseFileGuid,
+              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+              actor_guid: action.actor_guid,
+              action_date: action.action_date,
+              active_ind: action.active_ind,
+              create_user_id: createCaseFileInput.create_user_id,
+              create_utc_timestamp: new Date
+            }
+          });
+        }
+      });
+
+      caseFileOutput = await this.findOne(caseFileGuid);
+    }
+    catch (exception) {
+      console.log("exception", exception);
+      throw new GraphQLError('Exception occurred. See server log for details', {
+      });
+    }
+    return caseFileOutput;
   }
 
   findAll() {
@@ -54,7 +140,7 @@ export class CaseFileService {
       }
     });
 
-    const actions = actionsBase.map((action) => {
+    const actions: AssessmentAction[] = actionsBase.map((action) => {
       let actionData = actionCodes.find((element) => element.action_type_action_xref_guid === action.action_type_action_xref_guid);
       return {
         actor_guid: action.actor_guid,
@@ -66,9 +152,9 @@ export class CaseFileService {
       };
     });
 
-     const assessment = await this.prisma.case_file.findFirst({
+    const assessment = await this.prisma.case_file.findFirst({
       where: {
-       case_file_guid : case_file_guid
+        case_file_guid: case_file_guid
       },
       select: {
         case_file_guid: true,
@@ -87,10 +173,10 @@ export class CaseFileService {
       }
     });
 
-    const case_file = {
-      case_file_guid : assessment?.case_file_guid,
+    const case_file: CaseFile = {
+      case_file_guid: assessment?.case_file_guid,
       lead_identifier: lead?.lead_identifier,
-      assessment_details: 
+      assessment_details:
       {
         action_not_required_ind: assessment?.action_not_required_ind,
         inaction_reason_code: assessment?.inaction_reason_code,
@@ -105,8 +191,65 @@ export class CaseFileService {
 
   }
 
-  update(id: number, updateCaseFileInput: UpdateCaseFileInput) {
-    return `This action updates a #${id} caseFile`;
+  async update(case_file_guid: string, updateCaseFileInput: UpdateCaseFileInput) {
+
+    let actiontypeCode: string = updateCaseFileInput.action_type_code ?? "COMPASSESS";
+    let caseFileOutput = new CaseFile();
+
+    try {
+      await this.prisma.$transaction(async (db) => {
+        await db.case_file.update({
+          where: { case_file_guid: case_file_guid },
+          data: {
+            inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code:
+              updateCaseFileInput.assessment_details.inaction_reason_code ?
+                {
+                  connect: {
+                    inaction_reason_code: updateCaseFileInput.assessment_details.inaction_reason_code
+                  }
+                } : null,
+            action_not_required_ind: updateCaseFileInput.assessment_details.action_not_required_ind,
+            note_text: updateCaseFileInput.note_text,
+            review_required_ind: updateCaseFileInput.review_required_ind,
+            update_user_id: updateCaseFileInput.update_user_id,
+            update_utc_timestamp: new Date(),
+          },
+        });
+
+        for (const action of updateCaseFileInput.assessment_details.assessment_actions) {
+          let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
+            where: {
+              action_type_code: actiontypeCode,
+              action_code: action.action_code
+            },
+            select: {
+              action_type_action_xref_guid: true
+            }
+          });
+
+          await db.action.updateMany({
+            where: {
+              case_guid: case_file_guid,
+              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid
+            },
+            data: {
+              actor_guid: action.actor_guid,
+              action_date: action.action_date,
+              active_ind: action.active_ind,
+              update_user_id: updateCaseFileInput.update_user_id,
+              update_utc_timestamp: new Date
+            }
+          });
+        };
+        caseFileOutput = await this.findOne(case_file_guid);
+      });
+    }
+    catch (exception) {
+      console.log("exception", exception);
+      throw new GraphQLError('Exception occurred. See server log for details', {
+      });
+    }
+    return caseFileOutput;
   }
 
   remove(id: number) {

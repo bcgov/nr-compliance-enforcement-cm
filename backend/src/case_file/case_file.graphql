@@ -25,12 +25,53 @@ type AssessmentAction{
 }
 
 input CreateCaseFileInput {
-  # Example field (placeholder)
-  exampleField: Int
+  lead_identifier: String
+  assessment_details: CreateAssessmentDetailsInput!
+  action_type_code: String
+  agency_code: String
+  case_code: String
+  create_user_id: String!
+  note_text: String
+  review_required_ind: Boolean
+}
+
+input CreateAssessmentDetailsInput {
+  action_not_required_ind: Boolean!
+  inaction_reason_code: String
+  assessment_actions: [CreateAssessmentActionInput]!
+}
+
+input CreateAssessmentActionInput{
+  actor_guid: String!
+  action_date: Date!
+  action_code: String!
+  active_ind: Boolean!
+
 }
 
 input UpdateCaseFileInput {
-  id: Int!
+  case_file_guid: String!
+  lead_identifier: String
+  assessment_details: UpdateAssessmentDetailsInput!
+  action_type_code: String
+  agency_code: String
+  case_code: String
+  update_user_id: String!
+  note_text: String
+  review_required_ind: Boolean
+}
+
+input UpdateAssessmentDetailsInput {
+  action_not_required_ind: Boolean!
+  inaction_reason_code: String
+  assessment_actions: [UpdateAssessmentActionInput]!
+}
+
+input UpdateAssessmentActionInput{
+  actor_guid: String!
+  action_date: Date!
+  action_code: String!
+  active_ind: Boolean!
 }
 
 type Query {
