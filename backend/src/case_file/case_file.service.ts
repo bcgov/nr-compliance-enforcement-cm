@@ -28,11 +28,13 @@ export class CaseFileService {
                 agency_code: agencyCode
               }
             },
-            inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: {
+            inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: 
+            createCaseFileInput.assessment_details.inaction_reason_code ?
+            {
               connect: {
                 inaction_reason_code: createCaseFileInput.assessment_details.inaction_reason_code
               }
-            },
+            } : undefined,
             create_user_id: createCaseFileInput.create_user_id,
             create_utc_timestamp: new Date(),
             action_not_required_ind: createCaseFileInput.assessment_details.action_not_required_ind,
@@ -198,16 +200,17 @@ export class CaseFileService {
 
     try {
       await this.prisma.$transaction(async (db) => {
+
         await db.case_file.update({
           where: { case_file_guid: case_file_guid },
           data: {
-            inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code:
-              updateCaseFileInput.assessment_details.inaction_reason_code ?
-                {
-                  connect: {
-                    inaction_reason_code: updateCaseFileInput.assessment_details.inaction_reason_code
-                  }
-                } : null,
+            inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: 
+               updateCaseFileInput.assessment_details.inaction_reason_code ?
+                 {
+                   connect: {
+                     inaction_reason_code: updateCaseFileInput.assessment_details.inaction_reason_code
+                   }
+                 } : undefined,
             action_not_required_ind: updateCaseFileInput.assessment_details.action_not_required_ind,
             note_text: updateCaseFileInput.note_text,
             review_required_ind: updateCaseFileInput.review_required_ind,
@@ -215,6 +218,19 @@ export class CaseFileService {
             update_utc_timestamp: new Date(),
           },
         });
+
+        // "inaction_reason_code" column has foreign key but must accept nulls.
+        // In Prisma for some reason it is not possible to assign null to a relation field.
+        // Setting it to "undefined" like in previous statement has no effect.
+        // The statement below is to update the field from a referenced value to null if nesessary
+        if( !updateCaseFileInput.assessment_details.inaction_reason_code ){
+          await db.case_file.update({
+            where: { case_file_guid: case_file_guid },
+            data: {
+              inaction_reason_code: null,
+            }
+          });
+        }
 
         for (const action of updateCaseFileInput.assessment_details.assessment_actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
@@ -241,8 +257,8 @@ export class CaseFileService {
             }
           });
         };
-        caseFileOutput = await this.findOne(case_file_guid);
       });
+      caseFileOutput = await this.findOne(case_file_guid);
     }
     catch (exception) {
       console.log("exception", exception);
