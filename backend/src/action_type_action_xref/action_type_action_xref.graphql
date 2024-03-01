@@ -3,6 +3,8 @@ type ActionTypeActionXref {
   action_code: String!
   display_order: Int
   active_ind: Boolean 
+  short_description: String!
+  long_description: String!
 }
 
 type Query {
