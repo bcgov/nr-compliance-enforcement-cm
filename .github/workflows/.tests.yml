@@ -1,0 +1,32 @@
+name: .Tests
+
+on:
+  workflow_call:
+    inputs:
+      ### Typical / recommended
+      target:
+        description: PR number, test or prod
+        required: false
+        type: string
+        default: test
+
+env:
+  DOMAIN: apps.silver.devops.gov.bc.ca
+  PREFIX: ${{ github.event.repository.name }}-${{ inputs.target }}
+
+jobs:
+
+  load-tests:
+    name: Load
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        name: [backend]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: grafana/k6-action@v0.3.1
+        env:
+          BACKEND_URL: https://${{ env.PREFIX }}-backend.${{ env.DOMAIN }}/api
+        with:
+          filename: ./load-test/${{ matrix.name }}-test.js
+          flags: --vus 10 --duration 30s

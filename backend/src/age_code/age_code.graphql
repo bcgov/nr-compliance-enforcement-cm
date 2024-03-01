@@ -3,10 +3,11 @@ type AgeCode {
   short_description: String
   long_description: String
   display_order: Int
+  active_ind: Boolean
 }
 
 type Query {
-  getAllActiveAgeCodes: [AgeCode]!
+  getAllAgeCodes: [AgeCode]!
   getAgeCode(age_code: String): AgeCode
 }
 

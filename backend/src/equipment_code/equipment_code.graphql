@@ -3,10 +3,11 @@ type EquipmentCode {
   short_description: String
   long_description: String
   display_order: Int
+  active_ind: Boolean
 }
 
 type Query {
-  getAllActiveEquipmentCodes: [EquipmentCode]!
+  getAllEquipmentCodes: [EquipmentCode]!
   getEquipmentCode(equipment_code: String): EquipmentCode
 }
 

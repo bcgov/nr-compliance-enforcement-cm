@@ -2,37 +2,110 @@ name: PR
 
 on:
   pull_request:
-  merge_group:
 
 concurrency:
-  # Cancel in progress for PR open and close, but not merge_group
-  group: ${{ github.workflow }}-${{ github.event.number || github.event.merge_group.base_sha }}
+  # Cancel in progress for PR open and close
+  group: ${{ github.workflow }}-${{ github.event.number }}
   cancel-in-progress: true
 
 jobs:
-  # PR only, skip for merge_group
-  conventional-commits:
-    name: Conventional Commits
-    if: github.event_name == 'pull_request'
+  # https://github.com/bcgov-nr/action-builder-ghcr
+  builds:
+    name: Builds
+    runs-on: ubuntu-22.04
+    permissions:
+      packages: write
+    outputs:
+      digest: ${{ steps.builds.outputs.digest }}
+      sha: ${{ github.sha }}
+    strategy:
+      matrix:
+        package: [migrations, backend]
+    timeout-minutes: 10
+    steps:
+      - uses: bcgov-nr/action-builder-ghcr@v2.0.2
+        id: builds
+        with:
+          keep_versions: 50
+          package: ${{ matrix.package }}
+          tag: ${{ github.event.number }}
+          tag_fallback: latest
+          triggers: ('${{ matrix.package }}/')
+      - uses: shrink/actions-docker-registry-tag@v4
+        with:
+          registry: ghcr.io
+          repository: ${{ github.repository }}/${{ matrix.package }}
+          target: ${{ github.event.number }}
+          tags: |
+            ${{ github.sha }}
+
+  # https://github.com/bcgov-nr/action-deployer-openshift
+  deploys:
+    name: Deploys
+    needs: [builds]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout CD repo
+        uses: actions/checkout@v4
+        with:
+          repository: bcgov-c/tenant-gitops-dc0a4a
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+          ref: main
+      - name: Calculate Deployment Number
+        id: get-deployment-number
+        shell: bash
+        run: |
+          PR_NUMBER=$(echo ${{ github.event.number }})
+          PR_NUMBER_MOD_FIVE=$(($PR_NUMBER % 5))
+          echo "DEPLOYMENT_NUMBER=$(($PR_NUMBER_MOD_FIVE + 1))" >> $GITHUB_OUTPUT
+
+      - name: Configure git
+        # From https://github.com/orgs/community/discussions/26560#discussioncomment-3531273
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Update image tag And Enable it for deployment
+        run: |
+          DEPLOYMENT_NUMBER=${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}
+          cd charts/nr-compliance-enforcement-cm
+          yq eval '.global.enabled=true' -i values-"$DEPLOYMENT_NUMBER".yaml
+          yq eval '.global.tag="${{ needs.builds.outputs.sha }}"' -i values-"$DEPLOYMENT_NUMBER".yaml
+
+
+      - name: Commit and push update
+        shell: bash
+        run: |
+          git commit -am "Update image tag for pull request deployment and enable it for values-${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}.yaml"
+          git push origin main
+
+
+  validate:
+    name: Validate
+    needs: [deploys]
+    if: always() && (!cancelled()) && (!failure())
+    env:
+      DOMAIN: apps.emerald.devops.gov.bc.ca
+      PREFIX: ${{ github.event.repository.name }}
+    permissions:
+      pull-requests: write
     runs-on: ubuntu-22.04
     steps:
       - uses: amannn/action-semantic-pull-request@v5.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # PR only, skip for merge_group
-  pr-description-add:
-    name: PR Description Add
-    if: github.event_name == 'pull_request'
-    env:
-      DOMAIN: apps.silver.devops.gov.bc.ca
-      PREFIX: ${{ github.event.repository.name }}
-    runs-on: ubuntu-22.04
-    permissions:
-      pull-requests: write
-    timeout-minutes: 1
-    steps:
-      - uses: bcgov-nr/action-pr-description-add@v1.1.0
+      - if: failure()
+        run: |
+          echo "Please use conventional commits in your PR title and re-run this job."
+          echo "https://www.conventionalcommits.org/en/v1.0.0/"
+          exit 1
+
+      - uses: bcgov-nr/action-pr-description-add@v1.1.1
+        env:
+          DOMAIN: apps.silver.devops.gov.bc.ca
+          PREFIX: ${{ github.event.repository.name }}
         with:
           add_markdown: |
             ---
@@ -47,52 +120,3 @@ jobs:
 
             After merge, new images are deployed in:
             - [Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge.yml)
-
-  # Find initial PR number (for merge queues)
-  vars:
-    name: Set Variables
-    outputs:
-      pr: ${{ steps.pr.outputs.pr }}
-      commit-hash: ${{ steps.commit-hash.outputs.hash}}
-    runs-on: ubuntu-22.04
-    steps:
-      # Get PR number for merge queues, otherwise use github.event.number
-      - name: PR Number
-        id: pr
-        uses: bcgov-nr/action-get-pr@v0.0.1
-      - name: Get the commit hash
-        id: commit-hash
-        run: echo "::set-output name=hash::$(git rev-parse --short HEAD)"
-  
-
-  # https://github.com/bcgov-nr/action-builder-ghcr
-  builds:
-    name: Builds
-    needs: [vars]
-    runs-on: ubuntu-22.04
-    permissions:
-      packages: write
-    strategy:
-      matrix:
-        package: [migrations, backend]
-    timeout-minutes: 10
-    steps:
-      - uses: bcgov-nr/action-builder-ghcr@v2.0.1
-        with:
-          keep_versions: 50
-          package: ${{ matrix.package }}
-          tag: ${{ needs.vars.outputs.pr }}-${{ needs.vars.outputs.commit-hash }}
-          tag_fallback: latest
-          triggers: ('${{ matrix.package }}/')
-
-  deploys:
-    name: Deploys
-    needs: [builds, vars]
-    uses: ./.github/workflows/.push-helm-chart.yml
-    secrets: inherit
-    with:
-      autoscaling: false
-      directory: charts/nr-compliance-enforcement-cm
-      tag: ${{ needs.vars.outputs.pr }}-${{ needs.vars.outputs.commit-hash }}
-      release: ${{ needs.vars.outputs.pr }}
-      triggers: ('backend/' 'migrations/' 'charts/')
