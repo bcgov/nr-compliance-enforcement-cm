@@ -28,13 +28,13 @@ export class CaseFileService {
                 agency_code: agencyCode
               }
             },
-            inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: 
-            createCaseFileInput.assessment_details.inaction_reason_code ?
-            {
-              connect: {
-                inaction_reason_code: createCaseFileInput.assessment_details.inaction_reason_code
-              }
-            } : undefined,
+            inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code:
+              createCaseFileInput.assessment_details.inaction_reason_code ?
+                {
+                  connect: {
+                    inaction_reason_code: createCaseFileInput.assessment_details.inaction_reason_code
+                  }
+                } : undefined,
             create_user_id: createCaseFileInput.create_user_id,
             create_utc_timestamp: new Date(),
             action_not_required_ind: createCaseFileInput.assessment_details.action_not_required_ind,
@@ -49,6 +49,15 @@ export class CaseFileService {
         });
 
         caseFileGuid = case_file.case_file_guid;
+
+        await db.lead.create({
+          data: {
+            lead_identifier: createCaseFileInput.lead_identifier,
+            case_identifier: caseFileGuid,
+            create_user_id: createCaseFileInput.create_user_id,
+            create_utc_timestamp: new Date()
+          }
+        });
 
         let action_codes_objects = await db.action_type_action_xref.findMany({
           where: { action_type_code: actiontypeCode },
@@ -121,6 +130,7 @@ export class CaseFileService {
         action_type_action_xref_guid: true,
         actor_guid: true,
         action_date: true,
+        active_ind: true
       },
     });
 
@@ -150,7 +160,7 @@ export class CaseFileService {
         action_code: actionData.action_code,
         short_description: actionData.action_code_action_type_action_xref_action_codeToaction_code.short_description,
         long_description: actionData.action_code_action_type_action_xref_action_codeToaction_code.long_description,
-        active_ind: actionData.action_code_action_type_action_xref_action_codeToaction_code.active_ind,
+        active_ind: action.active_ind,
       };
     });
 
@@ -204,13 +214,13 @@ export class CaseFileService {
         await db.case_file.update({
           where: { case_file_guid: case_file_guid },
           data: {
-            inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: 
-               updateCaseFileInput.assessment_details.inaction_reason_code ?
-                 {
-                   connect: {
-                     inaction_reason_code: updateCaseFileInput.assessment_details.inaction_reason_code
-                   }
-                 } : undefined,
+            inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code:
+              updateCaseFileInput.assessment_details.inaction_reason_code ?
+                {
+                  connect: {
+                    inaction_reason_code: updateCaseFileInput.assessment_details.inaction_reason_code
+                  }
+                } : undefined,
             action_not_required_ind: updateCaseFileInput.assessment_details.action_not_required_ind,
             note_text: updateCaseFileInput.note_text,
             review_required_ind: updateCaseFileInput.review_required_ind,
@@ -219,11 +229,20 @@ export class CaseFileService {
           },
         });
 
+        await db.lead.updateMany({
+          where: { case_identifier: case_file_guid },
+          data: {
+            lead_identifier: updateCaseFileInput.lead_identifier,
+            update_user_id: updateCaseFileInput.update_user_id,
+            update_utc_timestamp: new Date()
+          }
+        });
+
         // "inaction_reason_code" column has foreign key but must accept nulls.
         // In Prisma for some reason it is not possible to assign null to a relation field.
         // Setting it to "undefined" like in previous statement has no effect.
         // The statement below is to update the field from a referenced value to null if nesessary
-        if( !updateCaseFileInput.assessment_details.inaction_reason_code ){
+        if (!updateCaseFileInput.assessment_details.inaction_reason_code) {
           await db.case_file.update({
             where: { case_file_guid: case_file_guid },
             data: {
@@ -255,6 +274,13 @@ export class CaseFileService {
               update_user_id: updateCaseFileInput.update_user_id,
               update_utc_timestamp: new Date
             }
+          });
+        };
+        let assessmentCount: number = updateCaseFileInput.assessment_details.assessment_actions.length;
+        if (assessmentCount === 0) {
+          await db.action.updateMany({
+            where: { case_guid: case_file_guid },
+            data: { active_ind: false }
           });
         };
       });

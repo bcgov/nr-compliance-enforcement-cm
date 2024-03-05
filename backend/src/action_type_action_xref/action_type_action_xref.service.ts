@@ -30,19 +30,35 @@ export class ActionTypeActionXrefService {
       })
     }
     else {
-      queryResult = await dataContext.findMany();
+      queryResult = await dataContext.findMany({
+        select: {
+          action_type_code: true,
+          action_code: true,
+          display_order: true,
+          active_ind: true,
+          action_code_action_type_action_xref_action_codeToaction_code: {
+            select: {
+              short_description: true,
+              long_description: true,
+            }
+          }
+        }
+      })
     }
     let actionCodes: Array<ActionTypeActionXref> = [];
-    for (const record of queryResult) {
-      actionCodes.push({
-        action_type_code: record.action_type_code,
-        action_code: record.action_code,
-        display_order: record.display_order,
-        active_ind: record.active_ind,
-        short_description: record.action_code_action_type_action_xref_action_codeToaction_code.short_description,
-        long_description: record.action_code_action_type_action_xref_action_codeToaction_code.long_description
-      });
-    }
+
+    queryResult.forEach((record) => {
+      actionCodes.push(
+        Object.assign(new ActionTypeActionXref(), {
+          action_type_code: record.action_type_code,
+          action_code: record.action_code,
+          display_order: record.display_order,
+          active_ind: record.active_ind,
+          short_description: record.action_code_action_type_action_xref_action_codeToaction_code.short_description,
+          long_description: record.action_code_action_type_action_xref_action_codeToaction_code.long_description
+        }));
+    });
+
     return actionCodes;
   }
 }
