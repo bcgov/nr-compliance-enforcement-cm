@@ -1,11 +1,9 @@
-import { CreateAssessmentDetailsInput } from "./create-assessment-details.input";
-export class CreateCaseFileInput {
+import { AssessmentDetailsInput } from "./assessment-details.input";
+export class CreateAssessmentInput {
     lead_identifier: string;
-    assessment_details: CreateAssessmentDetailsInput;
+    assessment_details: AssessmentDetailsInput;
     action_type_code: string;
     agency_code: string;
     case_code: string;
     create_user_id: string;
-    note_text: string;
-    review_required_ind: boolean;
 }

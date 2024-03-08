@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCaseFileInput } from './dto/create-case_file.input';
-import { UpdateCaseFileInput } from './dto/update-case_file.input';
+import { CreateAssessmentInput } from './dto/create-case_file.input';
+import { UpdateAssessmentInput } from './dto/update-case_file.input';
 import { PrismaService } from "nestjs-prisma";
 import { CaseFile } from './entities/case_file.entity';
 import { AssessmentAction } from './entities/assessment-action.entity';
@@ -10,39 +10,45 @@ import { GraphQLError } from 'graphql';
 export class CaseFileService {
   constructor(private prisma: PrismaService) { }
 
-  async create(createCaseFileInput: CreateCaseFileInput): Promise<CaseFile> {
+  async create(createAssessmentInput: CreateAssessmentInput): Promise<CaseFile> {
 
-    let actiontypeCode: string = createCaseFileInput.action_type_code ?? "COMPASSESS";
-    let agencyCode: string = createCaseFileInput.agency_code ?? "COS";
-    let caseCode: string = createCaseFileInput.case_code ?? "HWCR";
+    let actiontypeCode: string = "COMPASSESS";
     let caseFileGuid: string;
     let caseFileOutput = new CaseFile();
 
     try {
+
+      if (createAssessmentInput.lead_identifier) {
+        const existingCaseFile = await this.findOneByLeadId(createAssessmentInput.lead_identifier);
+        console.log("existingCaseFile", existingCaseFile);
+        if (existingCaseFile != null && existingCaseFile.case_file_guid != null) {
+          throw new Error(`The case ${existingCaseFile.case_file_guid} assosiated with lead id ${createAssessmentInput.lead_identifier} already exist. 
+                          Please run updateAssessment mutation.`, {
+          });
+        }
+      }
       await this.prisma.$transaction(async (db) => {
 
         let case_file = await db.case_file.create({
           data: {
             agency_code: {
               connect: {
-                agency_code: agencyCode
+                agency_code: createAssessmentInput.agency_code
               }
             },
             inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code:
-              createCaseFileInput.assessment_details.inaction_reason_code ?
+              createAssessmentInput.assessment_details.inaction_reason_code ?
                 {
                   connect: {
-                    inaction_reason_code: createCaseFileInput.assessment_details.inaction_reason_code
+                    inaction_reason_code: createAssessmentInput.assessment_details.inaction_reason_code
                   }
                 } : undefined,
-            create_user_id: createCaseFileInput.create_user_id,
+            create_user_id: createAssessmentInput.create_user_id,
             create_utc_timestamp: new Date(),
-            action_not_required_ind: createCaseFileInput.assessment_details.action_not_required_ind,
-            note_text: createCaseFileInput.note_text,
-            review_required_ind: createCaseFileInput.review_required_ind ?? false,
+            action_not_required_ind: createAssessmentInput.assessment_details.action_not_required_ind,
             case_code_case_file_case_codeTocase_code: {
               connect: {
-                case_code: caseCode
+                case_code: createAssessmentInput.case_code
               }
             },
           }
@@ -52,9 +58,9 @@ export class CaseFileService {
 
         await db.lead.create({
           data: {
-            lead_identifier: createCaseFileInput.lead_identifier,
+            lead_identifier: createAssessmentInput.lead_identifier,
             case_identifier: caseFileGuid,
-            create_user_id: createCaseFileInput.create_user_id,
+            create_user_id: createAssessmentInput.create_user_id,
             create_utc_timestamp: new Date()
           }
         });
@@ -67,13 +73,13 @@ export class CaseFileService {
         for (const action_code_object of action_codes_objects) {
           action_codes.push(action_code_object.action_code);
         }
-        for (const action of createCaseFileInput.assessment_details.assessment_actions) {
+        for (const action of createAssessmentInput.assessment_details.assessment_actions) {
           if (action_codes.indexOf(action.action_code) === -1) {
             throw "Some action code values where not passed from the client";
           };
         }
 
-        for (const action of createCaseFileInput.assessment_details.assessment_actions) {
+        for (const action of createAssessmentInput.assessment_details.assessment_actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
               action_type_code: actiontypeCode,
@@ -90,7 +96,7 @@ export class CaseFileService {
               actor_guid: action.actor_guid,
               action_date: action.action_date,
               active_ind: action.active_ind,
-              create_user_id: createCaseFileInput.create_user_id,
+              create_user_id: createAssessmentInput.create_user_id,
               create_utc_timestamp: new Date
             }
           });
@@ -203,28 +209,44 @@ export class CaseFileService {
 
   }
 
-  async update(case_file_guid: string, updateCaseFileInput: UpdateCaseFileInput) {
+  async findOneByLeadId(lead_identifier: string) {
 
-    let actiontypeCode: string = updateCaseFileInput.action_type_code ?? "COMPASSESS";
+    let caseFileOutput: CaseFile = new CaseFile();
+    const caseIdRecord = await this.prisma.lead.findFirst({
+      where: {
+        lead_identifier: lead_identifier
+      },
+      select: {
+        case_identifier: true,
+      },
+    });
+    if (caseIdRecord?.case_identifier) {
+      caseFileOutput = await this.findOne(caseIdRecord.case_identifier);
+    }
+
+    return caseFileOutput;
+  }
+
+  async update(case_file_guid: string, updateAssessmentInput: UpdateAssessmentInput) {
+
+    let actiontypeCode: string = "COMPASSESS";
     let caseFileOutput = new CaseFile();
 
     try {
       await this.prisma.$transaction(async (db) => {
-
+        
         await db.case_file.update({
           where: { case_file_guid: case_file_guid },
           data: {
             inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code:
-              updateCaseFileInput.assessment_details.inaction_reason_code ?
+              updateAssessmentInput.assessment_details.inaction_reason_code ?
                 {
                   connect: {
-                    inaction_reason_code: updateCaseFileInput.assessment_details.inaction_reason_code
+                    inaction_reason_code: updateAssessmentInput.assessment_details.inaction_reason_code
                   }
                 } : undefined,
-            action_not_required_ind: updateCaseFileInput.assessment_details.action_not_required_ind,
-            note_text: updateCaseFileInput.note_text,
-            review_required_ind: updateCaseFileInput.review_required_ind,
-            update_user_id: updateCaseFileInput.update_user_id,
+            action_not_required_ind: updateAssessmentInput.assessment_details.action_not_required_ind,
+            update_user_id: updateAssessmentInput.update_user_id,
             update_utc_timestamp: new Date(),
           },
         });
@@ -232,8 +254,8 @@ export class CaseFileService {
         await db.lead.updateMany({
           where: { case_identifier: case_file_guid },
           data: {
-            lead_identifier: updateCaseFileInput.lead_identifier,
-            update_user_id: updateCaseFileInput.update_user_id,
+            lead_identifier: updateAssessmentInput.lead_identifier,
+            update_user_id: updateAssessmentInput.update_user_id,
             update_utc_timestamp: new Date()
           }
         });
@@ -242,7 +264,7 @@ export class CaseFileService {
         // In Prisma for some reason it is not possible to assign null to a relation field.
         // Setting it to "undefined" like in previous statement has no effect.
         // The statement below is to update the field from a referenced value to null if nesessary
-        if (!updateCaseFileInput.assessment_details.inaction_reason_code) {
+        if (!updateAssessmentInput.assessment_details.inaction_reason_code) {
           await db.case_file.update({
             where: { case_file_guid: case_file_guid },
             data: {
@@ -251,7 +273,7 @@ export class CaseFileService {
           });
         }
 
-        for (const action of updateCaseFileInput.assessment_details.assessment_actions) {
+        for (const action of updateAssessmentInput.assessment_details.assessment_actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
               action_type_code: actiontypeCode,
@@ -271,12 +293,12 @@ export class CaseFileService {
               actor_guid: action.actor_guid,
               action_date: action.action_date,
               active_ind: action.active_ind,
-              update_user_id: updateCaseFileInput.update_user_id,
+              update_user_id: updateAssessmentInput.update_user_id,
               update_utc_timestamp: new Date
             }
           });
         };
-        let assessmentCount: number = updateCaseFileInput.assessment_details.assessment_actions.length;
+        let assessmentCount: number = updateAssessmentInput.assessment_details.assessment_actions.length;
         if (assessmentCount === 0) {
           await db.action.updateMany({
             where: { case_guid: case_file_guid },
