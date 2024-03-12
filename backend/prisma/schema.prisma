@@ -142,3 +142,14 @@ model threat_level_code {
   update_user_id       String   @db.VarChar(32)
   update_utc_timestamp DateTime @db.Timestamp(6)
 }
+
+model configuration {
+  configuration_code    String   @id(map: "PK_configcode") @db.VarChar(10)
+  configuration_value    String   @db.VarChar(250)
+  long_description     String?  @db.VarChar(250)
+  active_ind           Boolean
+  create_user_id       String   @db.VarChar(32)
+  create_utc_timestamp DateTime @db.Timestamp(6)
+  update_user_id       String   @db.VarChar(32)
+  update_utc_timestamp DateTime @db.Timestamp(6)
+}

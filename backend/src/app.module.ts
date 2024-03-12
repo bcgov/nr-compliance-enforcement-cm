@@ -18,6 +18,7 @@ import { DrugCodeModule } from './drug_code/drug_code.module';
 import { DrugMethodCodeModule } from './drug_method_code/drug_method_code.module';
 import { DrugRemainingOutcomeCodeModule } from './drug_remaining_outcome_code/drug_remaining_outcome_code.module';
 import { HwcrOutcomeCodeModule } from './hwcr_outcome_code/hwcr_outcome_code.module';
+import { ConfigurationModule } from "./configuration/configuration.module";
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { HwcrOutcomeCodeModule } from './hwcr_outcome_code/hwcr_outcome_code.mod
     DrugMethodCodeModule,
     DrugRemainingOutcomeCodeModule,
     HwcrOutcomeCodeModule,
+    ConfigurationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
