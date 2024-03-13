@@ -1,66 +1,65 @@
 scalar Date
 
 type CaseFile {
-  case_file_guid : String
-  lead_identifier: String
-  assessment_details: Assessment
+  caseIdentifier : String
+  leadIdentifier: String
+  assessmentDetails: Assessment
 }
 
 type Assessment {
-  action_not_required_ind: String
-  inaction_reason_code: String
-  short_description: String
-  long_description: String
-  active_ind: Boolean
-  assessment_actions: [AssessmentAction]
+  actionNotRequired: String
+  actionJustificationCode: String
+  actionJustificationShortDescription: String
+  actionJustificationLongDescription: String
+  actionJustificationActiveIndicator: Boolean
+  actions: [AssessmentAction]
 }
 
 type AssessmentAction{
-  actor_guid: String!
-  action_date: Date!
-  action_code: String!
-  short_description: String
-  long_description: String
-  active_ind: Boolean
+  actor: String!
+  date: Date!
+  actionCode: String!
+  shortDescription: String
+  longDescription: String
+  activeIndicator: Boolean
 }
 
 input CreateAssessmentInput {
-  lead_identifier: String
-  assessment_details: AssessmentDetailsInput!
-  agency_code: String!
-  case_code: String!
-  create_user_id: String!
+  leadIdentifier: String
+  assessmentDetails: AssessmentDetailsInput!
+  agencyCode: String!
+  caseCode: String!
+  createUserId: String!
 }
 
 input AssessmentDetailsInput {
-  action_not_required_ind: Boolean!
-  inaction_reason_code: String
-  assessment_actions: [AssessmentActionInput]!
+  actionNotRequired: Boolean!
+  actionJustificationCode: String
+  actions: [AssessmentActionInput]!
 }
 
 input AssessmentActionInput{
-  actor_guid: String!
-  action_date: Date!
-  action_code: String!
-  active_ind: Boolean!
+  actor: String!
+  date: Date!
+  actionCode: String!
+  activeIndicator: Boolean!
 }
 
 input UpdateAssessmentInput {
-  case_file_guid: String!
-  lead_identifier: String
-  assessment_details: AssessmentDetailsInput!
-  agency_code: String!
-  case_code: String!
-  update_user_id: String!
+  caseIdentifier: String!
+  leadIdentifier: String
+  assessmentDetails: AssessmentDetailsInput!
+  agencyCode: String!
+  caseCode: String!
+  updateUserId: String!
 }
 
 type Query {
-  getCaseFile( case_guid: String!): CaseFile
-  getCaseFileByLeadId( lead_identifier: String!): CaseFile
+  getCaseFile( caseIdentifier: String!): CaseFile
+  getCaseFileByLeadId( leadIdentifier: String!): CaseFile
 }
 
 type Mutation {
   createAssessment(createAssessmentInput: CreateAssessmentInput!): CaseFile!
   updateAssessment(updateAssessmentInput: UpdateAssessmentInput!): CaseFile!
-  removeCaseFile(id: Int!): CaseFile
 }

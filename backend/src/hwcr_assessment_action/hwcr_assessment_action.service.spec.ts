@@ -1,17 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { InactionReasonCodeService } from './inaction_reason_code.service';
+import { HWCRAssessmentActionService } from './hwcr_assessment_action.service';
+
 import { PrismaModule } from 'nestjs-prisma';
 
-describe('InactionReasonCodeService', () => {
-  let service: InactionReasonCodeService;
+describe('HWCRAssessmentActionService', () => {
+  let service: HWCRAssessmentActionService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [PrismaModule],
-      providers: [InactionReasonCodeService],
+      providers: [HWCRAssessmentActionService],
     }).compile();
 
-    service = module.get<InactionReasonCodeService>(InactionReasonCodeService);
+    service = module.get<HWCRAssessmentActionService>(HWCRAssessmentActionService);
   });
 
   it('should be defined', () => {

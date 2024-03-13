@@ -18,9 +18,9 @@ import { DrugCodeModule } from './drug_code/drug_code.module';
 import { DrugMethodCodeModule } from './drug_method_code/drug_method_code.module';
 import { DrugRemainingOutcomeCodeModule } from './drug_remaining_outcome_code/drug_remaining_outcome_code.module';
 import { HwcrOutcomeCodeModule } from './hwcr_outcome_code/hwcr_outcome_code.module';
-import { ActionTypeActionXrefModule } from "./action_type_action_xref/action_type_action_xref.module";
+import { HWCRAssessmentActionModule } from "./hwcr_assessment_action/hwcr_assessment_action.module";
 import { CaseFileModule } from "./case_file/case_file.module";
-import { InactionReasonCodeModule } from "./inaction_reason_code/inaction_reason_code.module";
+import { InactionJustificationTypeModule } from "./inaction_justification_type/inaction_justification_type.module";
 import { DateScalar } from "./common/custom_scalars";
 
 @Module({
@@ -42,9 +42,9 @@ import { DateScalar } from "./common/custom_scalars";
     DrugMethodCodeModule,
     DrugRemainingOutcomeCodeModule,
     HwcrOutcomeCodeModule,
-    ActionTypeActionXrefModule,
+    HWCRAssessmentActionModule,
     CaseFileModule,
-    InactionReasonCodeModule
+    InactionJustificationTypeModule
   ],
   controllers: [AppController],
   providers: [AppService, DateScalar],

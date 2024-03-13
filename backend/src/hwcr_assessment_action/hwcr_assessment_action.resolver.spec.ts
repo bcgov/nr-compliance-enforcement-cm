@@ -1,18 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ActionTypeActionXrefResolver } from './action_type_action_xref.resolver';
-import { ActionTypeActionXrefService } from './action_type_action_xref.service';
+import { HWCRAssessmentActionResolver } from './hwcr_assessment_action.resolver';
+import { HWCRAssessmentActionService } from './hwcr_assessment_action.service';
 import { PrismaModule } from 'nestjs-prisma';
 
 describe('ActionTypeActionXrefResolver', () => {
-  let resolver: ActionTypeActionXrefResolver;
+  let resolver: HWCRAssessmentActionResolver;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [PrismaModule],
-      providers: [ActionTypeActionXrefResolver, ActionTypeActionXrefService],
+      providers: [HWCRAssessmentActionResolver, HWCRAssessmentActionService],
     }).compile();
 
-    resolver = module.get<ActionTypeActionXrefResolver>(ActionTypeActionXrefResolver);
+    resolver = module.get<HWCRAssessmentActionResolver>(HWCRAssessmentActionService);
   });
 
   it('should be defined', () => {

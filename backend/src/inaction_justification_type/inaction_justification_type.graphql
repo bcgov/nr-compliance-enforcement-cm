@@ -1,0 +1,13 @@
+type InactionJustificationType {
+  actionJustificationCode  : String!
+  agencyCode: String!
+  shortDescription: String
+  longDescription: String
+  displayOrder: Int
+  activeIndicator: Boolean
+}
+
+type Query {
+   inactionJustificationTypes (agencyCode : String): [InactionJustificationType]!
+}
+

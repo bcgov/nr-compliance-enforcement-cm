@@ -1,6 +1,6 @@
 export class AssessmentActionInput {
-    actor_guid: string;
-    action_date: Date;
-    action_code: string;
-    active_ind: boolean;
+    actor: string;
+    date: Date;
+    actionCode: string;
+    activeIndicator: boolean;
 }

@@ -20,25 +20,20 @@ export class CaseFileResolver {
 
   @Query('getCaseFile')
   @Roles(Role.COS_OFFICER)
-  findOne(@Args('case_guid') case_guid: string) {
-    return this.caseFileService.findOne(case_guid);
+  findOne(@Args('caseIdentifier') caseIdentifier: string) {
+    return this.caseFileService.findOne(caseIdentifier);
   }
 
   @Query('getCaseFileByLeadId')
   @Roles(Role.COS_OFFICER)
-  findOneByLeadId(@Args('lead_identifier') lead_identifier: string) {
-    return this.caseFileService.findOneByLeadId(lead_identifier);
+  findOneByLeadId(@Args('leadIdentifier') leadIdentifier: string) {
+    return this.caseFileService.findOneByLeadId(leadIdentifier);
   }
 
   @Mutation('updateAssessment')
   @Roles(Role.COS_OFFICER)
   update(@Args('updateAssessmentInput') updateAssessmentInput: UpdateAssessmentInput) {
-    return this.caseFileService.update(updateAssessmentInput.case_file_guid, updateAssessmentInput);
+    return this.caseFileService.update(updateAssessmentInput.caseIdentifier, updateAssessmentInput);
   }
 
-  @Mutation('removeCaseFile')
-  @Roles(Role.COS_OFFICER)
-  remove(@Args('id') id: number) {
-    return this.caseFileService.remove(id);
-  }
 }

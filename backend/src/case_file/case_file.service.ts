@@ -18,11 +18,11 @@ export class CaseFileService {
 
     try {
 
-      if (createAssessmentInput.lead_identifier) {
-        const existingCaseFile = await this.findOneByLeadId(createAssessmentInput.lead_identifier);
+      if (createAssessmentInput.leadIdentifier) {
+        const existingCaseFile = await this.findOneByLeadId(createAssessmentInput.leadIdentifier);
         console.log("existingCaseFile", existingCaseFile);
-        if (existingCaseFile != null && existingCaseFile.case_file_guid != null) {
-          throw new Error(`The case ${existingCaseFile.case_file_guid} assosiated with lead id ${createAssessmentInput.lead_identifier} already exist. 
+        if (existingCaseFile != null && existingCaseFile.caseIdentifier != null) {
+          throw new Error(`The case ${existingCaseFile.caseIdentifier} assosiated with lead id ${createAssessmentInput.leadIdentifier} already exist. 
                           Please run updateAssessment mutation.`, {
           });
         }
@@ -33,22 +33,22 @@ export class CaseFileService {
           data: {
             agency_code: {
               connect: {
-                agency_code: createAssessmentInput.agency_code
+                agency_code: createAssessmentInput.agencyCode
               }
             },
             inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code:
-              createAssessmentInput.assessment_details.inaction_reason_code ?
+              createAssessmentInput.assessmentDetails.actionJustificationCode ?
                 {
                   connect: {
-                    inaction_reason_code: createAssessmentInput.assessment_details.inaction_reason_code
+                    inaction_reason_code: createAssessmentInput.assessmentDetails.actionJustificationCode
                   }
                 } : undefined,
-            create_user_id: createAssessmentInput.create_user_id,
+            create_user_id: createAssessmentInput.createUserId,
             create_utc_timestamp: new Date(),
-            action_not_required_ind: createAssessmentInput.assessment_details.action_not_required_ind,
+            action_not_required_ind: createAssessmentInput.assessmentDetails.actionNotRequired,
             case_code_case_file_case_codeTocase_code: {
               connect: {
-                case_code: createAssessmentInput.case_code
+                case_code: createAssessmentInput.caseCode
               }
             },
           }
@@ -58,9 +58,9 @@ export class CaseFileService {
 
         await db.lead.create({
           data: {
-            lead_identifier: createAssessmentInput.lead_identifier,
+            lead_identifier: createAssessmentInput.leadIdentifier,
             case_identifier: caseFileGuid,
-            create_user_id: createAssessmentInput.create_user_id,
+            create_user_id: createAssessmentInput.createUserId,
             create_utc_timestamp: new Date()
           }
         });
@@ -73,17 +73,17 @@ export class CaseFileService {
         for (const action_code_object of action_codes_objects) {
           action_codes.push(action_code_object.action_code);
         }
-        for (const action of createAssessmentInput.assessment_details.assessment_actions) {
-          if (action_codes.indexOf(action.action_code) === -1) {
+        for (const action of createAssessmentInput.assessmentDetails.actions) {
+          if (action_codes.indexOf(action.actionCode) === -1) {
             throw "Some action code values where not passed from the client";
           };
         }
 
-        for (const action of createAssessmentInput.assessment_details.assessment_actions) {
+        for (const action of createAssessmentInput.assessmentDetails.actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
               action_type_code: actiontypeCode,
-              action_code: action.action_code
+              action_code: action.actionCode
             },
             select: {
               action_type_action_xref_guid: true
@@ -93,10 +93,10 @@ export class CaseFileService {
             data: {
               case_guid: caseFileGuid,
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
-              actor_guid: action.actor_guid,
-              action_date: action.action_date,
-              active_ind: action.active_ind,
-              create_user_id: createAssessmentInput.create_user_id,
+              actor_guid: action.actor,
+              action_date: action.date,
+              active_ind: action.activeIndicator,
+              create_user_id: createAssessmentInput.createUserId,
               create_utc_timestamp: new Date
             }
           });
@@ -117,11 +117,14 @@ export class CaseFileService {
     return `This action returns all caseFile`;
   }
 
-  async findOne(case_file_guid: string) {
+  async findOne(caseIdentifier: string) {
+
+    let actiontypeCode: string = "COMPASSESS";
+    let agencyCode: string = "COS"
 
     const lead = await this.prisma.lead.findFirst({
       where: {
-        case_identifier: case_file_guid,
+        case_identifier: caseIdentifier,
       },
       select: {
         lead_identifier: true,
@@ -130,7 +133,7 @@ export class CaseFileService {
 
     const actionsBase = await this.prisma.action.findMany({
       where: {
-        case_guid: case_file_guid,
+        case_guid: caseIdentifier,
       },
       select: {
         action_type_action_xref_guid: true,
@@ -142,7 +145,7 @@ export class CaseFileService {
 
     const actionCodes = await this.prisma.action_type_action_xref.findMany({
       where: {
-        action_type_code: "COMPASSESS",
+        action_type_code: actiontypeCode,
         action_type_action_xref_guid: { in: actionsBase.map((item) => item.action_type_action_xref_guid) },
       },
       select: {
@@ -161,18 +164,18 @@ export class CaseFileService {
     const actions: AssessmentAction[] = actionsBase.map((action) => {
       let actionData = actionCodes.find((element) => element.action_type_action_xref_guid === action.action_type_action_xref_guid);
       return {
-        actor_guid: action.actor_guid,
-        action_date: action.action_date,
-        action_code: actionData.action_code,
-        short_description: actionData.action_code_action_type_action_xref_action_codeToaction_code.short_description,
-        long_description: actionData.action_code_action_type_action_xref_action_codeToaction_code.long_description,
-        active_ind: action.active_ind,
+        actor: action.actor_guid,
+        date: action.action_date,
+        actionCode: actionData.action_code,
+        shortDescription: actionData.action_code_action_type_action_xref_action_codeToaction_code.short_description,
+        longDescription: actionData.action_code_action_type_action_xref_action_codeToaction_code.long_description,
+        activeIndicator: action.active_ind,
       };
     });
 
     const assessment = await this.prisma.case_file.findFirst({
       where: {
-        case_file_guid: case_file_guid
+        case_file_guid: caseIdentifier
       },
       select: {
         case_file_guid: true,
@@ -180,7 +183,7 @@ export class CaseFileService {
         inaction_reason_code: true,
         inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: {
           where: {
-            agency_code: "COS"
+            agency_code: agencyCode
           },
           select: {
             active_ind: true,
@@ -192,16 +195,16 @@ export class CaseFileService {
     });
 
     const case_file: CaseFile = {
-      case_file_guid: assessment?.case_file_guid,
-      lead_identifier: lead?.lead_identifier,
-      assessment_details:
+      caseIdentifier: assessment?.case_file_guid,
+      leadIdentifier: lead?.lead_identifier,
+      assessmentDetails:
       {
-        action_not_required_ind: assessment?.action_not_required_ind,
-        inaction_reason_code: assessment?.inaction_reason_code,
-        short_description: assessment?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.short_description,
-        long_description: assessment?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.long_description,
-        active_ind: assessment?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.active_ind,
-        assessment_actions: actions
+        actionNotRequired: assessment?.action_not_required_ind,
+        actionJustificationCode: assessment?.inaction_reason_code,
+        actionJustificationShortDescription: assessment?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.short_description,
+        actionJustificationLongDescription: assessment?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.long_description,
+        actionJustificationActiveIndicator: assessment?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.active_ind,
+        actions: actions
       }
     };
 
@@ -209,12 +212,12 @@ export class CaseFileService {
 
   }
 
-  async findOneByLeadId(lead_identifier: string) {
+  async findOneByLeadId(leadIdentifier: string) {
 
     let caseFileOutput: CaseFile = new CaseFile();
     const caseIdRecord = await this.prisma.lead.findFirst({
       where: {
-        lead_identifier: lead_identifier
+        lead_identifier: leadIdentifier
       },
       select: {
         case_identifier: true,
@@ -227,35 +230,35 @@ export class CaseFileService {
     return caseFileOutput;
   }
 
-  async update(case_file_guid: string, updateAssessmentInput: UpdateAssessmentInput) {
+  async update(caseIdentifier: string, updateAssessmentInput: UpdateAssessmentInput) {
 
     let actiontypeCode: string = "COMPASSESS";
     let caseFileOutput = new CaseFile();
 
     try {
       await this.prisma.$transaction(async (db) => {
-        
+
         await db.case_file.update({
-          where: { case_file_guid: case_file_guid },
+          where: { case_file_guid: caseIdentifier },
           data: {
             inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code:
-              updateAssessmentInput.assessment_details.inaction_reason_code ?
+              updateAssessmentInput.assessmentDetails.actionJustificationCode ?
                 {
                   connect: {
-                    inaction_reason_code: updateAssessmentInput.assessment_details.inaction_reason_code
+                    inaction_reason_code: updateAssessmentInput.assessmentDetails.actionJustificationCode
                   }
                 } : undefined,
-            action_not_required_ind: updateAssessmentInput.assessment_details.action_not_required_ind,
-            update_user_id: updateAssessmentInput.update_user_id,
+            action_not_required_ind: updateAssessmentInput.assessmentDetails.actionNotRequired,
+            update_user_id: updateAssessmentInput.updateUserId,
             update_utc_timestamp: new Date(),
           },
         });
 
         await db.lead.updateMany({
-          where: { case_identifier: case_file_guid },
+          where: { case_identifier: caseIdentifier },
           data: {
-            lead_identifier: updateAssessmentInput.lead_identifier,
-            update_user_id: updateAssessmentInput.update_user_id,
+            lead_identifier: updateAssessmentInput.leadIdentifier,
+            update_user_id: updateAssessmentInput.updateUserId,
             update_utc_timestamp: new Date()
           }
         });
@@ -264,20 +267,20 @@ export class CaseFileService {
         // In Prisma for some reason it is not possible to assign null to a relation field.
         // Setting it to "undefined" like in previous statement has no effect.
         // The statement below is to update the field from a referenced value to null if nesessary
-        if (!updateAssessmentInput.assessment_details.inaction_reason_code) {
+        if (!updateAssessmentInput.assessmentDetails.actionJustificationCode) {
           await db.case_file.update({
-            where: { case_file_guid: case_file_guid },
+            where: { case_file_guid: caseIdentifier },
             data: {
               inaction_reason_code: null,
             }
           });
         }
 
-        for (const action of updateAssessmentInput.assessment_details.assessment_actions) {
+        for (const action of updateAssessmentInput.assessmentDetails.actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
               action_type_code: actiontypeCode,
-              action_code: action.action_code
+              action_code: action.actionCode
             },
             select: {
               action_type_action_xref_guid: true
@@ -286,27 +289,27 @@ export class CaseFileService {
 
           await db.action.updateMany({
             where: {
-              case_guid: case_file_guid,
+              case_guid: caseIdentifier,
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid
             },
             data: {
-              actor_guid: action.actor_guid,
-              action_date: action.action_date,
-              active_ind: action.active_ind,
-              update_user_id: updateAssessmentInput.update_user_id,
+              actor_guid: action.actor,
+              action_date: action.date,
+              active_ind: action.activeIndicator,
+              update_user_id: updateAssessmentInput.updateUserId,
               update_utc_timestamp: new Date
             }
           });
         };
-        let assessmentCount: number = updateAssessmentInput.assessment_details.assessment_actions.length;
+        let assessmentCount: number = updateAssessmentInput.assessmentDetails.actions.length;
         if (assessmentCount === 0) {
           await db.action.updateMany({
-            where: { case_guid: case_file_guid },
+            where: { case_guid: caseIdentifier },
             data: { active_ind: false }
           });
         };
       });
-      caseFileOutput = await this.findOne(case_file_guid);
+      caseFileOutput = await this.findOne(caseIdentifier);
     }
     catch (exception) {
       console.log("exception", exception);

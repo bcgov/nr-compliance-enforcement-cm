@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from "nestjs-prisma";
-import { ActionTypeActionXref } from './entities/action_type_action_xref.entity';
+import { HWCRAssessmentAction } from './entities/hwcr_assessment_action.entity';
 
 @Injectable()
-export class ActionTypeActionXrefService {
+export class HWCRAssessmentActionService {
   constructor(private prisma: PrismaService) { }
 
-  async find(action_type_code?: string) {
+  async find(actionTypeCode?: string) {
     const dataContext = this.prisma.action_type_action_xref;
     let queryResult = null;
 
-    if (action_type_code) {
+    if (actionTypeCode) {
       queryResult = await dataContext.findMany({
         where: {
-          action_type_code: action_type_code
+          action_type_code: actionTypeCode
         },
         select: {
           action_type_code: true,
@@ -45,17 +45,17 @@ export class ActionTypeActionXrefService {
         }
       })
     }
-    let actionCodes: Array<ActionTypeActionXref> = [];
+    let actionCodes: Array<HWCRAssessmentAction> = [];
 
     queryResult.forEach((record) => {
       actionCodes.push(
-        Object.assign(new ActionTypeActionXref(), {
-          action_type_code: record.action_type_code,
-          action_code: record.action_code,
-          display_order: record.display_order,
-          active_ind: record.active_ind,
-          short_description: record.action_code_action_type_action_xref_action_codeToaction_code.short_description,
-          long_description: record.action_code_action_type_action_xref_action_codeToaction_code.long_description
+        Object.assign(new HWCRAssessmentAction(), {
+          actionTypeCode: record.action_type_code,
+          actionCode: record.action_code,
+          displayOrder: record.display_order,
+          activeIndicator: record.active_ind,
+          shortDescription: record.action_code_action_type_action_xref_action_codeToaction_code.short_description,
+          longDescription: record.action_code_action_type_action_xref_action_codeToaction_code.long_description
         }));
     });
 

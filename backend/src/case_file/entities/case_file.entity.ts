@@ -1,7 +1,7 @@
-import { AssessmentDetails } from "./assessment-details.entity";
+import { Assessment } from "./assessment.entity";
 
 export class CaseFile {
-    case_file_guid: string;
-    lead_identifier: string;
-    assessment_details: AssessmentDetails;
+    caseIdentifier: string;
+    leadIdentifier: string;
+    assessmentDetails: Assessment;
 }

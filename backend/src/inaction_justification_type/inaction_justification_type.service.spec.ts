@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ActionTypeActionXrefService } from './action_type_action_xref.service';
+import { InactionJustificationTypeService } from './inaction_justification_type.service';
 import { PrismaModule } from 'nestjs-prisma';
 
-describe('ActionTypeActionXrefService', () => {
-  let service: ActionTypeActionXrefService;
+describe('InactionReasonCodeService', () => {
+  let service: InactionJustificationTypeService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [PrismaModule],
-      providers: [ActionTypeActionXrefService],
+      providers: [InactionJustificationTypeService],
     }).compile();
 
-    service = module.get<ActionTypeActionXrefService>(ActionTypeActionXrefService);
+    service = module.get<InactionJustificationTypeService>(InactionJustificationTypeService);
   });
 
   it('should be defined', () => {
