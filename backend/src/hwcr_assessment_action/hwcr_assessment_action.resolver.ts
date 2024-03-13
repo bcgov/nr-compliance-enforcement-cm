@@ -12,7 +12,7 @@ export class HWCRAssessmentActionResolver {
 
   @Query('HWCRAssessmentActions')
   @Roles(Role.COS_OFFICER)
-  find(@Args('action_type_code') actionTypeCode?: string) {
+  find(@Args('actionTypeCode') actionTypeCode?: string) {
     return this.HWCRAssessmentActionService.find(actionTypeCode);
   }
 
