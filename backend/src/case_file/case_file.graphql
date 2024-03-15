@@ -7,7 +7,7 @@ type CaseFile {
 }
 
 type Assessment {
-  actionNotRequired: String
+  actionNotRequired: Boolean
   actionJustificationCode: String
   actionJustificationShortDescription: String
   actionJustificationLongDescription: String
