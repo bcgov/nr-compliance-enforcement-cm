@@ -152,6 +152,7 @@ model configuration {
   create_utc_timestamp DateTime @db.Timestamp(6)
   update_user_id       String   @db.VarChar(32)
   update_utc_timestamp DateTime @db.Timestamp(6)
+}
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model action {
