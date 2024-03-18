@@ -1,0 +1,65 @@
+scalar Date
+
+type CaseFile {
+  caseIdentifier : String
+  leadIdentifier: String
+  assessmentDetails: Assessment
+}
+
+type Assessment {
+  actionNotRequired: Boolean
+  actionJustificationCode: String
+  actionJustificationShortDescription: String
+  actionJustificationLongDescription: String
+  actionJustificationActiveIndicator: Boolean
+  actions: [AssessmentAction]
+}
+
+type AssessmentAction{
+  actor: String!
+  date: Date!
+  actionCode: String!
+  shortDescription: String
+  longDescription: String
+  activeIndicator: Boolean
+}
+
+input CreateAssessmentInput {
+  leadIdentifier: String
+  assessmentDetails: AssessmentDetailsInput!
+  agencyCode: String!
+  caseCode: String!
+  createUserId: String!
+}
+
+input AssessmentDetailsInput {
+  actionNotRequired: Boolean!
+  actionJustificationCode: String
+  actions: [AssessmentActionInput]!
+}
+
+input AssessmentActionInput{
+  actor: String!
+  date: Date!
+  actionCode: String!
+  activeIndicator: Boolean!
+}
+
+input UpdateAssessmentInput {
+  caseIdentifier: String!
+  leadIdentifier: String
+  assessmentDetails: AssessmentDetailsInput!
+  agencyCode: String!
+  caseCode: String!
+  updateUserId: String!
+}
+
+type Query {
+  getCaseFile( caseIdentifier: String!): CaseFile
+  getCaseFileByLeadId( leadIdentifier: String!): CaseFile
+}
+
+type Mutation {
+  createAssessment(createAssessmentInput: CreateAssessmentInput!): CaseFile!
+  updateAssessment(updateAssessmentInput: UpdateAssessmentInput!): CaseFile!
+}
