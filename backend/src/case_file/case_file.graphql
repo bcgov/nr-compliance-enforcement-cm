@@ -4,6 +4,35 @@ type CaseFile {
   caseIdentifier : String
   leadIdentifier: String
   assessmentDetails: Assessment
+  preventionDetails: PreventionMeasure
+}
+
+input CreateCaseFileInput {
+  leadIdentifier: String
+  assessmentDetails: AssessmentDetailsInput!
+  preventionDetails: PreventionMeasureDetailsInput!
+  agencyCode: String!
+  caseCode: String!
+  createUserId: String!
+}
+
+input UpdateCaseFileInput {
+  leadIdentifier: String
+  assessmentDetails: AssessmentDetailsInput!
+  preventionDetails: PreventionMeasureDetailsInput!
+  agencyCode: String!
+  caseCode: String!
+  createUserId: String!
+}
+
+input UpdateCaseFileInput {
+  caseIdentifier: String!
+  leadIdentifier: String
+  assessmentDetails: AssessmentDetailsInput!
+  preventionDetails: PreventionMeasureDetailsInput!
+  agencyCode: String!
+  caseCode: String!
+  updateUserId: String!
 }
 
 type Assessment {
@@ -24,13 +53,6 @@ type AssessmentAction{
   activeIndicator: Boolean
 }
 
-input CreateAssessmentInput {
-  leadIdentifier: String
-  assessmentDetails: AssessmentDetailsInput!
-  agencyCode: String!
-  caseCode: String!
-  createUserId: String!
-}
 
 input AssessmentDetailsInput {
   actionNotRequired: Boolean!
@@ -45,13 +67,36 @@ input AssessmentActionInput{
   activeIndicator: Boolean!
 }
 
-input UpdateAssessmentInput {
-  caseIdentifier: String!
+type PreventionMeasure {
+  actions: [PreventionMeasureAction]
+}
+
+type PreventionMeasureAction{
+  actor: String!
+  date: Date!
+  actionCode: String!
+  shortDescription: String
+  longDescription: String
+  activeIndicator: Boolean
+}
+
+input CreatePreventionMeasureInput {
   leadIdentifier: String
-  assessmentDetails: AssessmentDetailsInput!
+  preventionDetails: PreventionMeasureDetailsInput!
   agencyCode: String!
   caseCode: String!
-  updateUserId: String!
+  createUserId: String!
+}
+
+input PreventionMeasureDetailsInput {
+  actions: [AssessmentActionInput]!
+}
+
+input PreventionMeasureActionInput{
+  actor: String!
+  date: Date!
+  actionCode: String!
+  activeIndicator: Boolean!
 }
 
 type Query {
@@ -60,6 +105,6 @@ type Query {
 }
 
 type Mutation {
-  createAssessment(createAssessmentInput: CreateAssessmentInput!): CaseFile!
-  updateAssessment(updateAssessmentInput: UpdateAssessmentInput!): CaseFile!
+  createCaseFile(createCaseFileInput: CreateCaseFileInput!): CaseFile!
+  updateCaseFile(updateCaseFileInput: UpdateCaseFileInput!): CaseFile!
 }

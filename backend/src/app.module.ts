@@ -22,6 +22,7 @@ import { HWCRAssessmentActionModule } from "./hwcr_assessment_action/hwcr_assess
 import { CaseFileModule } from "./case_file/case_file.module";
 import { InactionJustificationTypeModule } from "./inaction_justification_type/inaction_justification_type.module";
 import { DateScalar } from "./common/custom_scalars";
+import { HWCRPreventionActionModule } from "./hwcr_prevention_education_action/hwcr_prevention_eduction_action.module";
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { DateScalar } from "./common/custom_scalars";
     DrugRemainingOutcomeCodeModule,
     HwcrOutcomeCodeModule,
     HWCRAssessmentActionModule,
+    HWCRPreventionActionModule,
     CaseFileModule,
     InactionJustificationTypeModule
   ],

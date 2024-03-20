@@ -1,7 +1,7 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { CaseFileService } from './case_file.service';
-import { CreateAssessmentInput } from './dto/create-case_file.input';
-import { UpdateAssessmentInput } from './dto/update-case_file.input';
+import { CreateCaseFileInput } from './dto/create-case_file.input';
+import { UpdateCaseFileInput } from './dto/update-case_file.input';
 import { JwtRoleGuard } from "../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
 import { Role } from "../enum/role.enum";
@@ -12,10 +12,10 @@ import { Roles } from "../auth/decorators/roles.decorator";
 export class CaseFileResolver {
   constructor(private readonly caseFileService: CaseFileService) { }
 
-  @Mutation('createAssessment')
+  @Mutation('createCaseFile')
   @Roles(Role.COS_OFFICER)
-  create(@Args('createAssessmentInput') createAssessmentInput: CreateAssessmentInput) {
-    return this.caseFileService.create(createAssessmentInput);
+  create(@Args('createCaseFileInput') createCaseFileInput: CreateCaseFileInput) {
+    return this.caseFileService.create(createCaseFileInput);
   }
 
   @Query('getCaseFile')
@@ -30,10 +30,10 @@ export class CaseFileResolver {
     return this.caseFileService.findOneByLeadId(leadIdentifier);
   }
 
-  @Mutation('updateAssessment')
+  @Mutation('updateCaseFile')
   @Roles(Role.COS_OFFICER)
-  update(@Args('updateAssessmentInput') updateAssessmentInput: UpdateAssessmentInput) {
-    return this.caseFileService.update(updateAssessmentInput.caseIdentifier, updateAssessmentInput);
+  update(@Args('updateCaseFileInput') updateCaseFileInput: UpdateCaseFileInput) {
+    return this.caseFileService.update(updateCaseFileInput.caseIdentifier, updateCaseFileInput);
   }
 
 }
