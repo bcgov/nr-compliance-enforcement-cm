@@ -5,6 +5,7 @@ import { PrismaService } from "nestjs-prisma";
 import { CaseFile } from './entities/case_file.entity';
 import { AssessmentAction } from './entities/assessment-action.entity';
 import { GraphQLError } from 'graphql';
+import { CreateSupplementalNoteInput } from './dto/supplmental-notes/create-supplemental-note.input';
 
 @Injectable()
 export class CaseFileService {
@@ -205,7 +206,8 @@ export class CaseFileService {
         actionJustificationLongDescription: assessment?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.long_description,
         actionJustificationActiveIndicator: assessment?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.active_ind,
         actions: actions
-      }
+      },
+      notes: ""
     };
 
     return case_file;
@@ -321,5 +323,9 @@ export class CaseFileService {
 
   remove(id: number) {
     return `This action removes a #${id} caseFile`;
+  }
+
+  createNote = async (input: CreateSupplementalNoteInput): Promise<CaseFile> => {
+    throw new Error('Method not implemented.');
   }
 }

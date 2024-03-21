@@ -4,6 +4,7 @@ type CaseFile {
   caseIdentifier : String
   leadIdentifier: String
   assessmentDetails: Assessment
+  notes: String
 }
 
 type Assessment {
@@ -27,6 +28,14 @@ type AssessmentAction{
 input CreateAssessmentInput {
   leadIdentifier: String
   assessmentDetails: AssessmentDetailsInput!
+  agencyCode: String!
+  caseCode: String!
+  createUserId: String!
+}
+
+input CreateSupplementalNoteInput {
+  leadIdentifier: String
+  notes: String!
   agencyCode: String!
   caseCode: String!
   createUserId: String!
@@ -61,5 +70,6 @@ type Query {
 
 type Mutation {
   createAssessment(createAssessmentInput: CreateAssessmentInput!): CaseFile!
+  createSupplementalNote(input: CreateSupplementalNoteInput!): CaseFile!
   updateAssessment(updateAssessmentInput: UpdateAssessmentInput!): CaseFile!
 }

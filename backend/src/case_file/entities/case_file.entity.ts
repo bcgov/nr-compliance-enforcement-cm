@@ -4,4 +4,5 @@ export class CaseFile {
     caseIdentifier: string;
     leadIdentifier: string;
     assessmentDetails: Assessment;
+    notes: string;
 }

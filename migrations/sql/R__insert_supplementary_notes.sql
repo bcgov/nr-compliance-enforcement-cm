@@ -45,8 +45,7 @@ VALUES
         CURRENT_TIMESTAMP,
         CURRENT_USER,
         CURRENT_TIMESTAMP
-    ),
-    ON CONFLICT DO NOTHING;
+    ) ON CONFLICT DO NOTHING;
 
 INSERT INTO
     case_management.action_type_action_xref (
