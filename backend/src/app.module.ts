@@ -18,6 +18,7 @@ import { DrugCodeModule } from './drug_code/drug_code.module';
 import { DrugMethodCodeModule } from './drug_method_code/drug_method_code.module';
 import { DrugRemainingOutcomeCodeModule } from './drug_remaining_outcome_code/drug_remaining_outcome_code.module';
 import { HwcrOutcomeCodeModule } from './hwcr_outcome_code/hwcr_outcome_code.module';
+import { ConfigurationModule } from "./configuration/configuration.module";
 import { HWCRAssessmentActionModule } from "./hwcr_assessment_action/hwcr_assessment_action.module";
 import { CaseFileModule } from "./case_file/case_file.module";
 import { InactionJustificationTypeModule } from "./inaction_justification_type/inaction_justification_type.module";
@@ -42,6 +43,7 @@ import { DateScalar } from "./common/custom_scalars";
     DrugMethodCodeModule,
     DrugRemainingOutcomeCodeModule,
     HwcrOutcomeCodeModule,
+    ConfigurationModule,
     HWCRAssessmentActionModule,
     CaseFileModule,
     InactionJustificationTypeModule
