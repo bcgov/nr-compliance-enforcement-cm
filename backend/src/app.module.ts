@@ -22,6 +22,7 @@ import { HWCRAssessmentActionModule } from "./hwcr_assessment_action/hwcr_assess
 import { CaseFileModule } from "./case_file/case_file.module";
 import { InactionJustificationTypeModule } from "./inaction_justification_type/inaction_justification_type.module";
 import { DateScalar } from "./common/custom_scalars";
+import { EquipmentModule } from './equipment/equipment.module';
 
 @Module({
   imports: [
@@ -44,7 +45,8 @@ import { DateScalar } from "./common/custom_scalars";
     HwcrOutcomeCodeModule,
     HWCRAssessmentActionModule,
     CaseFileModule,
-    InactionJustificationTypeModule
+    InactionJustificationTypeModule,
+    EquipmentModule
   ],
   controllers: [AppController],
   providers: [AppService, DateScalar],

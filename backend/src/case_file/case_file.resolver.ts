@@ -35,5 +35,4 @@ export class CaseFileResolver {
   update(@Args('updateAssessmentInput') updateAssessmentInput: UpdateAssessmentInput) {
     return this.caseFileService.update(updateAssessmentInput.caseIdentifier, updateAssessmentInput);
   }
-
 }

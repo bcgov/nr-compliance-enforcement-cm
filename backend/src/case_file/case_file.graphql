@@ -62,4 +62,63 @@ type Query {
 type Mutation {
   createAssessment(createAssessmentInput: CreateAssessmentInput!): CaseFile!
   updateAssessment(updateAssessmentInput: UpdateAssessmentInput!): CaseFile!
+  createEquipment(createEquipmentInput: CreateEquipmentInput!): CaseFile!
+  updateEquipment(updateEquipmentInput: UpdateEquipmentInput!): CaseFile!
+}
+
+type Equipment {
+    type: string;
+    shortDescription: string;
+    longDescription: string;
+    address: string;
+    coordinates: Point;
+    actions: EquipmentAction[]
+}
+
+type EquipmentAction {
+    actor: string;
+    date: Date;
+    actionCode: string;
+    shortDescription: string;
+    longDescription: string;
+    activeIndicator: boolean;
+}
+
+type EquipmentAction{
+  actor: String!
+  date: Date!
+  actionCode: String!
+  shortDescription: String
+  longDescription: String
+  activeIndicator: Boolean
+}
+
+input CreateEquipmentInput {
+  leadIdentifier: String
+  equipment: EquipmentInput!
+  agencyCode: String!
+  caseCode: String!
+  createUserId: String!
+}
+
+input EquipmentInput {
+  actionNotRequired: Boolean!
+  actionJustificationCode: String
+  actions: [EquipmentActionInput]!
+}
+
+input EquipmentActionInput{
+  actor: String!
+  date: Date!
+  actionCode: String!
+  activeIndicator: Boolean!
+}
+
+input UpdateEquipmentInput {
+  caseIdentifier: String!
+  leadIdentifier: String
+  equipment: EquipmentInput!
+  agencyCode: String!
+  caseCode: String!
+  updateUserId: String!
 }

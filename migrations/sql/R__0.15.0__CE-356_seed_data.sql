@@ -40,3 +40,23 @@ values
     ('NOPUBSFTYC', 'COS', 'No public safety concern', 'No public safety concern', 'Y', CURRENT_USER, CURRENT_TIMESTAMP),
     ('OTHOPRPRTY', 'COS', 'Other operational priorities', 'Other operational priorities', 'Y', CURRENT_USER, CURRENT_TIMESTAMP)
 on conflict do nothing;
+
+insert into	case_management.action_type_code 
+    (action_type_code, short_description, long_description, active_ind, create_user_id, create_utc_timestamp)
+values 
+    ('EQUIPMENT', 'Equipment', 'Equipment', 'Y', CURRENT_USER, CURRENT_TIMESTAMP) 
+on conflict do nothing;
+
+insert into	case_management.action_code 
+    (action_code, short_description, long_description, active_ind, create_user_id, create_utc_timestamp)
+values 
+    ('SETEQUIPMT', 'Equipment set by an officer', 'Equipment set by an officer', 'Y', CURRENT_USER, CURRENT_TIMESTAMP),
+    ('REMEQUIPMT', 'Equipment removed by an officer', 'Equipment removed by an officer', 'Y', CURRENT_USER, CURRENT_TIMESTAMP)
+on conflict do nothing;
+
+insert into	case_management.action_type_action_xref 
+    (action_type_code, action_code, display_order, active_ind, create_user_id, create_utc_timestamp)
+values 
+    ('EQUIPMENT', 'SETEQUIPMT', 1, 'Y', CURRENT_USER, CURRENT_TIMESTAMP), 
+    ('EQUIPMENT', 'REMEQUIPMT', 2, 'Y', CURRENT_USER, CURRENT_TIMESTAMP)
+on conflict do nothing;
