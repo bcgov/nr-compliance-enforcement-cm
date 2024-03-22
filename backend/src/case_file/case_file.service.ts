@@ -108,10 +108,11 @@ export class CaseFileService {
     return caseFileGuid;
   }
 
-  async createAssessment(createAssessmentInput: CreateAssessmentInput): Promise<void> {
+  async createAssessment(createAssessmentInput: CreateAssessmentInput): Promise<CaseFile> {
 
     let actiontypeCode: string = "COMPASSESS";
     let caseFileGuid: string = await this.createAssessmentCase(createAssessmentInput);
+    let caseFileOutput: CaseFile;
     try {
       await this.prisma.$transaction(async (db) => {
         let action_codes_objects = await db.action_type_action_xref.findMany({
@@ -151,19 +152,21 @@ export class CaseFileService {
           });
         }
       });
+      caseFileOutput = await this.findOne(caseFileGuid);
     }
       catch (exception) {
         console.log("exception", exception);
         throw new GraphQLError('Exception occurred. See server log for details', {
         });
       }
-    return ;
+    return caseFileOutput;
   }
 
-  async createPrevention(createPreventionInput: CreatePreventionInput): Promise<void> {
+  async createPrevention(createPreventionInput: CreatePreventionInput): Promise<CaseFile> {
 
     let actiontypeCode: string = "COMPASSESS";
     let caseFileGuid: string = await this.createOtherCase(createPreventionInput);
+    let caseFileOutput: CaseFile;
     try {
       await this.prisma.$transaction(async (db) => {
         let action_codes_objects = await db.action_type_action_xref.findMany({
@@ -203,13 +206,14 @@ export class CaseFileService {
           });
         }
       });
+      caseFileOutput = await this.findOne(caseFileGuid);
     }
       catch (exception) {
         console.log("exception", exception);
         throw new GraphQLError('Exception occurred. See server log for details', {
         });
       }
-    return ;
+    return caseFileOutput;
   }
   
 
