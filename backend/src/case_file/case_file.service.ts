@@ -223,7 +223,6 @@ export class CaseFileService {
 
   async findOne(caseIdentifier: string) {
 
-    let actiontypeCode: string = "COMPASSESS";
     let agencyCode: string = "COS"
 
     const lead = await this.prisma.lead.findFirst({
@@ -249,7 +248,6 @@ export class CaseFileService {
 
     const actionCodes = await this.prisma.action_type_action_xref.findMany({
       where: {
-        action_type_code: actiontypeCode,
         action_type_action_xref_guid: { in: actionsBase.map((item) => item.action_type_action_xref_guid) },
       },
       select: {
