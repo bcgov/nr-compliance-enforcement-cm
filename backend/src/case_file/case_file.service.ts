@@ -3,7 +3,6 @@ import { CreateAssessmentInput, CreatePreventionInput } from './dto/create-case_
 import { UpdateAssessmentInput, UpdatePreventionInput } from './dto/update-case_file.input';
 import { PrismaService } from "nestjs-prisma";
 import { CaseFile } from './entities/case_file.entity';
-import { Action } from './entities/case-action.entity';
 import { GraphQLError } from 'graphql';
 
 @Injectable()
@@ -56,7 +55,6 @@ export class CaseFileService {
       });
     }
     catch (exception) {
-      console.log("exception", exception);
       throw new GraphQLError('Exception occurred. See server log for details', {
       });
     }
@@ -101,7 +99,6 @@ export class CaseFileService {
       });
     }
     catch (exception) {
-      console.log("exception", exception);
       throw new GraphQLError('Exception occurred. See server log for details', {
       });
     }
@@ -155,7 +152,6 @@ export class CaseFileService {
       caseFileOutput = await this.findOne(caseFileGuid);
     }
       catch (exception) {
-        console.log("exception", exception);
         throw new GraphQLError('Exception occurred. See server log for details', {
         });
       }
@@ -209,7 +205,6 @@ export class CaseFileService {
       caseFileOutput = await this.findOne(caseFileGuid);
     }
       catch (exception) {
-        console.log("exception", exception);
         throw new GraphQLError('Exception occurred. See server log for details', {
         });
       }
@@ -222,7 +217,6 @@ export class CaseFileService {
   }
 
   async findOne(caseIdentifier: string) {
-    console.log("..............................................................");
     let agencyCode: string = "COS"
 
     const lead = await this.prisma.lead.findFirst({
@@ -246,8 +240,9 @@ export class CaseFileService {
       },
     });
 
-    const actionCodes = await this.prisma.action_type_action_xref.findMany({
+    const assessmentActionCodes = await this.prisma.action_type_action_xref.findMany({
       where: {
+        action_type_code: 'COMPASSESS',
         action_type_action_xref_guid: { in: actionsBase.map((item) => item.action_type_action_xref_guid) },
       },
       select: {
@@ -264,34 +259,52 @@ export class CaseFileService {
       }
     });
 
-    let assessmentActions: Action[];
-    assessmentActions = actionsBase.map((action) => {
-      let actionData = actionCodes.find((element) => (element.action_type_action_xref_guid === action.action_type_action_xref_guid && element.action_type_code === 'COMPASSESS'));
-      if(actionData)
+    const preventionActionCodes = await this.prisma.action_type_action_xref.findMany({
+      where: {
+        action_type_code: 'COSPRV&EDU',
+        action_type_action_xref_guid: { in: actionsBase.map((item) => item.action_type_action_xref_guid) },
+      },
+      select: {
+        action_code: true,
+        action_type_action_xref_guid: true,
+        action_type_code: true,
+        action_code_action_type_action_xref_action_codeToaction_code: {
+          select: {
+            short_description: true,
+            long_description: true,
+            active_ind: true
+          },
+        },
+      }
+    });
+
+    const assessmentActions = assessmentActionCodes.map((action) => {
+      let actionData = actionsBase.find((element) => (element.action_type_action_xref_guid === action.action_type_action_xref_guid));
+      if(actionData && actionData !== undefined)
       {
         return {
-          actor: action.actor_guid,
-          date: action.action_date,
-          actionCode: actionData.action_code,
-          shortDescription: actionData.action_code_action_type_action_xref_action_codeToaction_code.short_description,
-          longDescription: actionData.action_code_action_type_action_xref_action_codeToaction_code.long_description,
-          activeIndicator: action.active_ind,
+          actor: actionData.actor_guid,
+          date: actionData.action_date,
+          actionCode: action.action_code,
+          shortDescription: action.action_code_action_type_action_xref_action_codeToaction_code.short_description,
+          longDescription: action.action_code_action_type_action_xref_action_codeToaction_code.long_description,
+          activeIndicator: actionData.active_ind,
         };
       }
     });
 
-    let preventionActions: Action[] = [];
-    preventionActions = actionsBase.map((action) => {
-      let actionData = actionCodes.find((element) => (element.action_type_action_xref_guid === action.action_type_action_xref_guid && element.action_type_code === 'COSPRV&EDU'));
-      if(actionData)
+
+    const preventionActions = preventionActionCodes.map((action) => {
+      let actionData = actionsBase.find((element) => (element.action_type_action_xref_guid === action.action_type_action_xref_guid));
+      if(actionData && actionData !== undefined)
       {
         return {
-          actor: action.actor_guid,
-          date: action.action_date,
-          actionCode: actionData.action_code,
-          shortDescription: actionData.action_code_action_type_action_xref_action_codeToaction_code.short_description,
-          longDescription: actionData.action_code_action_type_action_xref_action_codeToaction_code.long_description,
-          activeIndicator: action.active_ind,
+          actor: actionData.actor_guid,
+          date: actionData.action_date,
+          actionCode: action.action_code,
+          shortDescription: action.action_code_action_type_action_xref_action_codeToaction_code.short_description,
+          longDescription: action.action_code_action_type_action_xref_action_codeToaction_code.long_description,
+          activeIndicator: actionData.active_ind,
         };
       }
     });
@@ -334,7 +347,6 @@ export class CaseFileService {
         actions: preventionActions
       }
     };
-    console.log("case_file: " + JSON.stringify(case_file) + "\n");
     return case_file;
 
   }
@@ -351,11 +363,8 @@ export class CaseFileService {
       },
     });
     if (caseIdRecord?.case_identifier) {
-      console.log("before findone\n");
       caseFileOutput = await this.findOne(caseIdRecord.case_identifier);
     }
-
-    console.log("caseFileOutput: " + JSON.stringify(caseFileOutput) + "\n");
 
     return caseFileOutput;
   }
@@ -400,21 +409,23 @@ export class CaseFileService {
               action_code: action.actionCode
             },
             select: {
-              action_type_action_xref_guid: true
-            }
-          });
-
-          let actionTypeActionXrefs = await db.action.findMany({
-            where: {
-              case_guid: caseIdentifier,
-              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
-            },
-            select: {
-              action_type_action_xref_guid: true
+              action_type_action_xref_guid: true,
+              action_code: true,
+              action_type_code: true,
             }
           });
           
-          if(actionTypeActionXrefs.length > 0)
+          let actionXref = await db.action.findFirst({
+            where: {
+              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+              case_guid: caseIdentifier,
+            },
+            select: {
+              action_type_action_xref_guid: true,
+            }
+          });
+
+          if(actionXref)
           {
             await db.action.updateMany({
               where: {
@@ -445,6 +456,8 @@ export class CaseFileService {
             });
           }
         };
+
+        
         let assessmentCount: number = updateAssessmentInput.assessmentDetails.actions.length;
         if (assessmentCount === 0) {
           await db.action.updateMany({
@@ -455,9 +468,9 @@ export class CaseFileService {
       });
 
       caseFileOutput = await this.findOne(caseIdentifier);
+
     }
     catch (exception) {
-      console.log("exception", exception);
       throw new GraphQLError('Exception occurred. See server log for details', {
       });
     }
@@ -465,18 +478,16 @@ export class CaseFileService {
   }
 
   async updatePrevention(caseIdentifier: string, updatePreventionInput: UpdatePreventionInput) {
-    console.log("ughkskkksaldfkjwioefjasf");
     let actionTypeCode: string = "COSPRV&EDU";
     let caseFileOutput: CaseFile;
 
     try {
       await this.prisma.$transaction(async (db) => {
-        console.log("updatePreventionInput.preventionDetails: " + JSON.stringify(updatePreventionInput.preventionDetails) + "\n");
         for (const action of updatePreventionInput.preventionDetails.actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
               action_type_code: actionTypeCode,
-              action_code: action.actionCode
+              action_code: action.actionCode,
             },
             select: {
               action_type_action_xref_guid: true,
@@ -486,23 +497,17 @@ export class CaseFileService {
             }
           });
           
-          console.log("actionTypeActionXref: " + JSON.stringify(actionTypeActionXref) + "\n");
-          console.log("caseIdentifier: " + JSON.stringify(caseIdentifier) + "\n");
-
-          let actionTypeActionXrefs = await db.action.findMany({
+          let actionXref = await db.action.findFirst({
             where: {
-              case_guid: caseIdentifier,
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+              case_guid: caseIdentifier,
             },
             select: {
               action_type_action_xref_guid: true,
-              case_guid: true,
             }
           });
 
-          console.log("actionTypeActionXrefsssssssss: " + JSON.stringify(actionTypeActionXrefs) + "\n");
-
-          if(actionTypeActionXrefs.length > 0)
+          if(actionXref)
           {
             await db.action.updateMany({
               where: {
@@ -544,7 +549,6 @@ export class CaseFileService {
       caseFileOutput = await this.findOne(caseIdentifier);
     }
     catch (exception) {
-      console.log("exception", exception);
       throw new GraphQLError('Exception occurred. See server log for details', {
       });
     }

@@ -10,7 +10,6 @@ export class HWCRAssessmentActionService {
     const dataContext = this.prisma.action_type_action_xref;
     let queryResult = null;
     actionTypeCode = "COMPASSESS"; //send from frontend later?
-    console.log("bacon");
     if (actionTypeCode) {
       queryResult = await dataContext.findMany({
         where: {

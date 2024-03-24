@@ -13,7 +13,6 @@ export class HWCRPreventionActionResolver {
   @Query('HWCRPreventionActions')
   @Roles(Role.COS_OFFICER)
   find(@Args('actionTypeCode') actionTypeCode?: string) {
-    console.log("vaPrevention");
     return this.HWCRPreventionActionService.find(actionTypeCode);
   }
 

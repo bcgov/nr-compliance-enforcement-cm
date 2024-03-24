@@ -7,7 +7,6 @@ export class HWCRPreventionActionService {
   constructor(private prisma: PrismaService) { }
 
   async find(actionTypeCode?: string) {
-    console.log("ughhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
     const dataContext = this.prisma.action_type_action_xref;
     let queryResult = null;
     actionTypeCode = "COSPRV&EDU"; //send from frontend later?
@@ -48,7 +47,6 @@ export class HWCRPreventionActionService {
     }
     let actionCodes: Array<HWCRPreventionAction> = [];
 
-    console.log("queryResult: " + JSON.stringify(queryResult));
     queryResult.forEach((record) => {
       actionCodes.push(
         Object.assign(new HWCRPreventionAction(), {

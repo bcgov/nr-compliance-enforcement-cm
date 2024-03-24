@@ -13,7 +13,6 @@ export class HWCRAssessmentActionResolver {
   @Query('HWCRAssessmentActions')
   @Roles(Role.COS_OFFICER)
   find(@Args('actionTypeCode') actionTypeCode?: string) {
-    console.log("vaAssessment");
     return this.HWCRAssessmentActionService.find(actionTypeCode);
   }
 
