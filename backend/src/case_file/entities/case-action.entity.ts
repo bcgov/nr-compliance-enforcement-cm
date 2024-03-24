@@ -1,4 +1,4 @@
-export class AssessmentAction {
+export class Action {
     actor: string;
     date: Date;
     actionCode: string;

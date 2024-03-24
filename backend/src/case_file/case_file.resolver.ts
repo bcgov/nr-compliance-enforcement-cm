@@ -33,6 +33,7 @@ export class CaseFileResolver {
   @Query('getCaseFileByLeadId')
   @Roles(Role.COS_OFFICER)
   findOneByLeadId(@Args('leadIdentifier') leadIdentifier: string) {
+    console.log("testingkkkkkkkkkkkkkkkkkkkkkkkkkkkk\n");
     return this.caseFileService.findOneByLeadId(leadIdentifier);
   }
 

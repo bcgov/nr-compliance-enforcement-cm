@@ -3,7 +3,7 @@ import { CreateAssessmentInput, CreatePreventionInput } from './dto/create-case_
 import { UpdateAssessmentInput, UpdatePreventionInput } from './dto/update-case_file.input';
 import { PrismaService } from "nestjs-prisma";
 import { CaseFile } from './entities/case_file.entity';
-import { AssessmentAction } from './entities/assessment-action.entity';
+import { Action } from './entities/case-action.entity';
 import { GraphQLError } from 'graphql';
 
 @Injectable()
@@ -164,7 +164,7 @@ export class CaseFileService {
 
   async createPrevention(createPreventionInput: CreatePreventionInput): Promise<CaseFile> {
 
-    let actiontypeCode: string = "COMPASSESS";
+    let actiontypeCode: string = "COSPRV&EDU";
     let caseFileGuid: string = await this.createOtherCase(createPreventionInput);
     let caseFileOutput: CaseFile;
     try {
@@ -222,7 +222,7 @@ export class CaseFileService {
   }
 
   async findOne(caseIdentifier: string) {
-
+    console.log("..............................................................");
     let agencyCode: string = "COS"
 
     const lead = await this.prisma.lead.findFirst({
@@ -253,6 +253,7 @@ export class CaseFileService {
       select: {
         action_code: true,
         action_type_action_xref_guid: true,
+        action_type_code: true,
         action_code_action_type_action_xref_action_codeToaction_code: {
           select: {
             short_description: true,
@@ -263,19 +264,39 @@ export class CaseFileService {
       }
     });
 
-    const actions: AssessmentAction[] = actionsBase.map((action) => {
-      let actionData = actionCodes.find((element) => element.action_type_action_xref_guid === action.action_type_action_xref_guid);
-      return {
-        actor: action.actor_guid,
-        date: action.action_date,
-        actionCode: actionData.action_code,
-        shortDescription: actionData.action_code_action_type_action_xref_action_codeToaction_code.short_description,
-        longDescription: actionData.action_code_action_type_action_xref_action_codeToaction_code.long_description,
-        activeIndicator: action.active_ind,
-      };
+    let assessmentActions: Action[];
+    assessmentActions = actionsBase.map((action) => {
+      let actionData = actionCodes.find((element) => (element.action_type_action_xref_guid === action.action_type_action_xref_guid && element.action_type_code === 'COMPASSESS'));
+      if(actionData)
+      {
+        return {
+          actor: action.actor_guid,
+          date: action.action_date,
+          actionCode: actionData.action_code,
+          shortDescription: actionData.action_code_action_type_action_xref_action_codeToaction_code.short_description,
+          longDescription: actionData.action_code_action_type_action_xref_action_codeToaction_code.long_description,
+          activeIndicator: action.active_ind,
+        };
+      }
     });
 
-    const assessment = await this.prisma.case_file.findFirst({
+    let preventionActions: Action[] = [];
+    preventionActions = actionsBase.map((action) => {
+      let actionData = actionCodes.find((element) => (element.action_type_action_xref_guid === action.action_type_action_xref_guid && element.action_type_code === 'COSPRV&EDU'));
+      if(actionData)
+      {
+        return {
+          actor: action.actor_guid,
+          date: action.action_date,
+          actionCode: actionData.action_code,
+          shortDescription: actionData.action_code_action_type_action_xref_action_codeToaction_code.short_description,
+          longDescription: actionData.action_code_action_type_action_xref_action_codeToaction_code.long_description,
+          activeIndicator: action.active_ind,
+        };
+      }
+    });
+
+    const caseFile = await this.prisma.case_file.findFirst({
       where: {
         case_file_guid: caseIdentifier
       },
@@ -297,19 +318,23 @@ export class CaseFileService {
     });
 
     const case_file: CaseFile = {
-      caseIdentifier: assessment?.case_file_guid,
+      caseIdentifier: caseFile?.case_file_guid,
       leadIdentifier: lead?.lead_identifier,
       assessmentDetails:
       {
-        actionNotRequired: assessment?.action_not_required_ind,
-        actionJustificationCode: assessment?.inaction_reason_code,
-        actionJustificationShortDescription: assessment?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.short_description,
-        actionJustificationLongDescription: assessment?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.long_description,
-        actionJustificationActiveIndicator: assessment?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.active_ind,
-        actions: actions
+        actionNotRequired: caseFile?.action_not_required_ind,
+        actionJustificationCode: caseFile?.inaction_reason_code,
+        actionJustificationShortDescription: caseFile?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.short_description,
+        actionJustificationLongDescription: caseFile?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.long_description,
+        actionJustificationActiveIndicator: caseFile?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.active_ind,
+        actions: assessmentActions
+      },
+      preventionDetails:
+      {
+        actions: preventionActions
       }
     };
-
+    console.log("case_file: " + JSON.stringify(case_file) + "\n");
     return case_file;
 
   }
@@ -326,23 +351,52 @@ export class CaseFileService {
       },
     });
     if (caseIdRecord?.case_identifier) {
+      console.log("before findone\n");
       caseFileOutput = await this.findOne(caseIdRecord.case_identifier);
     }
+
+    console.log("caseFileOutput: " + JSON.stringify(caseFileOutput) + "\n");
 
     return caseFileOutput;
   }
 
   async updateAssessment(caseIdentifier: string, updateAssessmentInput: UpdateAssessmentInput) {
 
-    let actiontypeCode: string = "COMPASSESS";
+    let actionTypeCode: string = "COMPASSESS";
+    let caseFileOutput: CaseFile;
 
     try {
       await this.prisma.$transaction(async (db) => {
 
+        await db.case_file.update({
+          where: { case_file_guid: caseIdentifier },
+          data: {
+            inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code:
+              updateAssessmentInput.assessmentDetails.actionJustificationCode ?
+                {
+                  connect: {
+                    inaction_reason_code: updateAssessmentInput.assessmentDetails.actionJustificationCode
+                  }
+                } : undefined,
+            action_not_required_ind: updateAssessmentInput.assessmentDetails.actionNotRequired,
+            update_user_id: updateAssessmentInput.updateUserId,
+            update_utc_timestamp: new Date(),
+          },
+        });
+
+        await db.lead.updateMany({
+          where: { case_identifier: caseIdentifier },
+          data: {
+            lead_identifier: updateAssessmentInput.leadIdentifier,
+            update_user_id: updateAssessmentInput.updateUserId,
+            update_utc_timestamp: new Date()
+          }
+        });
+
         for (const action of updateAssessmentInput.assessmentDetails.actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
-              action_type_code: actiontypeCode,
+              action_type_code: actionTypeCode,
               action_code: action.actionCode
             },
             select: {
@@ -350,19 +404,46 @@ export class CaseFileService {
             }
           });
 
-          await db.action.updateMany({
+          let actionTypeActionXrefs = await db.action.findMany({
             where: {
               case_guid: caseIdentifier,
-              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid
+              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
             },
-            data: {
-              actor_guid: action.actor,
-              action_date: action.date,
-              active_ind: action.activeIndicator,
-              update_user_id: updateAssessmentInput.updateUserId,
-              update_utc_timestamp: new Date
+            select: {
+              action_type_action_xref_guid: true
             }
           });
+          
+          if(actionTypeActionXrefs.length > 0)
+          {
+            await db.action.updateMany({
+              where: {
+                case_guid: caseIdentifier,
+                action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid
+              },
+              data: {
+                actor_guid: action.actor,
+                action_date: action.date,
+                active_ind: action.activeIndicator,
+                update_user_id: updateAssessmentInput.updateUserId,
+                update_utc_timestamp: new Date
+              }
+            });
+          }
+          else
+          {
+            await db.action.create({
+              data: {
+                case_guid: caseIdentifier,
+                action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+                actor_guid: action.actor,
+                action_date: action.date,
+                active_ind: action.activeIndicator,
+                create_user_id: updateAssessmentInput.updateUserId,
+                create_utc_timestamp: new Date
+              }
+            });
+          }
         };
         let assessmentCount: number = updateAssessmentInput.assessmentDetails.actions.length;
         if (assessmentCount === 0) {
@@ -372,62 +453,102 @@ export class CaseFileService {
           });
         };
       });
+
+      caseFileOutput = await this.findOne(caseIdentifier);
     }
     catch (exception) {
       console.log("exception", exception);
       throw new GraphQLError('Exception occurred. See server log for details', {
       });
     }
-    return ;
+    return caseFileOutput;
   }
 
   async updatePrevention(caseIdentifier: string, updatePreventionInput: UpdatePreventionInput) {
-
-    let actiontypeCode: string = "COMPASSESS";
+    console.log("ughkskkksaldfkjwioefjasf");
+    let actionTypeCode: string = "COSPRV&EDU";
+    let caseFileOutput: CaseFile;
 
     try {
       await this.prisma.$transaction(async (db) => {
-
+        console.log("updatePreventionInput.preventionDetails: " + JSON.stringify(updatePreventionInput.preventionDetails) + "\n");
         for (const action of updatePreventionInput.preventionDetails.actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
-              action_type_code: actiontypeCode,
+              action_type_code: actionTypeCode,
               action_code: action.actionCode
             },
             select: {
-              action_type_action_xref_guid: true
+              action_type_action_xref_guid: true,
+              action_code: true,
+              action_type_code: true,
+
+            }
+          });
+          
+          console.log("actionTypeActionXref: " + JSON.stringify(actionTypeActionXref) + "\n");
+          console.log("caseIdentifier: " + JSON.stringify(caseIdentifier) + "\n");
+
+          let actionTypeActionXrefs = await db.action.findMany({
+            where: {
+              case_guid: caseIdentifier,
+              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+            },
+            select: {
+              action_type_action_xref_guid: true,
+              case_guid: true,
             }
           });
 
-          await db.action.updateMany({
-            where: {
-              case_guid: caseIdentifier,
-              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid
-            },
-            data: {
-              actor_guid: action.actor,
-              action_date: action.date,
-              active_ind: action.activeIndicator,
-              update_user_id: updatePreventionInput.updateUserId,
-              update_utc_timestamp: new Date
-            }
-          });
-        };
-        let assessmentCount: number = updatePreventionInput.preventionDetails.actions.length;
-        if (assessmentCount === 0) {
+          console.log("actionTypeActionXrefsssssssss: " + JSON.stringify(actionTypeActionXrefs) + "\n");
+
+          if(actionTypeActionXrefs.length > 0)
+          {
+            await db.action.updateMany({
+              where: {
+                case_guid: caseIdentifier,
+                action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid
+              },
+              data: {
+                actor_guid: action.actor,
+                action_date: action.date,
+                active_ind: action.activeIndicator,
+                update_user_id: updatePreventionInput.updateUserId,
+                update_utc_timestamp: new Date
+              }
+            })
+          }
+          else
+          {
+            await db.action.create({
+              data: {
+                case_guid: caseIdentifier,
+                action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+                actor_guid: action.actor,
+                action_date: action.date,
+                active_ind: action.activeIndicator,
+                create_user_id: updatePreventionInput.updateUserId,
+                create_utc_timestamp: new Date
+              }
+            });
+          }
+          };
+        let preventionCount: number = updatePreventionInput.preventionDetails.actions.length;
+        if (preventionCount === 0) {
           await db.action.updateMany({
             where: { case_guid: caseIdentifier },
             data: { active_ind: false }
           });
         };
       });
+      caseFileOutput = await this.findOne(caseIdentifier);
     }
     catch (exception) {
       console.log("exception", exception);
       throw new GraphQLError('Exception occurred. See server log for details', {
       });
     }
-    return ;
+    return caseFileOutput;
   }
 
   remove(id: number) {
