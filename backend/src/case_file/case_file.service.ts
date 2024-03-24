@@ -5,6 +5,7 @@ import { PrismaService } from "nestjs-prisma";
 import { CaseFile } from './entities/case_file.entity';
 import { AssessmentAction } from './entities/assessment-action.entity';
 import { GraphQLError } from 'graphql';
+import { Prisma, equipment } from '@prisma/client';
 
 @Injectable()
 export class CaseFileService {
@@ -429,6 +430,96 @@ export class CaseFileService {
     }
     return ;
   }
+
+    // Create an equipment record, and then add an action record.  All done in a transaction
+    async createEquipment(createEquipmentInput: Prisma.equipmentCreateInput, leadIdenfifier: string): Promise<equipment> {
+      try {
+        // Start transaction
+        return await this.prisma.$transaction(async (db) => {
+
+          let caseFileGuid: string = await this.createEquipmentCase(leadIdenfifier, createEquipmentInput.create_user_id);
+          // Create the equipment record
+          const newEquipment = await db.equipment.create({
+            data: {
+              ...createEquipmentInput,
+            },
+          });
+  
+          // Get the action_type_action_xref_guid for "SETEQUIPMT", we need this because we'll be creating an action for adding this equipment
+          const actionTypeActionXref = await db.action_type_action_xref.findFirst({
+            where: {
+              action_code: "SETEQUIPMT",
+            },
+          });
+  
+          if (!actionTypeActionXref) throw new Error('Action type for "SETEQUIPMT" not found.');
+
+          await db.action.create({
+            data: {
+              case_guid: caseFileGuid,
+              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+              actor_guid: createEquipmentInput.create_user_id,
+              action_date: createEquipmentInput.create_utc_timestamp,
+              active_ind: createEquipmentInput.active_ind,
+              create_user_id: createEquipmentInput.create_user_id,
+              create_utc_timestamp: new Date
+            }
+          });
+
+
+          return newEquipment;
+        });
+      } catch (error) {
+        console.error('Failed to create equipment:', error);
+        throw new Error('Failed to create equipment. Please try again.');
+      }
+    }
+
+    async createEquipmentCase(leadIdentifier: string, createUserId: string): Promise<string> {
+    {
+      let caseFileGuid: string;
+        
+      try
+      {
+        await this.prisma.$transaction(async (db) => {
+  
+          let case_file = await db.case_file.create({
+            data: {
+              agency_code: {
+                connect: {
+                  agency_code: "COS"
+                }
+              },
+              create_user_id: createUserId,
+              create_utc_timestamp: new Date(),
+              case_code_case_file_case_codeTocase_code: {
+                connect: {
+                  case_code: "HWCR"
+                }
+              },
+            }
+          });
+  
+          caseFileGuid = case_file.case_file_guid;
+  
+          await db.lead.create({
+            data: {
+              lead_identifier: leadIdentifier,
+              case_identifier: caseFileGuid,
+              create_user_id: createUserId,
+              create_utc_timestamp: new Date()
+            }
+          });
+        });
+      }
+      catch (exception) {
+        console.log("exception", exception);
+        throw new GraphQLError('Exception occurred. See server log for details', {
+        });
+      }
+      return caseFileGuid;
+    }
+      }
 
   remove(id: number) {
     return `This action removes a #${id} caseFile`;

@@ -6,6 +6,7 @@ import { JwtRoleGuard } from "../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
 import { Role } from "../enum/role.enum";
 import { Roles } from "../auth/decorators/roles.decorator";
+import { Prisma, equipment } from '@prisma/client';
 
 @UseGuards(JwtRoleGuard)
 @Resolver('CaseFile')
@@ -48,4 +49,11 @@ export class CaseFileResolver {
     return this.caseFileService.updatePrevention(updatePreventionInput.caseIdentifier, updatePreventionInput);
   }
 
+  @Mutation('createEquipment')
+  async createEquipment(
+    @Args('input') createEquipmentInput: Prisma.equipmentCreateInput,
+    @Args('leadIdentifier', { type: () => String, nullable: false }) leadIdentifier: string,
+  ): Promise<equipment> {
+    return this.caseFileService.createEquipment(createEquipmentInput, leadIdentifier);
+  }
 }

@@ -46,7 +46,7 @@ import { DateScalar } from "./common/custom_scalars";
     ConfigurationModule,
     HWCRAssessmentActionModule,
     CaseFileModule,
-    InactionJustificationTypeModule
+    InactionJustificationTypeModule,
   ],
   controllers: [AppController],
   providers: [AppService, DateScalar],

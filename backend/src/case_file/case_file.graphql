@@ -106,4 +106,6 @@ type Mutation {
 
   createPrevention(createAssessmentInput: CreateAssessmentInput!): CaseFile!
   updatePrevention(updateAssessmentInput: UpdateAssessmentInput!): CaseFile!
+
+  createEquipment(createEquipmentInput: CreateEquipmentInput!): CaseFile!
 }
