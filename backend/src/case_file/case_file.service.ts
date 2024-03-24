@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAssessmentInput, CreatePreventionInput } from './dto/create-case_file.input';
+import { CreateAssessmentInput, CreateEquipmentInput, CreatePreventionInput } from './dto/create-case_file.input';
 import { UpdateAssessmentInput, UpdatePreventionInput } from './dto/update-case_file.input';
 import { PrismaService } from "nestjs-prisma";
 import { CaseFile } from './entities/case_file.entity';
@@ -433,4 +433,139 @@ export class CaseFileService {
   remove(id: number) {
     return `This action removes a #${id} caseFile`;
   }
+
+  async createEquipmentCase(createInput: CreateEquipmentInput): Promise<string>
+  {
+    let caseFileGuid: string;
+      
+    try
+    {
+      await this.prisma.$transaction(async (db) => {
+
+        let case_file = await db.case_file.create({
+          data: {
+            agency_code: {
+              connect: {
+                agency_code: createInput.agencyCode
+              }
+            },
+            create_user_id: createInput.createUserId,
+            create_utc_timestamp: new Date(),
+            case_code_case_file_case_codeTocase_code: {
+              connect: {
+                case_code: createInput.caseCode
+              }
+            },
+          }
+        });
+
+        caseFileGuid = case_file.case_file_guid;
+
+        await db.lead.create({
+          data: {
+            lead_identifier: createInput.leadIdentifier,
+            case_identifier: caseFileGuid,
+            create_user_id: createInput.createUserId,
+            create_utc_timestamp: new Date()
+          }
+        });
+      });
+    }
+    catch (exception) {
+      console.log("exception", exception);
+      throw new GraphQLError('Exception occurred. See server log for details', {
+      });
+    }
+    return caseFileGuid;
+  }
+  
+
+  async createEquipment(createEquipmentInput: CreateEquipmentInput): Promise<CaseFile> {
+
+    const actiontypeCode: string = "EQUIPMENT";
+    const actionCode: string = "SETEQUIPMT"
+
+    let caseFile = await this.findOneByLeadId(createEquipmentInput.leadIdentifier);
+    let caseFileGuid;
+
+    if (caseFile?.caseIdentifier) {
+      caseFileGuid = caseFile.caseIdentifier;
+    } else {
+      caseFileGuid =  await this.createEquipmentCase(createEquipmentInput);
+    }
+
+    console.log(`Case Guid: ${caseFileGuid}`);
+
+    let caseFileOutput: CaseFile;
+    try {
+      await this.prisma.$transaction(async (db) => {
+        
+        // create the equipment record
+        const newEquipment = await db.equipment.create({
+          data: {
+            active_ind: true,
+            create_user_id: createEquipmentInput.createUserId,
+            create_utc_timestamp: new Date,
+            update_user_id: createEquipmentInput.createUserId,
+            update_utc_timestamp: new Date,
+            equipment_code: createEquipmentInput.equipmentDetails[0].actionEquipmentTypeCode,
+            equipment_location_desc: createEquipmentInput.equipmentDetails[0].equipmentLocationDesc,
+            equipment_geometry_point: createEquipmentInput.equipmentDetails[0].equipmentGeometryPoint
+          },
+        });
+        
+        console.log(`New Equipment: ${newEquipment}`);
+        
+        
+        let action_codes_objects = await db.action_type_action_xref.findMany({
+          where: { action_type_code: actiontypeCode },
+          select: { action_code: true }
+        });
+        let action_codes: Array<string> = [];
+        for (const action_code_object of action_codes_objects) {
+          action_codes.push(action_code_object.action_code);
+        }
+
+        const equipmentDetailsInstance = createEquipmentInput.equipmentDetails[0];
+        const actions = equipmentDetailsInstance.actions;
+
+        for (const action of actions) {
+          if (action_codes.indexOf(action.actionCode) === -1) {
+            throw "Some action code values where not passed from the client";
+          };
+        }
+
+        for (const action of actions) {
+          let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
+            where: {
+              action_type_code: actiontypeCode,
+              action_code: action.actionCode
+            },
+            select: {
+              action_type_action_xref_guid: true
+            }
+          });
+          await db.action.create({
+            data: {
+              case_guid: caseFileGuid,
+              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+              actor_guid: action.actor,
+              action_date: action.date,
+              active_ind: action.activeIndicator,
+              create_user_id: createEquipmentInput.createUserId,
+              create_utc_timestamp: new Date
+            }
+          });
+        }
+      });
+      caseFileOutput = await this.findOne(caseFileGuid);
+    }
+      catch (exception) {
+        console.log("exception", exception);
+        throw new GraphQLError('Exception occurred. See server log for details', {
+        });
+      }
+    return caseFileOutput;
+  }
+
 }

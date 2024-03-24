@@ -20,6 +20,8 @@ ALTER TABLE case_management.equipment ADD CONSTRAINT FK_equipment__equipment_cod
 
 ALTER TABLE action ADD COLUMN equipment_guid uuid;
 
+ALTER TABLE case_management.equipment ALTER COLUMN equipment_guid SET DEFAULT case_management.uuid_generate_v4();
+
 ALTER TABLE case_management.action ADD CONSTRAINT FK_action__equipment_guid FOREIGN KEY (equipment_guid) REFERENCES case_management.equipment(equipment_guid);
 
 comment on table case_management.equipment is 'Represents a piece of physical equipment that has been deployed in support of the case.   Contains information about where and when the equipment was deployed.';
