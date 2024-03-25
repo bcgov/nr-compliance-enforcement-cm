@@ -7,6 +7,7 @@ import { GraphQLError } from "graphql";
 import { CreateSupplementalNoteInput } from "./dto/supplemental-note/create-supplemental-note.input";
 import { Note } from "./entities/supplemental-note/supplemental-note.entity";
 import { ACTION_CODES } from "../common/action_codes";
+import { UpdateSupplementalNoteInput } from "./dto/supplemental-note/update-supplemental-note.input";
 
 @Injectable()
 export class CaseFileService {
@@ -632,6 +633,12 @@ export class CaseFileService {
 
     return await this._upsertNote(caseFileId, note, actor, createUserId);
   };
+
+  updateNote = async (input: UpdateSupplementalNoteInput): Promise<CaseFile> => {
+    const { caseIdentifier: caseFileId, actor, note, updateUserId } = input;
+
+    return await this._upsertNote(caseFileId, note, actor, updateUserId);
+  }
 
   private _upsertNote = async (caseId: string, note: string, actor: string, userId: string): Promise<CaseFile> => {
     const _hasAction = async (caseId: string): Promise<boolean> => {
