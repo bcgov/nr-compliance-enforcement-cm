@@ -1,4 +1,4 @@
-import { AssessmentAction } from "./assessment-action.entity";
+import { Action } from "./case-action.entity";
 
 export class Assessment {
     actionNotRequired: boolean;
@@ -6,6 +6,6 @@ export class Assessment {
     actionJustificationShortDescription: string;
     actionJustificationLongDescription: string;
     actionJustificationActiveIndicator: boolean;
-    actions: AssessmentAction[]
+    actions: Action[]
 
 }

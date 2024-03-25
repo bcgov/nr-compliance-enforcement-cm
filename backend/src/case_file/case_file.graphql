@@ -4,6 +4,7 @@ type CaseFile {
   caseIdentifier: String
   leadIdentifier: String
   assessmentDetails: Assessment
+  preventionDetails: Prevention
   isReviewRequired: Boolean
   reviewComplete: {
     actor: String!
@@ -126,10 +127,8 @@ type Query {
 type Mutation {
   createAssessment(createAssessmentInput: CreateAssessmentInput!): CaseFile!
   updateAssessment(updateAssessmentInput: UpdateAssessmentInput!): CaseFile!
-
-  createPrevention(createAssessmentInput: CreateAssessmentInput!): CaseFile!
-  updatePrevention(updateAssessmentInput: UpdateAssessmentInput!): CaseFile!
-
+  createPrevention(createPreventionInput: CreatePreventionInput!): CaseFile!
+  updatePrevention(updatePreventionInput: UpdatePreventionInput!): CaseFile!
   createReview(reviewInput: ReviewInput!): CaseFile!
   updateReview(reviewInput: ReviewInput!): CaseFile!
 }
