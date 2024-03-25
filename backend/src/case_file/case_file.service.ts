@@ -494,8 +494,6 @@ export class CaseFileService {
       caseFileGuid =  await this.createEquipmentCase(createEquipmentInput);
     }
 
-    console.log(`Case Guid: ${caseFileGuid}`);
-
     let caseFileOutput: CaseFile;
     try {
       await this.prisma.$transaction(async (db) => {

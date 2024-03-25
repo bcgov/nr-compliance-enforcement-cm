@@ -26,7 +26,15 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getClass,
     ]);
 
-    return true;
+    // Log controller/route information before the isPublic check
+    this.logger.debug(`Executing ${className}.${handler.name}`);
+    this.logger.debug(`isPublic? ${isPublic}`);
+
+    if (isPublic) {
+      return true;
+    } else {
+      return super.canActivate(context);
+    }
   }
 
   handleRequest(err, user, info) {

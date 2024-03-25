@@ -49,6 +49,7 @@ export class CaseFileResolver {
   }
 
   @Mutation('createEquipment')
+  @Roles(Role.COS_OFFICER)
   createEquipment(@Args('createEquipmentInput') createEquipmentInput: CreateEquipmentInput) {
     return this.caseFileService.createEquipment(createEquipmentInput);
   }
