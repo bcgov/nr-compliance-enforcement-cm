@@ -136,6 +136,7 @@ type Mutation {
   createPrevention(createPreventionInput: CreatePreventionInput!): CaseFile!
   updatePrevention(updatePreventionInput: UpdatePreventionInput!): CaseFile!
 
+
   createNote(input: CreateSupplementalNoteInput!): CaseFile!
   updateNote(input: UpdateSupplementalNoteInput!): CaseFile!
 }
