@@ -1,7 +1,7 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { CaseFileService } from './case_file.service';
-import { CreateAssessmentInput } from './dto/create-case_file.input';
-import { UpdateAssessmentInput } from './dto/update-case_file.input';
+import { CreateAssessmentInput, CreatePreventionInput } from './dto/create-case_file.input';
+import { UpdateAssessmentInput, UpdatePreventionInput } from './dto/update-case_file.input';
 import { JwtRoleGuard } from "../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
 import { Role } from "../enum/role.enum";
@@ -14,8 +14,14 @@ export class CaseFileResolver {
 
   @Mutation('createAssessment')
   @Roles(Role.COS_OFFICER)
-  create(@Args('createAssessmentInput') createAssessmentInput: CreateAssessmentInput) {
-    return this.caseFileService.create(createAssessmentInput);
+  createAssessment(@Args('createAssessmentInput') createAssessmentInput: CreateAssessmentInput) {
+    return this.caseFileService.createAssessment(createAssessmentInput);
+  }
+
+  @Mutation('createPrevention')
+  @Roles(Role.COS_OFFICER)
+  createPrevention(@Args('createPreventionInput') createPreventionInput: CreatePreventionInput) {
+    return this.caseFileService.createPrevention(createPreventionInput);
   }
 
   @Query('getCaseFile')
@@ -32,8 +38,14 @@ export class CaseFileResolver {
 
   @Mutation('updateAssessment')
   @Roles(Role.COS_OFFICER)
-  update(@Args('updateAssessmentInput') updateAssessmentInput: UpdateAssessmentInput) {
-    return this.caseFileService.update(updateAssessmentInput.caseIdentifier, updateAssessmentInput);
+  updateAssessment(@Args('updateAssessmentInput') updateAssessmentInput: UpdateAssessmentInput) {
+    return this.caseFileService.updateAssessment(updateAssessmentInput.caseIdentifier, updateAssessmentInput);
+  }
+
+  @Mutation('updatePrevention')
+  @Roles(Role.COS_OFFICER)
+  updatePrevention(@Args('updatePreventionInput') updatePreventionInput: UpdatePreventionInput) {
+    return this.caseFileService.updatePrevention(updatePreventionInput.caseIdentifier, updatePreventionInput);
   }
 
 }

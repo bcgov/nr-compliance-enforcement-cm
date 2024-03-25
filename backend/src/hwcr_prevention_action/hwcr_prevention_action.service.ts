@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from "nestjs-prisma";
-import { HWCRAssessmentAction } from './entities/hwcr_assessment_action.entity';
+import { HWCRPreventionAction } from './entities/hwcr_prevention_action.entity';
 
 @Injectable()
-export class HWCRAssessmentActionService {
+export class HWCRPreventionActionService {
   constructor(private prisma: PrismaService) { }
 
   async find(actionTypeCode?: string) {
     const dataContext = this.prisma.action_type_action_xref;
     let queryResult = null;
-    actionTypeCode = "COMPASSESS"; //send from frontend later?
+    actionTypeCode = "COSPRV&EDU"; //send from frontend later?
     if (actionTypeCode) {
       queryResult = await dataContext.findMany({
         where: {
@@ -26,6 +26,9 @@ export class HWCRAssessmentActionService {
               long_description: true,
             }
           }
+        },
+        orderBy: {
+          display_order: 'asc',
         }
       })
     }
@@ -45,11 +48,11 @@ export class HWCRAssessmentActionService {
         }
       })
     }
-    let actionCodes: Array<HWCRAssessmentAction> = [];
+    let actionCodes: Array<HWCRPreventionAction> = [];
 
     queryResult.forEach((record) => {
       actionCodes.push(
-        Object.assign(new HWCRAssessmentAction(), {
+        Object.assign(new HWCRPreventionAction(), {
           actionTypeCode: record.action_type_code,
           actionCode: record.action_code,
           displayOrder: record.display_order,
