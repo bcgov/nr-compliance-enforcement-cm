@@ -26,6 +26,9 @@ export class HWCRPreventionActionService {
               long_description: true,
             }
           }
+        },
+        orderBy: {
+          display_order: 'asc',
         }
       })
     }
