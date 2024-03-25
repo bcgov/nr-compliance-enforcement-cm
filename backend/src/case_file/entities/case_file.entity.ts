@@ -1,7 +1,8 @@
 import { Assessment } from "./assessment.entity";
 
 export class CaseFile {
-    caseIdentifier: string;
+    caseIdentifier?: string;
     leadIdentifier: string;
-    assessmentDetails: Assessment;
+    assessmentDetails?: Assessment;
+    isReviewRequired?: boolean;
 }

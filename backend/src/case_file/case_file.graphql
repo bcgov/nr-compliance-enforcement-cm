@@ -1,9 +1,16 @@
 scalar Date
 
 type CaseFile {
-  caseIdentifier : String
+  caseIdentifier: String
   leadIdentifier: String
   assessmentDetails: Assessment
+  isReviewRequired: Boolean
+  reviewComplete: {
+    actor: String!
+    date: Date!
+    actionCode: String!
+    actionId: String
+  }
 }
 
 type Assessment {
@@ -95,6 +102,22 @@ input UpdatePreventionInput {
   updateUserId: String!
 }
 
+input ReviewInput {
+  leadIdentifier: String!
+  agencyCode: String!
+  caseCode: String!
+  userId: String!
+  isReviewRequired: Boolean!
+  caseIdentifier: String
+  reviewComplete: {
+    actor: String
+    date: Date
+    actionCode: String
+  }
+}
+
+
+
 type Query {
   getCaseFile( caseIdentifier: String!): CaseFile
   getCaseFileByLeadId( leadIdentifier: String!): CaseFile
@@ -106,4 +129,7 @@ type Mutation {
 
   createPrevention(createAssessmentInput: CreateAssessmentInput!): CaseFile!
   updatePrevention(updateAssessmentInput: UpdateAssessmentInput!): CaseFile!
+
+  createReview(reviewInput: ReviewInput!): CaseFile!
+  updateReview(reviewInput: ReviewInput!): CaseFile!
 }

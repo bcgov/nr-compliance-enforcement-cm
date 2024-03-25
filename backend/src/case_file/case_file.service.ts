@@ -5,6 +5,7 @@ import { PrismaService } from "nestjs-prisma";
 import { CaseFile } from './entities/case_file.entity';
 import { AssessmentAction } from './entities/assessment-action.entity';
 import { GraphQLError } from 'graphql';
+import { ReviewInput } from './dto/review-input';
 
 @Injectable()
 export class CaseFileService {
@@ -426,6 +427,166 @@ export class CaseFileService {
       });
     }
     return ;
+  }
+
+  //create new case and new lead if not exists when mutation createReview called 
+  async createReviewCase(reviewInput: ReviewInput): Promise<string>
+  {
+    try
+    {
+      let caseFileId: string;
+      await this.prisma.$transaction(async (db) => {
+        //create case
+        const caseFile = await db.case_file.create({
+          data: {
+            agency_code: {
+              connect: {
+                agency_code: reviewInput.agencyCode
+              }
+            },
+            create_user_id: reviewInput.userId,
+            create_utc_timestamp: new Date(),
+            review_required_ind: true,
+            case_code_case_file_case_codeTocase_code: {
+              connect: {
+                case_code: reviewInput.caseCode
+              }
+            },
+          }
+        });
+        caseFileId = caseFile.case_file_guid
+        //create lead
+        await db.lead.create({
+          data: {
+            lead_identifier: reviewInput.leadIdentifier,
+            case_identifier: caseFile.case_file_guid,
+            create_user_id: reviewInput.userId,
+            create_utc_timestamp: new Date()
+          }
+        });
+      });
+      return caseFileId;
+    }
+    catch (err) {
+      console.error(err);
+      throw new GraphQLError('Error in createReviewCase', {});
+    }
+  }
+
+  //Create review complete action in table action
+  async createReviewComplete(reviewInput: ReviewInput): Promise<string>
+  {
+    try
+    {
+      let actionId: string;
+      await this.prisma.$transaction(async (db) => {
+        let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
+          where: {
+            action_type_code: "CASEACTION",
+            action_code: "COMPLTREVW"
+          },
+          select: {
+            action_type_action_xref_guid: true
+          }
+        });
+        const reviewAction = await db.action.create({
+          data: {
+            case_guid: reviewInput.caseIdentifier,
+            action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+            actor_guid: reviewInput.reviewComplete.actor,
+            action_date: reviewInput.reviewComplete.date,
+            active_ind: true, //True: review complete, false: review not complete
+            create_user_id: reviewInput.userId,
+            create_utc_timestamp: new Date
+          }
+        });
+        actionId = reviewAction.action_guid
+      });
+      return actionId;
+    }
+    catch (err) {
+      console.error(err);
+      throw new GraphQLError('Error in createReviewComplete', {});
+    }
+  }
+
+  //Mutation createReview
+  async createReview(reviewInput: ReviewInput): Promise<CaseFile> {
+    try {
+      let result: CaseFile = {...reviewInput}
+      //If case is not exists -> create case
+      if(!reviewInput.caseIdentifier) {
+        const caseFileId = await this.createReviewCase(reviewInput);
+        result.caseIdentifier = caseFileId
+        result.isReviewRequired = true
+      }
+      //Else update review_required_ind to true
+      else {
+        await this.prisma.$transaction(async (db) => {
+          //update isReviewRequired to true
+          if(!reviewInput.isReviewRequired) {
+            const caseFile = await db.case_file.update({
+              where: {
+                case_file_guid: reviewInput.caseIdentifier
+              },
+              data: {
+                review_required_ind: true
+              }
+            });
+            result.isReviewRequired = caseFile.review_required_ind
+          }
+          else {
+            //if isReviewRequired && reviewComplete, create reviewComplete action
+            if(reviewInput.reviewComplete && !reviewInput.reviewComplete.actionId) {
+              const actionId = await this.createReviewComplete(reviewInput);
+              reviewInput.reviewComplete.actionId = actionId;
+            }
+          }
+        });
+      }
+      return result;
+    }
+    catch (err) {
+      console.error(err);
+      throw new GraphQLError('Error in createReview', {});
+    }
+  }
+
+  async updateReview(reviewInput: ReviewInput) {
+    try {
+      const {
+        leadIdentifier,
+        agencyCode,
+        caseCode,
+        userId,
+        isReviewRequired,
+        caseIdentifier,
+        reviewComplete,
+      } = reviewInput;
+      
+      await this.prisma.$transaction(async (db) => {
+        //update review_required_ind in table case_file
+        const caseFile = await db.case_file.update({
+          where: {
+            case_file_guid: reviewInput.caseIdentifier
+          },
+          data: {
+            review_required_ind: isReviewRequired
+          }
+        });
+        
+        if (!isReviewRequired || !reviewComplete) {
+          //remove reviewComplete action in table action if isReviewRequired is false
+          await db.action.delete({
+            where: { action_guid: reviewInput.reviewComplete.actionId }
+          });
+        }
+      });
+    }
+    catch (err) {
+      console.error(err);
+      throw new GraphQLError('Error in updateReview', {});
+    }
   }
 
   remove(id: number) {
