@@ -1,8 +1,8 @@
 insert into	case_management.action_code 
     (action_code, short_description, long_description, active_ind, create_user_id, create_utc_timestamp)
 values 
-    ('CNTCTBIOVT', 'Contacted FLNRORD Biologist/Veterinarian', 'Contacted FLNRORD Biologist/Veterinarian', 'Y', CURRENT_USER, CURRENT_TIMESTAMP),
-    ('DIRLOWLACT', 'Direct livestock owner to / explain section 2, 26(2) and 75 of the Wildlife Act', 'Direct livestock owner to / explain section 2, 26(2) and 75 of the Wildlife Act', 'Y', CURRENT_USER, CURRENT_TIMESTAMP), 
+    ('CNTCTBIOVT', 'Contacted biologist and/or veterinarian', 'Contacted biologist and/or veterinarian', 'Y', CURRENT_USER, CURRENT_TIMESTAMP),
+    ('DIRLOWLACT', 'Directed livestock owner to or explained sections 2, 26(2) and 75 of the Wildlife Act', 'Directed livestock owner to or explained sections 2, 26(2) and 75 of the Wildlife Act', 'Y', CURRENT_USER, CURRENT_TIMESTAMP), 
     ('CONTACTLPP', 'Contacted the Livestock Protection Program ("LPP") (cattle and sheep only)', 'Contacted the Livestock Protection Program ("LPP") (cattle and sheep only)', 'Y', CURRENT_USER, CURRENT_TIMESTAMP)
 on conflict do nothing;
 
@@ -18,3 +18,6 @@ values
     ('COSPRV&EDU', 'DIRLOWLACT', 7, 'Y', CURRENT_USER, CURRENT_TIMESTAMP),
     ('COSPRV&EDU', 'CONTACTLPP', 8, 'Y', CURRENT_USER, CURRENT_TIMESTAMP)
 on conflict do nothing;
+
+UPDATE case_management.configuration
+SET configuration_value = 2 WHERE configuration_code = 'CDTABLEVER';
