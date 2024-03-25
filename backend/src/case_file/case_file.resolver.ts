@@ -6,6 +6,7 @@ import { JwtRoleGuard } from "../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
 import { Role } from "../enum/role.enum";
 import { Roles } from "../auth/decorators/roles.decorator";
+import { CreateSupplementalNoteInput } from './dto/supplemental-note/create-supplemental-note.input';
 
 @UseGuards(JwtRoleGuard)
 @Resolver('CaseFile')
@@ -48,4 +49,9 @@ export class CaseFileResolver {
     return this.caseFileService.updatePrevention(updatePreventionInput.caseIdentifier, updatePreventionInput);
   }
 
+  @Mutation("createNote")
+  @Roles(Role.COS_OFFICER)
+  createNote(@Args("input") input: CreateSupplementalNoteInput) {
+    return this.caseFileService.createNote(input);
+  }
 }
