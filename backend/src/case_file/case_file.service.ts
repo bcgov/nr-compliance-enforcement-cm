@@ -422,8 +422,10 @@ export class CaseFileService {
         case_identifier: true,
       },
     });
+    console.log("caseIdRecord: ", caseIdRecord);
     if (caseIdRecord?.case_identifier) {
       caseFileOutput = await this.findOne(caseIdRecord.case_identifier);
+      console.log("caseFileOutput:", caseFileOutput);
     }
 
     return caseFileOutput;
@@ -638,7 +640,7 @@ export class CaseFileService {
     const { caseIdentifier: caseFileId, actor, note, updateUserId } = input;
 
     return await this._upsertNote(caseFileId, note, actor, updateUserId);
-  }
+  };
 
   private _upsertNote = async (caseId: string, note: string, actor: string, userId: string): Promise<CaseFile> => {
     const _hasAction = async (caseId: string): Promise<boolean> => {
@@ -687,6 +689,16 @@ export class CaseFileService {
 
         if (await _hasAction(caseId)) {
           const xrefId = await _getActionXref(caseId);
+          console.log("XREFID: ", xrefId);
+
+          const action = await db.action.findFirst({
+            where: {
+              case_guid: caseId,
+              action_type_action_xref_guid: xrefId,
+            }
+          });
+
+          console.log("ACTION: ", action)
           await db.action_type_action_xref.update({
             where: {
               action_type_action_xref_guid: xrefId,
@@ -697,10 +709,9 @@ export class CaseFileService {
             },
           });
 
-          await db.action.updateMany({
+          await db.action.update({
             where: {
-              case_guid: caseId,
-              action_type_action_xref_guid: xrefId,
+              action_guid: action.action_guid,
             },
             data: {
               actor_guid: actor,
@@ -738,6 +749,9 @@ export class CaseFileService {
 
         //-- the system can't create a note as the note is part of the case file
         //-- this means that the note will always update the case file
+        console.log("INPUT NOTE: ", note)
+        console.log("INPUT USERID: ", userId)
+        console.log("INPUT date: ", current)
         await db.case_file.update({
           where: {
             case_file_guid: caseId,
