@@ -6,12 +6,14 @@ type CaseFile {
   assessmentDetails: Assessment
   preventionDetails: Prevention
   isReviewRequired: Boolean
-  reviewComplete: {
-    actor: String!
-    date: Date!
-    actionCode: String!
-    actionId: String
-  }
+  reviewComplete: ReviewCompleteAction
+}
+
+type ReviewCompleteAction {
+  actor: String!
+  date: Date!
+  actionCode: String!
+  actionId: String
 }
 
 type Assessment {
@@ -110,14 +112,15 @@ input ReviewInput {
   userId: String!
   isReviewRequired: Boolean!
   caseIdentifier: String
-  reviewComplete: {
-    actor: String
-    date: Date
-    actionCode: String
-  }
+  reviewComplete: ReviewActionInput
 }
 
-
+input ReviewActionInput {
+  actor: String!
+  date: Date!
+  actionCode: String!
+  actionId: String
+}
 
 type Query {
   getCaseFile( caseIdentifier: String!): CaseFile

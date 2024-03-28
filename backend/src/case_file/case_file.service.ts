@@ -310,12 +310,22 @@ export class CaseFileService {
       }
     });
 
+    const reviewXref = await this.prisma.action_type_action_xref.findFirst({
+      where: { 
+        action_code: 'COMPLTREVW',
+      },
+      select: { action_type_action_xref_guid: true }
+    });
+
+    const reviewComplete = actionsBase.find(element => element.action_type_action_xref_guid === reviewXref.action_type_action_xref_guid);
+
     const caseFile = await this.prisma.case_file.findFirst({
       where: {
         case_file_guid: caseIdentifier
       },
       select: {
         case_file_guid: true,
+        review_required_ind: true,
         action_not_required_ind: true,
         inaction_reason_code: true,
         inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: {
@@ -331,7 +341,7 @@ export class CaseFileService {
       }
     });
 
-    const case_file: CaseFile = {
+    let case_file: CaseFile = {
       caseIdentifier: caseFile?.case_file_guid,
       leadIdentifier: lead?.lead_identifier,
       assessmentDetails:
@@ -346,8 +356,17 @@ export class CaseFileService {
       preventionDetails:
       {
         actions: preventionActions
-      }
+      },
+      isReviewRequired: caseFile?.review_required_ind
     };
+
+    if(reviewComplete) {
+      case_file.reviewComplete = {
+        actor: reviewComplete.actor_guid,
+        date: reviewComplete.action_date,
+        actionCode: "COMPLTREVW"
+      }
+    }
     return case_file;
 
   }
@@ -649,27 +668,24 @@ export class CaseFileService {
         result.caseIdentifier = caseFileId
         result.isReviewRequired = true
       }
-      //Else update review_required_ind to true
+      //Else update review_required_ind
       else {
         await this.prisma.$transaction(async (db) => {
           //update isReviewRequired to true
-          if(!reviewInput.isReviewRequired) {
-            const caseFile = await db.case_file.update({
-              where: {
-                case_file_guid: reviewInput.caseIdentifier
-              },
-              data: {
-                review_required_ind: true
-              }
-            });
-            result.isReviewRequired = caseFile.review_required_ind
-          }
-          else {
-            //if isReviewRequired && reviewComplete, create reviewComplete action
-            if(reviewInput.reviewComplete && !reviewInput.reviewComplete.actionId) {
-              const actionId = await this.createReviewComplete(reviewInput);
-              reviewInput.reviewComplete.actionId = actionId;
+          const caseFile = await db.case_file.update({
+            where: {
+              case_file_guid: reviewInput.caseIdentifier
+            },
+            data: {
+              review_required_ind: reviewInput.isReviewRequired
             }
+          });
+          result.isReviewRequired = caseFile.review_required_ind
+
+          //if isReviewRequired && reviewComplete, create reviewComplete action
+          if(reviewInput.isReviewRequired && reviewInput.reviewComplete && !reviewInput.reviewComplete.actionId) {
+            const actionId = await this.createReviewComplete(reviewInput);
+            reviewInput.reviewComplete.actionId = actionId;
           }
         });
       }

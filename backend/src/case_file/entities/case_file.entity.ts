@@ -11,6 +11,6 @@ export class CaseFile {
         actor: string
         date: Date
         actionCode: string
-        actionId: string
+        actionId?: string
     }
 }

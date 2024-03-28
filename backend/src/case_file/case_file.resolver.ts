@@ -27,7 +27,7 @@ export class CaseFileResolver {
 
   @Mutation('createReview')
   @Roles(Role.COS_OFFICER)
-  createReview(@Args('createReviewInput') reviewInput: ReviewInput) {
+  createReview(@Args('reviewInput') reviewInput: ReviewInput) {
     return this.caseFileService.createReview(reviewInput);
   }
 
@@ -57,7 +57,7 @@ export class CaseFileResolver {
 
   @Mutation('updateReview')
   @Roles(Role.COS_OFFICER)
-  updateReview(@Args('updateReviewInput') reviewInput: ReviewInput) {
+  updateReview(@Args('reviewInput') reviewInput: ReviewInput) {
     return this.caseFileService.updateReview(reviewInput);
   }
 
