@@ -1,3 +1,0 @@
-export const ACTION_CODES = { 
-  UPDATENOTE: "UPDATENOTE"
-}

@@ -6,8 +6,11 @@ import { CaseFile } from "./entities/case_file.entity";
 import { GraphQLError } from "graphql";
 import { CreateSupplementalNoteInput } from "./dto/supplemental-note/create-supplemental-note.input";
 import { Note } from "./entities/supplemental-note/supplemental-note.entity";
-import { ACTION_CODES } from "../common/action_codes";
+import { ACTION_CODES } from "../common/action-codes";
 import { UpdateSupplementalNoteInput } from "./dto/supplemental-note/update-supplemental-note.input";
+import { CaseFileActionItem } from "./entities/case-file-action-detail";
+import { Action } from "./entities/case-action.entity";
+import { ACTION_TYPE_CODES } from "src/common/action-type-codes";
 
 @Injectable()
 export class CaseFileService {
@@ -252,7 +255,7 @@ export class CaseFileService {
 
     const _populateNotes = async (caseFile): Promise<Note> => {
       const { note_text: note, case_file_guid: caseId } = caseFile;
-      let result = { note: "", action: { actor: "", action: "", date: undefined } } as Note;
+      let result = { note: "", action: { actor: "", actionCode: "", date: undefined } } as Note;
 
       //-- use raw sql query to get the note action
       //-- TODO: try to replace with a proper prisma query
@@ -271,7 +274,7 @@ export class CaseFileService {
       //-- before trying to return the note
       if (results.length !== 0) {
         const { action, actor, created } = results[0];
-        result = { ...result, note, action: { actor, action, date: created } };
+        result = { ...result, note, action: { actor, actionCode: action, date: created } };
       }
 
       return Promise.resolve(result);
@@ -412,6 +415,209 @@ export class CaseFileService {
     return case_file;
   }
 
+  _findOne = async (id: string): Promise<CaseFile> => {
+    //---------
+    //-- query
+    //---------
+    const prismaCase = await this.prisma.case_file.findUnique({
+      where: {
+        case_file_guid: id,
+      },
+      select: {
+        case_file_guid: true,
+        action_not_required_ind: true,
+        inaction_reason_code: true,
+        note_text: true,
+        inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: {
+          select: {
+            short_description: true,
+            long_description: true,
+            active_ind: true,
+          },
+        },
+        lead: {
+          select: {
+            lead_identifier: true,
+          },
+        },
+        action: {
+          select: {
+            actor_guid: true,
+            action_date: true,
+            action_type_action_xref: {
+              select: {
+                action_code_action_type_action_xref_action_codeToaction_code: {
+                  select: {
+                    action_code: true,
+                    short_description: true,
+                    long_description: true,
+                    active_ind: true,
+                  },
+                },
+                action_type_code_action_type_action_xref_action_type_codeToaction_type_code: {
+                  select: {
+                    action_type_code: true,
+                    short_description: true,
+                    long_description: true,
+                    active_ind: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    //-----------
+    //-- helpers
+    //-----------
+
+    //-- returns a collection of actions
+    const _getCaseActions = async (
+      actions: Array<CaseFileActionItem>,
+      actionTypeCode: string,
+      actionCode: string = "",
+    ): Promise<Array<Action>> => {
+      let items = [];
+
+      if (!actionCode) {
+        items = actions.filter((action) => {
+          const {
+            action_type_action_xref: {
+              action_type_code_action_type_action_xref_action_type_codeToaction_type_code: _actionTypeCode,
+            },
+          } = action;
+
+          return _actionTypeCode.action_type_code === actionTypeCode;
+        });
+      } else {
+        items = actions.filter((action) => {
+          const {
+            action_type_action_xref: {
+              action_code_action_type_action_xref_action_codeToaction_code: _actionCode,
+              action_type_code_action_type_action_xref_action_type_codeToaction_type_code: _actionTypeCode,
+            },
+          } = action;
+
+          return _actionTypeCode.action_type_code === actionTypeCode && _actionCode.action_code === actionCode;
+        });
+      }
+
+      const result = items.map(
+        ({
+          actor_guid: actor,
+          action_date: date,
+          action_type_action_xref: {
+            action_code_action_type_action_xref_action_codeToaction_code: {
+              action_code: actionCode,
+              short_description: shortDescription,
+              long_description: longDescription,
+              active_ind: activeIndicator,
+            },
+          },
+        }) => {
+          return {
+            actor,
+            date,
+            actionCode,
+            shortDescription,
+            longDescription,
+            activeIndicator,
+          } as Action;
+        },
+      );
+      return result;
+    };
+
+    //-- returns a single action, if multiple actions exist the first action
+    //-- will be returned
+    const _getCaseAction = async (
+      actions: Array<CaseFileActionItem>,
+      actionTypeCode: string,
+      actionCode: string = "",
+    ): Promise<Action> => {
+      let item: CaseFileActionItem;
+
+      if (!actionCode) {
+        item = actions.find((action) => {
+          const {
+            action_type_action_xref: {
+              action_type_code_action_type_action_xref_action_type_codeToaction_type_code: _actionTypeCode,
+            },
+          } = action;
+
+          return _actionTypeCode.action_type_code === actionTypeCode;
+        });
+      } else {
+        item = actions.find((action) => {
+          const {
+            action_type_action_xref: {
+              action_code_action_type_action_xref_action_codeToaction_code: _actionCode,
+              action_type_code_action_type_action_xref_action_type_codeToaction_type_code: _actionTypeCode,
+            },
+          } = action;
+
+          return _actionTypeCode.action_type_code === actionTypeCode && _actionCode.action_code === actionCode;
+        });
+      }
+
+      if (item) {
+        const {
+          actor_guid: actor,
+          action_date: date,
+          action_type_action_xref: {
+            action_code_action_type_action_xref_action_codeToaction_code: {
+              action_code: actionCode,
+              short_description: shortDescription,
+              long_description: longDescription,
+              active_ind: activeIndicator,
+            },
+          },
+        } = item;
+
+        return {
+          actor,
+          date,
+          actionCode,
+          shortDescription,
+          longDescription,
+          activeIndicator,
+        } as Action;
+      }
+    };
+
+    const {
+      case_file_guid: caseFileId,
+      lead,
+      action_not_required_ind: actionNotRequired,
+      inaction_reason_code: inactionReasonCode,
+      inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: reason,
+    } = prismaCase;
+    const derp = "";
+    const caseFile: CaseFile = {
+      caseIdentifier: caseFileId,
+      leadIdentifier: lead[0].lead_identifier, //this is okay because there will only be one lead for a case... for now.
+      assessmentDetails: {
+        actionNotRequired: actionNotRequired,
+        actionJustificationCode: inactionReasonCode,
+        actionJustificationShortDescription: !reason ? "" : reason.short_description,
+        actionJustificationLongDescription: !reason ? "" : reason.long_description,
+        actionJustificationActiveIndicator: !reason ? false : reason.active_ind,
+        actions: await _getCaseActions(prismaCase.action, ACTION_TYPE_CODES.CASEACTION),
+      },
+      preventionDetails: {
+        actions: await _getCaseActions(prismaCase.action, ACTION_TYPE_CODES.COSPRVANDEDU),
+      },
+      note: {
+        note: prismaCase.note_text,
+        action: await _getCaseAction(prismaCase.action, ACTION_TYPE_CODES.CASEACTION, ACTION_CODES.UPDATENOTE),
+      },
+    };
+
+    return caseFile;
+  };
+
   async findOneByLeadId(leadIdentifier: string) {
     let caseFileOutput: CaseFile = new CaseFile();
     const caseIdRecord = await this.prisma.lead.findFirst({
@@ -422,10 +628,9 @@ export class CaseFileService {
         case_identifier: true,
       },
     });
-    console.log("caseIdRecord: ", caseIdRecord);
+
     if (caseIdRecord?.case_identifier) {
-      caseFileOutput = await this.findOne(caseIdRecord.case_identifier);
-      console.log("caseFileOutput:", caseFileOutput);
+      caseFileOutput = await this._findOne(caseIdRecord.case_identifier);
     }
 
     return caseFileOutput;
@@ -695,10 +900,10 @@ export class CaseFileService {
             where: {
               case_guid: caseId,
               action_type_action_xref_guid: xrefId,
-            }
+            },
           });
 
-          console.log("ACTION: ", action)
+          console.log("ACTION: ", action);
           await db.action_type_action_xref.update({
             where: {
               action_type_action_xref_guid: xrefId,
@@ -749,9 +954,9 @@ export class CaseFileService {
 
         //-- the system can't create a note as the note is part of the case file
         //-- this means that the note will always update the case file
-        console.log("INPUT NOTE: ", note)
-        console.log("INPUT USERID: ", userId)
-        console.log("INPUT date: ", current)
+        console.log("INPUT NOTE: ", note);
+        console.log("INPUT USERID: ", userId);
+        console.log("INPUT date: ", current);
         await db.case_file.update({
           where: {
             case_file_guid: caseId,
