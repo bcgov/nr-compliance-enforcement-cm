@@ -1,5 +1,6 @@
 import { Assessment } from "./assessment.entity";
 import { Prevention } from "./prevention.entity";
+import { ReviewComplete } from "./review_complete";
 
 export class CaseFile {
     caseIdentifier?: string;
@@ -7,10 +8,5 @@ export class CaseFile {
     assessmentDetails?: Assessment;
     preventionDetails?: Prevention;
     isReviewRequired?: boolean;
-    reviewComplete?: {
-        actor: string
-        date: Date
-        actionCode: string
-        actionId?: string
-    }
+    reviewComplete?: ReviewComplete
 }

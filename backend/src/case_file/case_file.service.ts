@@ -657,7 +657,7 @@ export class CaseFileService {
   }
 
   //Mutation createReview
-  async createReview(reviewInput: ReviewInput) {
+  async createReview(reviewInput: ReviewInput): Promise<CaseFile> {
     try {
       let result = {
         ...reviewInput
@@ -696,19 +696,17 @@ export class CaseFileService {
     }
   }
 
-  async updateReview(reviewInput: ReviewInput) {
+  async updateReview(reviewInput: ReviewInput): Promise<CaseFile> {
     try {
       const { isReviewRequired, caseIdentifier } = reviewInput;
-      await this.prisma.$transaction(async (db) => {
-        //update review_required_ind in table case_file
-        await db.case_file.update({
-          where: {
-            case_file_guid: caseIdentifier
-          },
-          data: {
-            review_required_ind: isReviewRequired
-          }
-        });
+      //update review_required_ind in table case_file
+      await this.prisma.case_file.update({
+        where: {
+          case_file_guid: caseIdentifier
+        },
+        data: {
+          review_required_ind: isReviewRequired
+        }
       });
       return reviewInput;
     }
