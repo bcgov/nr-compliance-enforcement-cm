@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import {
   CreateAssessmentInput,
   CreateEquipmentInput,
@@ -13,11 +13,12 @@ import { CaseFile } from "./entities/case_file.entity";
 import { AssessmentAction } from "./entities/assessment-action.entity";
 import { GraphQLError } from "graphql";
 import { Equipment } from "./entities/equipment.entity";
-import { EquipmentAction } from "./entities/equipment-action.entity";
 
 @Injectable()
 export class CaseFileService {
   constructor(private prisma: PrismaService) {}
+
+  private readonly logger = new Logger(CaseFileService.name);
 
   async createAssessmentCase(
     createAssessmentInput: CreateAssessmentInput
@@ -634,38 +635,46 @@ export class CaseFileService {
     const actiontypeCode: string = "EQUIPMENT";
     const actionCode: string = "SETEQUIPMT";
 
-    let caseFile = await this.findOneByLeadId(
-      createEquipmentInput.leadIdentifier
-    );
-    let caseFileGuid;
-
-    if (caseFile?.caseIdentifier) {
-      caseFileGuid = caseFile.caseIdentifier;
-    } else {
-      caseFileGuid = await this.createEquipmentCase(createEquipmentInput);
-    }
+    
 
     let caseFileOutput: CaseFile;
     try {
       await this.prisma.$transaction(async (db) => {
+
+        let caseFile = await this.findOneByLeadId(
+          createEquipmentInput.leadIdentifier
+        );
+        let caseFileGuid;
+    
+        if (caseFile?.caseIdentifier) {
+          caseFileGuid = caseFile.caseIdentifier;
+        } else {
+          caseFileGuid = await this.createEquipmentCase(createEquipmentInput);
+        }
+
+        const newEquipmentJSON = {
+          active_ind: true,
+          create_user_id: createEquipmentInput.createUserId,
+          create_utc_timestamp: new Date(),
+          update_user_id: createEquipmentInput.createUserId,
+          update_utc_timestamp: new Date(),
+          equipment_code:
+            createEquipmentInput.equipmentDetails[0].actionEquipmentTypeCode,
+          equipment_location_desc:
+            createEquipmentInput.equipmentDetails[0].address,
+          equipment_geometry_point:
+            createEquipmentInput.equipmentDetails[0].equipmentGeometryPoint,
+        }
+
+        this.logger.debug(createEquipmentInput.equipmentDetails[0].address);
+        this.logger.debug(`Creating equipment: ${JSON.stringify(newEquipmentJSON)}`);
+
         // create the equipment record
         const newEquipment = await db.equipment.create({
-          data: {
-            active_ind: true,
-            create_user_id: createEquipmentInput.createUserId,
-            create_utc_timestamp: new Date(),
-            update_user_id: createEquipmentInput.createUserId,
-            update_utc_timestamp: new Date(),
-            equipment_code:
-              createEquipmentInput.equipmentDetails[0].actionEquipmentTypeCode,
-            equipment_location_desc:
-              createEquipmentInput.equipmentDetails[0].equipmentLocationDesc,
-            equipment_geometry_point:
-              createEquipmentInput.equipmentDetails[0].equipmentGeometryPoint,
-          },
+          data: newEquipmentJSON
         });
 
-        console.log(`New Equipment: ${newEquipment}`);
+        this.logger.debug(`New Equipment: ${JSON.stringify(newEquipment)}`);
 
         let action_codes_objects = await db.action_type_action_xref.findMany({
           where: { action_type_code: actiontypeCode },
@@ -711,8 +720,9 @@ export class CaseFileService {
             },
           });
         }
+        caseFileOutput = await this.findOne(caseFileGuid);
       });
-      caseFileOutput = await this.findOne(caseFileGuid);
+      
     } catch (exception) {
       console.log("exception", exception);
       throw new GraphQLError(
