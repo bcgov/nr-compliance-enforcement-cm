@@ -123,9 +123,19 @@ export class CaseFileService {
     createAssessmentInput: CreateAssessmentInput
   ): Promise<CaseFile> {
     let actiontypeCode: string = "COMPASSESS";
-    let caseFileGuid: string = await this.createAssessmentCase(
+
+    const caseFile = (await this.findOneByLeadId(createAssessmentInput.leadIdentifier));
+    
+    let caseFileGuid: string;
+
+    if (caseFile?.caseIdentifier) {
+      caseFileGuid = caseFile.caseIdentifier;
+    } else {
+
+    caseFileGuid= await this.createAssessmentCase(
       createAssessmentInput
     );
+  }
     let caseFileOutput: CaseFile;
     try {
       await this.prisma.$transaction(async (db) => {
