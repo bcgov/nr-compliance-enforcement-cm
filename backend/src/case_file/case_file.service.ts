@@ -670,23 +670,21 @@ export class CaseFileService {
       }
       //Else update review_required_ind
       else {
-        await this.prisma.$transaction(async (db) => {
-          const caseFile = await db.case_file.update({
-            where: {
-              case_file_guid: reviewInput.caseIdentifier
-            },
-            data: {
-              review_required_ind: reviewInput.isReviewRequired
-            }
-          });
-          result.isReviewRequired = caseFile.review_required_ind
-
-          //if isReviewRequired && reviewComplete, create reviewComplete action
-          if(reviewInput.isReviewRequired && reviewInput.reviewComplete && !reviewInput.reviewComplete.actionId) {
-            const actionId = await this.createReviewComplete(reviewInput);
-            reviewInput.reviewComplete.actionId = actionId;
+        const caseFile = await this.prisma.case_file.update({
+          where: {
+            case_file_guid: reviewInput.caseIdentifier
+          },
+          data: {
+            review_required_ind: reviewInput.isReviewRequired
           }
         });
+        result.isReviewRequired = caseFile.review_required_ind
+
+        //if isReviewRequired && reviewComplete, create reviewComplete action
+        if(reviewInput.isReviewRequired && reviewInput.reviewComplete && !reviewInput.reviewComplete.actionId) {
+          const actionId = await this.createReviewComplete(reviewInput);
+          reviewInput.reviewComplete.actionId = actionId;
+        }
       }
       return result;
     }
