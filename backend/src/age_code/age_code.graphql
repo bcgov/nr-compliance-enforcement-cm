@@ -7,6 +7,6 @@ type AgeCode {
 }
 
 type Query {
-  AgeCodes: [AgeCode]!
+  ageCodes: [AgeCode]!
 }
 

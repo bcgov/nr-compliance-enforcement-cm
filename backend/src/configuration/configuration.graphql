@@ -1,12 +1,11 @@
 type Configuration {
-  configuration_code: String
-  configuration_value: String
-  long_description: String
-  active_ind: Boolean
+  configurationCode: String
+  configurationValue: String
+  longDescription: String
+  activeIndicator: Boolean
 }
 
 type Query {
-  getAllConfigurationCodes: [Configuration]!
-  getConfigurationCode(configuration_code: String): Configuration
+  configurationCodes: [Configuration]!
 }
 

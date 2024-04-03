@@ -10,16 +10,10 @@ import { Roles } from "../auth/decorators/roles.decorator";
 export class ConfigurationResolver {
   constructor(private readonly configurationService: ConfigurationService) {}
 
-  @Query('getAllConfigurationCodes')
+  @Query('configurationCodes')
   @Roles(Role.COS_OFFICER)
   findAll() {
     return this.configurationService.findAll();
-  }
-
-  @Query('getConfigurationCode')
-  @Roles(Role.COS_OFFICER)
-  findOne(@Args('configuration_code') configuration_code: string) {
-    return this.configurationService.findOne(configuration_code);
   }
 
 }

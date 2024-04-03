@@ -10,15 +10,10 @@ import { Roles } from "../auth/decorators/roles.decorator";
 export class DrugMethodCodeResolver {
   constructor(private readonly drugMethodCodeService: DrugMethodCodeService) {}
 
-  @Query('getAllDrugMethodCodes')
+  @Query('drugMethodCodes')
   @Roles(Role.COS_OFFICER)
   findAll() {
     return this.drugMethodCodeService.findAll();
   }
 
-  @Query('getDrugMethodCode')
-  @Roles(Role.COS_OFFICER)
-  findOne(@Args('drug_method_code') drug_method_code: string) {
-    return this.drugMethodCodeService.findOne(drug_method_code);
-  }
 }

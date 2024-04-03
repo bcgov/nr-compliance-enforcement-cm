@@ -1,13 +1,12 @@
 type ConflictHistoryCode {
-  conflict_history_code: String
-  short_description: String
-  long_description: String
-  display_order: Int
-  active_ind: Boolean
+  conflictHistoryCode: String
+  shortDescription: String
+  longDescription: String
+  displayOrder: Int
+  activeIndicator: Boolean
 }
 
 type Query {
-  getAllConflictHistoryCodes: [ConflictHistoryCode]!
-  getConflictHistoryCode(conflict_history_code: String): ConflictHistoryCode
+  conflictHistoryCodes: [ConflictHistoryCode]!
 }
 
