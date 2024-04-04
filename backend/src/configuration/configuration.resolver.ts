@@ -12,8 +12,8 @@ export class ConfigurationResolver {
 
   @Query('configurationCodes')
   @Roles(Role.COS_OFFICER)
-  findAll() {
-    return this.configurationService.findAll();
+  findOne(@Args('configurationCode') configurationCode?: string) {
+    return this.configurationService.find(configurationCode);
   }
 
 }

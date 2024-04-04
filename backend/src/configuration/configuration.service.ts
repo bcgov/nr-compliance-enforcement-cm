@@ -6,8 +6,11 @@ import { Configuration } from "./entities/configuration.entity";
 export class ConfigurationService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll() {
+  async find(configurationCode?: string) {
     const prismaConfigurations =  await this.prisma.configuration.findMany({
+      where: {
+        configuration_code: configurationCode ? configurationCode : undefined
+      },
       select: {
         configuration_code: true,
         configuration_value: true,

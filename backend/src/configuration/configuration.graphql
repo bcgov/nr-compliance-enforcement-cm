@@ -6,6 +6,6 @@ type Configuration {
 }
 
 type Query {
-  configurationCodes: [Configuration]!
+  configurationCodes(configurationCode: String): [Configuration]!
 }
 
