@@ -288,12 +288,12 @@ export class CaseFileService {
       ({
         actor_guid: actor,
         action_date: date,
+        active_ind: activeIndicator,
         action_type_action_xref: {
           action_code_action_type_action_xref_action_codeToaction_code: {
             action_code: actionCode,
             short_description: shortDescription,
             long_description: longDescription,
-            active_ind: activeIndicator,
           },
         },
       }) => {
@@ -346,12 +346,12 @@ export class CaseFileService {
       const {
         actor_guid: actor,
         action_date: date,
+        active_ind: activeIndicator,
         action_type_action_xref: {
           action_code_action_type_action_xref_action_codeToaction_code: {
             action_code: actionCode,
             short_description: shortDescription,
             long_description: longDescription,
-            active_ind: activeIndicator,
           },
         },
       } = item;
@@ -393,6 +393,7 @@ export class CaseFileService {
           select: {
             actor_guid: true,
             action_date: true,
+            active_ind: true,
             action_type_action_xref: {
               select: {
                 action_code_action_type_action_xref_action_codeToaction_code: {
@@ -425,6 +426,7 @@ export class CaseFileService {
       inaction_reason_code: inactionReasonCode,
       inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: reason,
     } = queryResult;
+const test = "";
 
     const caseFile: CaseFile = {
       caseIdentifier: caseFileId,
