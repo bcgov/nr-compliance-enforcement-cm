@@ -159,7 +159,7 @@ export class CaseFileService {
   }
 
   async createPrevention(createPreventionInput: CreatePreventionInput): Promise<CaseFile> {
-
+    
     let actiontypeCode: string = "COSPRV&EDU";
     let caseFileGuid: string = await this.createOtherCase(createPreventionInput);
     let caseFileOutput: CaseFile;
@@ -263,6 +263,9 @@ export class CaseFileService {
       where: {
         action_type_code: 'COSPRV&EDU',
         action_type_action_xref_guid: { in: actionsBase.map((item) => item.action_type_action_xref_guid) },
+      },
+      orderBy: {
+        display_order: 'asc'
       },
       select: {
         action_code: true,
