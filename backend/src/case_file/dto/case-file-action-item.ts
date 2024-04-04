@@ -1,6 +1,7 @@
 export interface CaseFileActionItem {
   actor_guid: string;
   action_date: Date;
+  active_ind: boolean,
   action_type_action_xref: {
     action_type_action_xref_guid?: string,
     action_code_action_type_action_xref_action_codeToaction_code: ActionActionCode;
