@@ -5,9 +5,11 @@ import { PrismaService } from "nestjs-prisma";
 import { CaseFile } from "./entities/case_file.entity";
 import { GraphQLError } from "graphql";
 import { CreateSupplementalNoteInput } from "./dto/supplemental-note/create-supplemental-note.input";
-import { Note } from "./entities/supplemental-note/supplemental-note.entity";
 import { ACTION_CODES } from "../common/action_codes";
 import { UpdateSupplementalNoteInput } from "./dto/supplemental-note/update-supplemental-note.input";
+import { ACTION_TYPE_CODES } from "src/common/action_type_codes";
+import { Action } from "./entities/case-action.entity";
+import { CaseFileActionItem } from "./dto/case-file-action-item";
 
 @Injectable()
 export class CaseFileService {
@@ -138,7 +140,7 @@ export class CaseFileService {
         });
       });
     } catch (exception) {
-      throw new GraphQLError("Exception occurred. See server log for details", {});
+      throw new GraphQLError("Exception occurred. See server log for details", exception);
     }
     return caseFileGuid;
   }
@@ -247,130 +249,128 @@ export class CaseFileService {
     return `This action returns all caseFile`;
   }
 
-  async findOne(caseIdentifier: string) {
-    let agencyCode: string = "COS";
+  //-----------
+  //-- helpers
+  //-----------
 
-    const _populateNotes = async (caseFile): Promise<Note> => {
-      const { note_text: note, case_file_guid: caseId } = caseFile;
-      let result = { note: "", action: { actor: "", action: "", date: undefined } } as Note;
+  //-- returns a collection of actions
+  private getCaseActions = async (
+    actions: Array<CaseFileActionItem>,
+    actionTypeCode: string,
+    actionCode: string = "",
+  ): Promise<Array<Action>> => {
+    let items = [];
 
-      //-- use raw sql query to get the note action
-      //-- TODO: try to replace with a proper prisma query
-      const NOTES_QUERY = `SELECT a.action_type_action_xref_guid AS actionId, atax.action_code AS action, a.actor_guid AS actor, atax.create_utc_timestamp as created  FROM case_management.action_type_action_xref atax 
-      JOIN case_management."action" a ON atax.action_type_action_xref_guid = a.action_type_action_xref_guid 
-      JOIN case_management.case_file cf ON a.case_guid  = cf.case_file_guid 
-      WHERE atax.action_code = '${ACTION_CODES.UPDATENOTE}'
-      AND cf.case_file_guid = '${caseId}'
-      ORDER BY atax.create_utc_timestamp, atax.update_utc_timestamp DESC 
-      LIMIT 1`;
+    if (!actionCode) {
+      items = actions.filter((action) => {
+        const {
+          action_type_action_xref: {
+            action_type_code_action_type_action_xref_action_type_codeToaction_type_code: _actionTypeCode,
+          },
+        } = action;
 
-      const results: Array<{ actionId: string; action: string; actor: string; created: Date }> =
-        await this.prisma.$queryRawUnsafe(NOTES_QUERY);
+        return _actionTypeCode.action_type_code === actionTypeCode;
+      });
+    } else {
+      items = actions.filter((action) => {
+        const {
+          action_type_action_xref: {
+            action_code_action_type_action_xref_action_codeToaction_code: _actionCode,
+            action_type_code_action_type_action_xref_action_type_codeToaction_type_code: _actionTypeCode,
+          },
+        } = action;
 
-      //-- there will and should only be one item returned, check to mke sure there is a value
-      //-- before trying to return the note
-      if (results.length !== 0) {
-        const { action, actor, created } = results[0];
-        result = { ...result, note, action: { actor, action, date: created } };
-      }
+        return _actionTypeCode.action_type_code === actionTypeCode && _actionCode.action_code === actionCode;
+      });
+    }
 
-      return Promise.resolve(result);
-    };
-
-    const lead = await this.prisma.lead.findFirst({
-      where: {
-        case_identifier: caseIdentifier,
-      },
-      select: {
-        lead_identifier: true,
-      },
-    });
-
-    const actionsBase = await this.prisma.action.findMany({
-      where: {
-        case_guid: caseIdentifier,
-      },
-      select: {
-        action_type_action_xref_guid: true,
-        actor_guid: true,
-        action_date: true,
-        active_ind: true,
-      },
-    });
-
-    const assessmentActionCodes = await this.prisma.action_type_action_xref.findMany({
-      where: {
-        action_type_code: "COMPASSESS",
-        action_type_action_xref_guid: { in: actionsBase.map((item) => item.action_type_action_xref_guid) },
-      },
-      select: {
-        action_code: true,
-        action_type_action_xref_guid: true,
-        action_type_code: true,
-        action_code_action_type_action_xref_action_codeToaction_code: {
-          select: {
-            short_description: true,
-            long_description: true,
-            active_ind: true,
+    const result = items.map(
+      ({
+        actor_guid: actor,
+        action_date: date,
+        action_type_action_xref: {
+          action_code_action_type_action_xref_action_codeToaction_code: {
+            action_code: actionCode,
+            short_description: shortDescription,
+            long_description: longDescription,
+            active_ind: activeIndicator,
           },
         },
+      }) => {
+        return {
+          actor,
+          date,
+          actionCode,
+          shortDescription,
+          longDescription,
+          activeIndicator,
+        } as Action;
       },
-    });
+    );
+    return result;
+  };
 
-    const preventionActionCodes = await this.prisma.action_type_action_xref.findMany({
-      where: {
-        action_type_code: "COSPRV&EDU",
-        action_type_action_xref_guid: { in: actionsBase.map((item) => item.action_type_action_xref_guid) },
-      },
-      select: {
-        action_code: true,
-        action_type_action_xref_guid: true,
-        action_type_code: true,
-        action_code_action_type_action_xref_action_codeToaction_code: {
-          select: {
-            short_description: true,
-            long_description: true,
-            active_ind: true,
+  //-- returns a single action, if multiple actions exist the first action
+  //-- will be returned
+  private getCaseAction = async (
+    actions: Array<CaseFileActionItem>,
+    actionTypeCode: string,
+    actionCode: string = "",
+  ): Promise<Action> => {
+    let item: CaseFileActionItem;
+
+    if (!actionCode) {
+      item = actions.find((action) => {
+        const {
+          action_type_action_xref: {
+            action_type_code_action_type_action_xref_action_type_codeToaction_type_code: _actionTypeCode,
+          },
+        } = action;
+
+        return _actionTypeCode.action_type_code === actionTypeCode;
+      });
+    } else {
+      item = actions.find((action) => {
+        const {
+          action_type_action_xref: {
+            action_code_action_type_action_xref_action_codeToaction_code: _actionCode,
+            action_type_code_action_type_action_xref_action_type_codeToaction_type_code: _actionTypeCode,
+          },
+        } = action;
+
+        return _actionTypeCode.action_type_code === actionTypeCode && _actionCode.action_code === actionCode;
+      });
+    }
+
+    if (item) {
+      const {
+        actor_guid: actor,
+        action_date: date,
+        action_type_action_xref: {
+          action_code_action_type_action_xref_action_codeToaction_code: {
+            action_code: actionCode,
+            short_description: shortDescription,
+            long_description: longDescription,
+            active_ind: activeIndicator,
           },
         },
-      },
-    });
+      } = item;
 
-    const assessmentActions = assessmentActionCodes.map((action) => {
-      let actionData = actionsBase.find(
-        (element) => element.action_type_action_xref_guid === action.action_type_action_xref_guid,
-      );
-      if (actionData && actionData !== undefined) {
-        return {
-          actor: actionData.actor_guid,
-          date: actionData.action_date,
-          actionCode: action.action_code,
-          shortDescription: action.action_code_action_type_action_xref_action_codeToaction_code.short_description,
-          longDescription: action.action_code_action_type_action_xref_action_codeToaction_code.long_description,
-          activeIndicator: actionData.active_ind,
-        };
-      }
-    });
+      return {
+        actor,
+        date,
+        actionCode,
+        shortDescription,
+        longDescription,
+        activeIndicator,
+      } as Action;
+    }
+  };
 
-    const preventionActions = preventionActionCodes.map((action) => {
-      let actionData = actionsBase.find(
-        (element) => element.action_type_action_xref_guid === action.action_type_action_xref_guid,
-      );
-      if (actionData && actionData !== undefined) {
-        return {
-          actor: actionData.actor_guid,
-          date: actionData.action_date,
-          actionCode: action.action_code,
-          shortDescription: action.action_code_action_type_action_xref_action_codeToaction_code.short_description,
-          longDescription: action.action_code_action_type_action_xref_action_codeToaction_code.long_description,
-          activeIndicator: actionData.active_ind,
-        };
-      }
-    });
-
-    const caseFile = await this.prisma.case_file.findFirst({
+  findOne = async (id: string): Promise<CaseFile> => {
+    const queryResult = await this.prisma.case_file.findUnique({
       where: {
-        case_file_guid: caseIdentifier,
+        case_file_guid: id,
       },
       select: {
         case_file_guid: true,
@@ -378,39 +378,76 @@ export class CaseFileService {
         inaction_reason_code: true,
         note_text: true,
         inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: {
-          where: {
-            agency_code: agencyCode,
-          },
           select: {
-            active_ind: true,
             short_description: true,
             long_description: true,
+            active_ind: true,
+          },
+        },
+        lead: {
+          select: {
+            lead_identifier: true,
+          },
+        },
+        action: {
+          select: {
+            actor_guid: true,
+            action_date: true,
+            action_type_action_xref: {
+              select: {
+                action_code_action_type_action_xref_action_codeToaction_code: {
+                  select: {
+                    action_code: true,
+                    short_description: true,
+                    long_description: true,
+                    active_ind: true,
+                  },
+                },
+                action_type_code_action_type_action_xref_action_type_codeToaction_type_code: {
+                  select: {
+                    action_type_code: true,
+                    short_description: true,
+                    long_description: true,
+                    active_ind: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
     });
 
-    const case_file: CaseFile = {
-      caseIdentifier: caseFile?.case_file_guid,
-      leadIdentifier: lead?.lead_identifier,
+    const {
+      case_file_guid: caseFileId,
+      lead,
+      action_not_required_ind: actionNotRequired,
+      inaction_reason_code: inactionReasonCode,
+      inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: reason,
+    } = queryResult;
+
+    const caseFile: CaseFile = {
+      caseIdentifier: caseFileId,
+      leadIdentifier: lead[0].lead_identifier, //this is okay because there will only be one lead for a case... for now.
       assessmentDetails: {
-        actionNotRequired: caseFile?.action_not_required_ind,
-        actionJustificationCode: caseFile?.inaction_reason_code,
-        actionJustificationShortDescription:
-          caseFile?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.short_description,
-        actionJustificationLongDescription:
-          caseFile?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.long_description,
-        actionJustificationActiveIndicator:
-          caseFile?.inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code?.active_ind,
-        actions: assessmentActions,
+        actionNotRequired: actionNotRequired,
+        actionJustificationCode: inactionReasonCode,
+        actionJustificationShortDescription: !reason ? "" : reason.short_description,
+        actionJustificationLongDescription: !reason ? "" : reason.long_description,
+        actionJustificationActiveIndicator: !reason ? false : reason.active_ind,
+        actions: await this.getCaseActions(queryResult.action, ACTION_TYPE_CODES.COMPASSESS),
       },
       preventionDetails: {
-        actions: preventionActions,
+        actions: await this.getCaseActions(queryResult.action, ACTION_TYPE_CODES.COSPRVANDEDU),
       },
-      note: await _populateNotes(caseFile),
+      note: {
+        note: queryResult.note_text,
+        action: await this.getCaseAction(queryResult.action, ACTION_TYPE_CODES.CASEACTION, ACTION_CODES.UPDATENOTE),
+      },
     };
-    return case_file;
-  }
+
+    return caseFile;
+  };
 
   async findOneByLeadId(leadIdentifier: string) {
     let caseFileOutput: CaseFile = new CaseFile();
@@ -422,10 +459,8 @@ export class CaseFileService {
         case_identifier: true,
       },
     });
-    console.log("caseIdRecord: ", caseIdRecord);
     if (caseIdRecord?.case_identifier) {
       caseFileOutput = await this.findOne(caseIdRecord.case_identifier);
-      console.log("caseFileOutput:", caseFileOutput);
     }
 
     return caseFileOutput;
@@ -607,26 +642,13 @@ export class CaseFileService {
     return `This action removes a #${id} caseFile`;
   }
 
-  hasCaseFile = async (leadId: string): Promise<boolean> => {
-    const { lead: result } = await this.prisma.case_file.findFirst({
-      select: {
-        lead: {
-          where: {
-            lead_identifier: leadId,
-          },
-        },
-      },
-    });
-
-    return result.length === 1;
-  };
-
   createNote = async (input: CreateSupplementalNoteInput): Promise<CaseFile> => {
-    const { leadIdentifier, note, createUserId, actor } = input;
     let caseFileId = "";
 
-    if (await this.hasCaseFile(leadIdentifier)) {
-      const caseFile = await this.findOneByLeadId(leadIdentifier);
+    const { leadIdentifier, note, createUserId, actor } = input;
+    const caseFile = await this.findOneByLeadId(leadIdentifier);
+
+    if (caseFile.caseIdentifier) {
       caseFileId = caseFile.caseIdentifier;
     } else {
       const caseInput: CreateCaseInput = { ...input };
@@ -644,68 +666,61 @@ export class CaseFileService {
 
   private _upsertNote = async (caseId: string, note: string, actor: string, userId: string): Promise<CaseFile> => {
     const _hasAction = async (caseId: string): Promise<boolean> => {
-      const NOTES_QUERY = `SELECT a.action_type_action_xref_guid AS actionId FROM case_management.action_type_action_xref atax 
-      JOIN case_management."action" a ON atax.action_type_action_xref_guid = a.action_type_action_xref_guid 
-      JOIN case_management.case_file cf ON a.case_guid  = cf.case_file_guid 
-      WHERE atax.action_code = '${ACTION_CODES.UPDATENOTE}'
-      AND cf.case_file_guid = '${caseId}'
-      ORDER BY atax.create_utc_timestamp, atax.update_utc_timestamp DESC 
-      LIMIT 1`;
+      const xrefId = await _getNoteActionXref();
 
-      const result: Array<{ actionId: string }> = await this.prisma.$queryRawUnsafe(NOTES_QUERY);
-
-      return result.length !== 0;
+      const query = await this.prisma.action.findFirst({
+        where: {
+          case_guid: caseId,
+          action_type_action_xref_guid: xrefId,
+        },
+      });
+      return query !== null;
     };
 
-    const _getActionXref = async (caseId: string): Promise<string> => {
-      const GET_ACTION_XREF_QUERY = `SELECT a.action_type_action_xref_guid AS actionId FROM case_management.action_type_action_xref atax
-      JOIN case_management."action" a ON atax.action_type_action_xref_guid = a.action_type_action_xref_guid
-      JOIN case_management.case_file cf ON a.case_guid  = cf.case_file_guid
-      WHERE atax.action_code = '${ACTION_CODES.UPDATENOTE}'
-      AND cf.case_file_guid = '${caseId}'
-      ORDER BY atax.create_utc_timestamp, atax.update_utc_timestamp DESC
-      LIMIT 1`;
+    const _getNoteActionXref = async (): Promise<string> => {
+      const query = await this.prisma.action_type_action_xref.findFirst({
+        where: {
+          action_code: ACTION_CODES.UPDATENOTE,
+          action_type_code: ACTION_TYPE_CODES.CASEACTION,
+        },
+        select: {
+          action_type_action_xref_guid: true,
+        },
+      });
 
-      const result: Array<{ actionid: string }> = await this.prisma.$queryRawUnsafe(GET_ACTION_XREF_QUERY);
-
-      if (result === null || result.length === 0) {
-        console.log(
-          "exception: unable to create supplemental note",
-          `Unable to return action_type_action_xref for case_file: ${caseId}`,
-        );
-        throw new GraphQLError("Exception occurred. See server log for details", {});
-      }
-
-      return result[0].actionid;
+      return query.action_type_action_xref_guid;
     };
-
-    //-- the xref is what is going to put every together and this reference is used to
-    //-- connect the xref to the action and inturn the action to the case file
-    const ACTION_TYPE_CODE = "CASEACTION";
 
     try {
       await this.prisma.$transaction(async (db) => {
         const current = new Date();
 
-        if (await _hasAction(caseId)) {
-          const xrefId = await _getActionXref(caseId);
-          console.log("XREFID: ", xrefId);
+        const hasAction = await _hasAction(caseId);
+        const xrefId = await _getNoteActionXref();
 
+        //-- if an action doens't exist for the note create one
+        //-- otherwise update the note action before updating the note
+        if (!hasAction) {
+          await db.action.create({
+            data: {
+              case_guid: caseId,
+              action_type_action_xref_guid: xrefId,
+              actor_guid: actor,
+              action_date: current,
+              create_user_id: userId,
+              create_utc_timestamp: current,
+              update_user_id: userId,
+              update_utc_timestamp: current,
+            },
+          });
+        } else {
           const action = await db.action.findFirst({
             where: {
               case_guid: caseId,
               action_type_action_xref_guid: xrefId,
-            }
-          });
-
-          console.log("ACTION: ", action)
-          await db.action_type_action_xref.update({
-            where: {
-              action_type_action_xref_guid: xrefId,
             },
-            data: {
-              update_user_id: userId,
-              update_utc_timestamp: current,
+            select: {
+              action_guid: true,
             },
           });
 
@@ -720,38 +735,10 @@ export class CaseFileService {
               update_utc_timestamp: current,
             },
           });
-        } else {
-          const xref = await db.action_type_action_xref.create({
-            data: {
-              action_code: ACTION_CODES.UPDATENOTE,
-              action_type_code: ACTION_TYPE_CODE,
-              display_order: 1,
-              create_user_id: userId,
-              create_utc_timestamp: current,
-              update_user_id: userId,
-              update_utc_timestamp: current,
-            },
-          });
-
-          const action = await db.action.create({
-            data: {
-              case_guid: caseId,
-              action_type_action_xref_guid: xref.action_type_action_xref_guid,
-              actor_guid: actor,
-              action_date: current,
-              create_user_id: userId,
-              create_utc_timestamp: current,
-              update_user_id: userId,
-              update_utc_timestamp: current,
-            },
-          });
         }
 
         //-- the system can't create a note as the note is part of the case file
         //-- this means that the note will always update the case file
-        console.log("INPUT NOTE: ", note)
-        console.log("INPUT USERID: ", userId)
-        console.log("INPUT date: ", current)
         await db.case_file.update({
           where: {
             case_file_guid: caseId,

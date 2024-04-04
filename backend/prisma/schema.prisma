@@ -210,6 +210,8 @@ model action_type_action_xref {
   action                                                                      action[]
   action_code_action_type_action_xref_action_codeToaction_code                action_code      @relation("action_type_action_xref_action_codeToaction_code", fields: [action_code], references: [action_code], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_type_action_xref__action_code")
   action_type_code_action_type_action_xref_action_type_codeToaction_type_code action_type_code @relation("action_type_action_xref_action_type_codeToaction_type_code", fields: [action_type_code], references: [action_type_code], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_type_action_xref__action_type_code")
+
+  @@unique([action_type_code, action_code], map: "UK_action_type_action_xref__action_type_code__action_code")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
