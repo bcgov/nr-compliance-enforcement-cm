@@ -7,7 +7,7 @@ import { GraphQLError } from "graphql";
 import { CreateSupplementalNoteInput } from "./dto/supplemental-note/create-supplemental-note.input";
 import { ACTION_CODES } from "../common/action_codes";
 import { UpdateSupplementalNoteInput } from "./dto/supplemental-note/update-supplemental-note.input";
-import { ACTION_TYPE_CODES } from "src/common/action_type_codes";
+import { ACTION_TYPE_CODES } from "../common/action_type_codes"
 import { Action } from "./entities/case-action.entity";
 import { CaseFileActionItem } from "./dto/case-file-action-item";
 
