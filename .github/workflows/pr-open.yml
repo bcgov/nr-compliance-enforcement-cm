@@ -43,6 +43,7 @@ jobs:
   deploys:
     name: Deploys
     needs: [builds]
+    environment: dev
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout CD repo
