@@ -31,6 +31,7 @@ jobs:
   deploy-test:
     name: Deploy (test)
     needs: [vars]
+    environment: test
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout CD repo
@@ -61,6 +62,7 @@ jobs:
   deploy-prod:
     name: Deploy (prod)
     needs: [deploy-test, vars]
+    environment: prod
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout CD repo
