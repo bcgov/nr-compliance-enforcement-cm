@@ -157,19 +157,20 @@ model configuration {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model action {
-  action_guid                  String     @id(map: "PK_action_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  case_guid                    String     @db.Uuid
-  action_type_action_xref_guid String     @db.Uuid
-  actor_guid                   String     @db.Uuid
-  action_date                  DateTime   @db.Timestamp(6)
+  action_guid                  String                  @id(map: "PK_action_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  case_guid                    String                  @db.Uuid
+  action_type_action_xref_guid String                  @db.Uuid
+  actor_guid                   String                  @db.Uuid
+  action_date                  DateTime                @db.Timestamp(6)
   active_ind                   Boolean?
-  create_user_id               String     @db.VarChar(32)
-  create_utc_timestamp         DateTime   @db.Timestamp(6)
-  update_user_id               String?    @db.VarChar(32)
-  update_utc_timestamp         DateTime?  @db.Timestamp(6)
-  equipment_guid               String?    @db.Uuid
-  case_file                    case_file  @relation(fields: [case_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "FK_action__case_guid")
-  equipment                    equipment? @relation(fields: [equipment_guid], references: [equipment_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_action__equipment_guid")
+  create_user_id               String                  @db.VarChar(32)
+  create_utc_timestamp         DateTime                @db.Timestamp(6)
+  update_user_id               String?                 @db.VarChar(32)
+  update_utc_timestamp         DateTime?               @db.Timestamp(6)
+  equipment_guid               String?                 @db.Uuid
+  case_file                    case_file               @relation(fields: [case_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "FK_action__case_guid")
+  action_type_action_xref      action_type_action_xref @relation(fields: [action_type_action_xref_guid], references: [action_type_action_xref_guid], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_action_type_action_xref")
+  equipment                    equipment?              @relation(fields: [equipment_guid], references: [equipment_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_action__equipment_guid")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -206,8 +207,11 @@ model action_type_action_xref {
   create_utc_timestamp                                                        DateTime         @db.Timestamp(6)
   update_user_id                                                              String?          @db.VarChar(32)
   update_utc_timestamp                                                        DateTime?        @db.Timestamp(6)
+  action                                                                      action[]
   action_code_action_type_action_xref_action_codeToaction_code                action_code      @relation("action_type_action_xref_action_codeToaction_code", fields: [action_code], references: [action_code], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_type_action_xref__action_code")
   action_type_code_action_type_action_xref_action_type_codeToaction_type_code action_type_code @relation("action_type_action_xref_action_type_codeToaction_type_code", fields: [action_type_code], references: [action_type_code], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_type_action_xref__action_type_code")
+
+  @@unique([action_type_code, action_code], map: "UK_action_type_action_xref__action_type_code__action_code")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments

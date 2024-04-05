@@ -5,6 +5,7 @@ type CaseFile {
   leadIdentifier: String
   assessmentDetails: Assessment
   preventionDetails: Prevention
+  note: Note
 }
 
 type Assessment {
@@ -13,10 +14,10 @@ type Assessment {
   actionJustificationShortDescription: String
   actionJustificationLongDescription: String
   actionJustificationActiveIndicator: Boolean
-  actions: [AssessmentAction]
+  actions: [Action]
 }
 
-type AssessmentAction{
+type Action{
   actor: String!
   date: Date!
   actionCode: String!
@@ -56,16 +57,7 @@ input UpdateAssessmentInput {
 }
 
 type Prevention {
-  actions: [PreventionAction]
-}
-
-type PreventionAction{
-  actor: String!
-  date: Date!
-  actionCode: String!
-  shortDescription: String
-  longDescription: String
-  activeIndicator: Boolean
+  actions: [Action]
 }
 
 input CreatePreventionInput {
@@ -96,6 +88,27 @@ input UpdatePreventionInput {
   updateUserId: String!
 }
 
+type Note {
+  note: String!
+  action: Action!
+}
+
+input CreateSupplementalNoteInput {
+  leadIdentifier: String!
+  note: String!
+  actor: String!
+  agencyCode: String!
+  caseCode: String!
+  createUserId: String!
+}
+
+input UpdateSupplementalNoteInput {
+  caseIdentifier: String!
+  note: String!
+  actor: String!
+  updateUserId: String!
+}
+
 type Query {
   getCaseFile( caseIdentifier: String!): CaseFile
   getCaseFileByLeadId( leadIdentifier: String!): CaseFile
@@ -107,4 +120,8 @@ type Mutation {
 
   createPrevention(createPreventionInput: CreatePreventionInput!): CaseFile!
   updatePrevention(updatePreventionInput: UpdatePreventionInput!): CaseFile!
+
+
+  createNote(input: CreateSupplementalNoteInput!): CaseFile!
+  updateNote(input: UpdateSupplementalNoteInput!): CaseFile!
 }
