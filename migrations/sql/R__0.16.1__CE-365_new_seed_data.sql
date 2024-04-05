@@ -19,5 +19,7 @@ values
     ('COSPRV&EDU', 'CONTACTLPP', 8, 'Y', CURRENT_USER, CURRENT_TIMESTAMP)
 on conflict do nothing;
 
+--This might not be the right long term decision but it will make it so that it will catch people that forget 
+--to update the code table version
 UPDATE case_management.configuration
-SET configuration_value = 2 WHERE configuration_code = 'CDTABLEVER';
+SET configuration_value = cast(configuration_value as INTEGER)+1 WHERE configuration_code = 'CDTABLEVER';
