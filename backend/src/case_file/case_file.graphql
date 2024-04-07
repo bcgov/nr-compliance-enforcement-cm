@@ -6,6 +6,7 @@ type CaseFile {
   assessmentDetails: Assessment
   preventionDetails: Prevention
   note: Note
+  equipmentDetails: [EquipmentDetails]
 }
 
 type Assessment {
@@ -139,7 +140,7 @@ type EquipmentDetails {
   address: String
   xCoordinate: String
   yCoordinate: String
-  actions: [EquipmentAction]
+  action: [Action]
 }
 
 type EquipmentAction {
