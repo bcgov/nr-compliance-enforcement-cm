@@ -4,7 +4,6 @@ type CaseFile {
   caseIdentifier : String
   leadIdentifier: String
   assessmentDetails: Assessment
-  equipmentDetails: [EquipmentDetails]
   preventionDetails: Prevention
   note: Note
 }

@@ -333,7 +333,7 @@ model configuration_h {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model equipment {
-  equipment_guid                                          String          @id(map: "PK_equipment_guid") @db.Uuid
+  equipment_guid                                          String          @id(map: "PK_equipment_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   equipment_code                                          String?         @db.VarChar(10)
   equipment_location_desc                                 String?         @db.VarChar(120)
   equipment_geometry_point                                String?
