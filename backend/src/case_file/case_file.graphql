@@ -6,7 +6,7 @@ type CaseFile {
   assessmentDetails: Assessment
   preventionDetails: Prevention
   note: Note
-  equipmentDetails: [EquipmentDetails]
+  equipment: [EquipmentDetails]
 }
 
 type Assessment {
@@ -128,28 +128,13 @@ type Mutation {
   createEquipment(createEquipmentInput: CreateEquipmentInput!): CaseFile!
 }
 
-type Equipment {
-  caseIdentifier: String
-  leadIdentifier: String
-  equipmentDetails: [EquipmentDetails]
-}
-
 type EquipmentDetails {
   actionEquipmentTypeCode: String
   actionEquipmentTypeActiveIndicator: Boolean
   address: String
   xCoordinate: String
   yCoordinate: String
-  action: [Action]
-}
-
-type EquipmentAction {
-  actor: String
-  date: Date
-  actionCode: String
-  shortDescription: String
-  longDescription: String
-  activeIndicator: Boolean
+  actions: [Action]
 }
 
 input CreateEquipmentInput {
@@ -157,7 +142,7 @@ input CreateEquipmentInput {
   createUserId: String
   agencyCode: String
   caseCode: String
-  equipmentDetails: [EquipmentDetailsInput]
+  equipment: [EquipmentDetailsInput]
 }
 
 input EquipmentDetailsInput {

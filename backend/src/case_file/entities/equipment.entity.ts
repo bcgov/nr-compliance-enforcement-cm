@@ -1,4 +1,4 @@
-import { EquipmentAction } from "./equipment-action.entity";
+import { CaseFileActionItem } from "../dto/case-file-action-item";
 
 export class Equipment {
     actionEquipmentTypeCode: string;
@@ -8,5 +8,5 @@ export class Equipment {
     address?: string;
     xCoordinate: string;
     yCoordinate: string;
-    actions: EquipmentAction[]
+    actions: CaseFileActionItem[]
 }

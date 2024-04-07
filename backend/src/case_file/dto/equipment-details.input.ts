@@ -1,9 +1,9 @@
-import { EquipmentActionInput } from "./equipment-action.input";
+import { EquipmentActionItem } from "./equipment-action";
 
 export interface EquipmentDetailsInput {
     actionEquipmentTypeCode?: string;
     address?: string;
     equipmentGeometryPoint?: string;
     actionEquipmentTypeActiveIndicator: boolean;
-    actions: EquipmentActionInput[];
+    actions: EquipmentActionItem[];
   }

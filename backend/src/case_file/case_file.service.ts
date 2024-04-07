@@ -450,7 +450,7 @@ export class CaseFileService {
         note: queryResult.note_text,
         action: await this.getCaseAction(queryResult.action, ACTION_TYPE_CODES.CASEACTION, ACTION_CODES.UPDATENOTE),
       },
-      equipmentDetails: equipmentDetails
+      equipment: equipmentDetails
     };
 
     return caseFile;
@@ -868,14 +868,14 @@ export class CaseFileService {
           update_user_id: createEquipmentInput.createUserId,
           update_utc_timestamp: new Date(),
           equipment_code:
-            createEquipmentInput.equipmentDetails[0].actionEquipmentTypeCode,
+            createEquipmentInput.equipment[0].actionEquipmentTypeCode,
           equipment_location_desc:
-            createEquipmentInput.equipmentDetails[0].address,
+            createEquipmentInput.equipment[0].address,
           equipment_geometry_point:
-            createEquipmentInput.equipmentDetails[0].equipmentGeometryPoint,
+            createEquipmentInput.equipment[0].equipmentGeometryPoint,
         }
 
-        this.logger.debug(createEquipmentInput.equipmentDetails[0].address);
+        this.logger.debug(createEquipmentInput.equipment[0].address);
         this.logger.debug(`Creating equipment: ${JSON.stringify(newEquipmentJSON)}`);
 
         // create the equipment record
@@ -895,11 +895,11 @@ export class CaseFileService {
         }
 
         const equipmentDetailsInstance =
-          createEquipmentInput.equipmentDetails[0];
+          createEquipmentInput.equipment[0];
         const actions = equipmentDetailsInstance.actions;
 
         for (const action of actions) {
-          if (action_codes.indexOf(action.actionCode) === -1) {
+          if (action_codes.indexOf(actionCode) === -1) {
             throw "Some action code values where not passed from the client";
           }
         }
@@ -909,7 +909,7 @@ export class CaseFileService {
             await db.action_type_action_xref.findFirstOrThrow({
               where: {
                 action_type_code: actiontypeCode,
-                action_code: action.actionCode,
+                action_code: actionCode,
               },
               select: {
                 action_type_action_xref_guid: true,

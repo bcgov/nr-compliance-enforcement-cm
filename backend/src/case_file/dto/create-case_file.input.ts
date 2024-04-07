@@ -26,7 +26,7 @@ export class CreatePreventionInput {
 
 export class CreateEquipmentInput {
     leadIdentifier: string;
-    equipmentDetails: [EquipmentDetailsInput];
+    equipment: [EquipmentDetailsInput];
     agencyCode: string;
     caseCode: string;
     createUserId: string;

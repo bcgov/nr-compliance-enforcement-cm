@@ -7,7 +7,7 @@ export class CaseFile {
     caseIdentifier: string;
     leadIdentifier: string;
     assessmentDetails: Assessment;
-    equipmentDetails?: Equipment[];
+    equipment?: Equipment[];
     preventionDetails: Prevention;
     note: Note
 }
