@@ -15,54 +15,6 @@ import { CaseFileActionItem } from "./dto/case-file-action-item";
 export class CaseFileService {
   constructor(private prisma: PrismaService) {}
 
-  async createAssessmentCase(createAssessmentInput: CreateAssessmentInput): Promise<string> {
-    let caseFileGuid: string;
-
-    try {
-      await this.prisma.$transaction(async (db) => {
-        let case_file = await db.case_file.create({
-          data: {
-            agency_code: {
-              connect: {
-                agency_code: createAssessmentInput.agencyCode,
-              },
-            },
-            inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: createAssessmentInput
-              .assessmentDetails.actionJustificationCode
-              ? {
-                  connect: {
-                    inaction_reason_code: createAssessmentInput.assessmentDetails.actionJustificationCode,
-                  },
-                }
-              : undefined,
-            create_user_id: createAssessmentInput.createUserId,
-            create_utc_timestamp: new Date(),
-            action_not_required_ind: createAssessmentInput.assessmentDetails.actionNotRequired,
-            case_code_case_file_case_codeTocase_code: {
-              connect: {
-                case_code: createAssessmentInput.caseCode,
-              },
-            },
-          },
-        });
-
-        caseFileGuid = case_file.case_file_guid;
-
-        await db.lead.create({
-          data: {
-            lead_identifier: createAssessmentInput.leadIdentifier,
-            case_identifier: caseFileGuid,
-            create_user_id: createAssessmentInput.createUserId,
-            create_utc_timestamp: new Date(),
-          },
-        });
-      });
-    } catch (exception) {
-      throw new GraphQLError("Exception occurred. See server log for details", {});
-    }
-    return caseFileGuid;
-  }
-
   async createOtherCase(createInput: CreatePreventionInput): Promise<string> {
     let caseFileGuid: string;
 
@@ -147,13 +99,62 @@ export class CaseFileService {
 
   //-- Assessments
   async createAssessment(createAssessmentInput: CreateAssessmentInput): Promise<CaseFile> {
-    let actiontypeCode: string = "COMPASSESS";
-    let caseFileGuid: string = await this.createAssessmentCase(createAssessmentInput);
+    const _createAssessmentCase = async (db, createAssessmentInput: CreateAssessmentInput): Promise<string> => {
+      let caseFileGuid: string;
+
+      try {
+        let case_file = await db.case_file.create({
+          data: {
+            agency_code: {
+              connect: {
+                agency_code: createAssessmentInput.agencyCode,
+              },
+            },
+            inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: createAssessmentInput
+              .assessmentDetails.actionJustificationCode
+              ? {
+                  connect: {
+                    inaction_reason_code: createAssessmentInput.assessmentDetails.actionJustificationCode,
+                  },
+                }
+              : undefined,
+            create_user_id: createAssessmentInput.createUserId,
+            create_utc_timestamp: new Date(),
+            action_not_required_ind: createAssessmentInput.assessmentDetails.actionNotRequired,
+            case_code_case_file_case_codeTocase_code: {
+              connect: {
+                case_code: createAssessmentInput.caseCode,
+              },
+            },
+          },
+        });
+
+        caseFileGuid = case_file.case_file_guid;
+
+        await db.lead.create({
+          data: {
+            lead_identifier: createAssessmentInput.leadIdentifier,
+            case_identifier: caseFileGuid,
+            create_user_id: createAssessmentInput.createUserId,
+            create_utc_timestamp: new Date(),
+          },
+        });
+      } catch (exception) {
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+      return caseFileGuid;
+    };
+
     let caseFileOutput: CaseFile;
+
     try {
+      let caseFileGuid: string = "";
+
       await this.prisma.$transaction(async (db) => {
+        caseFileGuid = await _createAssessmentCase(db, createAssessmentInput);
+
         let action_codes_objects = await db.action_type_action_xref.findMany({
-          where: { action_type_code: actiontypeCode },
+          where: { action_type_code: ACTION_TYPE_CODES.COMPASSESS },
           select: { action_code: true },
         });
         let action_codes: Array<string> = [];
@@ -169,7 +170,7 @@ export class CaseFileService {
         for (const action of createAssessmentInput.assessmentDetails.actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
-              action_type_code: actiontypeCode,
+              action_type_code: ACTION_TYPE_CODES.COMPASSESS,
               action_code: action.actionCode,
             },
             select: {
@@ -197,7 +198,7 @@ export class CaseFileService {
   }
 
   async updateAssessment(caseIdentifier: string, updateAssessmentInput: UpdateAssessmentInput) {
-    let actionTypeCode: string = "COMPASSESS";
+    // let actionTypeCode: string = "COMPASSESS";
     let caseFileOutput: CaseFile;
 
     try {
@@ -231,7 +232,7 @@ export class CaseFileService {
         for (const action of updateAssessmentInput.assessmentDetails.actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
-              action_type_code: actionTypeCode,
+              action_type_code: ACTION_TYPE_CODES.COMPASSESS,
               action_code: action.actionCode,
             },
             select: {
