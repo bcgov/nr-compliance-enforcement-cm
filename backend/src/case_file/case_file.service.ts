@@ -15,45 +15,6 @@ import { CaseFileActionItem } from "./dto/case-file-action-item";
 export class CaseFileService {
   constructor(private prisma: PrismaService) {}
 
-  async createOtherCase(createInput: CreatePreventionInput): Promise<string> {
-    let caseFileGuid: string;
-
-    try {
-      await this.prisma.$transaction(async (db) => {
-        let case_file = await db.case_file.create({
-          data: {
-            agency_code: {
-              connect: {
-                agency_code: createInput.agencyCode,
-              },
-            },
-            create_user_id: createInput.createUserId,
-            create_utc_timestamp: new Date(),
-            case_code_case_file_case_codeTocase_code: {
-              connect: {
-                case_code: createInput.caseCode,
-              },
-            },
-          },
-        });
-
-        caseFileGuid = case_file.case_file_guid;
-
-        await db.lead.create({
-          data: {
-            lead_identifier: createInput.leadIdentifier,
-            case_identifier: caseFileGuid,
-            create_user_id: createInput.createUserId,
-            create_utc_timestamp: new Date(),
-          },
-        });
-      });
-    } catch (exception) {
-      throw new GraphQLError("Exception occurred. See server log for details", {});
-    }
-    return caseFileGuid;
-  }
-
   //--
   //-- creates an initial case_file and lead element for the
   //-- selected complaint
@@ -198,7 +159,6 @@ export class CaseFileService {
   }
 
   async updateAssessment(caseIdentifier: string, updateAssessmentInput: UpdateAssessmentInput) {
-    // let actionTypeCode: string = "COMPASSESS";
     let caseFileOutput: CaseFile;
 
     try {
@@ -299,13 +259,52 @@ export class CaseFileService {
 
   //-- Prevention and Education
   async createPrevention(createPreventionInput: CreatePreventionInput): Promise<CaseFile> {
-    let actiontypeCode: string = "COSPRV&EDU";
-    let caseFileGuid: string = await this.createOtherCase(createPreventionInput);
+    const _createOtherCase = async (db, createInput: CreatePreventionInput): Promise<string> => {
+      let caseFileGuid: string;
+
+      try {
+        let case_file = await db.case_file.create({
+          data: {
+            agency_code: {
+              connect: {
+                agency_code: createInput.agencyCode,
+              },
+            },
+            create_user_id: createInput.createUserId,
+            create_utc_timestamp: new Date(),
+            case_code_case_file_case_codeTocase_code: {
+              connect: {
+                case_code: createInput.caseCode,
+              },
+            },
+          },
+        });
+
+        caseFileGuid = case_file.case_file_guid;
+
+        await db.lead.create({
+          data: {
+            lead_identifier: createInput.leadIdentifier,
+            case_identifier: caseFileGuid,
+            create_user_id: createInput.createUserId,
+            create_utc_timestamp: new Date(),
+          },
+        });
+      } catch (exception) {
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+      return caseFileGuid;
+    };
+
     let caseFileOutput: CaseFile;
     try {
+      let caseFileGuid: string;
+
       await this.prisma.$transaction(async (db) => {
+        caseFileGuid = await _createOtherCase(db, createPreventionInput);
+
         let action_codes_objects = await db.action_type_action_xref.findMany({
-          where: { action_type_code: actiontypeCode },
+          where: { action_type_code: ACTION_TYPE_CODES.COSPRVANDEDU },
           select: { action_code: true },
         });
         let action_codes: Array<string> = [];
@@ -321,7 +320,7 @@ export class CaseFileService {
         for (const action of createPreventionInput.preventionDetails.actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
-              action_type_code: actiontypeCode,
+              action_type_code: ACTION_TYPE_CODES.COSPRVANDEDU,
               action_code: action.actionCode,
             },
             select: {
@@ -343,13 +342,12 @@ export class CaseFileService {
       });
       caseFileOutput = await this.findOne(caseFileGuid);
     } catch (exception) {
-      throw new GraphQLError("Exception occurred. See server log for details", {});
+      throw new GraphQLError("Exception occurred. See server log for details", exception);
     }
     return caseFileOutput;
   }
 
   async updatePrevention(caseIdentifier: string, updatePreventionInput: UpdatePreventionInput) {
-    let actionTypeCode: string = "COSPRV&EDU";
     let caseFileOutput: CaseFile;
 
     try {
@@ -357,7 +355,7 @@ export class CaseFileService {
         for (const action of updatePreventionInput.preventionDetails.actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
-              action_type_code: actionTypeCode,
+              action_type_code: ACTION_TYPE_CODES.COSPRVANDEDU,
               action_code: action.actionCode,
             },
             select: {
