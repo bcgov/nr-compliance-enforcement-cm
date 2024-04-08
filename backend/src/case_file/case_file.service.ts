@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { CreateAssessmentInput, CreateCaseInput, CreateEquipmentInput, CreatePreventionInput } from "./dto/create-case_file.input";
-import { UpdateAssessmentInput, UpdatePreventionInput } from "./dto/update-case_file.input";
+import { UpdateAssessmentInput, UpdateEquipmentInput, UpdatePreventionInput } from "./dto/update-case_file.input";
 import { PrismaService } from "nestjs-prisma";
 import { CaseFile } from "./entities/case_file.entity";
 import { GraphQLError } from "graphql";
@@ -764,7 +764,10 @@ export class CaseFileService {
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };
+
   // find all equipment records, and their respective actions, for a given case
+  // Since we want to list the equipment related to a case, rather than the actions for a case, which may contain equipment, let's
+  // transform the actions with equipment to equipment with actions.
   async _findEquipmentDetails(caseIdentifier: string): Promise<Equipment[]> {
     const actions = await this.prisma.action.findMany({
       where: { case_guid: caseIdentifier },
@@ -812,6 +815,7 @@ export class CaseFileService {
         let equipmentDetail =
           equipmentDetailsMap.get(equipment.equipment_guid) ||
           ({
+            equipmentGuid: equipment.equipment_guid,
             actionEquipmentTypeCode: equipment.equipment_code,
             actionEquipmentTypeActiveIndicator: equipment.active_ind,
             address: equipment.equipment_location_desc,
@@ -838,13 +842,30 @@ export class CaseFileService {
     return equipmentDetails;
   }
 
+  async updateEquipment(
+    updateEquipmentInput: UpdateEquipmentInput
+  ): Promise<CaseFile> {
+
+    let caseFileOutput: CaseFile;
+    try {
+      await this.prisma.$transaction(async (db) => {
+      
+      });
+      } catch (exception) {
+        console.log("exception", exception);
+        throw new GraphQLError(
+          "Exception occurred. See server log for details",
+          {}
+        );
+      }
+
+    return caseFileOutput;
+  }
+
+  // create an equipment record - with actions to either set the equipment, or set and remove the equipment
   async createEquipment(
     createEquipmentInput: CreateEquipmentInput
   ): Promise<CaseFile> {
-    const actiontypeCode: string = "EQUIPMENT";
-    const actionCode: string = "SETEQUIPMT";
-
-    
 
     let caseFileOutput: CaseFile;
     try {
@@ -875,7 +896,6 @@ export class CaseFileService {
             createEquipmentInput.equipment[0].equipmentGeometryPoint,
         }
 
-        this.logger.debug(createEquipmentInput.equipment[0].address);
         this.logger.debug(`Creating equipment: ${JSON.stringify(newEquipmentJSON)}`);
 
         // create the equipment record
@@ -885,36 +905,26 @@ export class CaseFileService {
 
         this.logger.debug(`New Equipment: ${JSON.stringify(newEquipment)}`);
 
-        let action_codes_objects = await db.action_type_action_xref.findMany({
-          where: { action_type_code: actiontypeCode },
-          select: { action_code: true },
-        });
-        let action_codes: Array<string> = [];
-        for (const action_code_object of action_codes_objects) {
-          action_codes.push(action_code_object.action_code);
-        }
-
+        // we can only create one equipment at a time, so just grab the first one.
         const equipmentDetailsInstance =
           createEquipmentInput.equipment[0];
         const actions = equipmentDetailsInstance.actions;
-
+      
+        // get the actions associated with the creation of the equipment.  We may be setting an equipment, or setting and removing an equipment
         for (const action of actions) {
-          if (action_codes.indexOf(actionCode) === -1) {
-            throw "Some action code values where not passed from the client";
-          }
-        }
-
-        for (const action of actions) {
+          this.logger.debug(`Actions: ${JSON.stringify}`)
           let actionTypeActionXref =
             await db.action_type_action_xref.findFirstOrThrow({
               where: {
-                action_type_code: actiontypeCode,
-                action_code: actionCode,
+                action_type_code: 'EQUIPMENT',
+                action_code: action.actionCode,
               },
               select: {
                 action_type_action_xref_guid: true,
               },
             });
+
+          // create the action records (this may either be setting an equipment or removing an equipment)
           await db.action.create({
             data: {
               case_guid: caseFileGuid,

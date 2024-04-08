@@ -126,9 +126,11 @@ type Mutation {
   updateNote(input: UpdateSupplementalNoteInput!): CaseFile!
 
   createEquipment(createEquipmentInput: CreateEquipmentInput!): CaseFile!
+  updateEquipment(updateEquipmentInput: UpdateEquipmentInput!): CaseFile!
 }
 
 type EquipmentDetails {
+  equipmentGuid: String
   actionEquipmentTypeCode: String
   actionEquipmentTypeActiveIndicator: Boolean
   address: String
@@ -145,7 +147,14 @@ input CreateEquipmentInput {
   equipment: [EquipmentDetailsInput]
 }
 
+input UpdateEquipmentInput {
+  caseIdentifier: String!
+  equipment: EquipmentDetailsInput
+  updateUserId: String!
+}
+
 input EquipmentDetailsInput {
+  equipmentGuid: String
   actionEquipmentTypeCode: String
   actionEquipmentTypeActiveIndicator: Boolean
   address: String

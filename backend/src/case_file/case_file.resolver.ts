@@ -1,7 +1,7 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { CaseFileService } from './case_file.service';
 import { CreateAssessmentInput, CreateEquipmentInput, CreatePreventionInput } from './dto/create-case_file.input';
-import { UpdateAssessmentInput, UpdatePreventionInput } from './dto/update-case_file.input';
+import { UpdateAssessmentInput, UpdateEquipmentInput, UpdatePreventionInput } from './dto/update-case_file.input';
 import { JwtRoleGuard } from "../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
 import { Role } from "../enum/role.enum";
@@ -54,6 +54,12 @@ export class CaseFileResolver {
   @Roles(Role.COS_OFFICER)
   createEquipment(@Args('createEquipmentInput') createEquipmentInput: CreateEquipmentInput) {
     return this.caseFileService.createEquipment(createEquipmentInput);
+  }
+
+  @Mutation('updateEquipment')
+  @Roles(Role.COS_OFFICER)
+  updateEquipment(@Args('createEquipmentInput') updateEquipmentInput: UpdateEquipmentInput) {
+    return this.caseFileService.updateEquipment(updateEquipmentInput);
   }
 
   @Mutation("createNote")

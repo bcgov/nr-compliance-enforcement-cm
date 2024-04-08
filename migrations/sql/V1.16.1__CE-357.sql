@@ -6,7 +6,7 @@ CREATE TABLE
     equipment_guid	uuid,
     equipment_code	varchar(10),
     equipment_location_desc	varchar(120),
-    equipment_geometry_point	text,
+    equipment_geometry_point	geometry,
     active_ind bool NOT NULL,
     create_user_id varchar(32) NOT NULL,
     create_utc_timestamp timestamp NOT NULL,
