@@ -1,11 +1,20 @@
 scalar Date
 
 type CaseFile {
-  caseIdentifier : String
+  caseIdentifier: String
   leadIdentifier: String
   assessmentDetails: Assessment
   preventionDetails: Prevention
   note: Note
+  isReviewRequired: Boolean
+  reviewComplete: ReviewCompleteAction
+}
+
+type ReviewCompleteAction {
+  actor: String!
+  date: Date!
+  actionCode: String!
+  actionId: String
 }
 
 type Assessment {
@@ -88,6 +97,23 @@ input UpdatePreventionInput {
   updateUserId: String!
 }
 
+input ReviewInput {
+  leadIdentifier: String!
+  agencyCode: String!
+  caseCode: String!
+  userId: String!
+  isReviewRequired: Boolean!
+  caseIdentifier: String
+  reviewComplete: ReviewActionInput
+}
+
+input ReviewActionInput {
+  actor: String!
+  date: Date!
+  actionCode: String!
+  actionId: String
+}
+
 type Note {
   note: String!
   action: Action!
@@ -117,11 +143,10 @@ type Query {
 type Mutation {
   createAssessment(createAssessmentInput: CreateAssessmentInput!): CaseFile!
   updateAssessment(updateAssessmentInput: UpdateAssessmentInput!): CaseFile!
-
   createPrevention(createPreventionInput: CreatePreventionInput!): CaseFile!
   updatePrevention(updatePreventionInput: UpdatePreventionInput!): CaseFile!
-
-
+  createReview(reviewInput: ReviewInput!): CaseFile!
+  updateReview(reviewInput: ReviewInput!): CaseFile!
   createNote(input: CreateSupplementalNoteInput!): CaseFile!
   updateNote(input: UpdateSupplementalNoteInput!): CaseFile!
 }

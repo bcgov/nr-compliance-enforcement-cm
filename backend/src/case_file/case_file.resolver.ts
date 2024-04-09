@@ -6,6 +6,7 @@ import { JwtRoleGuard } from "../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
 import { Role } from "../enum/role.enum";
 import { Roles } from "../auth/decorators/roles.decorator";
+import { ReviewInput } from './dto/review-input';
 import { CreateSupplementalNoteInput } from './dto/supplemental-note/create-supplemental-note.input';
 import { UpdateSupplementalNoteInput } from './dto/supplemental-note/update-supplemental-note.input';
 
@@ -24,6 +25,12 @@ export class CaseFileResolver {
   @Roles(Role.COS_OFFICER)
   createPrevention(@Args('createPreventionInput') createPreventionInput: CreatePreventionInput) {
     return this.caseFileService.createPrevention(createPreventionInput);
+  }
+
+  @Mutation('createReview')
+  @Roles(Role.COS_OFFICER)
+  createReview(@Args('reviewInput') reviewInput: ReviewInput) {
+    return this.caseFileService.createReview(reviewInput);
   }
 
   @Query('getCaseFile')
@@ -48,6 +55,12 @@ export class CaseFileResolver {
   @Roles(Role.COS_OFFICER)
   updatePrevention(@Args('updatePreventionInput') updatePreventionInput: UpdatePreventionInput) {
     return this.caseFileService.updatePrevention(updatePreventionInput.caseIdentifier, updatePreventionInput);
+  }
+
+  @Mutation('updateReview')
+  @Roles(Role.COS_OFFICER)
+  updateReview(@Args('reviewInput') reviewInput: ReviewInput) {
+    return this.caseFileService.updateReview(reviewInput);
   }
 
   @Mutation("createNote")
