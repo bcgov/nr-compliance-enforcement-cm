@@ -1,4 +1,4 @@
-import { Action } from "./case-action.entity";
+import { CaseFileAction } from "../../case_file_action/entities/case_file_action.entity";
 
 export class Assessment {
     actionNotRequired: boolean;
@@ -6,6 +6,6 @@ export class Assessment {
     actionJustificationShortDescription: string;
     actionJustificationLongDescription: string;
     actionJustificationActiveIndicator: boolean;
-    actions: Action[]
+    actions: CaseFileAction[]
 
 }

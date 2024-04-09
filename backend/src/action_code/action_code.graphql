@@ -1,0 +1,14 @@
+type ActionCode {
+  action_code: String
+  short_description: String
+  long_description: String
+  display_order: Int
+  active_ind: Boolean
+}
+
+type Query {
+  getAllActionCodes: [ActionCode]!
+  getAllActionCodesByType: (action_type_code: String): ActionCode
+  getActionCode(action_code: String): ActionCode
+}
+

@@ -1,0 +1,14 @@
+type CaseFileAction {
+  actionId: String!
+  actionTypeCode: String!
+  actionCode: String!
+  displayOrder: Int
+  activeIndicator: Boolean 
+  shortDescription: String!
+  longDescription: String!
+}
+
+type Query {
+  FindCaseFileAction (actionId: String): CaseFileAction!
+  FindCaseFileActionsByCaseFile (caseId: String): [CaseFileAction]!
+}

@@ -11,10 +11,11 @@ import { ACTION_TYPE_CODES } from "../common/action_type_codes"
 import { Action } from "./entities/case-action.entity";
 import { CaseFileActionItem } from "./dto/case-file-action-item";
 import { ReviewInput } from './dto/review-input';
+import { CaseFileActionService } from "src/case_file_action/case_file_action.service";
 
 @Injectable()
 export class CaseFileService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private readonly caseFileActionService: CaseFileActionService) {}
 
   async createAssessmentCase(createAssessmentInput: CreateAssessmentInput): Promise<string> {
     let caseFileGuid: string;
@@ -254,12 +255,13 @@ export class CaseFileService {
   //-- helpers
   //-----------
 
-  //-- returns a collection of actions
+  //-- returns a collection of actions 
+  /*
   private getCaseActions = async (
-    actions: Array<CaseFileActionItem>,
+    actions: Array<CaseFileAction>,
     actionTypeCode: string,
     actionCode: string = "",
-  ): Promise<Array<Action>> => {
+  ): Promise<Array<CaseFileAction>> => {
     let items = [];
 
     if (!actionCode) {
@@ -305,7 +307,7 @@ export class CaseFileService {
           shortDescription,
           longDescription,
           activeIndicator,
-        } as Action;
+        } as CaseFileAction;
       },
     );
     return result;
@@ -314,11 +316,11 @@ export class CaseFileService {
   //-- returns a single action, if multiple actions exist the first action
   //-- will be returned
   private getCaseAction = async (
-    actions: Array<CaseFileActionItem>,
+    actions: Array<CaseFileAction>,
     actionTypeCode: string,
     actionCode: string = "",
-  ): Promise<Action> => {
-    let item: CaseFileActionItem;
+  ): Promise<CaseFileAction> => {
+    let item: CaseFileAction;
 
     if (!actionCode) {
       item = actions.find((action) => {
@@ -364,9 +366,9 @@ export class CaseFileService {
         shortDescription,
         longDescription,
         activeIndicator,
-      } as Action;
+      } as CaseFileAction;
     }
-  };
+  };*/
 
   findOne = async (id: string): Promise<CaseFile> => {
     const queryResult = await this.prisma.case_file.findUnique({
@@ -429,8 +431,8 @@ export class CaseFileService {
       inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: reason,
       review_required_ind: isReviewRequired
     } = queryResult;
-
-    const reviewCompleteAction = await this.getCaseAction(queryResult.action, ACTION_TYPE_CODES.CASEACTION, ACTION_CODES.COMPLTREVW)
+	
+    const reviewCompleteAction = await this.caseFileActionService.findActionsByCaseId(caseFileId)[0];
 
     const caseFile: CaseFile = {
       caseIdentifier: caseFileId,
@@ -441,16 +443,16 @@ export class CaseFileService {
         actionJustificationShortDescription: !reason ? "" : reason.short_description,
         actionJustificationLongDescription: !reason ? "" : reason.long_description,
         actionJustificationActiveIndicator: !reason ? false : reason.active_ind,
-        actions: await this.getCaseActions(queryResult.action, ACTION_TYPE_CODES.COMPASSESS),
+        actions: await this.caseFileActionService.findActionsByCaseId(caseFileId),
       },
       preventionDetails: {
-        actions: await this.getCaseActions(queryResult.action, ACTION_TYPE_CODES.COSPRVANDEDU),
+        actions: await this.caseFileActionService.findActionsByCaseId(caseFileId),
       },
       isReviewRequired: isReviewRequired,
       reviewComplete: reviewCompleteAction ?? null,
       note: {
         note: queryResult.note_text,
-        action: await this.getCaseAction(queryResult.action, ACTION_TYPE_CODES.CASEACTION, ACTION_CODES.UPDATENOTE),
+        action: await this.caseFileActionService.findActionsByCaseId(caseFileId)[0],
       },
     };
 
