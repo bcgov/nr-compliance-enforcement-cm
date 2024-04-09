@@ -392,6 +392,11 @@ export class CaseFileService {
           },
         },
         action: {
+          orderBy: [{
+            action_type_action_xref: {
+              display_order: 'asc'
+            }
+          }],
           select: {
             actor_guid: true,
             action_date: true,
