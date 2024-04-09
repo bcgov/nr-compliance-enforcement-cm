@@ -10,6 +10,7 @@ import { UpdateSupplementalNoteInput } from "./dto/supplemental-note/update-supp
 import { ACTION_TYPE_CODES } from "../common/action_type_codes"
 import { Action } from "./entities/case-action.entity";
 import { CaseFileActionItem } from "./dto/case-file-action-item";
+import { ReviewInput } from './dto/review-input';
 
 @Injectable()
 export class CaseFileService {
@@ -374,6 +375,7 @@ export class CaseFileService {
       },
       select: {
         case_file_guid: true,
+        review_required_ind: true,
         action_not_required_ind: true,
         inaction_reason_code: true,
         note_text: true,
@@ -425,8 +427,10 @@ export class CaseFileService {
       action_not_required_ind: actionNotRequired,
       inaction_reason_code: inactionReasonCode,
       inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: reason,
+      review_required_ind: isReviewRequired
     } = queryResult;
-const test = "";
+
+    const reviewCompleteAction = await this.getCaseAction(queryResult.action, ACTION_TYPE_CODES.CASEACTION, ACTION_CODES.COMPLTREVW)
 
     const caseFile: CaseFile = {
       caseIdentifier: caseFileId,
@@ -442,6 +446,8 @@ const test = "";
       preventionDetails: {
         actions: await this.getCaseActions(queryResult.action, ACTION_TYPE_CODES.COSPRVANDEDU),
       },
+      isReviewRequired: isReviewRequired,
+      reviewComplete: reviewCompleteAction ?? null,
       note: {
         note: queryResult.note_text,
         action: await this.getCaseAction(queryResult.action, ACTION_TYPE_CODES.CASEACTION, ACTION_CODES.UPDATENOTE),
@@ -638,6 +644,145 @@ const test = "";
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
     return caseFileOutput;
+  }
+
+  //create new case and new lead if not exists when mutation createReview called 
+  async createReviewCase(reviewInput: ReviewInput): Promise<string>
+  {
+    try
+    {
+      let caseFileId: string;
+      await this.prisma.$transaction(async (db) => {
+        //create case
+        const caseFile = await db.case_file.create({
+          data: {
+            agency_code: {
+              connect: {
+                agency_code: reviewInput.agencyCode
+              }
+            },
+            create_user_id: reviewInput.userId,
+            create_utc_timestamp: new Date(),
+            review_required_ind: true,
+            case_code_case_file_case_codeTocase_code: {
+              connect: {
+                case_code: reviewInput.caseCode
+              }
+            },
+          }
+        });
+        caseFileId = caseFile.case_file_guid
+        //create lead
+        await db.lead.create({
+          data: {
+            lead_identifier: reviewInput.leadIdentifier,
+            case_identifier: caseFile.case_file_guid,
+            create_user_id: reviewInput.userId,
+            create_utc_timestamp: new Date()
+          }
+        });
+      });
+      return caseFileId;
+    }
+    catch (err) {
+      console.error(err);
+      throw new GraphQLError('Error in createReviewCase', {});
+    }
+  }
+
+  //Create review complete action in table action
+  async createReviewComplete(reviewInput: ReviewInput): Promise<string>
+  {
+    try
+    {
+      let actionId: string;
+      await this.prisma.$transaction(async (db) => {
+        let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
+          where: {
+            action_type_code: ACTION_TYPE_CODES.CASEACTION,
+            action_code: ACTION_CODES.COMPLTREVW
+          },
+          select: {
+            action_type_action_xref_guid: true
+          }
+        });
+        const reviewAction = await db.action.create({
+          data: {
+            case_guid: reviewInput.caseIdentifier,
+            action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+            actor_guid: reviewInput.reviewComplete.actor,
+            action_date: reviewInput.reviewComplete.date,
+            active_ind: true, //True: review complete, false: review not complete
+            create_user_id: reviewInput.userId,
+            create_utc_timestamp: new Date
+          }
+        });
+        actionId = reviewAction.action_guid
+      });
+      return actionId;
+    }
+    catch (err) {
+      console.error(err);
+      throw new GraphQLError('Error in createReviewComplete', {});
+    }
+  }
+
+  //Mutation createReview
+  async createReview(reviewInput: ReviewInput): Promise<CaseFile> {
+    try {
+      let result = {
+        ...reviewInput
+      }
+      //If case is not exists -> create case
+      if(!reviewInput.caseIdentifier) {
+        const caseFileId = await this.createReviewCase(reviewInput);
+        result.caseIdentifier = caseFileId
+        result.isReviewRequired = true
+      }
+      //Else update review_required_ind
+      else {
+        const caseFile = await this.prisma.case_file.update({
+          where: {
+            case_file_guid: reviewInput.caseIdentifier
+          },
+          data: {
+            review_required_ind: reviewInput.isReviewRequired
+          }
+        });
+        result.isReviewRequired = caseFile.review_required_ind
+
+        //if isReviewRequired && reviewComplete, create reviewComplete action
+        if(reviewInput.isReviewRequired && reviewInput.reviewComplete && !reviewInput.reviewComplete.actionId) {
+          const actionId = await this.createReviewComplete(reviewInput);
+          reviewInput.reviewComplete.actionId = actionId;
+        }
+      }
+      return result;
+    }
+    catch (err) {
+      console.error(err);
+      throw new GraphQLError('Error in createReview', {});
+    }
+  }
+
+  async updateReview(reviewInput: ReviewInput): Promise<CaseFile> {
+    try {
+      const { isReviewRequired, caseIdentifier } = reviewInput;
+      //update review_required_ind in table case_file
+      await this.prisma.case_file.update({
+        where: {
+          case_file_guid: caseIdentifier
+        },
+        data: {
+          review_required_ind: isReviewRequired
+        }
+      });
+      return reviewInput;
+    }
+    catch (err) {
+      console.error(err);
+      throw new GraphQLError('Error in updateReview', {});
+    }
   }
 
   remove(id: number) {
