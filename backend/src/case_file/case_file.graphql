@@ -160,8 +160,8 @@ type Mutation {
 
 type EquipmentDetails {
   equipmentGuid: String
-  actionEquipmentTypeCode: String
-  actionEquipmentTypeActiveIndicator: Boolean
+  equipmentTypeCode: String
+  equipmentTypeActiveIndicator: Boolean
   address: String
   xCoordinate: String
   yCoordinate: String
@@ -177,15 +177,18 @@ input CreateEquipmentInput {
 }
 
 input UpdateEquipmentInput {
-  caseIdentifier: String!
-  equipment: EquipmentDetailsInput
-  updateUserId: String!
+  leadIdentifier: String
+  createUserId: String
+  agencyCode: String
+  caseCode: String
+  equipment: [EquipmentDetailsInput]
+
 }
 
 input EquipmentDetailsInput {
   equipmentGuid: String
-  actionEquipmentTypeCode: String
-  actionEquipmentTypeActiveIndicator: Boolean
+  equipmentTypeCode: String
+  equipmentTypeActiveIndicator: Boolean
   address: String
   xCoordinate: String
   yCoordinate: String

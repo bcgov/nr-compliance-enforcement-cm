@@ -961,8 +961,8 @@ export class CaseFileService {
           equipmentDetailsMap.get(equipment.equipment_guid) ||
           ({
             equipmentGuid: equipment.equipment_guid,
-            actionEquipmentTypeCode: equipment.equipment_code,
-            actionEquipmentTypeActiveIndicator: equipment.active_ind,
+            equipmentTypeCode: equipment.equipment_code,
+            equipmentTypeActiveIndicator: equipment.active_ind,
             address: equipment.equipment_location_desc,
             xCoordinate: "",
             yCoordinate: "",
@@ -1034,7 +1034,7 @@ export class CaseFileService {
           update_user_id: createEquipmentInput.createUserId,
           update_utc_timestamp: new Date(),
           equipment_code:
-            createEquipmentInput.equipment[0].actionEquipmentTypeCode,
+            createEquipmentInput.equipment[0].equipmentTypeCode,
           equipment_location_desc:
             createEquipmentInput.equipment[0].address,
           equipment_geometry_point:

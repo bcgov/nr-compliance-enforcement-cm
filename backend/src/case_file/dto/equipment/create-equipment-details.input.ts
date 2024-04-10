@@ -1,9 +1,9 @@
 import { EquipmentActionItem } from "../equipment-action";
 
 export interface CreateEquipmentDetailsInput {
-    actionEquipmentTypeCode?: string;
+    equipmentTypeCode?: string;
     address?: string;
     equipmentGeometryPoint?: string;
-    actionEquipmentTypeActiveIndicator: boolean;
+    equipmentTypeActiveIndicator: boolean;
     actions: EquipmentActionItem[];
   }
