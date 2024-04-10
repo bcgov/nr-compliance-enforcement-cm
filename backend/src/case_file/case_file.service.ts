@@ -22,7 +22,13 @@ export class CaseFileService {
   //-- creates an initial case_file and lead element for the
   //-- selected complaint
   //--
-  async createCase(input: CreateCaseInput): Promise<string> {
+  async createCase(
+    db: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+    >,
+    input: CreateCaseInput,
+  ): Promise<string> {
     let caseFileGuid: string;
 
     try {
@@ -561,15 +567,19 @@ export class CaseFileService {
   async updateReview(reviewInput: ReviewInput): Promise<CaseFile> {
     try {
       const { isReviewRequired, caseIdentifier } = reviewInput;
-      //update review_required_ind in table case_file
-      await this.prisma.case_file.update({
-        where: {
-          case_file_guid: caseIdentifier,
-        },
-        data: {
-          review_required_ind: isReviewRequired,
-        },
+
+      await this.prisma.$transaction(async (db) => {
+        //update review_required_ind in table case_file
+        await db.case_file.update({
+          where: {
+            case_file_guid: caseIdentifier,
+          },
+          data: {
+            review_required_ind: isReviewRequired,
+          },
+        });
       });
+
       return reviewInput;
     } catch (err) {
       console.error(err);
@@ -581,26 +591,53 @@ export class CaseFileService {
   createNote = async (input: CreateSupplementalNoteInput): Promise<CaseFile> => {
     let caseFileId = "";
 
-    const { leadIdentifier, note, createUserId, actor } = input;
-    const caseFile = await this.findOneByLeadId(leadIdentifier);
+    try {
+      const { leadIdentifier, note, createUserId, actor } = input;
+      const caseFile = await this.findOneByLeadId(leadIdentifier);
 
-    if (caseFile.caseIdentifier) {
-      caseFileId = caseFile.caseIdentifier;
-    } else {
-      const caseInput: CreateCaseInput = { ...input };
-      caseFileId = await this.createCase(caseInput);
+      await this.prisma.$transaction(async (db) => {
+        if (caseFile.caseIdentifier) {
+          caseFileId = caseFile.caseIdentifier;
+        } else {
+          const caseInput: CreateCaseInput = { ...input };
+          caseFileId = await this.createCase(db, caseInput);
+        }
+
+        return await this._upsertNote(db, caseFileId, note, actor, createUserId);
+      });
+
+      return await this.findOne(caseFileId);
+    } catch (error) {
+      console.log("exception: unable to create supplemental note", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
     }
-
-    return await this._upsertNote(caseFileId, note, actor, createUserId);
   };
 
   updateNote = async (input: UpdateSupplementalNoteInput): Promise<CaseFile> => {
     const { caseIdentifier: caseFileId, actor, note, updateUserId } = input;
 
-    return await this._upsertNote(caseFileId, note, actor, updateUserId);
+    try {
+      await this.prisma.$transaction(async (db) => {
+        return await this._upsertNote(db, caseFileId, note, actor, updateUserId);
+      });
+
+      return await this.findOne(caseFileId);
+    } catch (error) {
+      console.log("exception: unable to update supplemental note", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
   };
 
-  private _upsertNote = async (caseId: string, note: string, actor: string, userId: string): Promise<CaseFile> => {
+  private _upsertNote = async (
+    db: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+    >,
+    caseId: string,
+    note: string,
+    actor: string,
+    userId: string,
+  ): Promise<CaseFile> => {
     const _hasAction = async (caseId: string): Promise<boolean> => {
       const xrefId = await _getNoteActionXref();
 
@@ -689,7 +726,7 @@ export class CaseFileService {
 
       return await this.findOne(caseId);
     } catch (error) {
-      console.log("exception: unable to create supplemental note", error);
+      console.log("exception: unable to upsert supplemental note", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };
