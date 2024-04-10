@@ -12,6 +12,7 @@ import { Action } from "./entities/case-action.entity";
 import { CaseFileActionItem } from "./dto/case-file-action-item";
 import { Equipment } from "./entities/equipment.entity";
 import { ReviewInput } from './dto/review-input';
+import { DeleteEquipmentInput } from "./dto/equipment/delete-equipment.input";
 
 @Injectable()
 export class CaseFileService {
@@ -955,7 +956,7 @@ export class CaseFileService {
           action.action_type_action_xref_guid
       );
   
-      if (equipment) {
+      if (equipment && equipment.active_ind) { // only return active equipment
         // Initialize or update the equipment detail entry in the map
         let equipmentDetail =
           equipmentDetailsMap.get(equipment.equipment_guid) ||
@@ -987,25 +988,92 @@ export class CaseFileService {
     return equipmentDetails;
   }
 
+  async deleteEquipment(
+    deleteEquipmentInput: DeleteEquipmentInput
+  ): Promise<boolean> {
+    
+    try {
+      // Find the equipment record by its ID
+      const equipment = await this.prisma.equipment.findUnique({
+        where: {
+          equipment_guid: deleteEquipmentInput.equipmentGuid,
+        },
+      });
+  
+      if (!equipment) {
+        throw new Error(`Equipment with ID ${deleteEquipmentInput.equipmentGuid} not found.`);
+      }
+  
+      // Update the active_ind field to false
+      const deletedEquipment = await this.prisma.equipment.update({
+        where: {
+          equipment_guid: deleteEquipmentInput.equipmentGuid,
+        },
+        data: {
+          active_ind: false,
+          update_user_id: deleteEquipmentInput.updateUserId,
+          update_utc_timestamp: new Date(),
+        },
+      });
+
+      this.logger.debug(`Equipment with ID ${deleteEquipmentInput.equipmentGuid} has been updated successfully.`);
+      return true;
+    } catch (error) {
+      this.logger.error('Error deleting equipment:', error);
+      return false;
+    } finally {
+      await this.prisma.$disconnect();
+    }
+    
+  }
+
   async updateEquipment(
     updateEquipmentInput: UpdateEquipmentInput
   ): Promise<CaseFile> {
-
     let caseFileOutput: CaseFile;
+  
     try {
       await this.prisma.$transaction(async (db) => {
-      
-      });
-      } catch (exception) {
-        console.log("exception", exception);
-        throw new GraphQLError(
-          "Exception occurred. See server log for details",
-          {}
-        );
-      }
+        // Find the existing equipment record
+        this.logger.debug(`Updating equipment ${JSON.stringify(updateEquipmentInput)}`);
 
+        // we're updating a single equipment record, so only one equipment was provided.
+        const equipmentRecord = updateEquipmentInput.equipment[0];
+        const equipmentGuid = equipmentRecord.equipmentGuid;
+        const existingEquipment = await db.equipment.findUnique({
+          where: { equipment_guid: equipmentGuid },
+        });
+  
+        if (!existingEquipment) {
+          this.logger.debug(`Equipment ${equipmentGuid} not found`);
+          throw new Error("Equipment not found");
+        }
+  
+        // Update the equipment record
+        const updatedEquipment = await db.equipment.update({
+          where: { equipment_guid: equipmentGuid },
+          data: {
+            equipment_code: equipmentRecord.equipmentTypeCode,
+            equipment_location_desc: equipmentRecord.address,
+            //equipment_geometry_point: updateEquipmentInput.equipment.,
+            active_ind: equipmentRecord.actionEquipmentTypeActiveIndicator,
+          },
+        });
+      });
+
+      let caseFile = await this.findOneByLeadId(
+        updateEquipmentInput.leadIdentifier
+      );
+
+      const caseFileGuid = caseFile.caseIdentifier;
+      caseFileOutput = await this.findOne(caseFileGuid);
+    } catch (error) {
+      this.logger.error("An error occurred during equipment update:", error);
+      throw new GraphQLError("An error occurred during equipment update. See server log for details");
+    }
     return caseFileOutput;
   }
+  
 
   // create an equipment record - with actions to either set the equipment, or set and remove the equipment
   async createEquipment(
@@ -1013,13 +1081,14 @@ export class CaseFileService {
   ): Promise<CaseFile> {
 
     let caseFileOutput: CaseFile;
+    let caseFileGuid;
     try {
       await this.prisma.$transaction(async (db) => {
 
         let caseFile = await this.findOneByLeadId(
           createEquipmentInput.leadIdentifier
         );
-        let caseFileGuid;
+        
     
         if (caseFile?.caseIdentifier) {
           caseFileGuid = caseFile.caseIdentifier;
@@ -1057,11 +1126,11 @@ export class CaseFileService {
       
         // get the actions associated with the creation of the equipment.  We may be setting an equipment, or setting and removing an equipment
         for (const action of actions) {
-          this.logger.debug(`Actions: ${JSON.stringify}`)
+          this.logger.debug(`Actions: ${(action)}`)
           let actionTypeActionXref =
             await db.action_type_action_xref.findFirstOrThrow({
               where: {
-                action_type_code: 'EQUIPMENT',
+                action_type_code: ACTION_TYPE_CODES.EQUIPMENT,
                 action_code: action.actionCode,
               },
               select: {
@@ -1084,15 +1153,11 @@ export class CaseFileService {
             },
           });
         }
-        caseFileOutput = await this.findOne(caseFileGuid);
       });
-      
+      caseFileOutput = await this.findOne(caseFileGuid);
     } catch (exception) {
-      console.log("exception", exception);
-      throw new GraphQLError(
-        "Exception occurred. See server log for details",
-        {}
-      );
+      this.logger.error("An error occurred during equipment creation:", exception);
+       throw new GraphQLError("An error occurred during equipment creation. See server log for details");
     }
     return caseFileOutput;
   }

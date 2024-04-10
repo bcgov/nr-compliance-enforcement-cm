@@ -156,6 +156,7 @@ type Mutation {
 
   createEquipment(createEquipmentInput: CreateEquipmentInput!): CaseFile!
   updateEquipment(updateEquipmentInput: UpdateEquipmentInput!): CaseFile!
+  deleteEquipment(deleteEquipmentInput: DeleteEquipmentInput!): Boolean!
 }
 
 type EquipmentDetails {
@@ -182,7 +183,11 @@ input UpdateEquipmentInput {
   agencyCode: String
   caseCode: String
   equipment: [EquipmentDetailsInput]
+}
 
+input DeleteEquipmentInput {
+  equipmentGuid: String!
+  updateUserId: String!
 }
 
 input EquipmentDetailsInput {

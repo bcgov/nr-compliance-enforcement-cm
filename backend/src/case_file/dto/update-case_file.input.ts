@@ -22,6 +22,7 @@ export class UpdatePreventionInput {
 
 export class UpdateEquipmentInput {
   caseIdentifier: string;
-  equipment: UpdateEquipmentDetailsInput;
+  leadIdentifier: string;
+  equipment: [UpdateEquipmentDetailsInput];
   updateUserId: string;
 }

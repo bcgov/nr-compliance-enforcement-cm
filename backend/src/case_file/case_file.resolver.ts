@@ -9,6 +9,7 @@ import { Roles } from "../auth/decorators/roles.decorator";
 import { ReviewInput } from './dto/review-input';
 import { CreateSupplementalNoteInput } from './dto/supplemental-note/create-supplemental-note.input';
 import { UpdateSupplementalNoteInput } from './dto/supplemental-note/update-supplemental-note.input';
+import { DeleteEquipmentInput } from './dto/equipment/delete-equipment.input';
 
 @UseGuards(JwtRoleGuard)
 @Resolver('CaseFile')
@@ -65,8 +66,14 @@ export class CaseFileResolver {
 
   @Mutation('updateEquipment')
   @Roles(Role.COS_OFFICER)
-  updateEquipment(@Args('createEquipmentInput') updateEquipmentInput: UpdateEquipmentInput) {
+  updateEquipment(@Args('updateEquipmentInput') updateEquipmentInput: UpdateEquipmentInput) {
     return this.caseFileService.updateEquipment(updateEquipmentInput);
+  }
+
+  @Mutation('deleteEquipment')
+  @Roles(Role.COS_OFFICER)
+  deleteEquipment(@Args('deleteEquipmentInput') deleteEquipmentInput: DeleteEquipmentInput) {
+    return this.caseFileService.deleteEquipment(deleteEquipmentInput);
   }
 
   @Mutation('updateReview')
