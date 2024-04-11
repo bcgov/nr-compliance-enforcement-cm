@@ -291,6 +291,7 @@ export class CaseFileService {
 
     const result = items.map(
       ({
+        action_guid: actionGuid,
         actor_guid: actor,
         action_date: date,
         active_ind: activeIndicator,
@@ -303,6 +304,7 @@ export class CaseFileService {
         },
       }) => {
         return {
+          actionGuid,
           actor,
           date,
           actionCode,
@@ -349,6 +351,7 @@ export class CaseFileService {
 
     if (item) {
       const {
+        action_guid: actionGuid,
         actor_guid: actor,
         action_date: date,
         active_ind: activeIndicator,
@@ -362,6 +365,7 @@ export class CaseFileService {
       } = item;
 
       return {
+        actionGuid,
         actor,
         date,
         actionCode,
@@ -397,6 +401,7 @@ export class CaseFileService {
         },
         action: {
           select: {
+            action_guid: true,
             actor_guid: true,
             action_date: true,
             active_ind: true,
@@ -972,6 +977,7 @@ export class CaseFileService {
 
         // Append the action to this equipment's list of actions
         equipmentDetail.actions.push({
+          actionGuid: action.action_guid,
           actor: action.actor_guid,
           date: action.action_date,
           activeIndicator: action.active_ind,
@@ -1005,7 +1011,7 @@ export class CaseFileService {
       }
   
       // Update the active_ind field to false
-      const deletedEquipment = await this.prisma.equipment.update({
+      await this.prisma.equipment.update({
         where: {
           equipment_guid: deleteEquipmentInput.equipmentGuid,
         },
@@ -1031,6 +1037,11 @@ export class CaseFileService {
     updateEquipmentInput: UpdateEquipmentInput
   ): Promise<CaseFile> {
     let caseFileOutput: CaseFile;
+
+    let caseFile = await this.findOneByLeadId(
+      updateEquipmentInput.leadIdentifier
+    );
+
   
     try {
       await this.prisma.$transaction(async (db) => {
@@ -1050,7 +1061,7 @@ export class CaseFileService {
         }
   
         // Update the equipment record
-        const updatedEquipment = await db.equipment.update({
+        await db.equipment.update({
           where: { equipment_guid: equipmentGuid },
           data: {
             equipment_code: equipmentRecord.equipmentTypeCode,
@@ -1059,21 +1070,69 @@ export class CaseFileService {
             active_ind: equipmentRecord.actionEquipmentTypeActiveIndicator,
           },
         });
-      });
 
-      let caseFile = await this.findOneByLeadId(
-        updateEquipmentInput.leadIdentifier
-      );
+        this.logger.debug(`Found equipment to update`);
+
+      // Check for updated or added actions
+      const actions = equipmentRecord.actions;
+      for (const action of actions) {
+        if (action.actionGuid) {
+          this.logger.debug(`Updating equipment action: ${JSON.stringify(action)}`);
+          // If actionGuid exists, it means the action already exists and needs to be updated
+          await db.action.update({
+            where: { action_guid: action.actionGuid },
+            data: {
+              action_date: action.date,
+              actor_guid: action.actor,
+              update_utc_timestamp: new Date(),
+            },
+          });
+        } else {
+          // we're adding a new action, so find the action type action xref needed for this
+          this.logger.debug(`Creating new equipment action: ${JSON.stringify(action)}`);
+          let actionTypeActionXref =
+          await db.action_type_action_xref.findFirstOrThrow({
+            where: {
+              action_type_code: ACTION_TYPE_CODES.EQUIPMENT,
+              action_code: action.actionCode,
+            },
+            select: {
+              action_type_action_xref_guid: true,
+            },
+          });
+
+          this.logger.debug(`Found action xref`);
+          const caseFileGuid = caseFile.caseIdentifier;
+          // create the action records (this may either be setting an equipment or removing an equipment)
+          const data = {
+            case_guid: caseFileGuid,
+            action_type_action_xref_guid:
+              actionTypeActionXref.action_type_action_xref_guid,
+            actor_guid: action.actor,
+            action_date: action.date,
+            active_ind: action.activeIndicator,
+            create_user_id: 'bla',
+            create_utc_timestamp: new Date(),
+            equipment_guid: equipmentGuid,
+          };
+
+          this.logger.debug(`Adding new equipment action as part of an update: ${JSON.stringify(data)}`)
+
+          await db.action.create({
+            data: data
+          });
+        }
+      }
+      });
 
       const caseFileGuid = caseFile.caseIdentifier;
       caseFileOutput = await this.findOne(caseFileGuid);
     } catch (error) {
       this.logger.error("An error occurred during equipment update:", error);
-      throw new GraphQLError("An error occurred during equipment update. See server log for details");
+      throw new GraphQLError("An error occurred during equipment update. See server log for details", error);
     }
     return caseFileOutput;
   }
-  
 
   // create an equipment record - with actions to either set the equipment, or set and remove the equipment
   async createEquipment(
@@ -1096,12 +1155,14 @@ export class CaseFileService {
           caseFileGuid = await this.createCase(createEquipmentInput);
         }
 
+        const createdDate = new Date();
+
         const newEquipmentJSON = {
           active_ind: true,
           create_user_id: createEquipmentInput.createUserId,
-          create_utc_timestamp: new Date(),
+          create_utc_timestamp: createdDate,
           update_user_id: createEquipmentInput.createUserId,
-          update_utc_timestamp: new Date(),
+          update_utc_timestamp: createdDate,
           equipment_code:
             createEquipmentInput.equipment[0].equipmentTypeCode,
           equipment_location_desc:
@@ -1126,7 +1187,6 @@ export class CaseFileService {
       
         // get the actions associated with the creation of the equipment.  We may be setting an equipment, or setting and removing an equipment
         for (const action of actions) {
-          this.logger.debug(`Actions: ${(action)}`)
           let actionTypeActionXref =
             await db.action_type_action_xref.findFirstOrThrow({
               where: {
@@ -1139,18 +1199,21 @@ export class CaseFileService {
             });
 
           // create the action records (this may either be setting an equipment or removing an equipment)
+          const data = {
+            case_guid: caseFileGuid,
+            action_type_action_xref_guid:
+              actionTypeActionXref.action_type_action_xref_guid,
+            actor_guid: action.actor,
+            action_date: action.date,
+            active_ind: action.activeIndicator,
+            create_user_id: createEquipmentInput.createUserId,
+            create_utc_timestamp: new Date(),
+            equipment_guid: newEquipment.equipment_guid,
+          };
+
+          this.logger.debug(`Creating new action record for equipment: ${JSON.stringify(data)}`);
           await db.action.create({
-            data: {
-              case_guid: caseFileGuid,
-              action_type_action_xref_guid:
-                actionTypeActionXref.action_type_action_xref_guid,
-              actor_guid: action.actor,
-              action_date: action.date,
-              active_ind: action.activeIndicator,
-              create_user_id: createEquipmentInput.createUserId,
-              create_utc_timestamp: new Date(),
-              equipment_guid: newEquipment.equipment_guid,
-            },
+            data: data,
           });
         }
       });

@@ -28,6 +28,7 @@ type Assessment {
 }
 
 type Action{
+  actionGuid: String
   actor: String!
   date: Date!
   actionCode: String!
@@ -201,6 +202,7 @@ input EquipmentDetailsInput {
 }
 
 input EquipmentActionInput {
+  actionGuid: String
   date: Date
   actor: String
   activeIndicator: Boolean

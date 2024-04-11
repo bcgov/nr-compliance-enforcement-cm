@@ -9,5 +9,5 @@ export class Equipment {
     address?: string;
     xCoordinate: string;
     yCoordinate: string;
-    actions: CaseFileActionItem[]
+    actions: CaseFileActionItem[];
 }

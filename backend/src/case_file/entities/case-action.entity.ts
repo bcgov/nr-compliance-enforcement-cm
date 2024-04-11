@@ -1,4 +1,5 @@
 export class Action {
+    actionGuid: string;
     actor: string;
     date: Date;
     actionCode: string;
