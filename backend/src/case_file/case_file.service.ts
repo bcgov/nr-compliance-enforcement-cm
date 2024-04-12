@@ -23,7 +23,6 @@ import { Equipment } from "./entities/equipment.entity";
 import { ReviewInput } from "./dto/review-input";
 import { DeleteEquipmentInput } from "./dto/equipment/delete-equipment.input";
 import { Prisma } from "@prisma/client";
-import { Point } from "geojson";
 
 @Injectable()
 export class CaseFileService {
@@ -456,11 +455,13 @@ export class CaseFileService {
           },
         },
         action: {
-          orderBy: [{
-            action_type_action_xref: {
-              display_order: 'asc'
-            }
-          }],
+          orderBy: [
+            {
+              action_type_action_xref: {
+                display_order: "asc",
+              },
+            },
+          ],
           select: {
             action_guid: true,
             actor_guid: true,
@@ -1125,7 +1126,6 @@ export class CaseFileService {
             actionCode: actionData.action_code,
           });
 
-          this.logger.debug(JSON.stringify(equipmentDetail));
           equipmentDetailsMap.set(equipment.equipment_guid, equipmentDetail);
         }
       }
@@ -1222,38 +1222,39 @@ export class CaseFileService {
         // prisma doesn't handle geometry types, so we have to create this as a string and insert it
         const xCoordinate = updateEquipmentInput.equipment[0].xCoordinate;
         const yCoordinate = updateEquipmentInput.equipment[0].yCoordinate;
-        const pointWKT = `POINT(${xCoordinate} ${yCoordinate})`;
+        if (xCoordinate && yCoordinate) {
+          const pointWKT = `POINT(${xCoordinate} ${yCoordinate})`;
 
-        // update the equipment record to set the coordinates
-        // using raw query because prisma can't handle the awesomeness
-        await this.prisma
-          .$executeRaw`SET search_path TO public, case_management`;
-        const geometryUpdateQuery = `
+          // update the equipment record to set the coordinates
+          // using raw query because prisma can't handle the awesomeness
+          await this.prisma
+            .$executeRaw`SET search_path TO public, case_management`;
+          const geometryUpdateQuery = `
           UPDATE case_management.equipment
           SET equipment_geometry_point = public.ST_GeomFromText($1, 4326)
           WHERE equipment_guid = $2::uuid;
         `;
 
-        // Execute the update with safe parameter binding
-        try {
-          await db.$executeRawUnsafe(
-            geometryUpdateQuery,
-            pointWKT, // WKT string for the POINT
-            equipmentGuid // UUID of the equipment
-          );
-          this.logger.debug(
-            `Updated geometry for equipment GUID: ${equipmentGuid}`
-          );
-        } catch (error) {
-          this.logger.error(
-            "An error occurred during the geometry update:",
-            error
-          );
-          throw new Error(
-            "Failed to update equipment geometry due to a database error."
-          );
+          // Execute the update with safe parameter binding
+          try {
+            await db.$executeRawUnsafe(
+              geometryUpdateQuery,
+              pointWKT, // WKT string for the POINT
+              equipmentGuid // UUID of the equipment
+            );
+            this.logger.debug(
+              `Updated geometry for equipment GUID: ${equipmentGuid}`
+            );
+          } catch (error) {
+            this.logger.error(
+              "An error occurred during the geometry update:",
+              error
+            );
+            throw new Error(
+              "Failed to update equipment geometry due to a database error."
+            );
+          }
         }
-
 
         // Check for updated or added actions
         const actions = equipmentRecord.actions;
@@ -1297,7 +1298,7 @@ export class CaseFileService {
               actor_guid: action.actor,
               action_date: action.date,
               active_ind: action.activeIndicator,
-              create_user_id: "bla",
+              create_user_id: updateEquipmentInput.updateUserId,
               create_utc_timestamp: new Date(),
               equipment_guid: equipmentGuid,
             };
@@ -1347,7 +1348,6 @@ export class CaseFileService {
 
         const createdDate = new Date();
 
-
         const newEquipmentJSON = {
           active_ind: true,
           create_user_id: createEquipmentInput.createUserId,
@@ -1372,36 +1372,39 @@ export class CaseFileService {
         // prisma doesn't handle geometry types, so we have to create this as a string and insert it
         const xCoordinate = createEquipmentInput.equipment[0].xCoordinate;
         const yCoordinate = createEquipmentInput.equipment[0].yCoordinate;
-        const pointWKT = `POINT(${xCoordinate} ${yCoordinate})`;
 
-        // update the equipment record to set the coordinates
-        // using raw query because prisma can't handle the awesomeness
-        await this.prisma
-          .$executeRaw`SET search_path TO public, case_management`;
-        const geometryUpdateQuery = `
+        if (xCoordinate && yCoordinate) {
+          const pointWKT = `POINT(${xCoordinate} ${yCoordinate})`;
+
+          // update the equipment record to set the coordinates
+          // using raw query because prisma can't handle the awesomeness
+          await this.prisma
+            .$executeRaw`SET search_path TO public, case_management`;
+          const geometryUpdateQuery = `
           UPDATE case_management.equipment
           SET equipment_geometry_point = public.ST_GeomFromText($1, 4326)
           WHERE equipment_guid = $2::uuid;
         `;
 
-        // Execute the update with safe parameter binding
-        try {
-          await db.$executeRawUnsafe(
-            geometryUpdateQuery,
-            pointWKT, // WKT string for the POINT
-            newEquipment.equipment_guid // UUID of the equipment
-          );
-          this.logger.debug(
-            `Updated geometry for equipment GUID: ${newEquipment.equipment_guid}`
-          );
-        } catch (error) {
-          this.logger.error(
-            "An error occurred during the geometry update:",
-            error
-          );
-          throw new Error(
-            "Failed to update equipment geometry due to a database error."
-          );
+          // Execute the update with safe parameter binding
+          try {
+            await db.$executeRawUnsafe(
+              geometryUpdateQuery,
+              pointWKT, // WKT string for the POINT
+              newEquipment.equipment_guid // UUID of the equipment
+            );
+            this.logger.debug(
+              `Updated geometry for equipment GUID: ${newEquipment.equipment_guid}`
+            );
+          } catch (error) {
+            this.logger.error(
+              "An error occurred during the geometry update:",
+              error
+            );
+            throw new Error(
+              "Failed to update equipment geometry due to a database error."
+            );
+          }
         }
 
         this.logger.debug(`New Equipment: ${JSON.stringify(newEquipment)}`);
