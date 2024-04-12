@@ -1102,8 +1102,10 @@ export class CaseFileService {
               )}
           `;
 
-        if (result.length > 0) {
           const { longitude, latitude } = result[0];
+
+          const longitudeString = longitude ? `${longitude}` : null;
+          const latitudeString = longitude ? `${latitude}` : null;
 
           let equipmentDetail =
             equipmentDetailsMap.get(equipment.equipment_guid) ||
@@ -1112,8 +1114,8 @@ export class CaseFileService {
               equipmentTypeCode: equipment.equipment_code,
               equipmentTypeActiveIndicator: equipment.active_ind,
               address: equipment.equipment_location_desc,
-              xCoordinate: `${longitude}`,
-              yCoordinate: `${latitude}`,
+              xCoordinate: longitudeString,
+              yCoordinate: latitudeString,
               actions: [],
             } as Equipment);
 
@@ -1127,7 +1129,6 @@ export class CaseFileService {
           });
 
           equipmentDetailsMap.set(equipment.equipment_guid, equipmentDetail);
-        }
       }
     }
     const equipmentDetails = Array.from(
@@ -1222,8 +1223,7 @@ export class CaseFileService {
         // prisma doesn't handle geometry types, so we have to create this as a string and insert it
         const xCoordinate = updateEquipmentInput.equipment[0].xCoordinate;
         const yCoordinate = updateEquipmentInput.equipment[0].yCoordinate;
-        if (xCoordinate && yCoordinate) {
-          const pointWKT = `POINT(${xCoordinate} ${yCoordinate})`;
+        const pointWKT = xCoordinate && yCoordinate ? `POINT(${xCoordinate} ${yCoordinate})` : null;
 
           // update the equipment record to set the coordinates
           // using raw query because prisma can't handle the awesomeness
@@ -1254,7 +1254,6 @@ export class CaseFileService {
               "Failed to update equipment geometry due to a database error."
             );
           }
-        }
 
         // Check for updated or added actions
         const actions = equipmentRecord.actions;

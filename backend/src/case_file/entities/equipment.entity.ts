@@ -7,7 +7,7 @@ export class Equipment {
     equipmentTypeLongDescription?: string;
     equipmentTypeActiveIndicator: boolean;
     address?: string;
-    xCoordinate: string;
-    yCoordinate: string;
+    xCoordinate?: string;
+    yCoordinate?: string;
     actions: CaseFileActionItem[];
 }
