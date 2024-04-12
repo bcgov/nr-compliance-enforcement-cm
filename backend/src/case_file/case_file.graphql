@@ -26,7 +26,7 @@ type Assessment {
   actions: [Action]
 }
 
-type Action{
+type Action {
   actor: String!
   date: Date!
   actionCode: String!
@@ -49,7 +49,7 @@ input AssessmentDetailsInput {
   actions: [AssessmentActionInput]!
 }
 
-input AssessmentActionInput{
+input AssessmentActionInput {
   actor: String!
   date: Date!
   actionCode: String!
@@ -81,7 +81,7 @@ input PreventionDetailsInput {
   actions: [PreventionActionInput]!
 }
 
-input PreventionActionInput{
+input PreventionActionInput {
   actor: String!
   date: Date!
   actionCode: String!
@@ -135,9 +135,15 @@ input UpdateSupplementalNoteInput {
   updateUserId: String!
 }
 
+input DeleteSupplementalNoteInput {
+  caseIdentifier: String!
+  actor: String!
+  updateUserId: String!
+}
+
 type Query {
-  getCaseFile( caseIdentifier: String!): CaseFile
-  getCaseFileByLeadId( leadIdentifier: String!): CaseFile
+  getCaseFile(caseIdentifier: String!): CaseFile
+  getCaseFileByLeadId(leadIdentifier: String!): CaseFile
 }
 
 type Mutation {
@@ -149,4 +155,5 @@ type Mutation {
   updateReview(reviewInput: ReviewInput!): CaseFile!
   createNote(input: CreateSupplementalNoteInput!): CaseFile!
   updateNote(input: UpdateSupplementalNoteInput!): CaseFile!
+  deleteNote(input: DeleteSupplementalNoteInput!): CaseFile!
 }

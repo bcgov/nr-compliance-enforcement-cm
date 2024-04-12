@@ -7,10 +7,11 @@ import { GraphQLError } from "graphql";
 import { CreateSupplementalNoteInput } from "./dto/supplemental-note/create-supplemental-note.input";
 import { ACTION_CODES } from "../common/action_codes";
 import { UpdateSupplementalNoteInput } from "./dto/supplemental-note/update-supplemental-note.input";
-import { ACTION_TYPE_CODES } from "../common/action_type_codes"
+import { ACTION_TYPE_CODES } from "../common/action_type_codes";
 import { Action } from "./entities/case-action.entity";
 import { CaseFileActionItem } from "./dto/case-file-action-item";
-import { ReviewInput } from './dto/review-input';
+import { ReviewInput } from "./dto/review-input";
+import { DeleteSupplementalNoteInput } from "./dto/supplemental-note/delete-supplemental-note.input";
 
 @Injectable()
 export class CaseFileService {
@@ -392,11 +393,13 @@ export class CaseFileService {
           },
         },
         action: {
-          orderBy: [{
-            action_type_action_xref: {
-              display_order: 'asc'
-            }
-          }],
+          orderBy: [
+            {
+              action_type_action_xref: {
+                display_order: "asc",
+              },
+            },
+          ],
           select: {
             actor_guid: true,
             action_date: true,
@@ -432,10 +435,14 @@ export class CaseFileService {
       action_not_required_ind: actionNotRequired,
       inaction_reason_code: inactionReasonCode,
       inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: reason,
-      review_required_ind: isReviewRequired
+      review_required_ind: isReviewRequired,
     } = queryResult;
 
-    const reviewCompleteAction = await this.getCaseAction(queryResult.action, ACTION_TYPE_CODES.CASEACTION, ACTION_CODES.COMPLTREVW)
+    const reviewCompleteAction = await this.getCaseAction(
+      queryResult.action,
+      ACTION_TYPE_CODES.CASEACTION,
+      ACTION_CODES.COMPLTREVW,
+    );
 
     const caseFile: CaseFile = {
       caseIdentifier: caseFileId,
@@ -651,11 +658,9 @@ export class CaseFileService {
     return caseFileOutput;
   }
 
-  //create new case and new lead if not exists when mutation createReview called 
-  async createReviewCase(reviewInput: ReviewInput): Promise<string>
-  {
-    try
-    {
+  //create new case and new lead if not exists when mutation createReview called
+  async createReviewCase(reviewInput: ReviewInput): Promise<string> {
+    try {
       let caseFileId: string;
       await this.prisma.$transaction(async (db) => {
         //create case
@@ -663,53 +668,50 @@ export class CaseFileService {
           data: {
             agency_code: {
               connect: {
-                agency_code: reviewInput.agencyCode
-              }
+                agency_code: reviewInput.agencyCode,
+              },
             },
             create_user_id: reviewInput.userId,
             create_utc_timestamp: new Date(),
             review_required_ind: true,
             case_code_case_file_case_codeTocase_code: {
               connect: {
-                case_code: reviewInput.caseCode
-              }
+                case_code: reviewInput.caseCode,
+              },
             },
-          }
+          },
         });
-        caseFileId = caseFile.case_file_guid
+        caseFileId = caseFile.case_file_guid;
         //create lead
         await db.lead.create({
           data: {
             lead_identifier: reviewInput.leadIdentifier,
             case_identifier: caseFile.case_file_guid,
             create_user_id: reviewInput.userId,
-            create_utc_timestamp: new Date()
-          }
+            create_utc_timestamp: new Date(),
+          },
         });
       });
       return caseFileId;
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
-      throw new GraphQLError('Error in createReviewCase', {});
+      throw new GraphQLError("Error in createReviewCase", {});
     }
   }
 
   //Create review complete action in table action
-  async createReviewComplete(reviewInput: ReviewInput): Promise<string>
-  {
-    try
-    {
+  async createReviewComplete(reviewInput: ReviewInput): Promise<string> {
+    try {
       let actionId: string;
       await this.prisma.$transaction(async (db) => {
         let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
           where: {
             action_type_code: ACTION_TYPE_CODES.CASEACTION,
-            action_code: ACTION_CODES.COMPLTREVW
+            action_code: ACTION_CODES.COMPLTREVW,
           },
           select: {
-            action_type_action_xref_guid: true
-          }
+            action_type_action_xref_guid: true,
+          },
         });
         const reviewAction = await db.action.create({
           data: {
@@ -719,16 +721,15 @@ export class CaseFileService {
             action_date: reviewInput.reviewComplete.date,
             active_ind: true, //True: review complete, false: review not complete
             create_user_id: reviewInput.userId,
-            create_utc_timestamp: new Date
-          }
+            create_utc_timestamp: new Date(),
+          },
         });
-        actionId = reviewAction.action_guid
+        actionId = reviewAction.action_guid;
       });
       return actionId;
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
-      throw new GraphQLError('Error in createReviewComplete', {});
+      throw new GraphQLError("Error in createReviewComplete", {});
     }
   }
 
@@ -736,37 +737,36 @@ export class CaseFileService {
   async createReview(reviewInput: ReviewInput): Promise<CaseFile> {
     try {
       let result = {
-        ...reviewInput
-      }
+        ...reviewInput,
+      };
       //If case is not exists -> create case
-      if(!reviewInput.caseIdentifier) {
+      if (!reviewInput.caseIdentifier) {
         const caseFileId = await this.createReviewCase(reviewInput);
-        result.caseIdentifier = caseFileId
-        result.isReviewRequired = true
+        result.caseIdentifier = caseFileId;
+        result.isReviewRequired = true;
       }
       //Else update review_required_ind
       else {
         const caseFile = await this.prisma.case_file.update({
           where: {
-            case_file_guid: reviewInput.caseIdentifier
+            case_file_guid: reviewInput.caseIdentifier,
           },
           data: {
-            review_required_ind: reviewInput.isReviewRequired
-          }
+            review_required_ind: reviewInput.isReviewRequired,
+          },
         });
-        result.isReviewRequired = caseFile.review_required_ind
+        result.isReviewRequired = caseFile.review_required_ind;
 
         //if isReviewRequired && reviewComplete, create reviewComplete action
-        if(reviewInput.isReviewRequired && reviewInput.reviewComplete && !reviewInput.reviewComplete.actionId) {
+        if (reviewInput.isReviewRequired && reviewInput.reviewComplete && !reviewInput.reviewComplete.actionId) {
           const actionId = await this.createReviewComplete(reviewInput);
           reviewInput.reviewComplete.actionId = actionId;
         }
       }
       return result;
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
-      throw new GraphQLError('Error in createReview', {});
+      throw new GraphQLError("Error in createReview", {});
     }
   }
 
@@ -776,17 +776,16 @@ export class CaseFileService {
       //update review_required_ind in table case_file
       await this.prisma.case_file.update({
         where: {
-          case_file_guid: caseIdentifier
+          case_file_guid: caseIdentifier,
         },
         data: {
-          review_required_ind: isReviewRequired
-        }
+          review_required_ind: isReviewRequired,
+        },
       });
       return reviewInput;
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
-      throw new GraphQLError('Error in updateReview', {});
+      throw new GraphQLError("Error in updateReview", {});
     }
   }
 
@@ -814,6 +813,10 @@ export class CaseFileService {
     const { caseIdentifier: caseFileId, actor, note, updateUserId } = input;
 
     return await this._upsertNote(caseFileId, note, actor, updateUserId);
+  };
+
+  deleteNote = async (input: DeleteSupplementalNoteInput): Promise<CaseFile> => {
+    return this.updateNote(input as UpdateSupplementalNoteInput);
   };
 
   private _upsertNote = async (caseId: string, note: string, actor: string, userId: string): Promise<CaseFile> => {
@@ -910,4 +913,3 @@ export class CaseFileService {
     }
   };
 }
- 
