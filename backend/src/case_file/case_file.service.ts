@@ -1091,8 +1091,8 @@ export class CaseFileService {
           { longitude: number; latitude: number }[]
         >`
             SELECT 
-              st_x(equipment_geometry_point::geometry) AS longitude, 
-              st_y(equipment_geometry_point::geometry) AS latitude
+              public.st_x(equipment_geometry_point::geometry) AS longitude, 
+              public.st_y(equipment_geometry_point::geometry) AS latitude
             FROM 
               ${Prisma.raw("case_management.equipment")}
             WHERE 
@@ -1212,14 +1212,13 @@ export class CaseFileService {
           data: {
             equipment_code: equipmentRecord.equipmentTypeCode,
             equipment_location_desc: equipmentRecord.address,
-            //equipment_geometry_point: updateEquipmentInput.equipment.,
             active_ind: equipmentRecord.actionEquipmentTypeActiveIndicator,
           },
         });
 
         this.logger.debug(`Found equipment to update`);
 
-                // constructing a geometry type to update the equipment record with
+        // constructing a geometry type to update the equipment record with
         // prisma doesn't handle geometry types, so we have to create this as a string and insert it
         const xCoordinate = updateEquipmentInput.equipment[0].xCoordinate;
         const yCoordinate = updateEquipmentInput.equipment[0].yCoordinate;
@@ -1231,7 +1230,7 @@ export class CaseFileService {
           .$executeRaw`SET search_path TO public, case_management`;
         const geometryUpdateQuery = `
           UPDATE case_management.equipment
-          SET equipment_geometry_point = ST_GeomFromText($1, 4326)
+          SET equipment_geometry_point = public.ST_GeomFromText($1, 4326)
           WHERE equipment_guid = $2::uuid;
         `;
 
@@ -1381,7 +1380,7 @@ export class CaseFileService {
           .$executeRaw`SET search_path TO public, case_management`;
         const geometryUpdateQuery = `
           UPDATE case_management.equipment
-          SET equipment_geometry_point = ST_GeomFromText($1, 4326)
+          SET equipment_geometry_point = public.ST_GeomFromText($1, 4326)
           WHERE equipment_guid = $2::uuid;
         `;
 
