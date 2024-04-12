@@ -1105,7 +1105,7 @@ export class CaseFileService {
           const { longitude, latitude } = result[0];
 
           const longitudeString = longitude ? `${longitude}` : null;
-          const latitudeString = longitude ? `${latitude}` : null;
+          const latitudeString = latitude ? `${latitude}` : null;
 
           let equipmentDetail =
             equipmentDetailsMap.get(equipment.equipment_guid) ||
