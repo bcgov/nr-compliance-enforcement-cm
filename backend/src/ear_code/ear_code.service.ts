@@ -1,12 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
+import { EarCode } from './entities/ear_code.entity';
 
 @Injectable()
 export class EarCodeService {
     constructor(private prisma: PrismaService) {}
 
-    findAll() {
-      return this.prisma.ear_code.findMany();
+    async findAll() {
+      const prismaEarCodes =  await this.prisma.ear_code.findMany({
+        select: {
+          ear_code: true,
+          short_description: true,
+          long_description: true,
+          display_order: true,
+          active_ind: true
+        }
+      });
+  
+      const earCodes: EarCode[] = prismaEarCodes.map(prismaEarCodes => ({
+        earCode: prismaEarCodes.ear_code,
+        shortDescription: prismaEarCodes.short_description,
+        longDescription: prismaEarCodes.long_description,
+        displayOrder: prismaEarCodes.display_order,
+        activeIndicator: prismaEarCodes.active_ind
+      }));
+  
+      return earCodes;
     }
   
     findOne(id: string) {
