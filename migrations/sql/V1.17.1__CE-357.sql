@@ -1,3 +1,6 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "postgis";
+
 --
 -- CREATE TABLE equipment
 --
@@ -6,7 +9,7 @@ CREATE TABLE
     equipment_guid	uuid,
     equipment_code	varchar(10),
     equipment_location_desc	varchar(120),
-    equipment_geometry_point	text,
+    equipment_geometry_point	geometry,
     active_ind bool NOT NULL,
     create_user_id varchar(32) NOT NULL,
     create_utc_timestamp timestamp NOT NULL,
@@ -19,6 +22,8 @@ CREATE TABLE
 ALTER TABLE case_management.equipment ADD CONSTRAINT FK_equipment__equipment_code FOREIGN KEY (equipment_code) REFERENCES case_management.equipment_code(equipment_code);
 
 ALTER TABLE action ADD COLUMN equipment_guid uuid;
+
+ALTER TABLE case_management.equipment ALTER COLUMN equipment_guid SET DEFAULT uuid_generate_v4();
 
 ALTER TABLE case_management.action ADD CONSTRAINT FK_action__equipment_guid FOREIGN KEY (equipment_guid) REFERENCES case_management.equipment(equipment_guid);
 
