@@ -11,16 +11,10 @@ import { JwtAuthGuard } from '../auth/jwtauth.guard';
 export class EquipmentCodeResolver {
   constructor(private readonly equipmentCodeService: EquipmentCodeService) {}
 
-  @Query('getAllEquipmentCodes')
+  @Query('equipmentCodes')
   @Roles(Role.COS_OFFICER)
   findAll() {
     return this.equipmentCodeService.findAll();
-  }
-
-  @Query('getEquipmentCode')
-  @Roles(Role.COS_OFFICER)
-  findOne(@Args('equipment_code') equipment_code: string) {
-    return this.equipmentCodeService.findOne(equipment_code);
   }
 
 }

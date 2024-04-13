@@ -1,13 +1,12 @@
 type AgeCode {
-  age_code: String
-  short_description: String
-  long_description: String
-  display_order: Int
-  active_ind: Boolean
+  ageCode: String
+  shortDescription: String
+  longDescription: String
+  displayOrder: Int
+  activeIndicator: Boolean
 }
 
 type Query {
-  getAllAgeCodes: [AgeCode]!
-  getAgeCode(age_code: String): AgeCode
+  ageCodes: [AgeCode]!
 }
 

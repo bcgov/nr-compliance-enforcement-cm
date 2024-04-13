@@ -1,12 +1,11 @@
 type DrugMethodCode {
-  drug_method_code: String
-  short_description: String
-  long_description: String
-  display_order: Int
-  active_ind: Boolean
+  drugMethodCode: String
+  shortDescription: String
+  longDescription: String
+  displayOrder: Int
+  activeIndicator: Boolean
 }
 
 type Query {
-  getAllDrugMethodCodes: [DrugMethodCode]!
-  getDrugMethodCode(drug_method_code: String): DrugMethodCode
+  drugMethodCodes: [DrugMethodCode]!
 }
