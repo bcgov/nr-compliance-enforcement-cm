@@ -1,7 +1,7 @@
-import { Resolver, Query, Mutation, Args } from "@nestjs/graphql";
-import { CaseFileService } from "./case_file.service";
-import { CreateAssessmentInput, CreatePreventionInput } from "./dto/create-case_file.input";
-import { UpdateAssessmentInput, UpdatePreventionInput } from "./dto/update-case_file.input";
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { CaseFileService } from './case_file.service';
+import { CreateAssessmentInput, CreateEquipmentInput, CreatePreventionInput } from './dto/create-case_file.input';
+import { UpdateAssessmentInput, UpdateEquipmentInput, UpdatePreventionInput } from './dto/update-case_file.input';
 import { JwtRoleGuard } from "../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
 import { Role } from "../enum/role.enum";
@@ -10,6 +10,7 @@ import { ReviewInput } from "./dto/review-input";
 import { CreateSupplementalNoteInput } from "./dto/supplemental-note/create-supplemental-note.input";
 import { UpdateSupplementalNoteInput } from "./dto/supplemental-note/update-supplemental-note.input";
 import { DeleteSupplementalNoteInput } from "./dto/supplemental-note/delete-supplemental-note.input";
+import { DeleteEquipmentInput } from './dto/equipment/delete-equipment.input';
 
 @UseGuards(JwtRoleGuard)
 @Resolver("CaseFile")
@@ -58,7 +59,25 @@ export class CaseFileResolver {
     return this.caseFileService.updatePrevention(updatePreventionInput.caseIdentifier, updatePreventionInput);
   }
 
-  @Mutation("updateReview")
+  @Mutation('createEquipment')
+  @Roles(Role.COS_OFFICER)
+  createEquipment(@Args('createEquipmentInput') createEquipmentInput: CreateEquipmentInput) {
+    return this.caseFileService.createEquipment(createEquipmentInput);
+  }
+
+  @Mutation('updateEquipment')
+  @Roles(Role.COS_OFFICER)
+  updateEquipment(@Args('updateEquipmentInput') updateEquipmentInput: UpdateEquipmentInput) {
+    return this.caseFileService.updateEquipment(updateEquipmentInput);
+  }
+
+  @Mutation('deleteEquipment')
+  @Roles(Role.COS_OFFICER)
+  deleteEquipment(@Args('deleteEquipmentInput') deleteEquipmentInput: DeleteEquipmentInput) {
+    return this.caseFileService.deleteEquipment(deleteEquipmentInput);
+  }
+
+  @Mutation('updateReview')
   @Roles(Role.COS_OFFICER)
   updateReview(@Args("reviewInput") reviewInput: ReviewInput) {
     return this.caseFileService.updateReview(reviewInput);

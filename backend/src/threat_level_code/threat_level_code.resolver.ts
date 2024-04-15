@@ -10,15 +10,10 @@ import { Roles } from "../auth/decorators/roles.decorator";
 export class ThreatLevelCodeResolver {
   constructor(private readonly threatLevelCodeService: ThreatLevelCodeService) {}
 
-  @Query('getAllThreatLevelCodes')
+  @Query('threatLevelCodes')
   @Roles(Role.COS_OFFICER)
   findAll() {
     return this.threatLevelCodeService.findAll();
   }
 
-  @Query('getThreatLevelCode')
-  @Roles(Role.COS_OFFICER)
-  findOne(@Args('threat_level_code') threat_level_code: string) {
-    return this.threatLevelCodeService.findOne(threat_level_code);
-  }
 }

@@ -1,12 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from "nestjs-prisma";
+import { SexCode } from "./entities/sex_code.entity";
 
 @Injectable()
 export class SexCodeService {
     constructor(private prisma: PrismaService) {}
 
-    findAll() {
-        return this.prisma.sex_code.findMany();
+    async findAll() {
+        const prismaSexCodes =  await this.prisma.sex_code.findMany({
+          select: {
+            sex_code: true,
+            short_description: true,
+            long_description: true,
+            display_order: true,
+            active_ind: true
+          }
+        });
+    
+        const sexCodes: SexCode[] = prismaSexCodes.map(prismaSexCodes => ({
+          sexCode: prismaSexCodes.sex_code,
+          shortDescription: prismaSexCodes.short_description,
+          longDescription: prismaSexCodes.long_description,
+          displayOrder: prismaSexCodes.display_order,
+          activeIndicator: prismaSexCodes.active_ind
+        }));
+    
+        return sexCodes;
     }
 
     findOne(id: string) {

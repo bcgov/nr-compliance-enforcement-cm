@@ -10,16 +10,10 @@ import { Roles } from "../auth/decorators/roles.decorator";
 export class SexCodeResolver {
   constructor(private readonly sexCodeService: SexCodeService) {}
 
-  @Query('getAllSexCodes')
+  @Query('sexCodes')
   @Roles(Role.COS_OFFICER)
   findAll() {
     return this.sexCodeService.findAll();
-  }
-
-  @Query('getSexCode')
-  @Roles(Role.COS_OFFICER)
-  findOne(@Args('sex_code') sex_code: string) {
-    return this.sexCodeService.findOne(sex_code);
   }
 
 }

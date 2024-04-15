@@ -10,15 +10,10 @@ import { Roles } from "../auth/decorators/roles.decorator";
 export class HwcrOutcomeCodeResolver {
   constructor(private readonly hwcrOutcomeCodeService: HwcrOutcomeCodeService) {}
 
-  @Query('getAllHWCROutcomeCodes')
+  @Query('hwcrOutcomeCodes')
   @Roles(Role.COS_OFFICER)
   findAll() {
     return this.hwcrOutcomeCodeService.findAll();
   }
 
-  @Query('getHWCROutcomeCode')
-  @Roles(Role.COS_OFFICER)
-  findOne(@Args('hwcr_outcome_code') hwcr_outcome_code: string) {
-    return this.hwcrOutcomeCodeService.findOne(hwcr_outcome_code);
-  }
 }

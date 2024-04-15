@@ -10,16 +10,10 @@ import { Roles } from "../auth/decorators/roles.decorator";
 export class AgeCodeResolver {
   constructor(private readonly ageCodeService: AgeCodeService) {}
 
-  @Query('getAllAgeCodes')
+  @Query('ageCodes')
   @Roles(Role.COS_OFFICER)
   findAll() {
     return this.ageCodeService.findAll();
-  }
-
-  @Query('getAgeCode')
-  @Roles(Role.COS_OFFICER)
-  findOne(@Args('age_code') age_code: string) {
-    return this.ageCodeService.findOne(age_code);
   }
 
 }
