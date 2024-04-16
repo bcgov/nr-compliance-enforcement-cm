@@ -1139,13 +1139,6 @@ export class CaseFileService {
       equipmentDetailsMap.values()
     ) as Equipment[];
 
-    // sort the equipment list in chronological order
-    equipmentDetails.sort((a, b) => {
-      const dateA = new Date(a.createDate);
-      const dateB = new Date(b.createDate);
-      return dateA.getTime() - dateB.getTime();
-  });
-
     return equipmentDetails;
   }
 
