@@ -856,40 +856,51 @@ export class CaseFileService {
     const current = new Date();
 
     try {
-      const xref = await _getNoteActionXref();
-      const action = await this.prisma.action.findFirst({
-        where: {
-          case_guid: caseIdentifier,
-          action_type_action_xref_guid: xref,
-        },
-        select: {
-          action_guid: true,
-        },
-      });
+      await this.prisma.$transaction(async (db) => {
+        const xref = await _getNoteActionXref();
+        const action = await this.prisma.action.findFirst({
+          where: {
+            case_guid: caseIdentifier,
+            action_type_action_xref_guid: xref,
+          },
+          select: {
+            action_guid: true,
+          },
+        });
 
-      if (!action) {
-        throw new Error(`Unable to delete note for caseIdentifier: ${caseIdentifier}`);
-      }
+        if (!action) {
+          throw new Error(`Unable to delete note for caseIdentifier: ${caseIdentifier}`);
+        }
 
-      this._upsertNote(caseIdentifier, "", actor, userId);
+        await db.case_file.update({
+          where: {
+            case_file_guid: caseIdentifier,
+          },
+          data: {
+            note_text: "",
+            update_user_id: userId,
+            update_utc_timestamp: current,
+          },
+        });
 
-      await this.prisma.action.update({
-        where: {
-          action_guid: action.action_guid,
-        },
-        data: {
-          actor_guid: actor,
-          action_date: current,
-          active_ind: false,
-          update_user_id: userId,
-          update_utc_timestamp: current,
-        },
+        await db.action.update({
+          where: {
+            action_guid: action.action_guid,
+          },
+          data: {
+            actor_guid: actor,
+            action_date: current,
+            active_ind: false,
+            update_user_id: userId,
+            update_utc_timestamp: current,
+          },
+        });
       });
 
       return await this.findOne(caseIdentifier);
     } catch (error) {
-      console.log(error);
-      return await this.findOne(caseIdentifier);
+      console.log("exception: unable to delete supplemental note", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };
 
@@ -935,6 +946,7 @@ export class CaseFileService {
               case_guid: caseId,
               action_type_action_xref_guid: xrefId,
               actor_guid: actor,
+              active_ind: true,
               action_date: current,
               create_user_id: userId,
               create_utc_timestamp: current,
@@ -959,6 +971,7 @@ export class CaseFileService {
             },
             data: {
               actor_guid: actor,
+              active_ind: true,
               action_date: current,
               update_user_id: userId,
               update_utc_timestamp: current,
