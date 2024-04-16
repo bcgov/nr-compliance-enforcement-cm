@@ -1,8 +1,8 @@
 import { EquipmentActionItem } from "../equipment-action";
 
 export interface UpdateEquipmentDetailsInput {
-    equipmentGuid?: string;
-    equipmentTypeCode?: string;
+    id?: string;
+    typeCode?: string;
     address?: string;
     xCoordinate: string;
     yCoordinate: string;

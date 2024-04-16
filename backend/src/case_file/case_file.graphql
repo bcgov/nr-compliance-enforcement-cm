@@ -161,12 +161,13 @@ type Mutation {
 }
 
 type EquipmentDetails {
-  equipmentGuid: String
-  equipmentTypeCode: String
-  equipmentTypeActiveIndicator: Boolean
+  id: String
+  typeCode: String
+  activeIndicator: Boolean
   address: String
   xCoordinate: String
   yCoordinate: String
+  createDate: Date
   actions: [Action]
 }
 
@@ -180,21 +181,21 @@ input CreateEquipmentInput {
 
 input UpdateEquipmentInput {
   leadIdentifier: String
-  createUserId: String
+  updateUserId: String
   agencyCode: String
   caseCode: String
   equipment: [EquipmentDetailsInput]
 }
 
 input DeleteEquipmentInput {
-  equipmentGuid: String!
+  id: String!
   updateUserId: String!
 }
 
 input EquipmentDetailsInput {
-  equipmentGuid: String
-  equipmentTypeCode: String
-  equipmentTypeActiveIndicator: Boolean
+  id: String
+  typeCode: String
+  activeIndicator: Boolean
   address: String
   xCoordinate: String
   yCoordinate: String

@@ -1106,18 +1106,22 @@ export class CaseFileService {
 
           const longitudeString = longitude?.toString() ?? null;
           const latitudeString = latitude?.toString() ?? null;
+          const create_utc_timestamp = equipment.create_utc_timestamp;
 
           let equipmentDetail =
             equipmentDetailsMap.get(equipment.equipment_guid) ||
             ({
-              equipmentGuid: equipment.equipment_guid,
-              equipmentTypeCode: equipment.equipment_code,
-              equipmentTypeActiveIndicator: equipment.active_ind,
+              id: equipment.equipment_guid,
+              typeCode: equipment.equipment_code,
+              activeIndicator: equipment.active_ind,
               address: equipment.equipment_location_desc,
               xCoordinate: longitudeString,
               yCoordinate: latitudeString,
+              createDate: create_utc_timestamp,
               actions: [],
             } as Equipment);
+
+            this.logger.debug(`Equipment type: ${equipment.equipment_code}`)
 
           // Append the action to this equipment's list of actions
           equipmentDetail.actions.push({
@@ -1135,6 +1139,13 @@ export class CaseFileService {
       equipmentDetailsMap.values()
     ) as Equipment[];
 
+    // sort the equipment list in chronological order
+    equipmentDetails.sort((a, b) => {
+      const dateA = new Date(a.createDate);
+      const dateB = new Date(b.createDate);
+      return dateA.getTime() - dateB.getTime();
+  });
+
     return equipmentDetails;
   }
 
@@ -1145,20 +1156,20 @@ export class CaseFileService {
       // Find the equipment record by its ID
       const equipment = await this.prisma.equipment.findUnique({
         where: {
-          equipment_guid: deleteEquipmentInput.equipmentGuid,
+          equipment_guid: deleteEquipmentInput.id,
         },
       });
 
       if (!equipment) {
         throw new Error(
-          `Equipment with ID ${deleteEquipmentInput.equipmentGuid} not found.`
+          `Equipment with ID ${deleteEquipmentInput.id} not found.`
         );
       }
 
       // Update the active_ind field to false
       await this.prisma.equipment.update({
         where: {
-          equipment_guid: deleteEquipmentInput.equipmentGuid,
+          equipment_guid: deleteEquipmentInput.id,
         },
         data: {
           active_ind: false,
@@ -1168,7 +1179,7 @@ export class CaseFileService {
       });
 
       this.logger.debug(
-        `Equipment with ID ${deleteEquipmentInput.equipmentGuid} has been updated successfully.`
+        `Equipment with ID ${deleteEquipmentInput.id} has been updated successfully.`
       );
       return true;
     } catch (error) {
@@ -1197,7 +1208,7 @@ export class CaseFileService {
 
         // we're updating a single equipment record, so only one equipment was provided.
         const equipmentRecord = updateEquipmentInput.equipment[0];
-        const equipmentGuid = equipmentRecord.equipmentGuid;
+        const equipmentGuid = equipmentRecord.id;
         const existingEquipment = await db.equipment.findUnique({
           where: { equipment_guid: equipmentGuid },
         });
@@ -1207,14 +1218,18 @@ export class CaseFileService {
           throw new Error("Equipment not found");
         }
 
+        const data = {
+          equipment_code: equipmentRecord.typeCode,
+          equipment_location_desc: equipmentRecord.address,
+          active_ind: equipmentRecord.actionEquipmentTypeActiveIndicator,
+        }
+
+        this.logger.debug(`Equipment record being updated: ${JSON.stringify(data)}`);
+
         // Update the equipment record
         await db.equipment.update({
           where: { equipment_guid: equipmentGuid },
-          data: {
-            equipment_code: equipmentRecord.equipmentTypeCode,
-            equipment_location_desc: equipmentRecord.address,
-            active_ind: equipmentRecord.actionEquipmentTypeActiveIndicator,
-          },
+          data: data,
         });
 
         this.logger.debug(`Found equipment to update`);
@@ -1353,7 +1368,7 @@ export class CaseFileService {
           create_utc_timestamp: createdDate,
           update_user_id: createEquipmentInput.createUserId,
           update_utc_timestamp: createdDate,
-          equipment_code: createEquipmentInput.equipment[0].equipmentTypeCode,
+          equipment_code: createEquipmentInput.equipment[0].typeCode,
           equipment_location_desc: createEquipmentInput.equipment[0].address,
           // exclude equipment_geometry_point because prisma can't handle this =gracefully
         };
