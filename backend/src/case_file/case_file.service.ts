@@ -832,7 +832,7 @@ export class CaseFileService {
           SET equipment_geometry_point = public.ST_GeomFromText($1, 4326)
           WHERE equipment_guid = $2::uuid;
         `;
-          
+
           // Execute the update with safe parameter binding
           try {
             await db.$executeRawUnsafe(
@@ -999,26 +999,6 @@ export class CaseFileService {
             await db.action.create({
               data: data,
             });
-
-            this.logger.debug(`Found action xref`);
-            const caseFileGuid = caseFile.caseIdentifier;
-            // create the action records (this may either be setting an equipment or removing an equipment)
-            const data = {
-              case_guid: caseFileGuid,
-              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
-              actor_guid: action.actor,
-              action_date: action.date,
-              active_ind: action.activeIndicator,
-              create_user_id: updateEquipmentInput.updateUserId,
-              create_utc_timestamp: new Date(),
-              equipment_guid: equipmentGuid,
-            };
-
-            this.logger.debug(`Adding new equipment action as part of an update: ${JSON.stringify(data)}`);
-
-            await db.action.create({
-              data: data,
-            });
           }
         }
       });
@@ -1129,6 +1109,9 @@ export class CaseFileService {
                 },
               },
             },
+          },
+          where: {
+            active_ind: true,
           },
         },
       },
