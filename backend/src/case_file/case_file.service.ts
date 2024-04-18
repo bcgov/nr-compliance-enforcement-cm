@@ -832,43 +832,18 @@ export class CaseFileService {
   };
 
   updateNote = async (model: UpdateSupplementalNoteInput): Promise<CaseFile> => {
-    const { caseIdentifier: caseFileId, actor, note, updateUserId } = model;
+    const { caseIdentifier: caseFileId, actor, note, updateUserId, actionId } = model;
 
-    return await this._upsertNote(caseFileId, note, actor, updateUserId);
+    return await this._upsertNote(caseFileId, note, actor, updateUserId, actionId);
   };
 
   deleteNote = async (model: DeleteSupplementalNoteInput): Promise<CaseFile> => {
-    const _getNoteActionXref = async (): Promise<string> => {
-      const query = await this.prisma.action_type_action_xref.findFirst({
-        where: {
-          action_code: ACTION_CODES.UPDATENOTE,
-          action_type_code: ACTION_TYPE_CODES.CASEACTION,
-        },
-        select: {
-          action_type_action_xref_guid: true,
-        },
-      });
-
-      return query.action_type_action_xref_guid;
-    };
-
-    const { caseIdentifier, updateUserId: userId, actor } = model;
+    const { caseIdentifier, updateUserId: userId, actor, actionId } = model;
     const current = new Date();
 
     try {
       await this.prisma.$transaction(async (db) => {
-        const xref = await _getNoteActionXref();
-        const action = await this.prisma.action.findFirst({
-          where: {
-            case_guid: caseIdentifier,
-            action_type_action_xref_guid: xref,
-          },
-          select: {
-            action_guid: true,
-          },
-        });
-
-        if (!action) {
+        if (!actionId || !caseIdentifier) {
           throw new Error(`Unable to delete note for caseIdentifier: ${caseIdentifier}`);
         }
 
@@ -885,7 +860,7 @@ export class CaseFileService {
 
         await db.action.update({
           where: {
-            action_guid: action.action_guid,
+            action_guid: actionId,
           },
           data: {
             actor_guid: actor,
@@ -904,7 +879,13 @@ export class CaseFileService {
     }
   };
 
-  private _upsertNote = async (caseId: string, note: string, actor: string, userId: string): Promise<CaseFile> => {
+  private _upsertNote = async (
+    caseId: string,
+    note: string,
+    actor: string,
+    userId: string,
+    actionId: string = "",
+  ): Promise<CaseFile> => {
     const _hasAction = async (caseId: string): Promise<boolean> => {
       const xrefId = await _getNoteActionXref();
 
@@ -955,19 +936,9 @@ export class CaseFileService {
             },
           });
         } else {
-          const action = await db.action.findFirst({
-            where: {
-              case_guid: caseId,
-              action_type_action_xref_guid: xrefId,
-            },
-            select: {
-              action_guid: true,
-            },
-          });
-
           await db.action.update({
             where: {
-              action_guid: action.action_guid,
+              action_guid: actionId,
             },
             data: {
               actor_guid: actor,

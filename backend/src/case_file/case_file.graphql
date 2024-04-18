@@ -27,7 +27,7 @@ type Assessment {
   actions: [Action]
 }
 
-type Action{
+type Action {
   actionGuid: String
   actor: String!
   date: Date!
@@ -135,14 +135,15 @@ input UpdateSupplementalNoteInput {
   note: String!
   actor: String!
   updateUserId: String!
+  actionId: String!
 }
 
 input DeleteSupplementalNoteInput {
   caseIdentifier: String!
   actor: String!
   updateUserId: String!
+  actionId: String!
 }
-
 
 type EquipmentDetails {
   equipmentGuid: String

@@ -3,4 +3,5 @@ export class UpdateSupplementalNoteInput {
   updateUserId: string;
   actor: string;
   note: string;
+  actionId: string;
 }
