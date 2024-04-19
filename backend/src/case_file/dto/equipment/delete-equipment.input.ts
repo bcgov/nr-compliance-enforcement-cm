@@ -1,6 +1,6 @@
 import { EquipmentActionItem } from "../equipment-action";
 
 export interface DeleteEquipmentInput {
-    equipmentGuid: string;
+    id: string;
     updateUserId: string;
   }
