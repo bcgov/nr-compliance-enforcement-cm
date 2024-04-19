@@ -4,6 +4,7 @@ import { PreventionDetailsInput } from "./prevention-details.input";
 
 export class CreateCaseInput { 
     leadIdentifier: string;
+    equipment?: [CreateEquipmentDetailsInput];
     agencyCode: string;
     caseCode: string;
     createUserId: string;
