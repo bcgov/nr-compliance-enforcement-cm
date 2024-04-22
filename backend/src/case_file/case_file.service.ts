@@ -23,6 +23,7 @@ import { ReviewInput } from "./dto/review-input";
 import { DeleteEquipmentInput } from "./dto/equipment/delete-equipment.input";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
+import { DeleteSupplementalNoteInput } from "./dto/supplemental-note/delete-supplemental-note.input";
 
 @Injectable()
 export class CaseFileService {
@@ -63,7 +64,7 @@ export class CaseFileService {
 
       caseFileGuid = case_file.case_file_guid;
 
-      await db.lead.create({
+      const lead = await db.lead.create({
         data: {
           lead_identifier: input.leadIdentifier,
           case_identifier: caseFileGuid,
@@ -686,27 +687,24 @@ export class CaseFileService {
     let caseFileId = "";
 
     try {
-      const { leadIdentifier, note, createUserId, actor } = model;
-      const caseFile = await this.findOneByLeadId(leadIdentifier);
-
       let result: CaseFile;
 
       await this.prisma.$transaction(async (db) => {
-        if (caseFile.caseIdentifier) {
+        const { leadIdentifier, note, createUserId, actor } = model;
+        const caseFile = await this.findOneByLeadId(leadIdentifier);
+
+        if (caseFile && caseFile?.caseIdentifier) {
           caseFileId = caseFile.caseIdentifier;
         } else {
           const caseInput: CreateCaseInput = { ...model };
           caseFileId = await this.createCase(db, caseInput);
         }
 
-        result = await this._upsertNote(
-          db,
-          caseFileId,
-          note,
-          actor,
-          createUserId
-        );
+        await this._upsertNote(db, caseFileId, note, actor, createUserId);
+        
       });
+
+      result = await this.findOne(caseFileId);
 
       return result;
     } catch (error) {
@@ -718,22 +716,19 @@ export class CaseFileService {
     }
   };
 
-  updateNote = async (
-    model: UpdateSupplementalNoteInput
-  ): Promise<CaseFile> => {
-    const { caseIdentifier: caseFileId, actor, note, updateUserId } = model;
+
+  updateNote = async (model: UpdateSupplementalNoteInput): Promise<CaseFile> => {
+    const { caseIdentifier: caseFileId, actor, note, updateUserId, actionId } = model;
 
     try {
       let result: CaseFile;
 
       await this.prisma.$transaction(async (db) => {
-        result = await this._upsertNote(
-          db,
-          caseFileId,
-          note,
-          actor,
-          updateUserId
-        );
+        
+      const caseId = await this._upsertNote(db, caseFileId, note, actor, updateUserId, actionId);
+
+      result = await this.findOne(caseId);
+        
       });
 
       return result;
@@ -754,8 +749,9 @@ export class CaseFileService {
     caseId: string,
     note: string,
     actor: string,
-    userId: string
-  ): Promise<CaseFile> => {
+    userId: string,
+    actionId: string = "",
+  ): Promise<string> => {
     const _hasAction = async (caseId: string): Promise<boolean> => {
       const xrefId = await _getNoteActionXref();
 
@@ -804,20 +800,35 @@ export class CaseFileService {
             update_utc_timestamp: current,
           },
         });
-      } else {
+      } else if (hasAction && !actionId) {
+        //-- create a new note when there is an existing action (note was deleted)
+        //-- and there is no actionId
         const action = await this.prisma.action.findFirst({
+          select: {
+            action_guid: true,
+          },
           where: {
             case_guid: caseId,
             action_type_action_xref_guid: xrefId,
-          },
-          select: {
-            action_guid: true,
           },
         });
 
         await db.action.update({
           where: {
             action_guid: action.action_guid,
+          },
+          data: {
+            actor_guid: actor,
+            active_ind: true,
+            action_date: current,
+            update_user_id: userId,
+            update_utc_timestamp: current,
+          },
+        });
+      } else {
+        await db.action.update({
+          where: {
+            action_guid: actionId,
           },
           data: {
             actor_guid: actor,
@@ -842,13 +853,55 @@ export class CaseFileService {
         },
       });
 
-      return await this.findOne(caseId);
+      return caseId;
     } catch (error) {
       console.log("exception: unable to create supplemental note", error);
       throw new GraphQLError(
         "Exception occurred. See server log for details",
         {}
       );
+    }
+  };
+
+  deleteNote = async (model: DeleteSupplementalNoteInput): Promise<CaseFile> => {
+    const { caseIdentifier, updateUserId: userId, actor, actionId } = model;
+    const current = new Date();
+
+    try {
+      await this.prisma.$transaction(async (db) => {
+        if (!actionId || !caseIdentifier) {
+          throw new Error(`Unable to delete note for caseIdentifier: ${caseIdentifier}`);
+        }
+
+        await db.case_file.update({
+          where: {
+            case_file_guid: caseIdentifier,
+          },
+          data: {
+            note_text: "",
+            update_user_id: userId,
+            update_utc_timestamp: current,
+          },
+        });
+
+        await db.action.update({
+          where: {
+            action_guid: actionId,
+          },
+          data: {
+            actor_guid: actor,
+            action_date: current,
+            active_ind: false,
+            update_user_id: userId,
+            update_utc_timestamp: current,
+          },
+        });
+      });
+
+      return await this.findOne(caseIdentifier);
+    } catch (error) {
+      console.log("exception: unable to delete supplemental note", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };
 
@@ -1247,6 +1300,9 @@ export class CaseFileService {
                   },
               },
             },
+          },
+          where: {
+            active_ind: true,
           },
         },
       },

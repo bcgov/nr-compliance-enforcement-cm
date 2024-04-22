@@ -1,7 +1,6 @@
-export class UpdateSupplementalNoteInput {
+export class DeleteSupplementalNoteInput {
   caseIdentifier: string;
   updateUserId: string;
   actor: string;
-  note: string;
   actionId: string;
 }
