@@ -6,55 +6,56 @@ import { JwtRoleGuard } from "../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
 import { Role } from "../enum/role.enum";
 import { Roles } from "../auth/decorators/roles.decorator";
-import { ReviewInput } from './dto/review-input';
-import { CreateSupplementalNoteInput } from './dto/supplemental-note/create-supplemental-note.input';
-import { UpdateSupplementalNoteInput } from './dto/supplemental-note/update-supplemental-note.input';
+import { ReviewInput } from "./dto/review-input";
+import { CreateSupplementalNoteInput } from "./dto/supplemental-note/create-supplemental-note.input";
+import { UpdateSupplementalNoteInput } from "./dto/supplemental-note/update-supplemental-note.input";
+import { DeleteSupplementalNoteInput } from "./dto/supplemental-note/delete-supplemental-note.input";
 import { DeleteEquipmentInput } from './dto/equipment/delete-equipment.input';
 
 @UseGuards(JwtRoleGuard)
-@Resolver('CaseFile')
+@Resolver("CaseFile")
 export class CaseFileResolver {
-  constructor(private readonly caseFileService: CaseFileService) { }
+  constructor(private readonly caseFileService: CaseFileService) {}
 
-  @Mutation('createAssessment')
+  @Mutation("createAssessment")
   @Roles(Role.COS_OFFICER)
-  createAssessment(@Args('createAssessmentInput') createAssessmentInput: CreateAssessmentInput) {
+  createAssessment(@Args("createAssessmentInput") createAssessmentInput: CreateAssessmentInput) {
     return this.caseFileService.createAssessment(createAssessmentInput);
   }
 
-  @Mutation('createPrevention')
+  @Mutation("createPrevention")
   @Roles(Role.COS_OFFICER)
-  createPrevention(@Args('createPreventionInput') createPreventionInput: CreatePreventionInput) {
+  createPrevention(@Args("createPreventionInput") createPreventionInput: CreatePreventionInput) {
     return this.caseFileService.createPrevention(createPreventionInput);
   }
 
-  @Mutation('createReview')
+  @Mutation("createReview")
   @Roles(Role.COS_OFFICER)
-  createReview(@Args('reviewInput') reviewInput: ReviewInput) {
+  createReview(@Args("reviewInput") reviewInput: ReviewInput) {
     return this.caseFileService.createReview(reviewInput);
   }
 
-  @Query('getCaseFile')
+  @Query("getCaseFile")
   @Roles(Role.COS_OFFICER)
-  findOne(@Args('caseIdentifier') caseIdentifier: string) {
+  findOne(@Args("caseIdentifier") caseIdentifier: string) {
     return this.caseFileService.findOne(caseIdentifier);
   }
 
-  @Query('getCaseFileByLeadId')
+  @Query("getCaseFileByLeadId")
   @Roles(Role.COS_OFFICER)
-  findOneByLeadId(@Args('leadIdentifier') leadIdentifier: string) {
+  findOneByLeadId(@Args("leadIdentifier") leadIdentifier: string) {
     return this.caseFileService.findOneByLeadId(leadIdentifier);
   }
 
-  @Mutation('updateAssessment')
+  @Mutation("updateAssessment")
   @Roles(Role.COS_OFFICER)
-  updateAssessment(@Args('updateAssessmentInput') updateAssessmentInput: UpdateAssessmentInput) {
+  updateAssessment(@Args("updateAssessmentInput") updateAssessmentInput: UpdateAssessmentInput) {
     return this.caseFileService.updateAssessment(updateAssessmentInput.caseIdentifier, updateAssessmentInput);
   }
 
-  @Mutation('updatePrevention')
+  @Mutation("updatePrevention")
   @Roles(Role.COS_OFFICER)
-  updatePrevention(@Args('updatePreventionInput') updatePreventionInput: UpdatePreventionInput) {
+  updatePrevention(@Args("updatePreventionInput") updatePreventionInput: UpdatePreventionInput) {
     return this.caseFileService.updatePrevention(updatePreventionInput.caseIdentifier, updatePreventionInput);
   }
 
@@ -78,7 +79,7 @@ export class CaseFileResolver {
 
   @Mutation('updateReview')
   @Roles(Role.COS_OFFICER)
-  updateReview(@Args('reviewInput') reviewInput: ReviewInput) {
+  updateReview(@Args("reviewInput") reviewInput: ReviewInput) {
     return this.caseFileService.updateReview(reviewInput);
   }
 
@@ -92,5 +93,11 @@ export class CaseFileResolver {
   @Roles(Role.COS_OFFICER)
   updateNote(@Args("input") input: UpdateSupplementalNoteInput) {
     return this.caseFileService.updateNote(input);
+  }
+
+  @Mutation("deleteNote")
+  @Roles(Role.COS_OFFICER)
+  deleteNote(@Args("input") input: DeleteSupplementalNoteInput) {
+    return this.caseFileService.deleteNote(input);
   }
 }
