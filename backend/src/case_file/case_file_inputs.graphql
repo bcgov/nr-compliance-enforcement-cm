@@ -1,40 +1,5 @@
 scalar Date
 
-type CaseFile {
-  caseIdentifier: String
-  leadIdentifier: String
-  assessmentDetails: Assessment
-  preventionDetails: Prevention
-  note: Note
-  isReviewRequired: Boolean
-  reviewComplete: ReviewCompleteAction
-}
-
-type ReviewCompleteAction {
-  actor: String!
-  date: Date!
-  actionCode: String!
-  actionId: String
-}
-
-type Assessment {
-  actionNotRequired: Boolean
-  actionJustificationCode: String
-  actionJustificationShortDescription: String
-  actionJustificationLongDescription: String
-  actionJustificationActiveIndicator: Boolean
-  actions: [Action]
-}
-
-type Action{
-  actor: String!
-  date: Date!
-  actionCode: String!
-  shortDescription: String
-  longDescription: String
-  activeIndicator: Boolean
-}
-
 input CreateAssessmentInput {
   leadIdentifier: String
   assessmentDetails: AssessmentDetailsInput!
