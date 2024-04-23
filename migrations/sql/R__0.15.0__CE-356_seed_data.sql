@@ -71,3 +71,7 @@ values
     ('EQUIPMENT', 'SETEQUIPMT', 1, 'Y', CURRENT_USER, CURRENT_TIMESTAMP), 
     ('EQUIPMENT', 'REMEQUIPMT', 2, 'Y', CURRENT_USER, CURRENT_TIMESTAMP)
 on conflict do nothing;
+
+-- Fix for missing display order
+update case_management.inaction_reason_code set display_order = 1 where inaction_reason_code = 'NOPUBSFTYC';
+update case_management.inaction_reason_code set display_order = 2 where inaction_reason_code = 'OTHOPRPRTY';

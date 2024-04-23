@@ -1,4 +1,5 @@
 export interface CaseFileActionItem {
+  action_guid: string;
   actor_guid: string;
   action_date: Date;
   active_ind: boolean,

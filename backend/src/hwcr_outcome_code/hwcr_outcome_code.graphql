@@ -1,13 +1,12 @@
 type HWCROutcomeCode {
-  hwcr_outcome_code: String
-  short_description: String
-  long_description: String
-  display_order: Int
-  active_ind: Boolean
+  hwcrOutcomeCode: String
+  shortDescription: String
+  longDescription: String
+  displayOrder: Int
+  activeIndicator: Boolean
 }
 
 type Query {
-  getAllHWCROutcomeCodes: [HWCROutcomeCode]!
-  getHWCROutcomeCode(hwcr_outcome_code: String): HWCROutcomeCode
+  hwcrOutcomeCodes: [HWCROutcomeCode]!
 }
 
