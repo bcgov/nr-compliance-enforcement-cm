@@ -1439,7 +1439,15 @@ export class CaseFileService {
     let caseFileId = "";
 
     try {
-      throw new Error("Method not implemented.");
+      let result: CaseFile;
+
+      await this.prisma.$transaction(async (db) => {
+        const { leadIdentifier, actor, agencyCode, caseCode, createUserId, wildlife } = model;
+      });
+
+      result = await this.findOne(caseFileId);
+
+      return result;
     } catch (error) {
       console.log("exception: unable to create supplemental note", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
