@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConflictHistoryCodeResolver } from './conflict_history_code.resolver';
-import { ConflictHistoryCodeService } from './conflict_history_code.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { Test, TestingModule } from "@nestjs/testing";
+import { ConflictHistoryCodeResolver } from "./conflict_history_code.resolver";
+import { ConflictHistoryCodeService } from "./conflict_history_code.service";
+import { PrismaModule } from "nestjs-prisma";
 
-describe('ConflictHistoryCodeResolver', () => {
+describe("ConflictHistoryCodeResolver", () => {
   let resolver: ConflictHistoryCodeResolver;
 
   beforeEach(async () => {
@@ -15,7 +15,7 @@ describe('ConflictHistoryCodeResolver', () => {
     resolver = module.get<ConflictHistoryCodeResolver>(ConflictHistoryCodeResolver);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(resolver).toBeDefined();
   });
 });

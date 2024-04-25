@@ -9,4 +9,3 @@ type ThreatLevelCode {
 type Query {
   threatLevelCodes: [ThreatLevelCode]!
 }
-

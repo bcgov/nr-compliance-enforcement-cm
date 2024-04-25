@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { EarCodeService } from './ear_code.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { Test, TestingModule } from "@nestjs/testing";
+import { EarCodeService } from "./ear_code.service";
+import { PrismaModule } from "nestjs-prisma";
 
-describe('EarCodeService', () => {
+describe("EarCodeService", () => {
   let service: EarCodeService;
 
   beforeEach(async () => {
@@ -14,9 +14,7 @@ describe('EarCodeService', () => {
     service = module.get<EarCodeService>(EarCodeService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });
-
-

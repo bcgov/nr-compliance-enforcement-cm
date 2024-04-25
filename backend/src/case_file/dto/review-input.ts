@@ -10,5 +10,5 @@ export class ReviewInput {
     date: Date;
     actionCode: string;
     actionId?: string;
-  }
+  };
 }

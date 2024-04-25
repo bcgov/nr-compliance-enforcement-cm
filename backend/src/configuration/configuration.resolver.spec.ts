@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigurationResolver } from './configuration.resolver';
-import { ConfigurationService } from './configuration.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { Test, TestingModule } from "@nestjs/testing";
+import { ConfigurationResolver } from "./configuration.resolver";
+import { ConfigurationService } from "./configuration.service";
+import { PrismaModule } from "nestjs-prisma";
 
-describe('ConfigurationResolver', () => {
+describe("ConfigurationResolver", () => {
   let resolver: ConfigurationResolver;
 
   beforeEach(async () => {
@@ -15,7 +15,7 @@ describe('ConfigurationResolver', () => {
     resolver = module.get<ConfigurationResolver>(ConfigurationResolver);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(resolver).toBeDefined();
   });
 });

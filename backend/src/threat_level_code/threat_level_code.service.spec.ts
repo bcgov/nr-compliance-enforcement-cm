@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ThreatLevelCodeService } from './threat_level_code.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { Test, TestingModule } from "@nestjs/testing";
+import { ThreatLevelCodeService } from "./threat_level_code.service";
+import { PrismaModule } from "nestjs-prisma";
 
-describe('ThreatLevelCodeService', () => {
+describe("ThreatLevelCodeService", () => {
   let service: ThreatLevelCodeService;
 
   beforeEach(async () => {
@@ -14,7 +14,7 @@ describe('ThreatLevelCodeService', () => {
     service = module.get<ThreatLevelCodeService>(ThreatLevelCodeService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

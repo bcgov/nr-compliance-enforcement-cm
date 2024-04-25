@@ -9,4 +9,3 @@ type ConflictHistoryCode {
 type Query {
   conflictHistoryCodes: [ConflictHistoryCode]!
 }
-
