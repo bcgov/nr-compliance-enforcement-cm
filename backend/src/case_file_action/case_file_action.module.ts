@@ -6,5 +6,6 @@ import { PrismaModule } from 'nestjs-prisma';
 @Module({
   imports: [PrismaModule],
   providers: [CaseFileActionResolver, CaseFileActionService],
+  exports:[CaseFileActionResolver, CaseFileActionService],
 })
 export class CaseFileActionModule { }

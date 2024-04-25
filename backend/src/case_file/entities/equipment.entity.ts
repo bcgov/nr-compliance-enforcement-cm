@@ -1,4 +1,4 @@
-import { CaseFileActionItem } from "../dto/case-file-action-item";
+import { CaseFileAction } from "../../case_file_action/entities/case_file_action.entity";
 
 export class Equipment {
     id: string;
@@ -10,5 +10,5 @@ export class Equipment {
     xCoordinate?: string;
     yCoordinate?: string;
     createDate: Date;
-    actions: CaseFileActionItem[];
+    actions: CaseFileAction[];
 }

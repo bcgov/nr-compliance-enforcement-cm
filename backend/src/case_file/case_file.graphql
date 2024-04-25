@@ -11,6 +11,24 @@ type CaseFile {
   reviewComplete: ReviewCompleteAction
 }
 
+type Assessment {
+  actionNotRequired: Boolean
+  actionJustificationCode: String
+  actionJustificationShortDescription: String
+  actionJustificationLongDescription: String
+  actionJustificationActiveIndicator: Boolean
+  actions: [CaseFileAction]
+}
+
+type Prevention {
+  actions: [CaseFileAction]
+}
+
+type Note {
+  note: String!
+  action: CaseFileAction!
+}
+
 type ReviewCompleteAction {
   actor: String!
   date: Date!
@@ -18,23 +36,27 @@ type ReviewCompleteAction {
   actionId: String
 }
 
-type Assessment {
-  actionNotRequired: Boolean
-  actionJustificationCode: String
-  actionJustificationShortDescription: String
-  actionJustificationLongDescription: String
-  actionJustificationActiveIndicator: Boolean
-  actions: [Action]
+type EquipmentDetails {
+  id: String
+  typeCode: String
+  activeIndicator: Boolean
+  address: String
+  xCoordinate: String
+  yCoordinate: String
+  createDate: Date
+  actions: [CaseFileAction]
 }
 
-type Action {
-  actionGuid: String
+type CaseFileAction {
+  actionId: String!
   actor: String!
   date: Date!
   actionCode: String!
+  actionTypeCode: String!
   shortDescription: String
   longDescription: String
   activeIndicator: Boolean
+  displayOrder: Number!
 }
 
 input CreateAssessmentInput {
@@ -65,10 +87,6 @@ input UpdateAssessmentInput {
   agencyCode: String!
   caseCode: String!
   updateUserId: String!
-}
-
-type Prevention {
-  actions: [Action]
 }
 
 input CreatePreventionInput {
@@ -116,11 +134,6 @@ input ReviewActionInput {
   actionId: String
 }
 
-type Note {
-  note: String!
-  action: Action!
-}
-
 input CreateSupplementalNoteInput {
   leadIdentifier: String!
   note: String!
@@ -143,17 +156,6 @@ input DeleteSupplementalNoteInput {
   actor: String!
   updateUserId: String!
   actionId: String!
-}
-
-type EquipmentDetails {
-  id: String
-  typeCode: String
-  activeIndicator: Boolean
-  address: String
-  xCoordinate: String
-  yCoordinate: String
-  createDate: Date
-  actions: [Action]
 }
 
 input CreateEquipmentInput {

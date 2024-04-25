@@ -12,10 +12,8 @@ import { CreateSupplementalNoteInput } from "./dto/supplemental-note/create-supp
 import { ACTION_CODES } from "../common/action_codes";
 import { UpdateSupplementalNoteInput } from "./dto/supplemental-note/update-supplemental-note.input";
 import { ACTION_TYPE_CODES } from "../common/action_type_codes";
-import { Action } from "./entities/case-action.entity";
-import { CaseFileActionItem } from "./dto/case-file-action-item";
 import { ReviewInput } from './dto/review-input';
-import { CaseFileActionService } from "src/case_file_action/case_file_action.service";
+import { CaseFileActionService } from "../case_file_action/case_file_action.service";
 import { Equipment } from "./entities/equipment.entity";
 import { DeleteEquipmentInput } from "./dto/equipment/delete-equipment.input";
 import { Prisma, PrismaClient } from "@prisma/client";
@@ -182,8 +180,7 @@ export class CaseFileService {
     }
     return caseFileOutput;
   }
-
-  async createPrevention(createPreventionInput: CreatePreventionInput): Promise<CaseFile> {
+/*  async createPrevention(createPreventionInput: CreatePreventionInput): Promise<CaseFile> {
     let actiontypeCode: string = "COSPRV&EDU";
     let caseFileGuid: string = await this.createOtherCase(createPreventionInput);
     let caseFileOutput: CaseFile;
@@ -231,10 +228,6 @@ export class CaseFileService {
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
     return caseFileOutput;
-  }
-
-  findAll() {
-    return `This action returns all caseFile`;
   }
 
   //-----------
@@ -355,7 +348,7 @@ export class CaseFileService {
       } as CaseFileAction;
     }
   };*/
-
+  /*
   findOne = async (id: string): Promise<CaseFile> => {
     const queryResult = await this.prisma.case_file.findUnique({
       where: {
@@ -443,25 +436,7 @@ export class CaseFileService {
     };
 
     return caseFile;
-  };
-
-  async findOneByLeadId(leadIdentifier: string) {
-    let caseFileOutput: CaseFile = new CaseFile();
-    const caseIdRecord = await this.prisma.lead.findFirst({
-      where: {
-        lead_identifier: leadIdentifier,
-      },
-      select: {
-        case_identifier: true,
-      },
-    });
-    if (caseIdRecord?.case_identifier) {
-      caseFileOutput = await this.findOne(caseIdRecord.case_identifier);
-    }
-
-    return caseFileOutput;
-  }
-
+  };*/
 
   async updateAssessment(caseIdentifier: string, updateAssessmentInput: UpdateAssessmentInput) {
     let caseFileOutput: CaseFile;
@@ -1496,11 +1471,7 @@ export class CaseFileService {
 
     const equipmentDetails = await this.findEquipmentDetails(caseFileId);
 
-    const reviewCompleteAction = await this.getCaseAction(
-      queryResult.action,
-      ACTION_TYPE_CODES.CASEACTION,
-      ACTION_CODES.COMPLTREVW,
-    );
+    const reviewCompleteAction = await this.caseFileActionService.findActionsByCaseId(caseFileId)[0];
 
     const caseFile: CaseFile = {
       caseIdentifier: caseFileId,
@@ -1511,16 +1482,16 @@ export class CaseFileService {
         actionJustificationShortDescription: !reason ? "" : reason.short_description,
         actionJustificationLongDescription: !reason ? "" : reason.long_description,
         actionJustificationActiveIndicator: !reason ? false : reason.active_ind,
-        actions: await this.getCaseActions(queryResult.action, ACTION_TYPE_CODES.COMPASSESS),
+        actions: await this.caseFileActionService.findActionsByCaseId(caseFileId),
       },
       preventionDetails: {
-        actions: await this.getCaseActions(queryResult.action, ACTION_TYPE_CODES.COSPRVANDEDU),
+        actions: await this.caseFileActionService.findActionsByCaseId(caseFileId),
       },
       isReviewRequired: isReviewRequired,
       reviewComplete: reviewCompleteAction ?? null,
       note: {
         note: queryResult.note_text,
-        action: await this.getCaseAction(queryResult.action, ACTION_TYPE_CODES.CASEACTION, ACTION_CODES.UPDATENOTE),
+        action: await this.caseFileActionService.findActionsByCaseId(caseFileId)[0],
       },
       equipment: equipmentDetails,
     };
@@ -1551,11 +1522,12 @@ export class CaseFileService {
   //-----------
 
   //-- returns a collection of actions
+  /*
   private getCaseActions = async (
-    actions: Array<CaseFileActionItem>,
+    actions: Array<CaseFileAction>,
     actionTypeCode: string,
     actionCode: string = "",
-  ): Promise<Array<Action>> => {
+  ): Promise<Array<CaseFileAction>> => {
     let items = [];
 
     if (!actionCode) {
@@ -1603,7 +1575,7 @@ export class CaseFileService {
           shortDescription,
           longDescription,
           activeIndicator,
-        } as Action;
+        } as CaseFileAction;
       },
     );
     return result;
@@ -1666,7 +1638,7 @@ export class CaseFileService {
         activeIndicator,
       } as Action;
     }
-  };
+  };*/
 
   // find all equipment records, and their respective actions, for a given case
   // Since we want to list the equipment related to a case, rather than the actions for a case, which may contain equipment, let's
