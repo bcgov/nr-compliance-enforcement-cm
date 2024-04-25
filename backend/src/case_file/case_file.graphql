@@ -195,6 +195,54 @@ input EquipmentActionInput {
   actionCode: String
 }
 
+input CreateAnimalOutcomeInput {
+  leadIdentifier: String!
+  actor: String!
+  agencyCode: String!
+  caseCode: String!
+  createUserId: String!
+  wildlife: [WildlifeInput]!
+}
+
+input WildlifeInput {
+  id: String
+  categoryLevel: String
+  conflictHistory: String
+  sex: String
+  age: String
+  outcome: String
+  species: String!
+  earTags: [EarTagInput]
+  drugs: [DrugInput]
+  actions: [WildlifeActionInput]
+}
+
+input EarTagInput {
+  id: String
+  ear: String
+  value: String
+}
+
+input DrugInput {
+  id: String
+  drug: String
+  administrationMethod: String
+  fateOfRemaining: String
+  vialNumber: String
+  used: String
+  discarded: String
+  discardMethod: String
+  reactions: String
+}
+
+input WildlifeActionInput {
+  id: String
+  actor: String
+  date: Date
+  actionCode: String
+  activeIndicator: Boolean
+}
+
 type Query {
   getCaseFile(caseIdentifier: String!): CaseFile
   getCaseFileByLeadId(leadIdentifier: String!): CaseFile
@@ -217,4 +265,6 @@ type Mutation {
   createEquipment(createEquipmentInput: CreateEquipmentInput!): CaseFile!
   updateEquipment(updateEquipmentInput: UpdateEquipmentInput!): CaseFile!
   deleteEquipment(deleteEquipmentInput: DeleteEquipmentInput!): Boolean!
+
+  createAnimal(input: CreateAnimalOutcomeInput!): CaseFile!
 }
