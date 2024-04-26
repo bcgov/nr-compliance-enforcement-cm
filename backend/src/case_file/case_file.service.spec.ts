@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CaseFileService } from './case_file.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { Test, TestingModule } from "@nestjs/testing";
+import { CaseFileService } from "./case_file.service";
+import { PrismaModule } from "nestjs-prisma";
 
-describe('CaseFileService', () => {
+describe("CaseFileService", () => {
   let service: CaseFileService;
 
   beforeEach(async () => {
@@ -14,7 +14,7 @@ describe('CaseFileService', () => {
     service = module.get<CaseFileService>(CaseFileService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

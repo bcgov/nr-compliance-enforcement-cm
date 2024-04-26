@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { DrugMethodCodeService } from './drug_method_code.service';
-import { DrugMethodCodeResolver } from './drug_method_code.resolver';
-import { PrismaModule } from 'nestjs-prisma';
+import { Module } from "@nestjs/common";
+import { DrugMethodCodeService } from "./drug_method_code.service";
+import { DrugMethodCodeResolver } from "./drug_method_code.resolver";
+import { PrismaModule } from "nestjs-prisma";
 
 @Module({
   imports: [PrismaModule],

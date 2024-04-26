@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { DrugMethodCodeResolver } from './drug_method_code.resolver';
-import { DrugMethodCodeService } from './drug_method_code.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { Test, TestingModule } from "@nestjs/testing";
+import { DrugMethodCodeResolver } from "./drug_method_code.resolver";
+import { DrugMethodCodeService } from "./drug_method_code.service";
+import { PrismaModule } from "nestjs-prisma";
 
-describe('DrugMethodCodeResolver', () => {
+describe("DrugMethodCodeResolver", () => {
   let resolver: DrugMethodCodeResolver;
 
   beforeEach(async () => {
@@ -15,7 +15,7 @@ describe('DrugMethodCodeResolver', () => {
     resolver = module.get<DrugMethodCodeResolver>(DrugMethodCodeResolver);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(resolver).toBeDefined();
   });
 });

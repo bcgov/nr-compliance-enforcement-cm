@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { HwcrOutcomeCodeService } from './hwcr_outcome_code.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { Test, TestingModule } from "@nestjs/testing";
+import { HwcrOutcomeCodeService } from "./hwcr_outcome_code.service";
+import { PrismaModule } from "nestjs-prisma";
 
-describe('HwcrOutcomeCodeService', () => {
+describe("HwcrOutcomeCodeService", () => {
   let service: HwcrOutcomeCodeService;
 
   beforeEach(async () => {
@@ -14,7 +14,7 @@ describe('HwcrOutcomeCodeService', () => {
     service = module.get<HwcrOutcomeCodeService>(HwcrOutcomeCodeService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

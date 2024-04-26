@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { InactionJustificationTypeService } from './inaction_justification_type.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { Test, TestingModule } from "@nestjs/testing";
+import { InactionJustificationTypeService } from "./inaction_justification_type.service";
+import { PrismaModule } from "nestjs-prisma";
 
-describe('InactionReasonCodeService', () => {
+describe("InactionReasonCodeService", () => {
   let service: InactionJustificationTypeService;
 
   beforeEach(async () => {
@@ -14,7 +14,7 @@ describe('InactionReasonCodeService', () => {
     service = module.get<InactionJustificationTypeService>(InactionJustificationTypeService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

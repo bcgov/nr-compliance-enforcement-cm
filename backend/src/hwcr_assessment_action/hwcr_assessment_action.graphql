@@ -2,11 +2,11 @@ type HWCRAssessmentAction {
   actionTypeCode: String!
   actionCode: String!
   displayOrder: Int
-  activeIndicator: Boolean 
+  activeIndicator: Boolean
   shortDescription: String!
   longDescription: String!
 }
 
 type Query {
-  HWCRAssessmentActions (actionTypeCode: String): [HWCRAssessmentAction]!
+  HWCRAssessmentActions(actionTypeCode: String): [HWCRAssessmentAction]!
 }

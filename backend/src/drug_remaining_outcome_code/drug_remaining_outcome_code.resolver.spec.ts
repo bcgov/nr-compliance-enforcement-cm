@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { DrugRemainingOutcomeCodeResolver } from './drug_remaining_outcome_code.resolver';
-import { DrugRemainingOutcomeCodeService } from './drug_remaining_outcome_code.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { Test, TestingModule } from "@nestjs/testing";
+import { DrugRemainingOutcomeCodeResolver } from "./drug_remaining_outcome_code.resolver";
+import { DrugRemainingOutcomeCodeService } from "./drug_remaining_outcome_code.service";
+import { PrismaModule } from "nestjs-prisma";
 
-describe('DrugRemainingOutcomeCodeResolver', () => {
+describe("DrugRemainingOutcomeCodeResolver", () => {
   let resolver: DrugRemainingOutcomeCodeResolver;
 
   beforeEach(async () => {
@@ -15,7 +15,7 @@ describe('DrugRemainingOutcomeCodeResolver', () => {
     resolver = module.get<DrugRemainingOutcomeCodeResolver>(DrugRemainingOutcomeCodeResolver);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(resolver).toBeDefined();
   });
 });

@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import { PrismaService } from "nestjs-prisma";
-import { HWCRPreventionAction } from './entities/hwcr_prevention_action.entity';
+import { HWCRPreventionAction } from "./entities/hwcr_prevention_action.entity";
 
 @Injectable()
 export class HWCRPreventionActionService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async find(actionTypeCode?: string) {
     const dataContext = this.prisma.action_type_action_xref;
@@ -13,7 +13,7 @@ export class HWCRPreventionActionService {
     if (actionTypeCode) {
       queryResult = await dataContext.findMany({
         where: {
-          action_type_code: actionTypeCode
+          action_type_code: actionTypeCode,
         },
         select: {
           action_type_code: true,
@@ -24,15 +24,14 @@ export class HWCRPreventionActionService {
             select: {
               short_description: true,
               long_description: true,
-            }
-          }
+            },
+          },
         },
         orderBy: {
-          display_order: 'asc',
-        }
-      })
-    }
-    else {
+          display_order: "asc",
+        },
+      });
+    } else {
       queryResult = await dataContext.findMany({
         select: {
           action_type_code: true,
@@ -43,10 +42,10 @@ export class HWCRPreventionActionService {
             select: {
               short_description: true,
               long_description: true,
-            }
-          }
-        }
-      })
+            },
+          },
+        },
+      });
     }
     let actionCodes: Array<HWCRPreventionAction> = [];
 
@@ -58,8 +57,9 @@ export class HWCRPreventionActionService {
           displayOrder: record.display_order,
           activeIndicator: record.active_ind,
           shortDescription: record.action_code_action_type_action_xref_action_codeToaction_code.short_description,
-          longDescription: record.action_code_action_type_action_xref_action_codeToaction_code.long_description
-        }));
+          longDescription: record.action_code_action_type_action_xref_action_codeToaction_code.long_description,
+        }),
+      );
     });
 
     return actionCodes;

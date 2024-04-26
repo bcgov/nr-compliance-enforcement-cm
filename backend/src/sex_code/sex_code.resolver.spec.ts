@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { SexCodeResolver } from './sex_code.resolver';
-import { SexCodeService } from './sex_code.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { Test, TestingModule } from "@nestjs/testing";
+import { SexCodeResolver } from "./sex_code.resolver";
+import { SexCodeService } from "./sex_code.service";
+import { PrismaModule } from "nestjs-prisma";
 
-describe('SexCodeResolver', () => {
+describe("SexCodeResolver", () => {
   let resolver: SexCodeResolver;
 
   beforeEach(async () => {
@@ -15,7 +15,7 @@ describe('SexCodeResolver', () => {
     resolver = module.get<SexCodeResolver>(SexCodeResolver);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(resolver).toBeDefined();
   });
 });
