@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { DrugMethodCodeService } from './drug_method_code.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { Test, TestingModule } from "@nestjs/testing";
+import { DrugMethodCodeService } from "./drug_method_code.service";
+import { PrismaModule } from "nestjs-prisma";
 
-describe('DrugMethodCodeService', () => {
+describe("DrugMethodCodeService", () => {
   let service: DrugMethodCodeService;
 
   beforeEach(async () => {
@@ -14,7 +14,7 @@ describe('DrugMethodCodeService', () => {
     service = module.get<DrugMethodCodeService>(DrugMethodCodeService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });

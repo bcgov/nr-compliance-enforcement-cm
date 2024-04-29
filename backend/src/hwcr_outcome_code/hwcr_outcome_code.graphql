@@ -9,4 +9,3 @@ type HWCROutcomeCode {
 type Query {
   hwcrOutcomeCodes: [HWCROutcomeCode]!
 }
-

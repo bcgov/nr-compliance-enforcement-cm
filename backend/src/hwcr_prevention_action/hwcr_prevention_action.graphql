@@ -2,11 +2,11 @@ type HWCRPreventionAction {
   actionTypeCode: String!
   actionCode: String!
   displayOrder: Int
-  activeIndicator: Boolean 
+  activeIndicator: Boolean
   shortDescription: String!
   longDescription: String!
 }
 
 type Query {
-  HWCRPreventionActions (actionTypeCode: String): [HWCRPreventionAction]!
+  HWCRPreventionActions(actionTypeCode: String): [HWCRPreventionAction]!
 }

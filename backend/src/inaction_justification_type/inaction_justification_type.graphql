@@ -1,5 +1,5 @@
 type InactionJustificationType {
-  inactionJustificationCode  : String!
+  inactionJustificationCode: String!
   agencyCode: String!
   shortDescription: String
   longDescription: String
@@ -8,6 +8,5 @@ type InactionJustificationType {
 }
 
 type Query {
-   inactionJustificationCodes (agencyCode : String): [InactionJustificationType]!
+  inactionJustificationCodes(agencyCode: String): [InactionJustificationType]!
 }
-

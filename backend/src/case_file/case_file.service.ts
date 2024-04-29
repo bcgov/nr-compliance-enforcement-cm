@@ -1,9 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import {
-  CreateAssessmentInput,
-  CreateCaseInput,
-  CreatePreventionInput,
-} from "./dto/create-case_file.input";
+import { CreateAssessmentInput, CreateCaseInput, CreatePreventionInput } from "./dto/create-case_file.input";
 import { UpdateAssessmentInput, UpdateEquipmentInput, UpdatePreventionInput } from "./dto/update-case_file.input";
 import { PrismaService } from "nestjs-prisma";
 import { CaseFile } from "./entities/case_file.entity";
@@ -1092,21 +1088,17 @@ export class CaseFileService {
   //------------------
   //-- equipment
   //------------------
-  async createEquipment(
-    createEquipmentInput: CreateCaseInput
-  ): Promise<CaseFile> {
+  async createEquipment(createEquipmentInput: CreateCaseInput): Promise<CaseFile> {
     let caseFileOutput: CaseFile;
     let caseFileGuid;
     try {
       await this.prisma.$transaction(async (db) => {
-        let caseFile = await this.findOneByLeadId(
-          createEquipmentInput.leadIdentifier
-        );
+        let caseFile = await this.findOneByLeadId(createEquipmentInput.leadIdentifier);
 
         if (caseFile?.caseIdentifier) {
           caseFileGuid = caseFile.caseIdentifier;
         } else {
-          caseFileGuid = await this.createCase(db,createEquipmentInput);
+          caseFileGuid = await this.createCase(db, createEquipmentInput);
         }
 
         const createdDate = new Date();
@@ -1122,9 +1114,7 @@ export class CaseFileService {
           // exclude equipment_geometry_point because prisma can't handle this =gracefully
         };
 
-        this.logger.debug(
-          `Creating equipment: ${JSON.stringify(newEquipmentJSON)}`
-        );
+        this.logger.debug(`Creating equipment: ${JSON.stringify(newEquipmentJSON)}`);
 
         // create the equipment record
         const newEquipment = await db.equipment.create({
@@ -1141,8 +1131,7 @@ export class CaseFileService {
 
           // update the equipment record to set the coordinates
           // using raw query because prisma can't handle the awesomeness
-          await this.prisma
-            .$executeRaw`SET search_path TO public, case_management`;
+          await this.prisma.$executeRaw`SET search_path TO public, case_management`;
           const geometryUpdateQuery = `
           UPDATE case_management.equipment
           SET equipment_geometry_point = public.ST_GeomFromText($1, 4326)
@@ -1154,19 +1143,12 @@ export class CaseFileService {
             await db.$executeRawUnsafe(
               geometryUpdateQuery,
               pointWKT, // WKT string for the POINT
-              newEquipment.equipment_guid // UUID of the equipment
+              newEquipment.equipment_guid, // UUID of the equipment
             );
-            this.logger.debug(
-              `Updated geometry for equipment GUID: ${newEquipment.equipment_guid}`
-            );
+            this.logger.debug(`Updated geometry for equipment GUID: ${newEquipment.equipment_guid}`);
           } catch (error) {
-            this.logger.error(
-              "An error occurred during the geometry update:",
-              error
-            );
-            throw new Error(
-              "Failed to update equipment geometry due to a database error."
-            );
+            this.logger.error("An error occurred during the geometry update:", error);
+            throw new Error("Failed to update equipment geometry due to a database error.");
           }
         }
 
@@ -1178,22 +1160,20 @@ export class CaseFileService {
 
         // get the actions associated with the creation of the equipment.  We may be setting an equipment, or setting and removing an equipment
         for (const action of actions) {
-          let actionTypeActionXref =
-            await db.action_type_action_xref.findFirstOrThrow({
-              where: {
-                action_type_code: ACTION_TYPE_CODES.EQUIPMENT,
-                action_code: action.actionCode,
-              },
-              select: {
-                action_type_action_xref_guid: true,
-              },
-            });
+          let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
+            where: {
+              action_type_code: ACTION_TYPE_CODES.EQUIPMENT,
+              action_code: action.actionCode,
+            },
+            select: {
+              action_type_action_xref_guid: true,
+            },
+          });
 
           // create the action records (this may either be setting an equipment or removing an equipment)
           const data = {
             case_guid: caseFileGuid,
-            action_type_action_xref_guid:
-              actionTypeActionXref.action_type_action_xref_guid,
+            action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
             actor_guid: action.actor,
             action_date: action.date,
             active_ind: action.activeIndicator,
@@ -1202,9 +1182,7 @@ export class CaseFileService {
             equipment_guid: newEquipment.equipment_guid,
           };
 
-          this.logger.debug(
-            `Creating new action record for equipment: ${JSON.stringify(data)}`
-          );
+          this.logger.debug(`Creating new action record for equipment: ${JSON.stringify(data)}`);
           await db.action.create({
             data: data,
           });
@@ -1212,32 +1190,21 @@ export class CaseFileService {
       });
       caseFileOutput = await this.findOne(caseFileGuid);
     } catch (exception) {
-      this.logger.error(
-        "An error occurred during equipment creation:",
-        exception
-      );
-      throw new GraphQLError(
-        "An error occurred during equipment creation. See server log for details"
-      );
+      this.logger.error("An error occurred during equipment creation:", exception);
+      throw new GraphQLError("An error occurred during equipment creation. See server log for details");
     }
     return caseFileOutput;
   }
 
-  async updateEquipment(
-    updateEquipmentInput: UpdateEquipmentInput
-  ): Promise<CaseFile> {
+  async updateEquipment(updateEquipmentInput: UpdateEquipmentInput): Promise<CaseFile> {
     let caseFileOutput: CaseFile;
 
-    let caseFile = await this.findOneByLeadId(
-      updateEquipmentInput.leadIdentifier
-    );
+    let caseFile = await this.findOneByLeadId(updateEquipmentInput.leadIdentifier);
 
     try {
       await this.prisma.$transaction(async (db) => {
         // Find the existing equipment record
-        this.logger.debug(
-          `Updating equipment ${JSON.stringify(updateEquipmentInput)}`
-        );
+        this.logger.debug(`Updating equipment ${JSON.stringify(updateEquipmentInput)}`);
 
         // we're updating a single equipment record, so only one equipment was provided.
         const equipmentRecord = updateEquipmentInput.equipment[0];
@@ -1255,7 +1222,7 @@ export class CaseFileService {
           equipment_code: equipmentRecord.typeCode,
           equipment_location_desc: equipmentRecord.address,
           active_ind: equipmentRecord.actionEquipmentTypeActiveIndicator,
-        }
+        };
 
         this.logger.debug(`Equipment record being updated: ${JSON.stringify(data)}`);
 
@@ -1273,43 +1240,33 @@ export class CaseFileService {
         const yCoordinate = updateEquipmentInput.equipment[0].yCoordinate;
         const pointWKT = xCoordinate && yCoordinate ? `POINT(${xCoordinate} ${yCoordinate})` : null;
 
-          // update the equipment record to set the coordinates
-          // using raw query because prisma can't handle the awesomeness
-          await this.prisma
-            .$executeRaw`SET search_path TO public, case_management`;
-          const geometryUpdateQuery = `
+        // update the equipment record to set the coordinates
+        // using raw query because prisma can't handle the awesomeness
+        await this.prisma.$executeRaw`SET search_path TO public, case_management`;
+        const geometryUpdateQuery = `
           UPDATE case_management.equipment
           SET equipment_geometry_point = public.ST_GeomFromText($1, 4326)
           WHERE equipment_guid = $2::uuid;
         `;
 
-          // Execute the update with safe parameter binding
-          try {
-            await db.$executeRawUnsafe(
-              geometryUpdateQuery,
-              pointWKT, // WKT string for the POINT
-              equipmentGuid // UUID of the equipment
-            );
-            this.logger.debug(
-              `Updated geometry for equipment GUID: ${equipmentGuid}`
-            );
-          } catch (error) {
-            this.logger.error(
-              "An error occurred during the geometry update:",
-              error
-            );
-            throw new Error(
-              "Failed to update equipment geometry due to a database error."
-            );
-          }
+        // Execute the update with safe parameter binding
+        try {
+          await db.$executeRawUnsafe(
+            geometryUpdateQuery,
+            pointWKT, // WKT string for the POINT
+            equipmentGuid, // UUID of the equipment
+          );
+          this.logger.debug(`Updated geometry for equipment GUID: ${equipmentGuid}`);
+        } catch (error) {
+          this.logger.error("An error occurred during the geometry update:", error);
+          throw new Error("Failed to update equipment geometry due to a database error.");
+        }
 
         // Check for updated or added actions
         const actions = equipmentRecord.actions;
         for (const action of actions) {
           if (action.actionGuid) {
-            this.logger.debug(
-              `Updating equipment action: ${JSON.stringify(action)}`
-            );
+            this.logger.debug(`Updating equipment action: ${JSON.stringify(action)}`);
             // If actionGuid exists, it means the action already exists and needs to be updated
             await db.action.update({
               where: { action_guid: action.actionGuid },
@@ -1321,27 +1278,23 @@ export class CaseFileService {
             });
           } else {
             // we're adding a new action, so find the action type action xref needed for this
-            this.logger.debug(
-              `Creating new equipment action: ${JSON.stringify(action)}`
-            );
-            let actionTypeActionXref =
-              await db.action_type_action_xref.findFirstOrThrow({
-                where: {
-                  action_type_code: ACTION_TYPE_CODES.EQUIPMENT,
-                  action_code: action.actionCode,
-                },
-                select: {
-                  action_type_action_xref_guid: true,
-                },
-              });
+            this.logger.debug(`Creating new equipment action: ${JSON.stringify(action)}`);
+            let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
+              where: {
+                action_type_code: ACTION_TYPE_CODES.EQUIPMENT,
+                action_code: action.actionCode,
+              },
+              select: {
+                action_type_action_xref_guid: true,
+              },
+            });
 
             this.logger.debug(`Found action xref`);
             const caseFileGuid = caseFile.caseIdentifier;
             // create the action records (this may either be setting an equipment or removing an equipment)
             const data = {
               case_guid: caseFileGuid,
-              action_type_action_xref_guid:
-                actionTypeActionXref.action_type_action_xref_guid,
+              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
               actor_guid: action.actor,
               action_date: action.date,
               active_ind: action.activeIndicator,
@@ -1350,11 +1303,7 @@ export class CaseFileService {
               equipment_guid: equipmentGuid,
             };
 
-            this.logger.debug(
-              `Adding new equipment action as part of an update: ${JSON.stringify(
-                data
-              )}`
-            );
+            this.logger.debug(`Adding new equipment action as part of an update: ${JSON.stringify(data)}`);
 
             await db.action.create({
               data: data,
@@ -1367,17 +1316,12 @@ export class CaseFileService {
       caseFileOutput = await this.findOne(caseFileGuid);
     } catch (error) {
       this.logger.error("An error occurred during equipment update:", error);
-      throw new GraphQLError(
-        "An error occurred during equipment update. See server log for details",
-        error
-      );
+      throw new GraphQLError("An error occurred during equipment update. See server log for details", error);
     }
     return caseFileOutput;
   }
 
-  async deleteEquipment(
-    deleteEquipmentInput: DeleteEquipmentInput
-  ): Promise<boolean> {
+  async deleteEquipment(deleteEquipmentInput: DeleteEquipmentInput): Promise<boolean> {
     try {
       // Find the equipment record by its ID
       const equipment = await this.prisma.equipment.findUnique({
@@ -1387,9 +1331,7 @@ export class CaseFileService {
       });
 
       if (!equipment) {
-        throw new Error(
-          `Equipment with ID ${deleteEquipmentInput.id} not found.`
-        );
+        throw new Error(`Equipment with ID ${deleteEquipmentInput.id} not found.`);
       }
 
       // Update the active_ind field to false
@@ -1404,9 +1346,7 @@ export class CaseFileService {
         },
       });
 
-      this.logger.debug(
-        `Equipment with ID ${deleteEquipmentInput.id} has been updated successfully.`
-      );
+      this.logger.debug(`Equipment with ID ${deleteEquipmentInput.id} has been updated successfully.`);
       return true;
     } catch (error) {
       this.logger.error("Error deleting equipment:", error);
@@ -1708,9 +1648,7 @@ export class CaseFileService {
 
       // get the action xref for the action
       let actionData = actionCodes.find(
-        (element) =>
-          element.action_type_action_xref_guid ===
-          action.action_type_action_xref_guid
+        (element) => element.action_type_action_xref_guid === action.action_type_action_xref_guid,
       );
 
       if (equipment && equipment.active_ind) {
@@ -1718,60 +1656,58 @@ export class CaseFileService {
         // Parse the geometry string into a GeoJSON object
 
         // Correctly setting the search path using Prisma
-        await this.prisma
-          .$executeRaw`SET search_path TO public, case_management`;
+        await this.prisma.$executeRaw`SET search_path TO public, case_management`;
 
         // get the latitude and longitude using a raw query
-        const result = await this.prisma.$queryRaw<
-          { longitude: number; latitude: number }[]
-        >`
+        const result = await this.prisma.$queryRaw<{ longitude: number; latitude: number }[]>`
             SELECT 
               public.st_x(equipment_geometry_point::geometry) AS longitude, 
               public.st_y(equipment_geometry_point::geometry) AS latitude
             FROM 
               ${Prisma.raw("case_management.equipment")}
             WHERE 
-              equipment_guid = ${Prisma.raw(
-                `'${equipment.equipment_guid}'::uuid`
-              )}
+              equipment_guid = ${Prisma.raw(`'${equipment.equipment_guid}'::uuid`)}
           `;
 
-          const { longitude, latitude } = result[0];
+        const { longitude, latitude } = result[0];
 
-          const longitudeString = longitude?.toString() ?? null;
-          const latitudeString = latitude?.toString() ?? null;
-          const create_utc_timestamp = equipment.create_utc_timestamp;
+        const longitudeString = longitude?.toString() ?? null;
+        const latitudeString = latitude?.toString() ?? null;
+        const create_utc_timestamp = equipment.create_utc_timestamp;
 
-          let equipmentDetail =
-            equipmentDetailsMap.get(equipment.equipment_guid) ||
-            ({
-              id: equipment.equipment_guid,
-              typeCode: equipment.equipment_code,
-              activeIndicator: equipment.active_ind,
-              address: equipment.equipment_location_desc,
-              xCoordinate: longitudeString,
-              yCoordinate: latitudeString,
-              createDate: create_utc_timestamp,
-              actions: [],
-            } as Equipment);
+        let equipmentDetail =
+          equipmentDetailsMap.get(equipment.equipment_guid) ||
+          ({
+            id: equipment.equipment_guid,
+            typeCode: equipment.equipment_code,
+            activeIndicator: equipment.active_ind,
+            address: equipment.equipment_location_desc,
+            xCoordinate: longitudeString,
+            yCoordinate: latitudeString,
+            createDate: create_utc_timestamp,
+            actions: [],
+          } as Equipment);
 
-            this.logger.debug(`Equipment type: ${equipment.equipment_code}`)
+        this.logger.debug(`Equipment type: ${equipment.equipment_code}`);
 
-          // Append the action to this equipment's list of actions
-          equipmentDetail.actions.push({
-            actionGuid: action.action_guid,
-            actor: action.actor_guid,
-            date: action.action_date,
-            activeIndicator: action.active_ind,
-            actionCode: actionData.action_code,
-          });
+        // Append the action to this equipment's list of actions
+        equipmentDetail.actions.push({
+          actionGuid: action.action_guid,
+          actor: action.actor_guid,
+          date: action.action_date,
+          activeIndicator: action.active_ind,
+          actionCode: actionData.action_code,
+        });
 
-          equipmentDetailsMap.set(equipment.equipment_guid, equipmentDetail);
+        equipmentDetailsMap.set(equipment.equipment_guid, equipmentDetail);
       }
     }
-    const equipmentDetails = Array.from(
-      equipmentDetailsMap.values()
-    ) as Equipment[];
+    const equipmentDetails = Array.from(equipmentDetailsMap.values()) as Equipment[];
+
+    // Sort the equipmentDetails by createDate in ascending order
+    equipmentDetails.sort((a, b) => {
+      return new Date(a.createDate).getTime() - new Date(b.createDate).getTime();
+    });
 
     return equipmentDetails;
   };

@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaModule } from 'nestjs-prisma';
-import { HWCRPreventionActionResolver } from './hwcr_prevention_action.resolver';
-import { HWCRPreventionActionService } from './hwcr_prevention_action.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { PrismaModule } from "nestjs-prisma";
+import { HWCRPreventionActionResolver } from "./hwcr_prevention_action.resolver";
+import { HWCRPreventionActionService } from "./hwcr_prevention_action.service";
 
-describe('ActionTypeActionXrefResolver', () => {
+describe("ActionTypeActionXrefResolver", () => {
   let resolver: HWCRPreventionActionResolver;
 
   beforeEach(async () => {
@@ -15,7 +15,7 @@ describe('ActionTypeActionXrefResolver', () => {
     resolver = module.get<HWCRPreventionActionResolver>(HWCRPreventionActionService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(resolver).toBeDefined();
   });
 });

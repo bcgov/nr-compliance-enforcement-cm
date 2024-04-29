@@ -9,4 +9,3 @@ type EarCode {
 type Query {
   earCodes: [EarCode]!
 }
-

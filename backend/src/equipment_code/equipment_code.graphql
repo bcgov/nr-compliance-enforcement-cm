@@ -9,4 +9,3 @@ type EquipmentCode {
 type Query {
   equipmentCodes: [EquipmentCode]!
 }
-
