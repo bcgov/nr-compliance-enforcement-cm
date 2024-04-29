@@ -77,8 +77,9 @@ input ReviewActionInput {
 
 type Note {
   note: String!
-  action: Action!
+  action: CaseFileAction!
 }
+
 
 input CreateSupplementalNoteInput {
   leadIdentifier: String!
@@ -94,20 +95,51 @@ input UpdateSupplementalNoteInput {
   note: String!
   actor: String!
   updateUserId: String!
+  actionId: String!
 }
 
-type Query {
-  getCaseFile( caseIdentifier: String!): CaseFile
-  getCaseFileByLeadId( leadIdentifier: String!): CaseFile
+input DeleteSupplementalNoteInput {
+  caseIdentifier: String!
+  actor: String!
+  updateUserId: String!
+  actionId: String!
 }
 
-type Mutation {
-  createAssessment(createAssessmentInput: CreateAssessmentInput!): CaseFile!
-  updateAssessment(updateAssessmentInput: UpdateAssessmentInput!): CaseFile!
-  createPrevention(createPreventionInput: CreatePreventionInput!): CaseFile!
-  updatePrevention(updatePreventionInput: UpdatePreventionInput!): CaseFile!
-  createReview(reviewInput: ReviewInput!): CaseFile!
-  updateReview(reviewInput: ReviewInput!): CaseFile!
-  createNote(input: CreateSupplementalNoteInput!): CaseFile!
-  updateNote(input: UpdateSupplementalNoteInput!): CaseFile!
+input CreateEquipmentInput {
+  leadIdentifier: String!
+  createUserId: String!
+  agencyCode: String!
+  caseCode: String!
+  equipment: [EquipmentDetailsInput]!
+}
+
+input UpdateEquipmentInput {
+  leadIdentifier: String!
+  updateUserId: String!
+  agencyCode: String!
+  caseCode: String!
+  equipment: [EquipmentDetailsInput]!
+}
+
+input DeleteEquipmentInput {
+  id: String!
+  updateUserId: String!
+}
+
+input EquipmentDetailsInput {
+  id: String
+  typeCode: String!
+  activeIndicator: Boolean!
+  address: String
+  xCoordinate: String
+  yCoordinate: String
+  actions: [EquipmentActionInput]!
+}
+
+input EquipmentActionInput {
+  actionGuid: String
+  date: Date
+  actor: String
+  activeIndicator: Boolean
+  actionCode: String
 }

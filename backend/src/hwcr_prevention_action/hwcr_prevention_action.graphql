@@ -8,5 +8,5 @@ type HWCRPreventionAction {
 }
 
 type Query {
-  HWCRPreventionActions(actionTypeCode: String): [HWCRPreventionAction]!
+  HWCRPreventionActions: [HWCRPreventionAction]!
 }

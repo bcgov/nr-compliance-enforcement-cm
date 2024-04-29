@@ -8,5 +8,5 @@ type HWCRAssessmentAction {
 }
 
 type Query {
-  HWCRAssessmentActions(actionTypeCode: String): [HWCRAssessmentAction]!
+  HWCRAssessmentActions: [HWCRAssessmentAction]!
 }

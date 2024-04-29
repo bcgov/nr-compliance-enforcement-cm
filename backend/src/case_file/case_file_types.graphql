@@ -1,11 +1,21 @@
 scalar Date
 
 type CaseFile {
-  caseIdentifier : String
+  caseIdentifier: String
   leadIdentifier: String
   assessmentDetails: Assessment
   preventionDetails: Prevention
   note: Note
+  equipment: [EquipmentDetails]
+  isReviewRequired: Boolean
+  reviewComplete: ReviewCompleteAction
+}
+
+type ReviewCompleteAction {
+  actor: String!
+  date: Date!
+  actionCode: String!
+  actionId: String
 }
 
 type Assessment {
@@ -26,7 +36,7 @@ type CaseFileAction{
   shortDescription: String
   longDescription: String
   activeIndicator: Boolean
-  displayOrder: Number!
+  displayOrder: Int!
 }
 
 type Prevention {
@@ -36,4 +46,15 @@ type Prevention {
 type Note {
   note: String!
   action: CaseFileAction!
+}
+
+type EquipmentDetails {
+  id: String
+  typeCode: String
+  activeIndicator: Boolean
+  address: String
+  xCoordinate: String
+  yCoordinate: String
+  createDate: Date
+  actions: [CaseFileAction]
 }

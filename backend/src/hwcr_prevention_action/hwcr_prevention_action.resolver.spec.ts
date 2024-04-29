@@ -1,7 +1,8 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { PrismaModule } from "nestjs-prisma";
-import { HWCRPreventionActionResolver } from "./hwcr_prevention_action.resolver";
-import { HWCRPreventionActionService } from "./hwcr_prevention_action.service";
+
+import { Test, TestingModule } from '@nestjs/testing';
+import { PrismaModule } from 'nestjs-prisma';
+import { HWCRPreventionActionResolver } from './hwcr_prevention_action.resolver';
+import { ActionCodeService } from '../action_code/action_code.service';
 
 describe("ActionTypeActionXrefResolver", () => {
   let resolver: HWCRPreventionActionResolver;
@@ -9,10 +10,10 @@ describe("ActionTypeActionXrefResolver", () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [PrismaModule],
-      providers: [HWCRPreventionActionResolver, HWCRPreventionActionService],
+      providers: [HWCRPreventionActionResolver, ActionCodeService],
     }).compile();
 
-    resolver = module.get<HWCRPreventionActionResolver>(HWCRPreventionActionService);
+    resolver = module.get<HWCRPreventionActionResolver>(HWCRPreventionActionResolver);
   });
 
   it("should be defined", () => {

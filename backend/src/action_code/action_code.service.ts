@@ -19,6 +19,7 @@ export class ActionCodeService {
     }
 
     async findAllCodesByType(actionTypeCode?: string) {
+      console.log("findAllCodesByType: " + actionTypeCode);
       const xrefDataContext = this.prisma.action_type_action_xref;
       let queryResult = null;
         queryResult = await xrefDataContext.findMany({
@@ -43,6 +44,7 @@ export class ActionCodeService {
       queryResult.forEach((record) => {
         actions.push(
           Object.assign( {
+            actionTypeCode: actionTypeCode,
             actionCode: record.action_code,
             displayOrder: record.display_order,
             activeIndicator: record.active_ind,

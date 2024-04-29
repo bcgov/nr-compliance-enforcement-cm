@@ -179,6 +179,7 @@ export class CaseFileService {
     return caseFileOutput;
   }
 
+  /*
   async createPrevention(createPreventionInput: CreatePreventionInput): Promise<CaseFile> {
     let actiontypeCode: string = "COSPRV&EDU";
     let caseFileGuid: string = await this.createOtherCase(createPreventionInput);
@@ -227,11 +228,7 @@ export class CaseFileService {
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
     return caseFileOutput;
-  }
-
-  findAll() {
-    return `This action returns all caseFile`;
-  }
+  }*/
 
   //-----------
   //-- helpers
@@ -1361,6 +1358,7 @@ export class CaseFileService {
   //------------------
 
   //-- find a case file by its case_file_guid
+  /*
   findOne = async (id: string): Promise<CaseFile> => {
     const queryResult = await this.prisma.case_file.findUnique({
       where: {
@@ -1466,25 +1464,7 @@ export class CaseFileService {
     };
 
     return caseFile;
-  };
-
-  //-- find a case file by
-  async findOneByLeadId(leadIdentifier: string) {
-    let caseFileOutput: CaseFile = new CaseFile();
-    const caseIdRecord = await this.prisma.lead.findFirst({
-      where: {
-        lead_identifier: leadIdentifier,
-      },
-      select: {
-        case_identifier: true,
-      },
-    });
-    if (caseIdRecord?.case_identifier) {
-      caseFileOutput = await this.findOne(caseIdRecord.case_identifier);
-    }
-
-    return caseFileOutput;
-  }
+  };*/
 
   //-----------
   //-- helpers

@@ -10,7 +10,14 @@ type Mutation {
   createPrevention(createPreventionInput: CreatePreventionInput!): CaseFile!
   updatePrevention(updatePreventionInput: UpdatePreventionInput!): CaseFile!
 
+  createReview(reviewInput: ReviewInput!): CaseFile!
+  updateReview(reviewInput: ReviewInput!): CaseFile!
 
   createNote(input: CreateSupplementalNoteInput!): CaseFile!
   updateNote(input: UpdateSupplementalNoteInput!): CaseFile!
+  deleteNote(input: DeleteSupplementalNoteInput!): CaseFile!
+
+  createEquipment(createEquipmentInput: CreateEquipmentInput!): CaseFile!
+  updateEquipment(updateEquipmentInput: UpdateEquipmentInput!): CaseFile!
+  deleteEquipment(deleteEquipmentInput: DeleteEquipmentInput!): Boolean!
 }
