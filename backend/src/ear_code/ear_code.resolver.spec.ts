@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { EarCodeResolver } from './ear_code.resolver';
-import { EarCodeService } from './ear_code.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { Test, TestingModule } from "@nestjs/testing";
+import { EarCodeResolver } from "./ear_code.resolver";
+import { EarCodeService } from "./ear_code.service";
+import { PrismaModule } from "nestjs-prisma";
 
-describe('EarCodeResolver', () => {
+describe("EarCodeResolver", () => {
   let resolver: EarCodeResolver;
 
   beforeEach(async () => {
@@ -15,11 +15,7 @@ describe('EarCodeResolver', () => {
     resolver = module.get<EarCodeResolver>(EarCodeResolver);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(resolver).toBeDefined();
   });
 });
-
-
-
-

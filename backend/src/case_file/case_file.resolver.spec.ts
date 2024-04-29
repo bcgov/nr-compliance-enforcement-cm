@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CaseFileResolver } from './case_file.resolver';
-import { CaseFileService } from './case_file.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { Test, TestingModule } from "@nestjs/testing";
+import { CaseFileResolver } from "./case_file.resolver";
+import { CaseFileService } from "./case_file.service";
+import { PrismaModule } from "nestjs-prisma";
 
-describe('CaseFileResolver', () => {
+describe("CaseFileResolver", () => {
   let resolver: CaseFileResolver;
 
   beforeEach(async () => {
@@ -15,7 +15,7 @@ describe('CaseFileResolver', () => {
     resolver = module.get<CaseFileResolver>(CaseFileResolver);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(resolver).toBeDefined();
   });
 });

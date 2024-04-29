@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { InactionJustificationTypeResolver } from './inaction_justification_type.resolver';
-import { InactionJustificationTypeService } from './inaction_justification_type.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { InactionJustificationTypeResolver } from "./inaction_justification_type.resolver";
+import { InactionJustificationTypeService } from "./inaction_justification_type.service";
 
-import { PrismaModule } from 'nestjs-prisma';
+import { PrismaModule } from "nestjs-prisma";
 
-describe('InactionJustificationTypeResolver', () => {
+describe("InactionJustificationTypeResolver", () => {
   let resolver: InactionJustificationTypeResolver;
 
   beforeEach(async () => {
@@ -16,7 +16,7 @@ describe('InactionJustificationTypeResolver', () => {
     resolver = module.get<InactionJustificationTypeResolver>(InactionJustificationTypeService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(resolver).toBeDefined();
   });
 });

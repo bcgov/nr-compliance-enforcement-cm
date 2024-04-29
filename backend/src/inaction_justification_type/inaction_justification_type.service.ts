@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import { PrismaService } from "nestjs-prisma";
-import { InactionJustificationCode } from './entities/inaction_justification_code.entity';
+import { InactionJustificationCode } from "./entities/inaction_justification_code.entity";
 
 @Injectable()
 export class InactionJustificationTypeService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async find(agencyCode?: string) {
     let queryResult = null;
@@ -12,7 +12,7 @@ export class InactionJustificationTypeService {
 
     queryResult = await dataContext.findMany({
       where: {
-        agency_code: agencyCode ? agencyCode : undefined
+        agency_code: agencyCode ? agencyCode : undefined,
       },
       select: {
         inaction_reason_code: true,
@@ -20,17 +20,17 @@ export class InactionJustificationTypeService {
         short_description: true,
         long_description: true,
         display_order: true,
-        active_ind: true
-      }
-    })
+        active_ind: true,
+      },
+    });
 
-    const inactionJustificationCodes: InactionJustificationCode[] = queryResult.map(queryResult => ({
+    const inactionJustificationCodes: InactionJustificationCode[] = queryResult.map((queryResult) => ({
       inactionJustificationCode: queryResult.inaction_reason_code,
       agencyCode: queryResult.agency_code,
       shortDescription: queryResult.short_description,
       longDescription: queryResult.long_description,
       displayOrder: queryResult.display_order,
-      activeIndicator: queryResult.active_ind
+      activeIndicator: queryResult.active_ind,
     }));
 
     return inactionJustificationCodes;

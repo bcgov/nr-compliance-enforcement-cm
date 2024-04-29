@@ -9,4 +9,3 @@ type SexCode {
 type Query {
   sexCodes: [SexCode]!
 }
-

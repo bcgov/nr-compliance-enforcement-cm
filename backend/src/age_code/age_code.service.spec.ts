@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AgeCodeService } from './age_code.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { Test, TestingModule } from "@nestjs/testing";
+import { AgeCodeService } from "./age_code.service";
+import { PrismaModule } from "nestjs-prisma";
 
-describe('AgeCodeService', () => {
+describe("AgeCodeService", () => {
   let service: AgeCodeService;
 
   beforeEach(async () => {
@@ -14,7 +14,7 @@ describe('AgeCodeService', () => {
     service = module.get<AgeCodeService>(AgeCodeService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });
