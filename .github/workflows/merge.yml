@@ -51,7 +51,7 @@ jobs:
         run: |
           cd charts/nr-compliance-enforcement-cm
           yq eval '.global.tag="${{ needs.vars.outputs.pr }}"' -i values.yaml
-          yq eval '.global.tag="${{ github.sha }}"' -i values-static.yaml
+          yq eval '.global.tag="${{ needs.vars.outputs.pr }}"' -i values-static.yaml
 
       - name: Commit and push update
         shell: bash
