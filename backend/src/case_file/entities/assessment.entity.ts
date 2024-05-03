@@ -6,6 +6,6 @@ export class Assessment {
     actionJustificationShortDescription: string;
     actionJustificationLongDescription: string;
     actionJustificationActiveIndicator: boolean;
-    actions: CaseFileAction[]
+    actions: CaseFileAction[];
 
 }

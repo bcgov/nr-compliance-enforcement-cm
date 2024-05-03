@@ -2,7 +2,7 @@
 
 export class CaseFileAction {
     actionId: string
-    actorId: string
+    actor: string
     activeIndicator: boolean
     actionCode: string
     shortDescription: string

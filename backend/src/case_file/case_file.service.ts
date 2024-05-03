@@ -8,8 +8,6 @@ import { CreateSupplementalNoteInput } from "./dto/supplemental-note/create-supp
 import { ACTION_CODES } from "../common/action_codes";
 import { UpdateSupplementalNoteInput } from "./dto/supplemental-note/update-supplemental-note.input";
 import { ACTION_TYPE_CODES } from "../common/action_type_codes";
-import { Action } from "./entities/case-action.entity";
-import { CaseFileActionItem } from "./dto/case-file-action-item";
 import { ReviewInput } from './dto/review-input';
 import { CaseFileActionService } from "src/case_file_action/case_file_action.service";
 import { Equipment } from "./entities/equipment.entity";
@@ -17,6 +15,7 @@ import { DeleteEquipmentInput } from "./dto/equipment/delete-equipment.input";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
 import { DeleteSupplementalNoteInput } from "./dto/supplemental-note/delete-supplemental-note.input";
+import { CaseFileAction } from "src/case_file_action/entities/case_file_action.entity";
 
 @Injectable()
 export class CaseFileService {
@@ -411,7 +410,7 @@ export class CaseFileService {
       review_required_ind: isReviewRequired
     } = queryResult;
 	
-    const reviewCompleteAction = await this.caseFileActionService.findActionsByCaseId(caseFileId)[0];
+    const reviewCompleteAction = await this.caseFileActionService.findActionByCaseIdAndCaseCode(caseFileId, ACTION_CODES.COMPLTREVW);
 
     const caseFile: CaseFile = {
       caseIdentifier: caseFileId,
@@ -422,23 +421,26 @@ export class CaseFileService {
         actionJustificationShortDescription: !reason ? "" : reason.short_description,
         actionJustificationLongDescription: !reason ? "" : reason.long_description,
         actionJustificationActiveIndicator: !reason ? false : reason.active_ind,
-        actions: await this.caseFileActionService.findActionsByCaseId(caseFileId),
+        actions: await this.caseFileActionService.findActionsByCaseIdAndType(caseFileId, ACTION_TYPE_CODES.COMPASSESS),
       },
       preventionDetails: {
-        actions: await this.caseFileActionService.findActionsByCaseId(caseFileId),
+        actions: await this.caseFileActionService.findActionsByCaseIdAndType(caseFileId, ACTION_TYPE_CODES.COSPRVANDEDU),
       },
       isReviewRequired: isReviewRequired,
       reviewComplete: reviewCompleteAction ?? null,
       note: {
         note: queryResult.note_text,
-        action: await this.caseFileActionService.findActionsByCaseId(caseFileId)[0],
+        action: await this.caseFileActionService.findActionByCaseIdAndCaseCode(caseFileId, ACTION_CODES.UPDATENOTE),
       },
     };
 
+    console.log("caseFile.preventionDetails: " + JSON.stringify(caseFile.preventionDetails));
+    console.log("caseFile: " + JSON.stringify(caseFile));
     return caseFile;
   };
 
   async findOneByLeadId(leadIdentifier: string) {
+    console.log("fineOneByLeadId");
     let caseFileOutput: CaseFile = new CaseFile();
     const caseIdRecord = await this.prisma.lead.findFirst({
       where: {
@@ -1471,11 +1473,12 @@ export class CaseFileService {
   //-----------
 
   //-- returns a collection of actions
+  /*
   private getCaseActions = async (
-    actions: Array<CaseFileActionItem>,
+    actions: Array<CaseFileAction>,
     actionTypeCode: string,
     actionCode: string = "",
-  ): Promise<Array<Action>> => {
+  ): Promise<Array<CaseFileAction>> => {
     let items = [];
 
     if (!actionCode) {
@@ -1503,10 +1506,9 @@ export class CaseFileService {
 
     const result = items.map(
       ({
-        action_guid: actionGuid,
-        actor_guid: actor,
-        action_date: date,
-        active_ind: activeIndicator,
+        actionId: actionId,
+        actor: actor,
+        activeIndicator: activeIndicator,
         action_type_action_xref: {
           action_code_action_type_action_xref_action_codeToaction_code: {
             action_code: actionCode,
@@ -1516,14 +1518,13 @@ export class CaseFileService {
         },
       }) => {
         return {
-          actionGuid,
+          actionId,
           actor,
-          date,
           actionCode,
           shortDescription,
           longDescription,
           activeIndicator,
-        } as Action;
+        } as CaseFileAction;
       },
     );
     return result;
@@ -1532,11 +1533,11 @@ export class CaseFileService {
   //-- returns a single action, if multiple actions exist the first action
   //-- will be returned
   private getCaseAction = async (
-    actions: Array<CaseFileActionItem>,
+    actions: Array<CaseFileAction>,
     actionTypeCode: string,
     actionCode: string = "",
-  ): Promise<Action> => {
-    let item: CaseFileActionItem;
+  ): Promise<CaseFileAction> => {
+    let item: CaseFileAction;
 
     if (!actionCode) {
       item = actions.find((action) => {
@@ -1551,10 +1552,9 @@ export class CaseFileService {
     } else {
       item = actions.find((action) => {
         const {
-          action_type_action_xref: {
-            action_code_action_type_action_xref_action_codeToaction_code: _actionCode,
-            action_type_code_action_type_action_xref_action_type_codeToaction_type_code: _actionTypeCode,
-          },
+          actionId,
+          actionCode,
+          actionType,
         } = action;
 
         return _actionTypeCode.action_type_code === actionTypeCode && _actionCode.action_code === actionCode;
@@ -1563,34 +1563,28 @@ export class CaseFileService {
 
     if (item) {
       const {
-        action_guid: actionGuid,
-        actor_guid: actor,
-        action_date: date,
-        active_ind: activeIndicator,
-        action_type_action_xref: {
-          action_code_action_type_action_xref_action_codeToaction_code: {
-            action_code: actionCode,
-            short_description: shortDescription,
-            long_description: longDescription,
-          },
+        actionId: actionId,
+        actor: actor,
+        activeIndicator: activeIndicator,
+
         },
       } = item;
 
       return {
-        actionGuid,
+        actionId,
         actor,
-        date,
         actionCode,
         shortDescription,
         longDescription,
         activeIndicator,
-      } as Action;
+      } as CaseFileAction;
     }
-  };
+  };*/
 
   // find all equipment records, and their respective actions, for a given case
   // Since we want to list the equipment related to a case, rather than the actions for a case, which may contain equipment, let's
   // transform the actions with equipment to equipment with actions.
+  /*
   private findEquipmentDetails = async (caseIdentifier: string): Promise<Equipment[]> => {
     const actions = await this.prisma.action.findMany({
       where: { case_guid: caseIdentifier },
@@ -1690,7 +1684,7 @@ export class CaseFileService {
     });
 
     return equipmentDetails;
-  };
+  };*/
 
   //--
   //-- not implemented

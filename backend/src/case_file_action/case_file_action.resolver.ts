@@ -18,8 +18,8 @@ export class CaseFileActionResolver {
 
   @Query('FindCaseFileActionsByCaseFile')
   @Roles(Role.COS_OFFICER)
-  findAllByCaseFile(@Args('caseId') caseId?: string) {
-    return this.CaseFileActionService.findActionsByCaseId(caseId);
+  findAllByCaseFile(@Args('caseId') caseId?: string, @Args('actionTypeCode') actionTypeCode?: string) {
+    return this.CaseFileActionService.findActionsByCaseIdAndType(caseId, actionTypeCode);
   }
 
 }

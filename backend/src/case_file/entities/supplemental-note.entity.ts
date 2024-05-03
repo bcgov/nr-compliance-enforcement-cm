@@ -2,5 +2,5 @@ import { CaseFileAction } from "../../case_file_action/entities/case_file_action
 
 export class Note {
   note: string;
-  action: CaseFileAction
+  action: CaseFileAction;
 }
