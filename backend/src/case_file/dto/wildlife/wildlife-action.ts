@@ -1,9 +1,9 @@
 import { UUID } from "crypto";
 
 export interface WildlifeAction {
-  id: UUID;
+  id?: UUID;
   actor: string;
-  date: Date;
-  actionCode: string;
+  date?: Date;
+  action: string;
   activeIndicator: boolean;
 }

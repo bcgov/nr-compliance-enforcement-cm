@@ -17,6 +17,11 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
 import { DeleteSupplementalNoteInput } from "./dto/supplemental-note/delete-supplemental-note.input";
 import { CreateWildlifeInput } from "./dto/wildlife/create-wildlife-input";
+import { WildlifeInput } from "./dto/wildlife/wildlife-input";
+import { EarTagInput } from "./dto/wildlife/ear-tag-input";
+import { DrugInput } from "./dto/wildlife/drug-input";
+import { WildlifeAction } from "./dto/wildlife/wildlife-action";
+import { DrugUsed, EarTag, Wildlife } from "./entities/wildlife-entity";
 
 @Injectable()
 export class CaseFileService {
@@ -1142,6 +1147,20 @@ export class CaseFileService {
             active_ind: true,
           },
         },
+        wildlife: {
+          select: {
+            wildlife_guid: true,
+            threat_level_code: true,
+            conflict_history_code: true,
+            sex_code: true,
+            age_code: true,
+            hwcr_outcome_code: true,
+            species_code: true,
+            action: true,
+            drug_administered: true,
+            ear_tag: true,
+          },
+        },
       },
     });
 
@@ -1162,7 +1181,7 @@ export class CaseFileService {
       ACTION_CODES.COMPLTREVW,
     );
 
-    const caseFile: CaseFile = {
+    let caseFile: CaseFile = {
       caseIdentifier: caseFileId,
       leadIdentifier: lead[0].lead_identifier, //this is okay because there will only be one lead for a case... for now.
       assessmentDetails: {
@@ -1183,7 +1202,103 @@ export class CaseFileService {
         action: await this.getCaseAction(queryResult.action, ACTION_TYPE_CODES.CASEACTION, ACTION_CODES.UPDATENOTE),
       },
       equipment: equipmentDetails,
+      //-- for now wildlife will populate the subject property
+      //-- though this may not be the case at a later date
     };
+
+    const _mapWildlifeToCaseFile = (wildlife: any[]): Wildlife[] => {
+      return wildlife.map((item) => {
+        const {
+          wildlife_guid: id,
+          species_code: species,
+          sex_code: sex,
+          age_code: age,
+          threat_level_code: categoryLevel,
+          conflict_history_code: conflictHistory,
+          hwcr_outcome_code: outcome,
+          ear_tag,
+          drug_administered,
+          action,
+        } = item;
+        const record: Wildlife = {
+          id,
+          species,
+          sex,
+          age,
+          categoryLevel,
+          conflictHistory,
+          outcome,
+          tags:
+            ear_tag && ear_tag.length !== 0
+              ? ear_tag.map(({ ear_tag_guid: id, ear_code: ear, ear_tag_identifier: identifier }) => {
+                  return {
+                    id,
+                    ear,
+                    identifier,
+                  };
+                })
+              : [],
+          drugs:
+            drug_administered && drug_administered.length !== 0
+              ? drug_administered.map(
+                  ({
+                    drug_administered_guid: id,
+                    vial_number: vial,
+                    drug_code: drug,
+                    drug_used_amount: amountUsed,
+                    drug_method_code: injectionMethod,
+                    adverse_reaction_text: reactions,
+                    drug_remaining_outcome_code: remainingUse,
+                    drug_discarded_amount: amountDiscarded,
+                    discard_method_text: discardMethod,
+                  }) => {
+                    return {
+                      id,
+                      vial,
+                      drug,
+                      amountUsed,
+                      injectionMethod,
+                      reactions,
+                      remainingUse,
+                      amountDiscarded,
+                      discardMethod,
+                    };
+                  },
+                )
+              : [],
+          actions:
+            action && action.length !== 0
+              ? action.map(
+                  ({
+                    action_guid: actionGuid,
+                    actor_guid: actor,
+                    action_date: date,
+                    action_type_action_xref: xref,
+                  }) => {
+                    //-- the xref contains the action code
+                    const {
+                      action_code_action_type_action_xref_action_codeToaction_code: { action_code: actionCode },
+                    } = xref;
+                    return {
+                      actionGuid,
+                      actor,
+                      actionCode,
+                      date,
+                    };
+                  },
+                )
+              : [],
+        };
+
+        return record;
+      });
+    };
+
+    //-- add the wildlife items to the subject if there
+    //-- are results to add to the casefile
+    if (queryResult.wildlife) {
+      caseFile.subject = _mapWildlifeToCaseFile(queryResult.wildlife);
+    }
 
     return caseFile;
   };
@@ -1435,21 +1550,238 @@ export class CaseFileService {
   //----------------------
   //-- animal outcomes
   //----------------------
-  createAnimal = async (model: CreateWildlifeInput): Promise<CaseFile> => {
+  createWildlife = async (model: CreateWildlifeInput): Promise<CaseFile> => {
     let caseFileId = "";
+
+    //--
+    //-- creates a new wildlife record and returns the wildlife_guid
+    //--
+    const _addWildlife = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      caseId: string,
+      wildlife: WildlifeInput,
+      userId: string,
+    ): Promise<any> => {
+      try {
+        const { species } = wildlife;
+
+        let record: any = {
+          case_file_guid: caseId,
+          species_code: species,
+          create_user_id: userId,
+          update_user_id: userId,
+          create_utc_timestamp: new Date(),
+          update_utc_timestamp: new Date(),
+        };
+
+        if (wildlife.sex) {
+          record = { ...record, sex_code: wildlife.sex };
+        }
+
+        if (wildlife.age) {
+          record = { ...record, age_code: wildlife.age };
+        }
+
+        if (wildlife.categoryLevel) {
+          record = { ...record, threat_level_code: wildlife.categoryLevel };
+        }
+
+        if (wildlife.conflictHistory) {
+          record = { ...record, conflict_history_code: wildlife.conflictHistory };
+        }
+
+        if (wildlife.outcome) {
+          record = { ...record, hwcr_outcome_code: wildlife.outcome };
+        }
+
+        const result = await db.wildlife.create({
+          data: record,
+        });
+
+        return result?.wildlife_guid;
+      } catch (exception) {
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    //--
+    //-- creates a new ear-tag record for each item tags collection
+    //--
+    const _addEarTags = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      wildlifeId: string,
+      tags: Array<EarTagInput>,
+      userId: string,
+    ) => {
+      if (tags && tags.length !== 0) {
+        try {
+          const records = tags.map(({ ear, identifier }) => {
+            return {
+              wildlife_guid: wildlifeId,
+              ear_code: ear,
+              ear_tag_identifier: identifier,
+              create_user_id: userId,
+              update_user_id: userId,
+              create_utc_timestamp: new Date(),
+              update_utc_timestamp: new Date(),
+            };
+          });
+          let result = await db.ear_tag.createMany({
+            data: records,
+          });
+        } catch (exception) {
+          throw new GraphQLError("Exception occurred. See server log for details", exception);
+        }
+      }
+    };
+
+    //--
+    //-- creates a new drug-used record for each item in drugs collection
+    //--
+    const _addDrugsUsed = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      wildlifeId: string,
+      drugs: Array<DrugInput>,
+      userId: string,
+    ) => {
+      if (drugs && drugs.length !== 0) {
+        try {
+          const records = drugs.map(
+            ({
+              vial: vial_number,
+              drug: drug_code,
+              amountUsed: drug_used_amount,
+              injectionMethod: drug_method_code,
+              reactions: adverse_reaction_text,
+
+              remainingUse: drug_remaining_outcome_code,
+              amountDiscarded: drug_discarded_amount,
+              discardMethod: discard_method_text,
+            }) => {
+              return {
+                wildlife_guid: wildlifeId,
+                drug_code,
+                drug_method_code,
+                drug_remaining_outcome_code,
+                vial_number,
+                drug_used_amount,
+                drug_discarded_amount,
+                discard_method_text,
+                adverse_reaction_text,
+                create_user_id: userId,
+                update_user_id: userId,
+                create_utc_timestamp: new Date(),
+                update_utc_timestamp: new Date(),
+              };
+            },
+          );
+          let result = await db.drug_administered.createMany({
+            data: records,
+          });
+        } catch (exception) {
+          throw new GraphQLError("Exception occurred. See server log for details", exception);
+        }
+      }
+    };
+
+    //--
+    //-- adds new actions for the wildlife record
+    //--
+    const _applyActions = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      caseId: string,
+      wildlifeId: string,
+      actions: Array<WildlifeAction>,
+      userId: string,
+    ) => {
+      if (actions && actions.length !== 0) {
+        try {
+          const xrefs = await db.action_type_action_xref.findMany({
+            where: {
+              action_type_code: ACTION_TYPE_CODES.WILDLIFE,
+            },
+            select: {
+              action_type_action_xref_guid: true,
+              action_code: true,
+            },
+          });
+
+          console.log("XREFS: ", xrefs);
+          console.log("ACTIONS: ", actions);
+          const records = actions.map(({ actor: actor_guid, date: action_date, action }) => {
+            const xref = xrefs.find((item) => item.action_code === action);
+            console.log("XREF: ", xref);
+
+            return {
+              case_guid: caseId,
+              wildlife_guid: wildlifeId,
+              action_type_action_xref_guid: xref.action_type_action_xref_guid,
+              actor_guid,
+              action_date,
+              active_ind: true,
+              create_user_id: userId,
+              update_user_id: userId,
+              create_utc_timestamp: new Date(),
+              update_utc_timestamp: new Date(),
+            };
+          });
+          let result = await db.action.createMany({
+            data: records,
+          });
+        } catch (exception) {
+          throw new GraphQLError("Exception occurred. See server log for details", exception);
+        }
+      }
+    };
 
     try {
       let result: CaseFile;
 
       await this.prisma.$transaction(async (db) => {
-        const { leadIdentifier, actor, agencyCode, caseCode, createUserId, wildlife } = model;
+        const { leadIdentifier, agencyCode, caseCode, createUserId, wildlife } = model;
+        const { tags, drugs, actions } = wildlife;
+
+        const caseFile = await this.findOneByLeadId(leadIdentifier);
+
+        if (caseFile && caseFile?.caseIdentifier) {
+          caseFileId = caseFile.caseIdentifier;
+        } else {
+          const caseInput: CreateCaseInput = { ...model };
+          caseFileId = await this.createCase(db, caseInput);
+        }
+
+        //-- add wildlife items
+        console.log("DERP");
+        const wildlifeId = await _addWildlife(db, caseFileId, wildlife, createUserId);
+        console.log("W_RESULT: ", wildlifeId);
+
+        if (wildlifeId) {
+          //-- create ear-tags, dru-used and action records
+          await _addEarTags(db, wildlifeId, tags, createUserId);
+          await _addDrugsUsed(db, wildlifeId, drugs, createUserId);
+          await _applyActions(db, caseFileId, wildlifeId, actions, createUserId);
+        }
+
+        console.log("CASE_FILE_ID: ", caseFileId);
       });
 
       result = await this.findOne(caseFileId);
 
       return result;
     } catch (error) {
-      console.log("exception: unable to create supplemental note", error);
+      console.log("exception: unable to wildlife ", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };

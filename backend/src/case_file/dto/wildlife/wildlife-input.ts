@@ -3,13 +3,14 @@ import { EarTagInput } from "./ear-tag-input";
 import { WildlifeAction } from "./wildlife-action";
 
 export interface WildlifeInput {
-  categoryLevel?: string;
-  conflictHistory?: string;
+  id?: string;
+  species: string;
   sex?: string;
   age?: string;
+  categoryLevel?: string;
+  conflictHistory?: string;
   outcome?: string;
-  species: string;
-  earTags?: Array<EarTagInput>;
+  tags?: Array<EarTagInput>;
   drugs?: Array<DrugInput>;
-  actions?: Array<WildlifeAction>; //-- this should be refactored
+  actions?: Array<WildlifeAction>;
 }

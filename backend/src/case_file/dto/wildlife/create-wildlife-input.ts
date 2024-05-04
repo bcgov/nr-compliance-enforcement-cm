@@ -5,6 +5,5 @@ export class CreateWildlifeInput {
   agencyCode: string;
   caseCode: string;
   createUserId: string;
-  actor: string;
-  wildlife: Array<WildlifeInput>;
+  wildlife: WildlifeInput;
 }

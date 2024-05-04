@@ -1,11 +1,13 @@
 export interface DrugInput {
-  id: string;
+  id?: number;
+
+  vial: string;
   drug: string;
-  administrationMethod: string;
-  fateOfRemaining: string;
-  vialNumber: string;
-  used: string;
-  discarded: string;
-  discardMethod: string;
+  amountUsed: string;
+  injectionMethod: string;
   reactions: string;
+
+  remainingUse: string;
+  amountDiscarded: string;
+  discardMethod: string;
 }

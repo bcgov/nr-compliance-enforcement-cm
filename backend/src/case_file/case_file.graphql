@@ -9,6 +9,7 @@ type CaseFile {
   equipment: [EquipmentDetails]
   isReviewRequired: Boolean
   reviewComplete: ReviewCompleteAction
+  subject: [Wildlife]
 }
 
 type ReviewCompleteAction {
@@ -195,52 +196,84 @@ input EquipmentActionInput {
   actionCode: String
 }
 
-input CreateAnimalOutcomeInput {
+input CreateWildlifeInput {
   leadIdentifier: String!
-  actor: String!
   agencyCode: String!
   caseCode: String!
   createUserId: String!
-  wildlife: [WildlifeInput]!
+  wildlife: WildlifeInput!
 }
 
 input WildlifeInput {
   id: String
-  categoryLevel: String
-  conflictHistory: String
+  species: String!
   sex: String
   age: String
+  categoryLevel: String
+  conflictHistory: String
   outcome: String
-  species: String!
-  earTags: [EarTagInput]
+  tags: [EarTagInput]
   drugs: [DrugInput]
   actions: [WildlifeActionInput]
 }
 
 input EarTagInput {
   id: String
-  ear: String
-  value: String
+  ear: String!
+  identifier: String!
 }
 
 input DrugInput {
   id: String
-  drug: String
-  administrationMethod: String
-  fateOfRemaining: String
-  vialNumber: String
-  used: String
-  discarded: String
-  discardMethod: String
+
+  vial: String!
+  drug: String!
+  amountUsed: String!
+  injectionMethod: String!
   reactions: String
+
+  remainingUse: String
+  amountDiscarded: String
+  discardMethod: String
 }
 
 input WildlifeActionInput {
   id: String
   actor: String
   date: Date
-  actionCode: String
+  action: String
   activeIndicator: Boolean
+}
+
+type Wildlife {
+  id: String
+  species: String!
+  sex: String
+  age: String
+  categoryLevel: String
+  conflictHistory: String
+  outcome: String
+  tags: [EarTag]
+  drugs: [Drug]
+  actions: [Action]
+}
+
+type EarTag {
+  id: String
+  ear: String
+  identifier: String
+}
+
+type Drug {
+  id: String
+  vial: String
+  drug: String
+  amountUsed: String
+  injectionMethod: String
+  reactions: String
+  remainingUse: String
+  amountDiscarded: String
+  discardMethod: String
 }
 
 type Query {
@@ -266,5 +299,5 @@ type Mutation {
   updateEquipment(updateEquipmentInput: UpdateEquipmentInput!): CaseFile!
   deleteEquipment(deleteEquipmentInput: DeleteEquipmentInput!): Boolean!
 
-  createAnimal(input: CreateAnimalOutcomeInput!): CaseFile!
+  createWildlife(input: CreateWildlifeInput!): CaseFile!
 }
