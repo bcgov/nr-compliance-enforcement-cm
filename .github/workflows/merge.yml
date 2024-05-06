@@ -4,10 +4,10 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - '*.md'
-      - '.github/**'
-      - '.graphics/**'
-      - '!.github/workflows/**'
+      - "*.md"
+      - ".github/**"
+      - ".graphics/**"
+      - "!.github/workflows/**"
   workflow_dispatch:
     inputs:
       pr_no:
@@ -51,7 +51,7 @@ jobs:
         run: |
           cd charts/nr-compliance-enforcement-cm
           yq eval '.global.tag="${{ needs.vars.outputs.pr }}"' -i values.yaml
-
+          yq eval '.global.tag="${{ needs.vars.outputs.pr }}"' -i values-static.yaml
 
       - name: Commit and push update
         shell: bash
@@ -81,7 +81,6 @@ jobs:
         run: |
           cd charts/nr-compliance-enforcement-cm
           yq eval '.global.tag="${{ needs.vars.outputs.pr }}"' -i values-prod.yaml
-
 
       - name: Commit and push update
         shell: bash
