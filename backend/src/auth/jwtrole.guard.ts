@@ -36,8 +36,6 @@ export class JwtRoleGuard extends AuthGuard("jwt") implements CanActivate {
     if (!user) {
       this.logger.error("User authorization not verified");
       throw new UnauthorizedException("Cannot verify user authorization");
-    } else {
-      this.logger.debug("User authorization verified");
     }
 
     // if there aren't any required roles, don't allow the user to access any api.  Unless the API is marked as public, at least one role is required.
