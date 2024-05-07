@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "nestjs-prisma";
 import { CaseFileAction } from "./entities/case_file_action.entity";
-import { ACTION_TYPE_CODES } from "src/common/action_type_codes";
+import { ACTION_TYPE_CODES } from "../common/action_type_codes";
 
 @Injectable()
 export class CaseFileActionService {

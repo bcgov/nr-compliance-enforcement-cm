@@ -9,7 +9,7 @@ import { ACTION_CODES } from "../common/action_codes";
 import { UpdateSupplementalNoteInput } from "./dto/supplemental-note/update-supplemental-note.input";
 import { ACTION_TYPE_CODES } from "../common/action_type_codes";
 import { ReviewInput } from "./dto/review-input";
-import { CaseFileActionService } from "src/case_file_action/case_file_action.service";
+import { CaseFileActionService } from "../case_file_action/case_file_action.service";
 import { Equipment } from "./entities/equipment.entity";
 import { DeleteEquipmentInput } from "./dto/equipment/delete-equipment.input";
 import { Prisma, PrismaClient } from "@prisma/client";
