@@ -5,13 +5,12 @@ type CaseFileAction {
   actor: String!
   date: Date!
   displayOrder: Int
-  activeIndicator: Boolean 
+  activeIndicator: Boolean
   shortDescription: String!
   longDescription: String!
 }
 
-
 type Query {
-  FindCaseFileAction (actionId: String): CaseFileAction!
-  FindCaseFileActionsByCaseFile (caseId: String): [CaseFileAction]!
+  FindCaseFileAction(actionId: String): CaseFileAction!
+  FindCaseFileActionsByCaseFile(caseId: String): [CaseFileAction]!
 }

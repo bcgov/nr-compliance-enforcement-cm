@@ -46,8 +46,6 @@ export class JwtRoleGuard extends AuthGuard("jwt") implements CanActivate {
         `Endpoint ${request.originalUrl} is not properly guarded.  Endpoint needs to either be marked as public, or at least one role is required.`,
       );
       return false;
-    } else {
-      this.logger.debug(`Endpoint ${request.originalUrl} is properly guarded.`);
     }
 
     // roles that the user has
