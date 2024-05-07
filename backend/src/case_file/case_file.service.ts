@@ -984,11 +984,11 @@ export class CaseFileService {
         // Check for updated or added actions
         const actions = equipmentRecord.actions;
         for (const action of actions) {
-          if (action.actionGuid) {
+          if (action.actionId) {
             this.logger.debug(`Updating equipment action: ${JSON.stringify(action)}`);
             // If actionGuid exists, it means the action already exists and needs to be updated
             await db.action.update({
-              where: { action_guid: action.actionGuid },
+              where: { action_guid: action.actionId },
               data: {
                 action_date: action.date,
                 actor_guid: action.actor,

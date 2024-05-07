@@ -1,7 +1,7 @@
 import { UUID } from "crypto";
 
 export interface EquipmentActionItem {
-  actionGuid: UUID;
+  actionId: UUID;
   actor: string;
   date: Date;
   actionCode: string;
