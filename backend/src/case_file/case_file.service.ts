@@ -248,29 +248,42 @@ export class CaseFileService {
       ACTION_CODES.COMPLTREVW,
     );
 
+    const assessmentActions = await this.caseFileActionService.findActionsByCaseIdAndType(
+      caseFileId,
+      ACTION_TYPE_CODES.COMPASSESS,
+    );
+
+    const preventionActions = await this.caseFileActionService.findActionsByCaseIdAndType(
+      caseFileId,
+      ACTION_TYPE_CODES.COSPRVANDEDU,
+    );
+
     const caseFile: CaseFile = {
       caseIdentifier: caseFileId,
       leadIdentifier: lead[0].lead_identifier, //this is okay because there will only be one lead for a case... for now.
-      assessmentDetails: {
-        actionNotRequired: actionNotRequired,
-        actionJustificationCode: inactionReasonCode,
-        actionJustificationShortDescription: !reason ? "" : reason.short_description,
-        actionJustificationLongDescription: !reason ? "" : reason.long_description,
-        actionJustificationActiveIndicator: !reason ? false : reason.active_ind,
-        actions: await this.caseFileActionService.findActionsByCaseIdAndType(caseFileId, ACTION_TYPE_CODES.COMPASSESS),
-      },
-      preventionDetails: {
-        actions: await this.caseFileActionService.findActionsByCaseIdAndType(
-          caseFileId,
-          ACTION_TYPE_CODES.COSPRVANDEDU,
-        ),
-      },
+      assessmentDetails: assessmentActions
+        ? {
+            actionNotRequired: actionNotRequired,
+            actionJustificationCode: inactionReasonCode,
+            actionJustificationShortDescription: !reason ? "" : reason.short_description,
+            actionJustificationLongDescription: !reason ? "" : reason.long_description,
+            actionJustificationActiveIndicator: !reason ? false : reason.active_ind,
+            actions: assessmentActions,
+          }
+        : null,
+      preventionDetails: preventionActions
+        ? {
+            actions: preventionActions,
+          }
+        : null,
       isReviewRequired: isReviewRequired,
       reviewComplete: reviewCompleteAction ?? null,
-      note: {
-        note: queryResult.note_text,
-        action: await this.caseFileActionService.findActionByCaseIdAndCaseCode(caseFileId, ACTION_CODES.UPDATENOTE),
-      },
+      note: queryResult.note_text
+        ? {
+            note: queryResult.note_text,
+            action: await this.caseFileActionService.findActionByCaseIdAndCaseCode(caseFileId, ACTION_CODES.UPDATENOTE),
+          }
+        : null,
       equipment: equipmentDetails,
     };
 

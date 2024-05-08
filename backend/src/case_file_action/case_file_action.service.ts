@@ -119,7 +119,9 @@ export class CaseFileActionService {
 
     for await (const xrefResult of xrefResults) {
       const caseFileAction = await this.findActionByXrefIdAndCaseId(caseId, xrefResult.action_type_action_xref_guid);
-      caseFileActions.push(caseFileAction);
+      if (caseFileAction) {
+        caseFileActions.push(caseFileAction);
+      }
     }
     return caseFileActions;
   }
