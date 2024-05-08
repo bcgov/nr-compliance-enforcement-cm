@@ -22,6 +22,7 @@ import { EarTagInput } from "./dto/wildlife/ear-tag-input";
 import { DrugInput } from "./dto/wildlife/drug-input";
 import { WildlifeAction } from "./dto/wildlife/wildlife-action";
 import { DrugUsed, EarTag, Wildlife } from "./entities/wildlife-entity";
+import { SubjectQueryResult } from "./dto/subject-query-result";
 
 @Injectable()
 export class CaseFileService {
@@ -1150,15 +1151,34 @@ export class CaseFileService {
         wildlife: {
           select: {
             wildlife_guid: true,
-            threat_level_code: true,
-            conflict_history_code: true,
-            sex_code: true,
-            age_code: true,
-            hwcr_outcome_code: true,
             species_code: true,
-            action: true,
+            age_code: true,
+            sex_code: true,
+            conflict_history_code: true,
+            threat_level_code: true,
+            hwcr_outcome_code: true,
             drug_administered: true,
             ear_tag: true,
+            action: {
+              select: {
+                action_guid: true,
+                actor_guid: true,
+                action_date: true,
+                active_ind: true,
+                action_type_action_xref: {
+                  select: {
+                    action_code_action_type_action_xref_action_codeToaction_code: {
+                      select: {
+                        action_code: true,
+                        short_description: true,
+                        long_description: true,
+                        active_ind: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -1206,98 +1226,10 @@ export class CaseFileService {
       //-- though this may not be the case at a later date
     };
 
-    const _mapWildlifeToCaseFile = (wildlife: any[]): Wildlife[] => {
-      return wildlife.map((item) => {
-        const {
-          wildlife_guid: id,
-          species_code: species,
-          sex_code: sex,
-          age_code: age,
-          threat_level_code: categoryLevel,
-          conflict_history_code: conflictHistory,
-          hwcr_outcome_code: outcome,
-          ear_tag,
-          drug_administered,
-          action,
-        } = item;
-        const record: Wildlife = {
-          id,
-          species,
-          sex,
-          age,
-          categoryLevel,
-          conflictHistory,
-          outcome,
-          tags:
-            ear_tag && ear_tag.length !== 0
-              ? ear_tag.map(({ ear_tag_guid: id, ear_code: ear, ear_tag_identifier: identifier }) => {
-                  return {
-                    id,
-                    ear,
-                    identifier,
-                  };
-                })
-              : [],
-          drugs:
-            drug_administered && drug_administered.length !== 0
-              ? drug_administered.map(
-                  ({
-                    drug_administered_guid: id,
-                    vial_number: vial,
-                    drug_code: drug,
-                    drug_used_amount: amountUsed,
-                    drug_method_code: injectionMethod,
-                    adverse_reaction_text: reactions,
-                    drug_remaining_outcome_code: remainingUse,
-                    drug_discarded_amount: amountDiscarded,
-                    discard_method_text: discardMethod,
-                  }) => {
-                    return {
-                      id,
-                      vial,
-                      drug,
-                      amountUsed,
-                      injectionMethod,
-                      reactions,
-                      remainingUse,
-                      amountDiscarded,
-                      discardMethod,
-                    };
-                  },
-                )
-              : [],
-          actions:
-            action && action.length !== 0
-              ? action.map(
-                  ({
-                    action_guid: actionGuid,
-                    actor_guid: actor,
-                    action_date: date,
-                    action_type_action_xref: xref,
-                  }) => {
-                    //-- the xref contains the action code
-                    const {
-                      action_code_action_type_action_xref_action_codeToaction_code: { action_code: actionCode },
-                    } = xref;
-                    return {
-                      actionGuid,
-                      actor,
-                      actionCode,
-                      date,
-                    };
-                  },
-                )
-              : [],
-        };
-
-        return record;
-      });
-    };
-
     //-- add the wildlife items to the subject if there
     //-- are results to add to the casefile
     if (queryResult.wildlife) {
-      caseFile.subject = _mapWildlifeToCaseFile(queryResult.wildlife);
+      caseFile.subject = await this.getCaseFileSubjects(queryResult);
     }
 
     return caseFile;
@@ -1545,6 +1477,114 @@ export class CaseFileService {
     });
 
     return equipmentDetails;
+  };
+
+  //-- get all of the subjects for the case files, this can be wildlife as well
+  //-- as people <future state>
+  private getCaseFileSubjects = async (query: SubjectQueryResult): Promise<Wildlife[]> => {
+    let result: Array<Wildlife>;
+
+    if (query?.wildlife) {
+      const { wildlife } = query;
+
+      result = wildlife.map((item) => {
+        const {
+          wildlife_guid: id,
+          species_code: species,
+          sex_code: sex,
+          age_code: age,
+          threat_level_code: categoryLevel,
+          conflict_history_code: conflictHistory,
+          hwcr_outcome_code: outcome,
+          ear_tag,
+          drug_administered,
+          action,
+        } = item;
+
+        const tags = ear_tag.map(({ ear_tag_guid: id, ear_code: ear, ear_tag_identifier: identifier }) => {
+          return {
+            id,
+            ear,
+            identifier,
+          };
+        });
+
+        const drugs = drug_administered.map(
+          ({
+            drug_administered_guid: id,
+            vial_number: vial,
+            drug_code: drug,
+            drug_used_amount: amountUsed,
+            drug_method_code: injectionMethod,
+            adverse_reaction_text: reactions,
+            drug_remaining_outcome_code: remainingUse,
+            drug_discarded_amount: amountDiscarded,
+            discard_method_text: discardMethod,
+          }) => {
+            return {
+              id,
+              vial,
+              drug,
+              amountUsed,
+              injectionMethod,
+              reactions,
+              remainingUse,
+              amountDiscarded,
+              discardMethod,
+            };
+          },
+        );
+
+        const actions = action.map(
+          ({ action_guid: actionGuid, actor_guid: actor, action_date: date, action_type_action_xref: xref }) => {
+            //-- the xref contains the action code
+            const {
+              action_code_action_type_action_xref_action_codeToaction_code: {
+                short_description: shortDescription,
+                long_description: longDescription,
+                active_ind: activeIndicator,
+                action_code: actionCode,
+              },
+            } = xref;
+            return {
+              actionGuid,
+              actor,
+              actionCode,
+              date,
+              shortDescription,
+              longDescription,
+              activeIndicator,
+            };
+          },
+        );
+
+        let record: Wildlife = {
+          id,
+          species,
+          sex,
+          age,
+          categoryLevel,
+          conflictHistory,
+          outcome,
+        };
+
+        if (tags && tags.length !== 0) {
+          record = { ...record, tags };
+        }
+
+        if (drugs && drugs.length !== 0) {
+          record = { ...record, drugs };
+        }
+
+        if (actions && actions.length !== 0) {
+          record = { ...record, actions };
+        }
+
+        return record;
+      });
+    }
+
+    return result;
   };
 
   //----------------------

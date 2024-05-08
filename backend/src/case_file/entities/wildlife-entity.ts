@@ -1,3 +1,5 @@
+import { Action } from "./case-action.entity";
+
 export interface Wildlife {
   id: string;
   species: string;
@@ -6,9 +8,9 @@ export interface Wildlife {
   categoryLevel?: string;
   conflictHistory?: string;
   outcome?: string;
-  tags: [];
-  drugs: [];
-  actions: [];
+  tags?: Array<EarTag>;
+  drugs?: Array<DrugUsed>;
+  actions?: Array<Action>;
 }
 
 export interface EarTag {
