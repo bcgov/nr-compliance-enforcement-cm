@@ -1,11 +1,10 @@
-
-import { Module } from '@nestjs/common';
-import { ActionCodeService } from '../action_code/action_code.service';
-import { EquipmentCodeResolver } from './equipment_code.resolver';
-import { PrismaModule } from 'nestjs-prisma';
+import { Module } from "@nestjs/common";
+import { EquipmentCodeResolver } from "./equipment_code.resolver";
+import { PrismaModule } from "nestjs-prisma";
+import { EquipmentCodeService } from "./equipment_code.service";
 
 @Module({
   imports: [PrismaModule],
-  providers: [EquipmentCodeResolver, ActionCodeService],
+  providers: [EquipmentCodeResolver, EquipmentCodeService],
 })
 export class EquipmentCodeModule {}
