@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { PrismaService } from "nestjs-prisma";
 import { CaseFileAction } from "./entities/case_file_action.entity";
 import { ACTION_TYPE_CODES } from "../common/action_type_codes";
@@ -6,6 +6,7 @@ import { ACTION_TYPE_CODES } from "../common/action_type_codes";
 @Injectable()
 export class CaseFileActionService {
   constructor(private prisma: PrismaService) {}
+  private readonly logger = new Logger(CaseFileActionService.name);
 
   async findActionById(actionId?: string) {
     const actionContext = this.prisma.action;
@@ -49,7 +50,7 @@ export class CaseFileActionService {
     return caseFileAction;
   }
 
-  async findActionByXrefIdAndCaseId(caseId?: string, actionXrefGuid?: string) {
+  async findActionByXrefIdAndCaseId(caseId: string, actionXrefGuid?: string) {
     const actionContext = this.prisma.action;
     const actionCodeContext = this.prisma.action_code;
     let caseFileAction: CaseFileAction = {
@@ -77,31 +78,32 @@ export class CaseFileActionService {
         action_date: true,
       },
     });
+    if (queryResult) {
+      let actionCode = await actionCodeContext.findFirst({
+        where: {
+          action_code: queryResult.action_type_action_xref.action_code,
+        },
+        select: {
+          short_description: true,
+          long_description: true,
+        },
+      });
+      caseFileAction.actionId = queryResult.action_guid;
 
-    let actionCode = await actionCodeContext.findFirst({
-      where: {
-        action_code: queryResult.action_type_action_xref.action_code,
-      },
-      select: {
-        short_description: true,
-        long_description: true,
-      },
-    });
-    caseFileAction.actionId = queryResult.action_guid;
-
-    caseFileAction.actionId = queryResult.action_guid;
-    caseFileAction.actor = queryResult.actor_guid;
-    caseFileAction.activeIndicator = queryResult.active_ind;
-    caseFileAction.actionCode = queryResult.action_type_action_xref.action_code;
-    caseFileAction.shortDescription = actionCode.short_description;
-    caseFileAction.longDescription = actionCode.long_description;
-    caseFileAction.actionTypeCode = queryResult.action_type_action_xref.action_type_code;
-    caseFileAction.displayOrder = queryResult.action_type_action_xref.display_order;
-    caseFileAction.date = queryResult.action_date;
-    return caseFileAction;
+      caseFileAction.actionId = queryResult.action_guid;
+      caseFileAction.actor = queryResult.actor_guid;
+      caseFileAction.activeIndicator = queryResult.active_ind;
+      caseFileAction.actionCode = queryResult.action_type_action_xref.action_code;
+      caseFileAction.shortDescription = actionCode.short_description;
+      caseFileAction.longDescription = actionCode.long_description;
+      caseFileAction.actionTypeCode = queryResult.action_type_action_xref.action_type_code;
+      caseFileAction.displayOrder = queryResult.action_type_action_xref.display_order;
+      caseFileAction.date = queryResult.action_date;
+      return caseFileAction;
+    }
   }
 
-  async findActionsByCaseIdAndType(caseId?: string, actionTypeCode?: string) {
+  async findActionsByCaseIdAndType(caseId: string, actionTypeCode?: string) {
     const actionCodeXrefContext = this.prisma.action_type_action_xref;
 
     let xrefResults = await actionCodeXrefContext.findMany({
@@ -122,7 +124,7 @@ export class CaseFileActionService {
     return caseFileActions;
   }
 
-  async findActionByCaseIdAndCaseCode(caseId?: string, actionCaseCode?: string) {
+  async findActionByCaseIdAndCaseCode(caseId: string, actionCaseCode?: string) {
     const actionContext = this.prisma.action;
     const actionCodeContext = this.prisma.action_code;
     const actionCodeXrefContext = this.prisma.action_type_action_xref;
