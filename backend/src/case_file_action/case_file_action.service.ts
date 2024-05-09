@@ -8,7 +8,7 @@ export class CaseFileActionService {
   constructor(private prisma: PrismaService) {}
   private readonly logger = new Logger(CaseFileActionService.name);
 
-  async findActionById(actionId?: string) {
+  async findActionById(actionId: string) {
     const actionContext = this.prisma.action;
     const actionCodeContext = this.prisma.action_code;
 
@@ -50,7 +50,7 @@ export class CaseFileActionService {
     return caseFileAction;
   }
 
-  async findActionByXrefIdAndCaseId(caseId: string, actionXrefGuid?: string) {
+  async findActionByXrefIdAndCaseId(caseId: string, actionXrefGuid: string) {
     const actionContext = this.prisma.action;
     const actionCodeContext = this.prisma.action_code;
     let caseFileAction: CaseFileAction = {
@@ -103,7 +103,7 @@ export class CaseFileActionService {
     }
   }
 
-  async findActionsByCaseIdAndType(caseId: string, actionTypeCode?: string) {
+  async findActionsByCaseIdAndType(caseId: string, actionTypeCode: string) {
     const actionCodeXrefContext = this.prisma.action_type_action_xref;
 
     let xrefResults = await actionCodeXrefContext.findMany({
@@ -126,7 +126,7 @@ export class CaseFileActionService {
     return caseFileActions;
   }
 
-  async findActionByCaseIdAndCaseCode(caseId: string, actionCaseCode?: string) {
+  async findActionByCaseIdAndCaseCode(caseId: string, actionCaseCode: string) {
     const actionContext = this.prisma.action;
     const actionCodeContext = this.prisma.action_code;
     const actionCodeXrefContext = this.prisma.action_type_action_xref;
