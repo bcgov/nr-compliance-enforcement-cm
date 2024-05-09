@@ -23,6 +23,7 @@ import { DrugInput } from "./dto/wildlife/drug-input";
 import { WildlifeAction } from "./dto/wildlife/wildlife-action";
 import { DrugUsed, EarTag, Wildlife } from "./entities/wildlife-entity";
 import { SubjectQueryResult } from "./dto/subject-query-result";
+import { DeleteWildlifeInput } from "./dto/wildlife/delete-wildlife-input";
 
 @Injectable()
 export class CaseFileService {
@@ -1149,6 +1150,9 @@ export class CaseFileService {
           },
         },
         wildlife: {
+          where: {
+            OR: [{ active_ind: true }, { active_ind: null }],
+          },
           select: {
             wildlife_guid: true,
             species_code: true,
@@ -1611,6 +1615,7 @@ export class CaseFileService {
         let record: any = {
           case_file_guid: caseId,
           species_code: species,
+          active_ind: true,
           create_user_id: userId,
           update_user_id: userId,
           create_utc_timestamp: new Date(),
@@ -1803,9 +1808,7 @@ export class CaseFileService {
         }
 
         //-- add wildlife items
-        console.log("DERP");
         const wildlifeId = await _addWildlife(db, caseFileId, wildlife, createUserId);
-        console.log("W_RESULT: ", wildlifeId);
 
         if (wildlifeId) {
           //-- create ear-tags, dru-used and action records
@@ -1813,8 +1816,6 @@ export class CaseFileService {
           await _addDrugsUsed(db, wildlifeId, drugs, createUserId);
           await _applyActions(db, caseFileId, wildlifeId, actions, createUserId);
         }
-
-        console.log("CASE_FILE_ID: ", caseFileId);
       });
 
       result = await this.findOne(caseFileId);
@@ -1822,6 +1823,72 @@ export class CaseFileService {
       return result;
     } catch (error) {
       console.log("exception: unable to wildlife ", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  };
+
+  deleteWildlife = async (input: DeleteWildlifeInput): Promise<CaseFile> => {
+    const { caseIdentifier, wildlifeId, actor, updateUserId: userId } = input;
+    const current = new Date();
+
+    const softDeleteFragment = { active_ind: false, update_user_id: userId, update_utc_timestamp: current };
+    console.log("DELETE WILDLIFE");
+    try {
+      await this.prisma.$transaction(async (db) => {
+        //-- find the wildlife entry to delete
+        const wildlife = await db.wildlife.findUnique({
+          where: {
+            case_file_guid: caseIdentifier,
+            wildlife_guid: wildlifeId,
+          },
+        });
+
+        if (!wildlife) {
+          throw new Error(`Wildlife with ID ${wildlifeId} not found.`);
+        } else {
+          console.log("DELETE WILDLIFE");
+        }
+
+        //-- soft delete ear_tags
+        const tags = await db.ear_tag.findMany({ where: { wildlife_guid: wildlifeId } });
+        if (tags && tags.length !== 0) {
+          await db.ear_tag.updateMany({
+            where: { wildlife_guid: wildlifeId },
+            data: softDeleteFragment,
+          });
+        } else {
+          console.log("NO EAR_TAGS");
+        }
+
+        //-- soft delete drugs_administered
+        const drugs = await db.drug_administered.findMany({ where: { wildlife_guid: wildlifeId } });
+        if (drugs && drugs.length !== 0) {
+          await db.drug_administered.updateMany({
+            where: { wildlife_guid: wildlifeId },
+            data: softDeleteFragment,
+          });
+        } else {
+          console.log("NO DRUGS");
+        }
+
+        //-- soft delete wildlife record
+        await db.wildlife.update({ where: { wildlife_guid: wildlifeId }, data: softDeleteFragment });
+
+        //-- if there are actions perform soft delete
+        const actions = await db.action.findMany({ where: { case_guid: caseIdentifier, wildlife_guid: wildlifeId } });
+        if (actions && actions.length !== 0) {
+          await db.wildlife.updateMany({
+            where: { wildlife_guid: wildlifeId },
+            data: softDeleteFragment,
+          });
+        } else {
+          console.log("NO ACTIONS");
+        }
+      });
+
+      return await this.findOne(caseIdentifier);
+    } catch (error) {
+      console.log("exception: unable to delete supplemental note", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };

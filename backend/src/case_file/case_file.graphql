@@ -146,6 +146,13 @@ input DeleteSupplementalNoteInput {
   actionId: String!
 }
 
+input DeleteWildlifeInput {
+  caseIdentifier: String!
+  wildlifeId: String!
+  actor: String!
+  updateUserId: String!
+}
+
 type EquipmentDetails {
   id: String
   typeCode: String
@@ -300,4 +307,5 @@ type Mutation {
   deleteEquipment(deleteEquipmentInput: DeleteEquipmentInput!): Boolean!
 
   createWildlife(input: CreateWildlifeInput!): CaseFile!
+  deleteWildlife(input: DeleteWildlifeInput!): CaseFile!
 }

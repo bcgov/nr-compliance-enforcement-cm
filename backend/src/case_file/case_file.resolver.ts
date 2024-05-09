@@ -12,6 +12,7 @@ import { UpdateSupplementalNoteInput } from "./dto/supplemental-note/update-supp
 import { DeleteSupplementalNoteInput } from "./dto/supplemental-note/delete-supplemental-note.input";
 import { DeleteEquipmentInput } from "./dto/equipment/delete-equipment.input";
 import { CreateWildlifeInput } from "./dto/wildlife/create-wildlife-input";
+import { DeleteWildlifeInput } from "./dto/wildlife/delete-wildlife-input";
 
 @UseGuards(JwtRoleGuard)
 @Resolver("CaseFile")
@@ -105,7 +106,12 @@ export class CaseFileResolver {
   @Mutation("createWildlife")
   @Roles(Role.COS_OFFICER)
   createWildlife(@Args("input") input: CreateWildlifeInput) {
-    console.log("CREATE_WILDLIEF_INPUT: ", input);
     return this.caseFileService.createWildlife(input);
+  }
+
+  @Mutation("deleteWildlife")
+  @Roles(Role.COS_OFFICER)
+  deleteWildlife(@Args("input") input: DeleteWildlifeInput) {
+    return this.caseFileService.deleteWildlife(input);
   }
 }

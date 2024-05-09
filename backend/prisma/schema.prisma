@@ -374,6 +374,7 @@ model drug_administered {
   create_utc_timestamp                                                                                   DateTime                    @db.Timestamp(6)
   update_user_id                                                                                         String                      @db.VarChar(32)
   update_utc_timestamp                                                                                   DateTime                    @db.Timestamp(6)
+  active_ind                                                                                             Boolean?
   drug_code_drug_administered_drug_codeTodrug_code                                                       drug_code                   @relation("drug_administered_drug_codeTodrug_code", fields: [drug_code], references: [drug_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_drug_administered__drug_code")
   drug_method_code_drug_administered_drug_method_codeTodrug_method_code                                  drug_method_code            @relation("drug_administered_drug_method_codeTodrug_method_code", fields: [drug_method_code], references: [drug_method_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_drug_administered__drug_method_code")
   drug_remaining_outcome_code_drug_administered_drug_remaining_outcome_codeTodrug_remaining_outcome_code drug_remaining_outcome_code @relation("drug_administered_drug_remaining_outcome_codeTodrug_remaining_outcome_code", fields: [drug_remaining_outcome_code], references: [drug_remaining_outcome_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_drug_administered__drug_remaining_outcome_code")
@@ -400,6 +401,7 @@ model ear_tag {
   create_utc_timestamp                DateTime @db.Timestamp(6)
   update_user_id                      String   @db.VarChar(32)
   update_utc_timestamp                DateTime @db.Timestamp(6)
+  active_ind                          Boolean?
   ear_code_ear_tag_ear_codeToear_code ear_code @relation("ear_tag_ear_codeToear_code", fields: [ear_code], references: [ear_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_ear_tag__ear_code")
   wildlife                            wildlife @relation(fields: [wildlife_guid], references: [wildlife_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_ear_tag__wildlife_guid")
 }
@@ -428,6 +430,7 @@ model wildlife {
   create_utc_timestamp                                                        DateTime               @db.Timestamp(6)
   update_user_id                                                              String                 @db.VarChar(32)
   update_utc_timestamp                                                        DateTime               @db.Timestamp(6)
+  active_ind                                                                  Boolean?
   action                                                                      action[]
   drug_administered                                                           drug_administered[]
   ear_tag                                                                     ear_tag[]
