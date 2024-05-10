@@ -24,6 +24,7 @@ import { WildlifeAction } from "./dto/wildlife/wildlife-action";
 import { DrugUsed, EarTag, Wildlife } from "./entities/wildlife-entity";
 import { SubjectQueryResult } from "./dto/subject-query-result";
 import { DeleteWildlifeInput } from "./dto/wildlife/delete-wildlife-input";
+import { UpdateWildlifeInput } from "./dto/wildlife/update-wildlife-input";
 
 @Injectable()
 export class CaseFileService {
@@ -1827,8 +1828,12 @@ export class CaseFileService {
     }
   };
 
-  deleteWildlife = async (input: DeleteWildlifeInput): Promise<CaseFile> => {
-    const { caseIdentifier, wildlifeId, actor, updateUserId: userId } = input;
+  updateWildlife = async (model: UpdateWildlifeInput): Promise<CaseFile> => {
+    throw new Error("Method not implemented.");
+  };
+
+  deleteWildlife = async (model: DeleteWildlifeInput): Promise<CaseFile> => {
+    const { caseIdentifier, wildlifeId, actor, updateUserId: userId } = model;
     const current = new Date();
 
     const softDeleteFragment = { active_ind: false, update_user_id: userId, update_utc_timestamp: current };

@@ -211,6 +211,14 @@ input CreateWildlifeInput {
   wildlife: WildlifeInput!
 }
 
+input UpdateWildlifeInput {
+  caseIdentifier: String!
+  agencyCode: String!
+  caseCode: String!
+  updateUserId: String!
+  wildlife: WildlifeInput!
+}
+
 input WildlifeInput {
   id: String
   species: String!
@@ -307,5 +315,6 @@ type Mutation {
   deleteEquipment(deleteEquipmentInput: DeleteEquipmentInput!): Boolean!
 
   createWildlife(input: CreateWildlifeInput!): CaseFile!
+  updateWildlife(input: UpdateWildlifeInput!): CaseFile!
   deleteWildlife(input: DeleteWildlifeInput!): CaseFile!
 }
