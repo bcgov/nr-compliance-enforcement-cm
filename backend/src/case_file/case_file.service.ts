@@ -1138,7 +1138,19 @@ export class CaseFileService {
             },
           },
           where: {
-            active_ind: true,
+            //In front-end for complaint assessment, we need an officer name. But it is only stored in an action record.
+            //If we only retrieve active records, we cannot get the officer name when no action were required
+            //Because of that for assessment we need both active and inactive actions.
+            OR: [
+              { active_ind: true },
+              {
+                action_type_action_xref: {
+                  action_type_code_action_type_action_xref_action_type_codeToaction_type_code: {
+                    action_type_code: "COMPASSESS",
+                  },
+                },
+              },
+            ],
           },
         },
       },
