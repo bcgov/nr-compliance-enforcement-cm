@@ -37,20 +37,15 @@ export class ActionCodeService {
         },
       },
     });
-    let actions = [];
 
-    queryResult.forEach((record) => {
-      actions.push(
-        Object.assign({
-          actionTypeCode: actionTypeCode,
-          actionCode: record.action_code,
-          displayOrder: record.display_order,
-          activeIndicator: record.active_ind,
-          shortDescription: record.action_code_action_type_action_xref_action_codeToaction_code.short_description,
-          longDescription: record.action_code_action_type_action_xref_action_codeToaction_code.long_description,
-        }),
-      );
-    });
+    const actions = queryResult.map((record) => ({
+      actionTypeCode: actionTypeCode,
+      actionCode: record.action_code,
+      displayOrder: record.display_order,
+      activeIndicator: record.active_ind,
+      shortDescription: record.action_code_action_type_action_xref_action_codeToaction_code.short_description,
+      longDescription: record.action_code_action_type_action_xref_action_codeToaction_code.long_description,
+    }));
 
     return actions;
   }
