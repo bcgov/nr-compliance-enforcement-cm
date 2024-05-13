@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "nestjs-prisma";
-import { HWCRAssessmentAction } from "./entities/hwcr_assessment_action.entity";
+import { CaseFileAction } from "../case_file_action/entities/case_file_action.entity";
 
 @Injectable()
 export class HWCRAssessmentActionService {
@@ -44,11 +44,11 @@ export class HWCRAssessmentActionService {
         },
       });
     }
-    let actionCodes: Array<HWCRAssessmentAction> = [];
+    let actionCodes: Array<CaseFileAction> = [];
 
     queryResult.forEach((record) => {
       actionCodes.push(
-        Object.assign(new HWCRAssessmentAction(), {
+        Object.assign(new CaseFileAction(), {
           actionTypeCode: record.action_type_code,
           actionCode: record.action_code,
           displayOrder: record.display_order,

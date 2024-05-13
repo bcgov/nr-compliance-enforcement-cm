@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "nestjs-prisma";
-import { HWCRPreventionAction } from "./entities/hwcr_prevention_action.entity";
+import { CaseFileAction } from "../case_file_action/entities/case_file_action.entity";
 
 @Injectable()
 export class HWCRPreventionActionService {
@@ -47,11 +47,11 @@ export class HWCRPreventionActionService {
         },
       });
     }
-    let actionCodes: Array<HWCRPreventionAction> = [];
+    let actionCodes: Array<CaseFileAction> = [];
 
     queryResult.forEach((record) => {
       actionCodes.push(
-        Object.assign(new HWCRPreventionAction(), {
+        Object.assign(new CaseFileAction(), {
           actionTypeCode: record.action_type_code,
           actionCode: record.action_code,
           displayOrder: record.display_order,

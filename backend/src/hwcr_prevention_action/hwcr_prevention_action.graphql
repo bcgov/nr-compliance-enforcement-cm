@@ -1,12 +1,3 @@
-type HWCRPreventionAction {
-  actionTypeCode: String!
-  actionCode: String!
-  displayOrder: Int
-  activeIndicator: Boolean
-  shortDescription: String!
-  longDescription: String!
-}
-
 type Query {
-  HWCRPreventionActions: [HWCRPreventionAction]!
+  HWCRPreventionActions: [CaseFileAction]!
 }
