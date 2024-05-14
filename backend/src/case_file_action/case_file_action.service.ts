@@ -84,24 +84,29 @@ export class CaseFileActionService {
   async findActionsByCaseIdAndType(caseId: string, actionTypeCode: string) {
     const actionCodeXrefContext = this.prisma.action_type_action_xref;
 
-    let xrefResults = await actionCodeXrefContext.findMany({
-      where: {
-        action_type_code: actionTypeCode,
-      },
-      select: {
-        action_type_action_xref_guid: true,
-      },
-    });
+    try {
+      let xrefResults = await actionCodeXrefContext.findMany({
+        where: {
+          action_type_code: actionTypeCode,
+        },
+        select: {
+          action_type_action_xref_guid: true,
+        },
+      });
 
-    let caseFileActions: CaseFileAction[] = new Array();
+      let caseFileActions: CaseFileAction[] = new Array();
 
-    for await (const xrefResult of xrefResults) {
-      const caseFileAction = await this.findActionByXrefIdAndCaseId(caseId, xrefResult.action_type_action_xref_guid);
-      if (caseFileAction) {
-        caseFileActions.push(caseFileAction);
+      for await (const xrefResult of xrefResults) {
+        const caseFileAction = await this.findActionByXrefIdAndCaseId(caseId, xrefResult.action_type_action_xref_guid);
+        if (caseFileAction) {
+          caseFileActions.push(caseFileAction);
+        }
       }
+
+      return caseFileActions;
+    } catch (exception) {
+      throw new GraphQLError("Exception occurred. See server log for details", {});
     }
-    return caseFileActions;
   }
 
   //Used to return the all the actions of a given code for a specific case
