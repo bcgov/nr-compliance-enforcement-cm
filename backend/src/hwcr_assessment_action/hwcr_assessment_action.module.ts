@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
-import { HWCRAssessmentActionResolver } from "./hwcr_assessment_action.resolver";
-import { HWCRAssessmentActionService } from "./hwcr_assessment_action.service";
 import { PrismaModule } from "nestjs-prisma";
+import { HWCRAssessmentActionResolver } from "./hwcr_assessment_action.resolver";
+import { ActionCodeService } from "../action_code/action_code.service";
 
 @Module({
   imports: [PrismaModule],
-  providers: [HWCRAssessmentActionResolver, HWCRAssessmentActionService],
+  providers: [HWCRAssessmentActionResolver, ActionCodeService],
 })
 export class HWCRAssessmentActionModule {}

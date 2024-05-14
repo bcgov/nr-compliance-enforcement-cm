@@ -1,18 +1,20 @@
-import { Resolver, Query, Mutation, Args } from "@nestjs/graphql";
-import { HWCRAssessmentActionService } from "./hwcr_assessment_action.service";
+
+import { Resolver, Query, Args } from '@nestjs/graphql';
 import { JwtRoleGuard } from "../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
 import { Role } from "../enum/role.enum";
 import { Roles } from "../auth/decorators/roles.decorator";
+import { ActionCodeService } from '../action_code/action_code.service';
+import { ACTION_TYPE_CODES } from '../common/action_type_codes';
 
 @UseGuards(JwtRoleGuard)
 @Resolver("HWCRAssessmentAction")
 export class HWCRAssessmentActionResolver {
-  constructor(private readonly HWCRAssessmentActionService: HWCRAssessmentActionService) {}
+  constructor(private readonly actionCodeService: ActionCodeService) { }
 
   @Query("HWCRAssessmentActions")
   @Roles(Role.COS_OFFICER)
-  find(@Args("actionTypeCode") actionTypeCode?: string) {
-    return this.HWCRAssessmentActionService.find(actionTypeCode);
+  find() {
+    return this.actionCodeService.findAllCodesByType(ACTION_TYPE_CODES.COMPASSESS);
   }
 }
