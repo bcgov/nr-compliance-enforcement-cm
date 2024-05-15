@@ -51,7 +51,7 @@ type Wildlife {
   outcome: String
   tags: [EarTag]
   drugs: [Drug]
-  actions: [Action]
+  actions: [CaseFileAction]
 }
 
 type EarTag {

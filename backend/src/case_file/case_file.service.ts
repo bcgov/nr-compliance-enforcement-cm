@@ -343,6 +343,23 @@ export class CaseFileService {
     return caseFile;
   };
 
+  async findOneByLeadId(leadIdentifier: string) {
+    let caseFileOutput: CaseFile = new CaseFile();
+    const caseIdRecord = await this.prisma.lead.findFirst({
+      where: {
+        lead_identifier: leadIdentifier,
+      },
+      select: {
+        case_identifier: true,
+      },
+    });
+    if (caseIdRecord?.case_identifier) {
+      caseFileOutput = await this.findOne(caseIdRecord.case_identifier);
+    }
+
+    return caseFileOutput;
+  }
+
   async updateAssessment(caseIdentifier: string, updateAssessmentInput: UpdateAssessmentInput) {
     let caseFileOutput: CaseFile;
 
@@ -1393,7 +1410,7 @@ export class CaseFileService {
         );
 
         const actions = action.map(
-          ({ action_guid: actionGuid, actor_guid: actor, action_date: date, action_type_action_xref: xref }) => {
+          ({ action_guid: actionId, actor_guid: actor, action_date: date, action_type_action_xref: xref }) => {
             //-- the xref contains the action code
             const {
               action_code_action_type_action_xref_action_codeToaction_code: {
@@ -1404,13 +1421,13 @@ export class CaseFileService {
               },
             } = xref;
             return {
-              actionGuid,
+              actionId,
               actor,
+              activeIndicator,
               actionCode,
               date,
               shortDescription,
               longDescription,
-              activeIndicator,
             };
           },
         );

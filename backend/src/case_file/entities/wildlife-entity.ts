@@ -1,4 +1,4 @@
-import { Action } from "./case-action.entity";
+import { CaseFileAction } from "../../case_file_action/entities/case_file_action.entity";
 
 export interface Wildlife {
   id: string;
@@ -10,7 +10,7 @@ export interface Wildlife {
   outcome?: string;
   tags?: Array<EarTag>;
   drugs?: Array<DrugUsed>;
-  actions?: Array<Action>;
+  actions?: Array<CaseFileAction>;
 }
 
 export interface EarTag {
