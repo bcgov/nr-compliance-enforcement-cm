@@ -242,7 +242,7 @@ export class CaseFileService {
         },
         wildlife: {
           where: {
-            OR: [{ active_ind: true }, { active_ind: null }],
+            active_ind: true,
           },
           select: {
             wildlife_guid: true,
@@ -252,9 +252,20 @@ export class CaseFileService {
             conflict_history_code: true,
             threat_level_code: true,
             hwcr_outcome_code: true,
-            drug_administered: true,
-            ear_tag: true,
+            drug_administered: {
+              where: {
+                active_ind: true,
+              },
+            },
+            ear_tag: {
+              where: {
+                active_ind: true,
+              },
+            },
             action: {
+              where: {
+                active_ind: true,
+              },
               select: {
                 action_guid: true,
                 actor_guid: true,
@@ -337,7 +348,7 @@ export class CaseFileService {
     //-- add the wildlife items to the subject if there
     //-- are results to add to the casefile
     if (queryResult.wildlife) {
-      caseFile.subject = await this.getCaseFileSubjects(queryResult);
+      caseFile.subject = await this._getCaseFileSubjects(queryResult);
     }
 
     return caseFile;
