@@ -1,42 +1,5 @@
 scalar Date
 
-type CaseFile {
-  caseIdentifier: String
-  leadIdentifier: String
-  assessmentDetails: Assessment
-  preventionDetails: Prevention
-  note: Note
-  equipment: [EquipmentDetails]
-  isReviewRequired: Boolean
-  reviewComplete: ReviewCompleteAction
-}
-
-type ReviewCompleteAction {
-  actor: String!
-  date: Date!
-  actionCode: String!
-  actionId: String
-}
-
-type Assessment {
-  actionNotRequired: Boolean
-  actionJustificationCode: String
-  actionJustificationShortDescription: String
-  actionJustificationLongDescription: String
-  actionJustificationActiveIndicator: Boolean
-  actions: [Action]
-}
-
-type Action {
-  actionGuid: String
-  actor: String!
-  date: Date!
-  actionCode: String!
-  shortDescription: String
-  longDescription: String
-  activeIndicator: Boolean
-}
-
 input CreateAssessmentInput {
   leadIdentifier: String
   assessmentDetails: AssessmentDetailsInput!
@@ -65,10 +28,6 @@ input UpdateAssessmentInput {
   agencyCode: String!
   caseCode: String!
   updateUserId: String!
-}
-
-type Prevention {
-  actions: [Action]
 }
 
 input CreatePreventionInput {
@@ -116,11 +75,6 @@ input ReviewActionInput {
   actionId: String
 }
 
-type Note {
-  note: String!
-  action: Action!
-}
-
 input CreateSupplementalNoteInput {
   leadIdentifier: String!
   note: String!
@@ -143,17 +97,6 @@ input DeleteSupplementalNoteInput {
   actor: String!
   updateUserId: String!
   actionId: String!
-}
-
-type EquipmentDetails {
-  id: String
-  typeCode: String
-  activeIndicator: Boolean
-  address: String
-  xCoordinate: String
-  yCoordinate: String
-  createDate: Date
-  actions: [Action]
 }
 
 input CreateEquipmentInput {
@@ -193,28 +136,4 @@ input EquipmentActionInput {
   actor: String
   activeIndicator: Boolean
   actionCode: String
-}
-
-type Query {
-  getCaseFile(caseIdentifier: String!): CaseFile
-  getCaseFileByLeadId(leadIdentifier: String!): CaseFile
-}
-
-type Mutation {
-  createAssessment(createAssessmentInput: CreateAssessmentInput!): CaseFile!
-  updateAssessment(updateAssessmentInput: UpdateAssessmentInput!): CaseFile!
-
-  createPrevention(createPreventionInput: CreatePreventionInput!): CaseFile!
-  updatePrevention(updatePreventionInput: UpdatePreventionInput!): CaseFile!
-
-  createReview(reviewInput: ReviewInput!): CaseFile!
-  updateReview(reviewInput: ReviewInput!): CaseFile!
-
-  createNote(input: CreateSupplementalNoteInput!): CaseFile!
-  updateNote(input: UpdateSupplementalNoteInput!): CaseFile!
-  deleteNote(input: DeleteSupplementalNoteInput!): CaseFile!
-
-  createEquipment(createEquipmentInput: CreateEquipmentInput!): CaseFile!
-  updateEquipment(updateEquipmentInput: UpdateEquipmentInput!): CaseFile!
-  deleteEquipment(deleteEquipmentInput: DeleteEquipmentInput!): Boolean!
 }

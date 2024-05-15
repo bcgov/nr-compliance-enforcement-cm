@@ -1,0 +1,41 @@
+scalar Date
+
+type CaseFile {
+  caseIdentifier: String
+  leadIdentifier: String
+  assessmentDetails: Assessment
+  preventionDetails: Prevention
+  note: Note
+  equipment: [EquipmentDetails]
+  isReviewRequired: Boolean
+  reviewComplete: CaseFileAction
+}
+
+type Assessment {
+  actionNotRequired: Boolean
+  actionJustificationCode: String
+  actionJustificationShortDescription: String
+  actionJustificationLongDescription: String
+  actionJustificationActiveIndicator: Boolean
+  actions: [CaseFileAction]
+}
+
+type Prevention {
+  actions: [CaseFileAction]
+}
+
+type Note {
+  note: String!
+  action: CaseFileAction!
+}
+
+type EquipmentDetails {
+  id: String
+  typeCode: String
+  activeIndicator: Boolean
+  address: String
+  xCoordinate: String
+  yCoordinate: String
+  createDate: Date
+  actions: [CaseFileAction]
+}
