@@ -1152,7 +1152,7 @@ export class CaseFileService {
         },
         wildlife: {
           where: {
-            OR: [{ active_ind: true }, { active_ind: null }],
+            active_ind: true,
           },
           select: {
             wildlife_guid: true,
@@ -1162,9 +1162,20 @@ export class CaseFileService {
             conflict_history_code: true,
             threat_level_code: true,
             hwcr_outcome_code: true,
-            drug_administered: true,
-            ear_tag: true,
+            drug_administered: {
+              where: {
+                active_ind: true,
+              },
+            },
+            ear_tag: {
+              where: {
+                active_ind: true,
+              },
+            },
             action: {
+              where: {
+                active_ind: true,
+              },
               select: {
                 action_guid: true,
                 actor_guid: true,
@@ -1234,7 +1245,7 @@ export class CaseFileService {
     //-- add the wildlife items to the subject if there
     //-- are results to add to the casefile
     if (queryResult.wildlife) {
-      caseFile.subject = await this.getCaseFileSubjects(queryResult);
+      caseFile.subject = await this._getCaseFileSubjects(queryResult);
     }
 
     return caseFile;
@@ -1486,7 +1497,7 @@ export class CaseFileService {
 
   //-- get all of the subjects for the case files, this can be wildlife as well
   //-- as people <future state>
-  private getCaseFileSubjects = async (query: SubjectQueryResult): Promise<Wildlife[]> => {
+  private _getCaseFileSubjects = async (query: SubjectQueryResult): Promise<Wildlife[]> => {
     let result: Array<Wildlife>;
 
     if (query?.wildlife) {
@@ -1672,6 +1683,7 @@ export class CaseFileService {
               wildlife_guid: wildlifeId,
               ear_code: ear,
               ear_tag_identifier: identifier,
+              active_ind: true,
               create_user_id: userId,
               update_user_id: userId,
               create_utc_timestamp: new Date(),
@@ -1723,6 +1735,7 @@ export class CaseFileService {
                 drug_discarded_amount,
                 discard_method_text,
                 adverse_reaction_text,
+                active_ind: true,
                 create_user_id: userId,
                 update_user_id: userId,
                 create_utc_timestamp: new Date(),
@@ -1764,11 +1777,8 @@ export class CaseFileService {
             },
           });
 
-          console.log("XREFS: ", xrefs);
-          console.log("ACTIONS: ", actions);
           const records = actions.map(({ actor: actor_guid, date: action_date, action }) => {
             const xref = xrefs.find((item) => item.action_code === action);
-            console.log("XREF: ", xref);
 
             return {
               case_guid: caseId,
@@ -1823,13 +1833,524 @@ export class CaseFileService {
 
       return result;
     } catch (error) {
-      console.log("exception: unable to wildlife ", error);
+      console.log("exception: unable to create wildlife ", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };
 
   updateWildlife = async (model: UpdateWildlifeInput): Promise<CaseFile> => {
-    throw new Error("Method not implemented.");
+    const { caseIdentifier, updateUserId, wildlife } = model;
+    const { id: wildlifeId } = wildlife;
+
+    let result: CaseFile;
+    const current = new Date();
+
+    //--
+    //-- apply updates to the base wildlife record
+    //--
+    const _updateWildlife = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      input: WildlifeInput,
+      userId: string,
+      date: Date,
+    ) => {
+      try {
+        const { id, species, sex, age, categoryLevel, conflictHistory, outcome } = input;
+
+        //-- create a new data record to update based on the input provided
+        let data = {
+          species_code: species,
+          sex_code: sex || null,
+          age_code: age || null,
+          threat_level_code: categoryLevel || null,
+          conflict_history_code: conflictHistory || null,
+          hwcr_outcome_code: outcome || null,
+          update_user_id: userId,
+          update_utc_timestamp: date,
+        };
+
+        const result = await db.wildlife.update({
+          where: { wildlife_guid: id },
+          data,
+        });
+
+        return result;
+      } catch (error) {
+        console.log(`exception: unable to update wildlife record: ${wildlifeId}`, error);
+        throw new GraphQLError("Exception occurred. See server log for details", {});
+      }
+    };
+
+    //--
+    //-- add, delete and update any ear-tags
+    //--
+    const _upsertEarTags = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      wildlifeId: string,
+      tags: Array<EarTagInput>,
+      userId: string,
+      date: Date,
+    ) => {
+      try {
+        const current = await db.ear_tag.findMany({
+          where: {
+            wildlife_guid: wildlifeId,
+            active_ind: true,
+          },
+        });
+
+        //-- if there are no ear-tags add them
+        if (!current || (current.length === 0 && tags && tags.length !== 0)) {
+          const newTags = tags.map(({ ear: ear_code, identifier: ear_tag_identifier }) => {
+            return {
+              wildlife_guid: wildlifeId,
+              ear_code,
+              ear_tag_identifier,
+              active_ind: true,
+              create_user_id: userId,
+              update_user_id: userId,
+              create_utc_timestamp: date,
+              update_utc_timestamp: date,
+            };
+          });
+
+          await db.ear_tag.createMany({ data: newTags });
+        } else if (current && current.length !== 0 && tags && tags.length !== 0) {
+          let updates = [];
+          let remove = [];
+          let add = [];
+
+          tags.forEach((tag) => {
+            const { id } = tag;
+            if (current.find((item) => item.ear_tag_guid === id)) {
+              updates = [...updates, tag];
+            } else if (!current.find((item) => item.ear_tag_guid === id)) {
+              add = [...add, tag];
+            }
+          });
+
+          current.forEach((tag) => {
+            const { ear_tag_guid: id } = tag;
+            if (!tags.find((item) => item.id === id)) {
+              remove = [...remove, tag];
+            }
+          });
+
+          if (updates.length !== 0) {
+            updates.forEach(async ({ id, ear, identifier }) => {
+              await db.ear_tag.update({
+                where: {
+                  ear_tag_guid: id,
+                },
+                data: {
+                  ear_code: ear,
+                  ear_tag_identifier: identifier,
+                  update_user_id: userId,
+                  update_utc_timestamp: date,
+                },
+              });
+            });
+          }
+
+          if (remove.length !== 0) {
+            remove.forEach(async ({ ear_tag_guid }) => {
+              await db.ear_tag.update({
+                where: {
+                  ear_tag_guid,
+                },
+                data: {
+                  active_ind: false,
+                  update_user_id: userId,
+                  update_utc_timestamp: date,
+                },
+              });
+            });
+          }
+
+          if (add.length !== 0) {
+            const newTags = add.map(({ ear: ear_code, identifier: ear_tag_identifier }) => {
+              return {
+                wildlife_guid: wildlifeId,
+                ear_code,
+                ear_tag_identifier,
+                active_ind: true,
+                create_user_id: userId,
+                update_user_id: userId,
+                create_utc_timestamp: date,
+                update_utc_timestamp: date,
+              };
+            });
+
+            await db.ear_tag.createMany({ data: newTags });
+          }
+        } else if (current && current.length !== 0 && tags && tags.length === 0) {
+          //-- remove any tags that are currently on the wildlife record
+          await db.ear_tag.updateMany({
+            where: {
+              wildlife_guid: wildlifeId,
+            },
+            data: {
+              active_ind: false,
+              update_user_id: userId,
+              update_utc_timestamp: date,
+            },
+          });
+        }
+      } catch (error) {
+        console.log(`exception: unable to update ear-tags for wildlife record: ${wildlifeId}`, error);
+        throw new GraphQLError("Exception occurred. See server log for details", {});
+      }
+    };
+
+    //--
+    //-- add, delete and update any drugs administered
+    //--
+    const _upsertDrugs = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      wildlifeId: string,
+      drugs: Array<DrugInput>,
+      userId: string,
+      date: Date,
+    ) => {
+      try {
+        const current = await db.drug_administered.findMany({
+          where: {
+            wildlife_guid: wildlifeId,
+            active_ind: true,
+          },
+        });
+
+        if (!current || (current.length === 0 && drugs && drugs.length !== 0)) {
+          const newDrugs = drugs.map(
+            ({
+              vial: vial_number,
+              drug: drug_code,
+              amountUsed: drug_used_amount,
+              amountDiscarded: drug_discarded_amount,
+              injectionMethod: drug_method_code,
+              reactions: adverse_reaction_text,
+              remainingUse: drug_remaining_outcome_code,
+              discardMethod: discard_method_text,
+            }) => {
+              return {
+                wildlife_guid: wildlifeId,
+
+                vial_number,
+                drug_code,
+                drug_used_amount,
+                drug_method_code,
+                adverse_reaction_text,
+                drug_remaining_outcome_code,
+                drug_discarded_amount,
+                discard_method_text,
+
+                active_ind: true,
+                create_user_id: userId,
+                update_user_id: userId,
+                create_utc_timestamp: date,
+                update_utc_timestamp: date,
+              };
+            },
+          );
+
+          await db.drug_administered.createMany({ data: newDrugs });
+        } else if (current && current.length !== 0 && drugs && drugs.length !== 0) {
+          let updates = [];
+          let remove = [];
+          let add = [];
+
+          //-- get find new, updatebale, and deletable drugs
+          drugs.forEach((drug) => {
+            const { id } = drug;
+            if (current.find((item) => item.drug_administered_guid === id)) {
+              updates = [...updates, drug];
+            } else if (!current.find((item) => item.drug_administered_guid === id)) {
+              add = [...add, drug];
+            }
+          });
+
+          current.forEach((tag) => {
+            const { drug_administered_guid: id } = tag;
+            if (!drugs.find((item) => item.id === id)) {
+              remove = [...remove, tag];
+            }
+          });
+
+          //-- apply changes
+          if (updates.length !== 0) {
+            updates.forEach(
+              async ({
+                id,
+                vial: vial_number,
+                drug: drug_code,
+                amountUsed: drug_used_amount,
+                injectionMethod: drug_method_code,
+                discardMethod: discard_method_text,
+                reactions: adverse_reaction_text,
+                amountDiscarded: drug_discarded_amount,
+                remainingUse: drug_remaining_outcome_code,
+              }) => {
+                await db.drug_administered.update({
+                  where: {
+                    drug_administered_guid: id,
+                  },
+                  data: {
+                    vial_number,
+                    drug_code,
+                    drug_method_code,
+                    drug_remaining_outcome_code,
+                    drug_used_amount,
+                    drug_discarded_amount,
+                    discard_method_text,
+                    adverse_reaction_text,
+                    update_user_id: userId,
+                    update_utc_timestamp: date,
+                  },
+                });
+              },
+            );
+          }
+
+          if (remove.length !== 0) {
+            remove.forEach(async ({ drug_administered_guid }) => {
+              await db.drug_administered.update({
+                where: {
+                  drug_administered_guid,
+                },
+                data: {
+                  active_ind: false,
+                  update_user_id: userId,
+                  update_utc_timestamp: date,
+                },
+              });
+            });
+          }
+
+          if (add.length !== 0) {
+            const newDrugs = add.map(
+              ({
+                vial: vial_number,
+                drug: drug_code,
+                amountUsed: drug_used_amount,
+                injectionMethod: drug_method_code,
+                reactions: adverse_reaction_text,
+                remainingUse: drug_remaining_outcome_code,
+                amountDiscarded: drug_discarded_amount,
+                discardMethod: discard_method_text,
+              }) => {
+                return {
+                  wildlife_guid: wildlifeId,
+
+                  vial_number,
+                  drug_code,
+                  drug_used_amount,
+                  drug_method_code,
+                  adverse_reaction_text,
+                  drug_remaining_outcome_code,
+                  drug_discarded_amount,
+                  discard_method_text,
+
+                  active_ind: true,
+                  create_user_id: userId,
+                  update_user_id: userId,
+                  create_utc_timestamp: date,
+                  update_utc_timestamp: date,
+                };
+              },
+            );
+
+            await db.drug_administered.createMany({ data: newDrugs });
+          }
+        } else if (current && current.length !== 0 && drugs && drugs.length === 0) {
+          //-- remove any tags that are currently on the wildlife record
+          await db.drug_administered.updateMany({
+            where: {
+              wildlife_guid: wildlifeId,
+            },
+            data: {
+              active_ind: false,
+              update_user_id: userId,
+              update_utc_timestamp: date,
+            },
+          });
+        }
+      } catch (error) {}
+    };
+
+    //--
+    //-- update the actions for the seelcted wildlife
+    //-- record, depending on the drugs and outcome
+    //-- actions may need to be updated, removed, or added
+    //--
+    const _upsertActions = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      caseIdentifier: string,
+      wildlifeId: string,
+      actions: Array<WildlifeAction>,
+      userId: string,
+      date: Date,
+    ) => {
+      try {
+        const xrefs = await db.action_type_action_xref.findMany({
+          where: {
+            action_type_code: ACTION_TYPE_CODES.WILDLIFE,
+          },
+          select: {
+            action_type_action_xref_guid: true,
+            action_code: true,
+          },
+        });
+
+        const current = await db.action.findMany({
+          where: {
+            wildlife_guid: wildlifeId,
+            active_ind: true,
+          },
+        });
+
+        if (!current || (current.length === 0 && actions && actions.length !== 0)) {
+          //-- add new actions
+          const items = actions.map(({ actor: actor_guid, date: action_date, action }) => {
+            const xref = xrefs.find((item) => item.action_code === action);
+
+            return {
+              case_guid: caseIdentifier,
+              wildlife_guid: wildlifeId,
+              action_type_action_xref_guid: xref.action_type_action_xref_guid,
+              actor_guid,
+              action_date,
+              active_ind: true,
+              create_user_id: userId,
+              update_user_id: userId,
+              create_utc_timestamp: new Date(),
+              update_utc_timestamp: new Date(),
+            };
+          });
+
+          await db.action.createMany({ data: items });
+        } else if (current && current.length !== 0 && actions && actions.length !== 0) {
+          //-- check for updates, new actions, and removed actions
+          let updates = [];
+          let remove = [];
+          let add = [];
+
+          actions.forEach((action) => {
+            const { id } = action;
+            if (current.find((item) => item.action_guid === id)) {
+              updates = [...updates, action];
+            } else if (!current.find((item) => item.action_guid === id)) {
+              add = [...add, action];
+            }
+          });
+
+          current.forEach((action) => {
+            const { action_guid: id } = action;
+            if (!actions.find((item) => item.id === id)) {
+              remove = [...remove, action];
+            }
+          });
+
+          if (updates.length !== 0) {
+            updates.forEach(async ({ id, actor: actor_guid, date: action_date, action, activeIndicator }) => {
+              await db.action.update({
+                where: {
+                  action_guid: id,
+                },
+                data: {
+                  actor_guid,
+                  action_date,
+                  active_ind: true,
+                  update_user_id: userId,
+                  update_utc_timestamp: date,
+                },
+              });
+            });
+          }
+
+          if (remove.length !== 0) {
+            remove.forEach(async ({ action_guid }) => {
+              await db.action.update({
+                where: {
+                  action_guid,
+                },
+                data: {
+                  active_ind: false,
+                  update_user_id: userId,
+                  update_utc_timestamp: date,
+                },
+              });
+            });
+          }
+
+          if (add.length !== 0) {
+            const items = add.map(({ actor: actor_guid, date: action_date, action }) => {
+              const xref = xrefs.find((item) => item.action_code === action);
+
+              return {
+                case_guid: caseIdentifier,
+                wildlife_guid: wildlifeId,
+                action_type_action_xref_guid: xref.action_type_action_xref_guid,
+                actor_guid,
+                action_date,
+                active_ind: true,
+                create_user_id: userId,
+                update_user_id: userId,
+                create_utc_timestamp: new Date(),
+                update_utc_timestamp: new Date(),
+              };
+            });
+            await db.action.createMany({ data: items });
+          }
+        }
+      } catch (error) {}
+    };
+
+    try {
+      await this.prisma.$transaction(async (db) => {
+        //-- find the wildlife record first, if there is a record,
+        //-- apply updates to it
+        const source = await db.wildlife.findUnique({
+          where: {
+            case_file_guid: caseIdentifier,
+            wildlife_guid: wildlifeId,
+          },
+        });
+
+        if (source) {
+          //-- apply any changes to the wildlife record first
+          let wildlifeUpdate = await _updateWildlife(db, wildlife, updateUserId, current);
+
+          //-- if the wildlife record was updated start applying the remainder of the
+          //-- updates, make sure to remove items as needed
+          if (wildlifeUpdate) {
+            const { tags, drugs, actions } = wildlife;
+
+            const tagsResult = await _upsertEarTags(db, wildlifeId, tags, updateUserId, current);
+            const drugsResult = await _upsertDrugs(db, wildlifeId, drugs, updateUserId, current);
+            const actionsResult = await _upsertActions(db, caseIdentifier, wildlifeId, actions, updateUserId, current);
+          }
+        }
+      });
+
+      result = await this.findOne(caseIdentifier);
+
+      return result;
+    } catch (error) {
+      console.log("exception: unable to update wildlife ", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
   };
 
   deleteWildlife = async (model: DeleteWildlifeInput): Promise<CaseFile> => {
@@ -1850,8 +2371,6 @@ export class CaseFileService {
 
         if (!wildlife) {
           throw new Error(`Wildlife with ID ${wildlifeId} not found.`);
-        } else {
-          console.log("DELETE WILDLIFE");
         }
 
         //-- soft delete ear_tags
@@ -1861,8 +2380,6 @@ export class CaseFileService {
             where: { wildlife_guid: wildlifeId },
             data: softDeleteFragment,
           });
-        } else {
-          console.log("NO EAR_TAGS");
         }
 
         //-- soft delete drugs_administered
@@ -1872,8 +2389,6 @@ export class CaseFileService {
             where: { wildlife_guid: wildlifeId },
             data: softDeleteFragment,
           });
-        } else {
-          console.log("NO DRUGS");
         }
 
         //-- soft delete wildlife record
@@ -1886,14 +2401,12 @@ export class CaseFileService {
             where: { wildlife_guid: wildlifeId },
             data: softDeleteFragment,
           });
-        } else {
-          console.log("NO ACTIONS");
         }
       });
 
       return await this.findOne(caseIdentifier);
     } catch (error) {
-      console.log("exception: unable to delete supplemental note", error);
+      console.log("exception: unable to delete wildlife", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };

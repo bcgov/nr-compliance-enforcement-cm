@@ -1,5 +1,5 @@
 export interface DrugInput {
-  id?: number;
+  id?: string;
 
   vial: string;
   drug: string;

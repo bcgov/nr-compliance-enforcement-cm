@@ -1,9 +1,7 @@
 import { WildlifeInput } from "./wildlife-input";
 
 export class UpdateWildlifeInput {
-  leadIdentifier: string;
-  agencyCode: string;
-  caseCode: string;
+  caseIdentifier: string;
   updateUserId: string;
   wildlife: WildlifeInput;
 }
