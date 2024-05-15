@@ -155,8 +155,6 @@ input CreateWildlifeInput {
 
 input UpdateWildlifeInput {
   caseIdentifier: String!
-  agencyCode: String!
-  caseCode: String!
   updateUserId: String!
   wildlife: WildlifeInput!
 }
