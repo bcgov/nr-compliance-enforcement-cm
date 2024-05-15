@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { EquipmentCodeResolver } from "./equipment_code.resolver";
-import { EquipmentCodeService } from "./equipment_code.service";
 import { PrismaModule } from "nestjs-prisma";
+import { EquipmentCodeService } from "./equipment_code.service";
 
 describe("EquipmentCodeResolver", () => {
   let resolver: EquipmentCodeResolver;

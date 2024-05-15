@@ -1,0 +1,27 @@
+type Query {
+  getCaseFile(caseIdentifier: String!): CaseFile
+  getCaseFileByLeadId(leadIdentifier: String!): CaseFile
+}
+
+type Mutation {
+  createAssessment(createAssessmentInput: CreateAssessmentInput!): CaseFile!
+  updateAssessment(updateAssessmentInput: UpdateAssessmentInput!): CaseFile!
+
+  createPrevention(createPreventionInput: CreatePreventionInput!): CaseFile!
+  updatePrevention(updatePreventionInput: UpdatePreventionInput!): CaseFile!
+
+  createReview(reviewInput: ReviewInput!): CaseFile!
+  updateReview(reviewInput: ReviewInput!): CaseFile!
+
+  createNote(input: CreateSupplementalNoteInput!): CaseFile!
+  updateNote(input: UpdateSupplementalNoteInput!): CaseFile!
+  deleteNote(input: DeleteSupplementalNoteInput!): CaseFile!
+
+  createEquipment(createEquipmentInput: CreateEquipmentInput!): CaseFile!
+  updateEquipment(updateEquipmentInput: UpdateEquipmentInput!): CaseFile!
+  deleteEquipment(deleteEquipmentInput: DeleteEquipmentInput!): Boolean!
+
+  createWildlife(input: CreateWildlifeInput!): CaseFile!
+  updateWildlife(input: UpdateWildlifeInput!): CaseFile!
+  deleteWildlife(input: DeleteWildlifeInput!): CaseFile!
+}

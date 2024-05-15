@@ -8,10 +8,9 @@ import { CreateSupplementalNoteInput } from "./dto/supplemental-note/create-supp
 import { ACTION_CODES } from "../common/action_codes";
 import { UpdateSupplementalNoteInput } from "./dto/supplemental-note/update-supplemental-note.input";
 import { ACTION_TYPE_CODES } from "../common/action_type_codes";
-import { Action } from "./entities/case-action.entity";
-import { CaseFileActionItem } from "./dto/case-file-action-item";
-import { Equipment } from "./entities/equipment.entity";
 import { ReviewInput } from "./dto/review-input";
+import { CaseFileActionService } from "../case_file_action/case_file_action.service";
+import { Equipment } from "./entities/equipment.entity";
 import { DeleteEquipmentInput } from "./dto/equipment/delete-equipment.input";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
@@ -28,7 +27,10 @@ import { UpdateWildlifeInput } from "./dto/wildlife/update-wildlife-input";
 
 @Injectable()
 export class CaseFileService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly caseFileActionService: CaseFileActionService,
+  ) {}
 
   private readonly logger = new Logger(CaseFileService.name);
 
@@ -186,6 +188,160 @@ export class CaseFileService {
     }
     return caseFileOutput;
   }
+
+  findOne = async (id: string): Promise<CaseFile> => {
+    const equipmentDetails = await this.findEquipmentDetails(id);
+    const queryResult = await this.prisma.case_file.findUnique({
+      where: {
+        case_file_guid: id,
+      },
+      select: {
+        case_file_guid: true,
+        review_required_ind: true,
+        action_not_required_ind: true,
+        inaction_reason_code: true,
+        note_text: true,
+        inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: {
+          select: {
+            short_description: true,
+            long_description: true,
+            active_ind: true,
+          },
+        },
+        lead: {
+          select: {
+            lead_identifier: true,
+          },
+        },
+        action: {
+          select: {
+            actor_guid: true,
+            action_date: true,
+            active_ind: true,
+            action_type_action_xref: {
+              select: {
+                action_code_action_type_action_xref_action_codeToaction_code: {
+                  select: {
+                    action_code: true,
+                    short_description: true,
+                    long_description: true,
+                    active_ind: true,
+                  },
+                },
+                action_type_code_action_type_action_xref_action_type_codeToaction_type_code: {
+                  select: {
+                    action_type_code: true,
+                    short_description: true,
+                    long_description: true,
+                    active_ind: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        wildlife: {
+          where: {
+            OR: [{ active_ind: true }, { active_ind: null }],
+          },
+          select: {
+            wildlife_guid: true,
+            species_code: true,
+            age_code: true,
+            sex_code: true,
+            conflict_history_code: true,
+            threat_level_code: true,
+            hwcr_outcome_code: true,
+            drug_administered: true,
+            ear_tag: true,
+            action: {
+              select: {
+                action_guid: true,
+                actor_guid: true,
+                action_date: true,
+                active_ind: true,
+                action_type_action_xref: {
+                  select: {
+                    action_code_action_type_action_xref_action_codeToaction_code: {
+                      select: {
+                        action_code: true,
+                        short_description: true,
+                        long_description: true,
+                        active_ind: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const {
+      case_file_guid: caseFileId,
+      lead,
+      action_not_required_ind: actionNotRequired,
+      inaction_reason_code: inactionReasonCode,
+      inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: reason,
+      review_required_ind: isReviewRequired,
+    } = queryResult;
+
+    const reviewCompleteAction = await this.caseFileActionService.findActionByCaseIdAndCaseCode(
+      caseFileId,
+      ACTION_CODES.COMPLTREVW,
+    );
+
+    const assessmentActions = await this.caseFileActionService.findActionsByCaseIdAndType(
+      caseFileId,
+      ACTION_TYPE_CODES.COMPASSESS,
+    );
+
+    const preventionActions = await this.caseFileActionService.findActionsByCaseIdAndType(
+      caseFileId,
+      ACTION_TYPE_CODES.COSPRVANDEDU,
+    );
+
+    let caseFile: CaseFile = {
+      caseIdentifier: caseFileId,
+      leadIdentifier: lead[0].lead_identifier, //this is okay because there will only be one lead for a case... for now.
+      assessmentDetails: assessmentActions
+        ? {
+            actionNotRequired: actionNotRequired,
+            actionJustificationCode: inactionReasonCode,
+            actionJustificationShortDescription: !reason ? "" : reason.short_description,
+            actionJustificationLongDescription: !reason ? "" : reason.long_description,
+            actionJustificationActiveIndicator: !reason ? false : reason.active_ind,
+            actions: assessmentActions,
+          }
+        : null,
+      preventionDetails: preventionActions
+        ? {
+            actions: preventionActions,
+          }
+        : null,
+      isReviewRequired: isReviewRequired,
+      reviewComplete: reviewCompleteAction ?? null,
+      note: queryResult.note_text
+        ? {
+            note: queryResult.note_text,
+            action: await this.caseFileActionService.findActionByCaseIdAndCaseCode(caseFileId, ACTION_CODES.UPDATENOTE),
+          }
+        : null,
+      equipment: equipmentDetails,
+      //-- for now wildlife will populate the subject property
+      //-- though this may not be the case at a later date
+    };
+
+    //-- add the wildlife items to the subject if there
+    //-- are results to add to the casefile
+    if (queryResult.wildlife) {
+      caseFile.subject = await this.getCaseFileSubjects(queryResult);
+    }
+
+    return caseFile;
+  };
 
   async updateAssessment(caseIdentifier: string, updateAssessmentInput: UpdateAssessmentInput) {
     let caseFileOutput: CaseFile;
@@ -500,7 +656,7 @@ export class CaseFileService {
         });
         return caseFileId;
       } catch (err) {
-        console.error(err);
+        this.logger.error(err);
         throw new GraphQLError("Error in createReviewCase", {});
       }
     };
@@ -537,7 +693,7 @@ export class CaseFileService {
         });
         return reviewAction.action_guid;
       } catch (err) {
-        console.error(err);
+        this.logger.error(err);
         throw new GraphQLError("Error in createReviewComplete", {});
       }
     };
@@ -575,7 +731,7 @@ export class CaseFileService {
       });
       return result;
     } catch (err) {
-      console.error(err);
+      this.logger.error(err);
       throw new GraphQLError("Error in createReview", {});
     }
   }
@@ -596,7 +752,7 @@ export class CaseFileService {
       });
       return reviewInput;
     } catch (err) {
-      console.error(err);
+      this.logger.error(err);
       throw new GraphQLError("Error in updateReview", {});
     }
   }
@@ -628,7 +784,7 @@ export class CaseFileService {
 
       return result;
     } catch (error) {
-      console.log("exception: unable to create supplemental note", error);
+      this.logger.error("exception: unable to create supplemental note", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };
@@ -647,7 +803,7 @@ export class CaseFileService {
 
       return result;
     } catch (error) {
-      console.log("exception: unable to update supplemental note", error);
+      this.logger.error("exception: unable to update supplemental note", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };
@@ -766,7 +922,7 @@ export class CaseFileService {
 
       return caseId;
     } catch (error) {
-      console.log("exception: unable to create supplemental note", error);
+      this.logger.error("exception: unable to create supplemental note", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };
@@ -808,7 +964,7 @@ export class CaseFileService {
 
       return await this.findOne(caseIdentifier);
     } catch (error) {
-      console.log("exception: unable to delete supplemental note", error);
+      this.logger.error("exception: unable to delete supplemental note", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };
@@ -931,9 +1087,6 @@ export class CaseFileService {
 
     try {
       await this.prisma.$transaction(async (db) => {
-        // Find the existing equipment record
-        this.logger.debug(`Updating equipment ${JSON.stringify(updateEquipmentInput)}`);
-
         // we're updating a single equipment record, so only one equipment was provided.
         const equipmentRecord = updateEquipmentInput.equipment[0];
         const equipmentGuid = equipmentRecord.id;
@@ -942,7 +1095,6 @@ export class CaseFileService {
         });
 
         if (!existingEquipment) {
-          this.logger.debug(`Equipment ${equipmentGuid} not found`);
           throw new Error("Equipment not found");
         }
 
@@ -952,15 +1104,11 @@ export class CaseFileService {
           active_ind: equipmentRecord.actionEquipmentTypeActiveIndicator,
         };
 
-        this.logger.debug(`Equipment record being updated: ${JSON.stringify(data)}`);
-
         // Update the equipment record
         await db.equipment.update({
           where: { equipment_guid: equipmentGuid },
           data: data,
         });
-
-        this.logger.debug(`Found equipment to update`);
 
         // constructing a geometry type to update the equipment record with
         // prisma doesn't handle geometry types, so we have to create this as a string and insert it
@@ -1084,302 +1232,6 @@ export class CaseFileService {
     }
   }
 
-  //------------------
-  //-- find case file
-  //------------------
-
-  //-- find a case file by its case_file_guid
-  findOne = async (id: string): Promise<CaseFile> => {
-    const queryResult = await this.prisma.case_file.findUnique({
-      where: {
-        case_file_guid: id,
-      },
-      select: {
-        case_file_guid: true,
-        review_required_ind: true,
-        action_not_required_ind: true,
-        inaction_reason_code: true,
-        note_text: true,
-        inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: {
-          select: {
-            short_description: true,
-            long_description: true,
-            active_ind: true,
-          },
-        },
-        lead: {
-          select: {
-            lead_identifier: true,
-          },
-        },
-        action: {
-          orderBy: [
-            {
-              action_type_action_xref: {
-                display_order: "asc",
-              },
-            },
-          ],
-          select: {
-            action_guid: true,
-            actor_guid: true,
-            action_date: true,
-            active_ind: true,
-            action_type_action_xref: {
-              select: {
-                action_code_action_type_action_xref_action_codeToaction_code: {
-                  select: {
-                    action_code: true,
-                    short_description: true,
-                    long_description: true,
-                    active_ind: true,
-                  },
-                },
-                action_type_code_action_type_action_xref_action_type_codeToaction_type_code: {
-                  select: {
-                    action_type_code: true,
-                    short_description: true,
-                    long_description: true,
-                    active_ind: true,
-                  },
-                },
-              },
-            },
-          },
-          where: {
-            active_ind: true,
-          },
-        },
-        wildlife: {
-          where: {
-            OR: [{ active_ind: true }, { active_ind: null }],
-          },
-          select: {
-            wildlife_guid: true,
-            species_code: true,
-            age_code: true,
-            sex_code: true,
-            conflict_history_code: true,
-            threat_level_code: true,
-            hwcr_outcome_code: true,
-            drug_administered: true,
-            ear_tag: true,
-            action: {
-              select: {
-                action_guid: true,
-                actor_guid: true,
-                action_date: true,
-                active_ind: true,
-                action_type_action_xref: {
-                  select: {
-                    action_code_action_type_action_xref_action_codeToaction_code: {
-                      select: {
-                        action_code: true,
-                        short_description: true,
-                        long_description: true,
-                        active_ind: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    });
-
-    const {
-      case_file_guid: caseFileId,
-      lead,
-      action_not_required_ind: actionNotRequired,
-      inaction_reason_code: inactionReasonCode,
-      inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: reason,
-      review_required_ind: isReviewRequired,
-    } = queryResult;
-
-    const equipmentDetails = await this.findEquipmentDetails(caseFileId);
-
-    const reviewCompleteAction = await this.getCaseAction(
-      queryResult.action,
-      ACTION_TYPE_CODES.CASEACTION,
-      ACTION_CODES.COMPLTREVW,
-    );
-
-    let caseFile: CaseFile = {
-      caseIdentifier: caseFileId,
-      leadIdentifier: lead[0].lead_identifier, //this is okay because there will only be one lead for a case... for now.
-      assessmentDetails: {
-        actionNotRequired: actionNotRequired,
-        actionJustificationCode: inactionReasonCode,
-        actionJustificationShortDescription: !reason ? "" : reason.short_description,
-        actionJustificationLongDescription: !reason ? "" : reason.long_description,
-        actionJustificationActiveIndicator: !reason ? false : reason.active_ind,
-        actions: await this.getCaseActions(queryResult.action, ACTION_TYPE_CODES.COMPASSESS),
-      },
-      preventionDetails: {
-        actions: await this.getCaseActions(queryResult.action, ACTION_TYPE_CODES.COSPRVANDEDU),
-      },
-      isReviewRequired: isReviewRequired,
-      reviewComplete: reviewCompleteAction ?? null,
-      note: {
-        note: queryResult.note_text,
-        action: await this.getCaseAction(queryResult.action, ACTION_TYPE_CODES.CASEACTION, ACTION_CODES.UPDATENOTE),
-      },
-      equipment: equipmentDetails,
-      //-- for now wildlife will populate the subject property
-      //-- though this may not be the case at a later date
-    };
-
-    //-- add the wildlife items to the subject if there
-    //-- are results to add to the casefile
-    if (queryResult.wildlife) {
-      caseFile.subject = await this.getCaseFileSubjects(queryResult);
-    }
-
-    return caseFile;
-  };
-
-  //-- find a case file by
-  async findOneByLeadId(leadIdentifier: string) {
-    let caseFileOutput: CaseFile = new CaseFile();
-    const caseIdRecord = await this.prisma.lead.findFirst({
-      where: {
-        lead_identifier: leadIdentifier,
-      },
-      select: {
-        case_identifier: true,
-      },
-    });
-    if (caseIdRecord?.case_identifier) {
-      caseFileOutput = await this.findOne(caseIdRecord.case_identifier);
-    }
-
-    return caseFileOutput;
-  }
-
-  //-----------
-  //-- helpers
-  //-----------
-
-  //-- returns a collection of actions
-  private getCaseActions = async (
-    actions: Array<CaseFileActionItem>,
-    actionTypeCode: string,
-    actionCode: string = "",
-  ): Promise<Array<Action>> => {
-    let items = [];
-
-    if (!actionCode) {
-      items = actions.filter((action) => {
-        const {
-          action_type_action_xref: {
-            action_type_code_action_type_action_xref_action_type_codeToaction_type_code: _actionTypeCode,
-          },
-        } = action;
-
-        return _actionTypeCode.action_type_code === actionTypeCode;
-      });
-    } else {
-      items = actions.filter((action) => {
-        const {
-          action_type_action_xref: {
-            action_code_action_type_action_xref_action_codeToaction_code: _actionCode,
-            action_type_code_action_type_action_xref_action_type_codeToaction_type_code: _actionTypeCode,
-          },
-        } = action;
-
-        return _actionTypeCode.action_type_code === actionTypeCode && _actionCode.action_code === actionCode;
-      });
-    }
-
-    const result = items.map(
-      ({
-        action_guid: actionGuid,
-        actor_guid: actor,
-        action_date: date,
-        active_ind: activeIndicator,
-        action_type_action_xref: {
-          action_code_action_type_action_xref_action_codeToaction_code: {
-            action_code: actionCode,
-            short_description: shortDescription,
-            long_description: longDescription,
-          },
-        },
-      }) => {
-        return {
-          actionGuid,
-          actor,
-          date,
-          actionCode,
-          shortDescription,
-          longDescription,
-          activeIndicator,
-        } as Action;
-      },
-    );
-    return result;
-  };
-
-  //-- returns a single action, if multiple actions exist the first action
-  //-- will be returned
-  private getCaseAction = async (
-    actions: Array<CaseFileActionItem>,
-    actionTypeCode: string,
-    actionCode: string = "",
-  ): Promise<Action> => {
-    let item: CaseFileActionItem;
-
-    if (!actionCode) {
-      item = actions.find((action) => {
-        const {
-          action_type_action_xref: {
-            action_type_code_action_type_action_xref_action_type_codeToaction_type_code: _actionTypeCode,
-          },
-        } = action;
-
-        return _actionTypeCode.action_type_code === actionTypeCode;
-      });
-    } else {
-      item = actions.find((action) => {
-        const {
-          action_type_action_xref: {
-            action_code_action_type_action_xref_action_codeToaction_code: _actionCode,
-            action_type_code_action_type_action_xref_action_type_codeToaction_type_code: _actionTypeCode,
-          },
-        } = action;
-
-        return _actionTypeCode.action_type_code === actionTypeCode && _actionCode.action_code === actionCode;
-      });
-    }
-
-    if (item) {
-      const {
-        action_guid: actionGuid,
-        actor_guid: actor,
-        action_date: date,
-        active_ind: activeIndicator,
-        action_type_action_xref: {
-          action_code_action_type_action_xref_action_codeToaction_code: {
-            action_code: actionCode,
-            short_description: shortDescription,
-            long_description: longDescription,
-          },
-        },
-      } = item;
-
-      return {
-        actionGuid,
-        actor,
-        date,
-        actionCode,
-        shortDescription,
-        longDescription,
-        activeIndicator,
-      } as Action;
-    }
-  };
-
   // find all equipment records, and their respective actions, for a given case
   // Since we want to list the equipment related to a case, rather than the actions for a case, which may contain equipment, let's
   // transform the actions with equipment to equipment with actions.
@@ -1464,7 +1316,7 @@ export class CaseFileService {
 
         // Append the action to this equipment's list of actions
         equipmentDetail.actions.push({
-          actionGuid: action.action_guid,
+          actionId: action.action_guid,
           actor: action.actor_guid,
           date: action.action_date,
           activeIndicator: action.active_ind,

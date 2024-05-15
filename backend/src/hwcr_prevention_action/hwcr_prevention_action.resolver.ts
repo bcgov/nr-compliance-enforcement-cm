@@ -3,16 +3,17 @@ import { JwtRoleGuard } from "../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
 import { Role } from "../enum/role.enum";
 import { Roles } from "../auth/decorators/roles.decorator";
-import { HWCRPreventionActionService } from "./hwcr_prevention_action.service";
+import { ActionCodeService } from '../action_code/action_code.service';
+import { ACTION_TYPE_CODES } from '../common/action_type_codes';
 
 @UseGuards(JwtRoleGuard)
 @Resolver("HWCRPreventionAction")
 export class HWCRPreventionActionResolver {
-  constructor(private readonly HWCRPreventionActionService: HWCRPreventionActionService) {}
+  constructor(private readonly actionCodeService: ActionCodeService) { }
 
   @Query("HWCRPreventionActions")
   @Roles(Role.COS_OFFICER)
-  find(@Args("actionTypeCode") actionTypeCode?: string) {
-    return this.HWCRPreventionActionService.find(actionTypeCode);
+  find() {
+    return this.actionCodeService.findAllCodesByType(ACTION_TYPE_CODES.COSPRVANDEDU);
   }
 }
