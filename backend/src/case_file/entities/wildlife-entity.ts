@@ -1,6 +1,7 @@
 import { CaseFileAction } from "../../case_file_action/entities/case_file_action.entity";
 
 export interface Wildlife {
+  order: number;
   id: string;
   species: string;
   sex?: string;

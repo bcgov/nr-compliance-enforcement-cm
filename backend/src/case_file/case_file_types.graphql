@@ -52,12 +52,14 @@ type Wildlife {
   tags: [EarTag]
   drugs: [Drug]
   actions: [CaseFileAction]
+  order: Int
 }
 
 type EarTag {
   id: String
   ear: String
   identifier: String
+  order: Int
 }
 
 type Drug {
@@ -70,4 +72,5 @@ type Drug {
   remainingUse: String
   amountDiscarded: String
   discardMethod: String
+  order: Int
 }

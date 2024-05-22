@@ -21,6 +21,7 @@ export interface SubjectQueryResult {
     age_code: string;
     hwcr_outcome_code: string;
     species_code: string;
+    update_utc_timestamp: Date;
     drug_administered: {
       drug_administered_guid: string;
       wildlife_guid: string;

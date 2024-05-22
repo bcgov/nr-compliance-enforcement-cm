@@ -252,6 +252,7 @@ export class CaseFileService {
             conflict_history_code: true,
             threat_level_code: true,
             hwcr_outcome_code: true,
+            update_utc_timestamp: true,
             drug_administered: {
               where: {
                 active_ind: true,
@@ -1340,8 +1341,6 @@ export class CaseFileService {
             actions: [],
           } as Equipment);
 
-        this.logger.debug(`Equipment type: ${equipment.equipment_code}`);
-
         // Append the action to this equipment's list of actions
         equipmentDetail.actions.push({
           actionId: action.action_guid,
@@ -1372,101 +1371,115 @@ export class CaseFileService {
     if (query?.wildlife) {
       const { wildlife } = query;
 
-      result = wildlife.map((item) => {
-        const {
-          wildlife_guid: id,
-          species_code: species,
-          sex_code: sex,
-          age_code: age,
-          threat_level_code: categoryLevel,
-          conflict_history_code: conflictHistory,
-          hwcr_outcome_code: outcome,
-          ear_tag,
-          drug_administered,
-          action,
-        } = item;
+      console.log(wildlife);
 
-        const tags = ear_tag.map(({ ear_tag_guid: id, ear_code: ear, ear_tag_identifier: identifier }) => {
-          return {
-            id,
-            ear,
-            identifier,
-          };
-        });
+      result = wildlife
+        .sort((a, b) => a.update_utc_timestamp.getTime() - b.update_utc_timestamp.getTime())
+        .map((item, idx) => {
+          const {
+            wildlife_guid: id,
+            species_code: species,
+            sex_code: sex,
+            age_code: age,
+            threat_level_code: categoryLevel,
+            conflict_history_code: conflictHistory,
+            hwcr_outcome_code: outcome,
+            ear_tag,
+            drug_administered,
+            action,
+          } = item;
 
-        const drugs = drug_administered.map(
-          ({
-            drug_administered_guid: id,
-            vial_number: vial,
-            drug_code: drug,
-            drug_used_amount: amountUsed,
-            drug_method_code: injectionMethod,
-            adverse_reaction_text: reactions,
-            drug_remaining_outcome_code: remainingUse,
-            drug_discarded_amount: amountDiscarded,
-            discard_method_text: discardMethod,
-          }) => {
-            return {
-              id,
-              vial,
-              drug,
-              amountUsed,
-              injectionMethod,
-              reactions,
-              remainingUse,
-              amountDiscarded,
-              discardMethod,
-            };
-          },
-        );
+          const tags = ear_tag
+            .sort((a, b) => a.update_utc_timestamp.getTime() - b.update_utc_timestamp.getTime())
+            .map(({ ear_tag_guid: id, ear_code: ear, ear_tag_identifier: identifier }, idx) => {
+              return {
+                id,
+                ear,
+                identifier,
+                order: idx + 1,
+              };
+            });
 
-        const actions = action.map(
-          ({ action_guid: actionId, actor_guid: actor, action_date: date, action_type_action_xref: xref }) => {
-            //-- the xref contains the action code
-            const {
-              action_code_action_type_action_xref_action_codeToaction_code: {
-                short_description: shortDescription,
-                long_description: longDescription,
-                active_ind: activeIndicator,
-                action_code: actionCode,
+          const drugs = drug_administered
+            .sort((a, b) => a.update_utc_timestamp.getTime() - b.update_utc_timestamp.getTime())
+            .map(
+              (
+                {
+                  drug_administered_guid: id,
+                  vial_number: vial,
+                  drug_code: drug,
+                  drug_used_amount: amountUsed,
+                  drug_method_code: injectionMethod,
+                  adverse_reaction_text: reactions,
+                  drug_remaining_outcome_code: remainingUse,
+                  drug_discarded_amount: amountDiscarded,
+                  discard_method_text: discardMethod,
+                },
+                idx,
+              ) => {
+                return {
+                  id,
+                  vial,
+                  drug,
+                  amountUsed,
+                  injectionMethod,
+                  reactions,
+                  remainingUse,
+                  amountDiscarded,
+                  discardMethod,
+                  order: idx + 1,
+                };
               },
-            } = xref;
-            return {
-              actionId,
-              actor,
-              activeIndicator,
-              actionCode,
-              date,
-              shortDescription,
-              longDescription,
-            };
-          },
-        );
+            );
 
-        let record: Wildlife = {
-          id,
-          species,
-          sex,
-          age,
-          categoryLevel,
-          conflictHistory,
-          outcome,
-        };
+          const actions = action.map(
+            ({ action_guid: actionId, actor_guid: actor, action_date: date, action_type_action_xref: xref }) => {
+              //-- the xref contains the action code
+              const {
+                action_code_action_type_action_xref_action_codeToaction_code: {
+                  short_description: shortDescription,
+                  long_description: longDescription,
+                  active_ind: activeIndicator,
+                  action_code: actionCode,
+                },
+              } = xref;
+              return {
+                actionId,
+                actor,
+                activeIndicator,
+                actionCode,
+                date,
+                shortDescription,
+                longDescription,
+              };
+            },
+          );
 
-        if (tags && tags.length !== 0) {
-          record = { ...record, tags };
-        }
+          let record: Wildlife = {
+            id,
+            species,
+            sex,
+            age,
+            categoryLevel,
+            conflictHistory,
+            outcome,
+            order: idx + 1,
+          };
 
-        if (drugs && drugs.length !== 0) {
-          record = { ...record, drugs };
-        }
+          if (tags && tags.length !== 0) {
+            record = { ...record, tags };
+          }
 
-        if (actions && actions.length !== 0) {
-          record = { ...record, actions };
-        }
+          if (drugs && drugs.length !== 0) {
+            record = { ...record, drugs };
+          }
 
-        return record;
-      });
+          if (actions && actions.length !== 0) {
+            record = { ...record, actions };
+          }
+
+          return record;
+        });
     }
 
     return result;
@@ -2227,7 +2240,7 @@ export class CaseFileService {
     const current = new Date();
 
     const softDeleteFragment = { active_ind: false, update_user_id: userId, update_utc_timestamp: current };
-    console.log("DELETE WILDLIFE");
+
     try {
       await this.prisma.$transaction(async (db) => {
         //-- find the wildlife entry to delete
