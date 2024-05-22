@@ -176,6 +176,8 @@ input EarTagInput {
   id: String
   ear: String!
   identifier: String!
+
+  order: Int
 }
 
 input DrugInput {
@@ -190,6 +192,8 @@ input DrugInput {
   remainingUse: String
   amountDiscarded: String
   discardMethod: String
+
+  order: Int
 }
 
 input WildlifeActionInput {

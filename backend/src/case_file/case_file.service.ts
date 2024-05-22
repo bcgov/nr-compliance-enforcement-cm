@@ -1371,8 +1371,6 @@ export class CaseFileService {
     if (query?.wildlife) {
       const { wildlife } = query;
 
-      console.log(wildlife);
-
       result = wildlife
         .sort((a, b) => a.update_utc_timestamp.getTime() - b.update_utc_timestamp.getTime())
         .map((item, idx) => {
