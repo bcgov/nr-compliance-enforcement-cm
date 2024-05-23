@@ -4,6 +4,7 @@ type EquipmentCode {
   longDescription: String
   displayOrder: Int
   activeIndicator: Boolean
+  isTrapIndicator: Boolean
 }
 
 type Query {

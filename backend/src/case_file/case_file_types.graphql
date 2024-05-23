@@ -39,6 +39,7 @@ type EquipmentDetails {
   yCoordinate: String
   createDate: Date
   actions: [CaseFileAction]
+  wasAnimalCaptured: String
 }
 
 type Wildlife {
