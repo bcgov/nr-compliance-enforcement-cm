@@ -11,4 +11,5 @@ export class Equipment {
   yCoordinate?: string;
   createDate: Date;
   actions: CaseFileAction[];
+  wasAnimalCaptured: string;
 }

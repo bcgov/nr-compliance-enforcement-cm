@@ -7,4 +7,5 @@ export interface CreateEquipmentDetailsInput {
   yCoordinate: string;
   equipmentTypeActiveIndicator: boolean;
   actions: EquipmentActionItem[];
+  wasAnimalCaptured: string;
 }
