@@ -4,4 +4,5 @@ export class EquipmentCode {
   longDescription: string;
   displayOrder: number;
   activeIndicator: boolean;
+  isTrapIndicator: boolean;
 }
