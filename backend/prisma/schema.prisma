@@ -137,7 +137,7 @@ model equipment_code {
   create_utc_timestamp                               DateTime    @db.Timestamp(6)
   update_user_id                                     String      @db.VarChar(32)
   update_utc_timestamp                               DateTime    @db.Timestamp(6)
-  is_trap_ind                                        Boolean     @default(false)
+  is_trap_ind                                        Boolean     @default(true)
   equipment_equipment_equipment_codeToequipment_code equipment[] @relation("equipment_equipment_codeToequipment_code")
 }
 
