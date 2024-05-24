@@ -73,6 +73,7 @@ input ReviewActionInput {
   date: Date!
   actionCode: String!
   actionId: String
+  activeIndicator: Boolean
 }
 
 input CreateSupplementalNoteInput {

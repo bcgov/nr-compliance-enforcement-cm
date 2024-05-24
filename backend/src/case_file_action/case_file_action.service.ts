@@ -122,6 +122,7 @@ export class CaseFileActionService {
               action_code: actionCaseCode,
             },
           },
+          active_ind: true,
         },
         select: {
           action_guid: true,
