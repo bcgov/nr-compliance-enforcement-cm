@@ -975,6 +975,7 @@ export class CaseFileService {
           update_utc_timestamp: createdDate,
           equipment_code: createEquipmentInput.equipment[0].typeCode,
           equipment_location_desc: createEquipmentInput.equipment[0].address,
+          was_animal_captured: createEquipmentInput.equipment[0].wasAnimalCaptured,
           // exclude equipment_geometry_point because prisma can't handle this =gracefully
         };
 
@@ -1082,6 +1083,7 @@ export class CaseFileService {
           equipment_code: equipmentRecord.typeCode,
           equipment_location_desc: equipmentRecord.address,
           active_ind: equipmentRecord.actionEquipmentTypeActiveIndicator,
+          was_animal_captured: equipmentRecord.wasAnimalCaptured,
         };
 
         // Update the equipment record
@@ -1290,6 +1292,7 @@ export class CaseFileService {
             yCoordinate: latitudeString,
             createDate: create_utc_timestamp,
             actions: [],
+            wasAnimalCaptured: equipment.was_animal_captured,
           } as Equipment);
 
         this.logger.debug(`Equipment type: ${equipment.equipment_code}`);

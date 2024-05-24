@@ -14,6 +14,7 @@ export class EquipmentCodeService {
         long_description: true,
         display_order: true,
         active_ind: true,
+        is_trap_ind: true,
       },
     });
 
@@ -23,6 +24,7 @@ export class EquipmentCodeService {
       longDescription: prismaEquipmentCodes.long_description,
       displayOrder: prismaEquipmentCodes.display_order,
       activeIndicator: prismaEquipmentCodes.active_ind,
+      isTrapIndicator: prismaEquipmentCodes.is_trap_ind,
     }));
 
     return equipmentCodes;

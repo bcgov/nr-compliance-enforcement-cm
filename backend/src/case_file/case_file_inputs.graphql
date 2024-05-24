@@ -129,6 +129,7 @@ input EquipmentDetailsInput {
   xCoordinate: String
   yCoordinate: String
   actions: [EquipmentActionInput]!
+  wasAnimalCaptured: String
 }
 
 input EquipmentActionInput {

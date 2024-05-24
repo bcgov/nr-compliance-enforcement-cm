@@ -129,6 +129,7 @@ model equipment_code {
   create_utc_timestamp                               DateTime    @db.Timestamp(6)
   update_user_id                                     String      @db.VarChar(32)
   update_utc_timestamp                               DateTime    @db.Timestamp(6)
+  is_trap_ind                                        Boolean     @default(false)
   equipment_equipment_equipment_codeToequipment_code equipment[] @relation("equipment_equipment_codeToequipment_code")
 }
 
@@ -342,6 +343,7 @@ model equipment {
   create_utc_timestamp                                    DateTime                 @db.Timestamp(6)
   update_user_id                                          String                   @db.VarChar(32)
   update_utc_timestamp                                    DateTime                 @db.Timestamp(6)
+  was_animal_captured                                     String                   @default("U") @db.Char(1)
   action                                                  action[]
   equipment_code_equipment_equipment_codeToequipment_code equipment_code?          @relation("equipment_equipment_codeToequipment_code", fields: [equipment_code], references: [equipment_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_equipment__equipment_code")
 }
