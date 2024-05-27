@@ -729,7 +729,6 @@ export class CaseFileService {
         }
       });
 
-      // Assuming your reviewInput can be cast to CaseFile or modify to return the updated CaseFile
       return this.findOneByLeadId(caseIdentifier);
     } catch (err) {
       this.logger.error(err);
