@@ -252,7 +252,7 @@ export class CaseFileService {
             conflict_history_code: true,
             threat_level_code: true,
             hwcr_outcome_code: true,
-            update_utc_timestamp: true,
+            create_utc_timestamp: true,
             drug_administered: {
               where: {
                 active_ind: true,
@@ -1375,7 +1375,7 @@ export class CaseFileService {
       const { wildlife } = query;
 
       result = wildlife
-        .sort((a, b) => a.update_utc_timestamp.getTime() - b.update_utc_timestamp.getTime())
+        .sort((a, b) => a.create_utc_timestamp.getTime() - b.create_utc_timestamp.getTime())
         .map((item, idx) => {
           const {
             wildlife_guid: id,
@@ -1391,7 +1391,7 @@ export class CaseFileService {
           } = item;
 
           const tags = ear_tag
-            .sort((a, b) => a.update_utc_timestamp.getTime() - b.update_utc_timestamp.getTime())
+            .sort((a, b) => a.create_utc_timestamp.getTime() - b.create_utc_timestamp.getTime())
             .map(({ ear_tag_guid: id, ear_code: ear, ear_tag_identifier: identifier }, idx) => {
               return {
                 id,
@@ -1402,7 +1402,7 @@ export class CaseFileService {
             });
 
           const drugs = drug_administered
-            .sort((a, b) => a.update_utc_timestamp.getTime() - b.update_utc_timestamp.getTime())
+            .sort((a, b) => a.create_utc_timestamp.getTime() - b.create_utc_timestamp.getTime())
             .map(
               (
                 {
@@ -2066,7 +2066,10 @@ export class CaseFileService {
             },
           });
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(`exception: unable to update drug-used for wildlife record: ${wildlifeId}`, error);
+        throw new GraphQLError("Exception occurred. See server log for details", {});
+      }
     };
 
     //--
@@ -2086,99 +2089,47 @@ export class CaseFileService {
       date: Date,
     ) => {
       try {
-        const xrefs = await db.action_type_action_xref.findMany({
-          where: {
-            action_type_code: ACTION_TYPE_CODES.WILDLIFE,
-          },
-          select: {
-            action_type_action_xref_guid: true,
-            action_code: true,
-          },
-        });
-
-        const current = await db.action.findMany({
-          where: {
-            wildlife_guid: wildlifeId,
-            active_ind: true,
-          },
-        });
-
-        if (!current || (current.length === 0 && actions && actions.length !== 0)) {
-          //-- add new actions
-          const items = actions.map(({ actor: actor_guid, date: action_date, action }) => {
-            const xref = xrefs.find((item) => item.action_code === action);
-
-            return {
+        //-- if there are no actions present then remove all
+        //-- actions that are associated with the caseIdentifier
+        if (!actions || actions?.length === 0) {
+          await db.action.updateMany({
+            where: {
               case_guid: caseIdentifier,
-              wildlife_guid: wildlifeId,
-              action_type_action_xref_guid: xref.action_type_action_xref_guid,
-              actor_guid,
-              action_date,
-              active_ind: true,
-              create_user_id: userId,
+            },
+            data: {
+              active_ind: false,
               update_user_id: userId,
-              create_utc_timestamp: new Date(),
-              update_utc_timestamp: new Date(),
-            };
+              create_utc_timestamp: date,
+            },
+          });
+        } else {
+          //-- compare the current actions and the actions provided
+          //-- to determine what needs to be removed and added
+
+          //-- get the xrefs for wildlife records
+          const xrefs = await db.action_type_action_xref.findMany({
+            where: {
+              action_type_code: ACTION_TYPE_CODES.WILDLIFE,
+            },
+            select: {
+              action_type_action_xref_guid: true,
+              action_code: true,
+            },
           });
 
-          await db.action.createMany({ data: items });
-        } else if (current && current.length !== 0 && actions && actions.length !== 0) {
-          //-- check for updates, new actions, and removed actions
-          let updates = [];
-          let remove = [];
-          let add = [];
-
-          actions.forEach((action) => {
-            const { id } = action;
-            if (current.find((item) => item.action_guid === id)) {
-              updates = [...updates, action];
-            } else if (!current.find((item) => item.action_guid === id)) {
-              add = [...add, action];
-            }
+          //-- get the actions associated with the caseIdentifier
+          const current = await db.action.findMany({
+            where: {
+              wildlife_guid: wildlifeId,
+              active_ind: true,
+            },
           });
 
-          current.forEach((action) => {
-            const { action_guid: id } = action;
-            if (!actions.find((item) => item.id === id)) {
-              remove = [...remove, action];
-            }
-          });
+          //-- there are no existing actions,
+          if ((!current && actions?.length !== 0) || (current?.length === 0 && actions?.length !== 0)) {
+            //-- add new actions
 
-          if (updates.length !== 0) {
-            updates.forEach(async ({ id, actor: actor_guid, date: action_date, action, activeIndicator }) => {
-              await db.action.update({
-                where: {
-                  action_guid: id,
-                },
-                data: {
-                  actor_guid,
-                  action_date,
-                  active_ind: true,
-                  update_user_id: userId,
-                  update_utc_timestamp: date,
-                },
-              });
-            });
-          }
-
-          if (remove.length !== 0) {
-            remove.forEach(async ({ action_guid }) => {
-              await db.action.update({
-                where: {
-                  action_guid,
-                },
-                data: {
-                  active_ind: false,
-                  update_user_id: userId,
-                  update_utc_timestamp: date,
-                },
-              });
-            });
-          }
-
-          if (add.length !== 0) {
-            const items = add.map(({ actor: actor_guid, date: action_date, action }) => {
+            const items = actions.map(({ actor: actor_guid, date: action_date, action }) => {
               const xref = xrefs.find((item) => item.action_code === action);
 
               return {
@@ -2194,10 +2145,78 @@ export class CaseFileService {
                 update_utc_timestamp: new Date(),
               };
             });
+
             await db.action.createMany({ data: items });
+          } else {
+            //-- the actions list has been modified
+            let add = [];
+            let remove = [];
+
+            for (const xref of xrefs) {
+              const { action_type_action_xref_guid: id, action_code: actionCode } = xref;
+              //-- add new actions
+              if (
+                !current.find((item) => item.action_type_action_xref_guid === id) &&
+                actions.find((item) => item.action === actionCode)
+              ) {
+                const action = actions.find((item) => item.action === actionCode);
+
+                add = [
+                  ...add,
+                  {
+                    case_guid: caseIdentifier,
+                    wildlife_guid: wildlifeId,
+                    action_type_action_xref_guid: id,
+                    actor_guid: action.actor,
+                    action_date: action.date,
+                    active_ind: true,
+                    create_user_id: userId,
+                    update_user_id: userId,
+                    create_utc_timestamp: new Date(),
+                    update_utc_timestamp: new Date(),
+                  },
+                ];
+
+                await db.action.create({
+                  data: {
+                    case_guid: caseIdentifier,
+                    wildlife_guid: wildlifeId,
+                    action_type_action_xref_guid: id,
+                    actor_guid: action.actor,
+                    action_date: action.date,
+                    active_ind: true,
+                    create_user_id: userId,
+                    update_user_id: userId,
+                    create_utc_timestamp: new Date(),
+                    update_utc_timestamp: new Date(),
+                  },
+                });
+              }
+
+              if (
+                current.find((item) => item.action_type_action_xref_guid === id) &&
+                !actions.find((item) => item.action === actionCode)
+              ) {
+                const action = current.find((item) => item.action_type_action_xref_guid === id);
+
+                await db.action.update({
+                  where: {
+                    action_guid: action.action_guid,
+                  },
+                  data: {
+                    active_ind: false,
+                    update_user_id: userId,
+                    update_utc_timestamp: date,
+                  },
+                });
+              }
+            }
           }
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(`exception: unable to update actions for wildlife record: ${wildlifeId}`, error);
+        throw new GraphQLError("Exception occurred. See server log for details", {});
+      }
     };
 
     try {
