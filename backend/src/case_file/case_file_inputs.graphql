@@ -139,3 +139,69 @@ input EquipmentActionInput {
   activeIndicator: Boolean
   actionCode: String
 }
+
+input DeleteWildlifeInput {
+  caseIdentifier: String!
+  wildlifeId: String!
+  actor: String!
+  updateUserId: String!
+}
+
+input CreateWildlifeInput {
+  leadIdentifier: String!
+  agencyCode: String!
+  caseCode: String!
+  createUserId: String!
+  wildlife: WildlifeInput!
+}
+
+input UpdateWildlifeInput {
+  caseIdentifier: String!
+  updateUserId: String!
+  wildlife: WildlifeInput!
+}
+
+input WildlifeInput {
+  id: String
+  species: String!
+  sex: String
+  age: String
+  categoryLevel: String
+  conflictHistory: String
+  outcome: String
+  tags: [EarTagInput]
+  drugs: [DrugInput]
+  actions: [WildlifeActionInput]
+}
+
+input EarTagInput {
+  id: String
+  ear: String!
+  identifier: String!
+
+  order: Int
+}
+
+input DrugInput {
+  id: String
+
+  vial: String!
+  drug: String!
+  amountUsed: String!
+  injectionMethod: String!
+  reactions: String
+
+  remainingUse: String
+  amountDiscarded: String
+  discardMethod: String
+
+  order: Int
+}
+
+input WildlifeActionInput {
+  id: String
+  actor: String
+  date: Date
+  action: String
+  activeIndicator: Boolean
+}
