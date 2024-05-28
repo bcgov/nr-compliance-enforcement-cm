@@ -1629,8 +1629,9 @@ export class CaseFileService {
           let result = await db.drug_administered.createMany({
             data: records,
           });
-        } catch (exception) {
-          throw new GraphQLError("Exception occurred. See server log for details", exception);
+        } catch (error) {
+          console.log(`exception: unable to add drug-used for wildlife record: ${wildlifeId}`, error);
+          throw new GraphQLError("Exception occurred. See server log for details", error);
         }
       }
     };
