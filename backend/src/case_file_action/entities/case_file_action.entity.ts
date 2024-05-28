@@ -6,6 +6,6 @@ export class CaseFileAction {
   date: Date;
   shortDescription: string;
   longDescription: string;
-  actionTypeCode: string;
-  displayOrder: number;
+  actionTypeCode?: string;
+  displayOrder?: number;
 }

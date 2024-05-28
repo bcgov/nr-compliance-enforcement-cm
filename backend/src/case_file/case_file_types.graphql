@@ -9,6 +9,7 @@ type CaseFile {
   equipment: [EquipmentDetails]
   isReviewRequired: Boolean
   reviewComplete: CaseFileAction
+  subject: [Wildlife]
 }
 
 type Assessment {
@@ -39,4 +40,38 @@ type EquipmentDetails {
   createDate: Date
   actions: [CaseFileAction]
   wasAnimalCaptured: String
+}
+
+type Wildlife {
+  id: String
+  species: String!
+  sex: String
+  age: String
+  categoryLevel: String
+  conflictHistory: String
+  outcome: String
+  tags: [EarTag]
+  drugs: [Drug]
+  actions: [CaseFileAction]
+  order: Int
+}
+
+type EarTag {
+  id: String
+  ear: String
+  identifier: String
+  order: Int
+}
+
+type Drug {
+  id: String
+  vial: String
+  drug: String
+  amountUsed: String
+  injectionMethod: String
+  reactions: String
+  remainingUse: String
+  amountDiscarded: String
+  discardMethod: String
+  order: Int
 }

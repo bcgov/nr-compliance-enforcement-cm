@@ -3,6 +3,7 @@ import { Equipment } from "./equipment.entity";
 import { Prevention } from "./prevention.entity";
 import { ReviewComplete } from "./review_complete";
 import { Note } from "./supplemental-note.entity";
+import { Wildlife } from "./wildlife-entity";
 
 export class CaseFile {
   caseIdentifier?: string;
@@ -13,4 +14,5 @@ export class CaseFile {
   note?: Note;
   isReviewRequired?: boolean;
   reviewComplete?: ReviewComplete;
+  subject?: Array<Wildlife>;
 }

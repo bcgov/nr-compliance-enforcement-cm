@@ -20,4 +20,8 @@ type Mutation {
   createEquipment(createEquipmentInput: CreateEquipmentInput!): CaseFile!
   updateEquipment(updateEquipmentInput: UpdateEquipmentInput!): CaseFile!
   deleteEquipment(deleteEquipmentInput: DeleteEquipmentInput!): Boolean!
+
+  createWildlife(input: CreateWildlifeInput!): CaseFile!
+  updateWildlife(input: UpdateWildlifeInput!): CaseFile!
+  deleteWildlife(input: DeleteWildlifeInput!): CaseFile!
 }
