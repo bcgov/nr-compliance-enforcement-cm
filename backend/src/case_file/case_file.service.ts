@@ -20,7 +20,7 @@ import { WildlifeInput } from "./dto/wildlife/wildlife-input";
 import { EarTagInput } from "./dto/wildlife/ear-tag-input";
 import { DrugInput } from "./dto/wildlife/drug-input";
 import { WildlifeAction } from "./dto/wildlife/wildlife-action";
-import { DrugUsed, EarTag, Wildlife } from "./entities/wildlife-entity";
+import { Wildlife } from "./entities/wildlife-entity";
 import { SubjectQueryResult } from "./dto/subject-query-result";
 import { DeleteWildlifeInput } from "./dto/wildlife/delete-wildlife-input";
 import { UpdateWildlifeInput } from "./dto/wildlife/update-wildlife-input";
