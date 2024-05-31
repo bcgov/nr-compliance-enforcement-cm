@@ -12,7 +12,7 @@ import { ReviewInput } from "./dto/review-input";
 import { CaseFileActionService } from "../case_file_action/case_file_action.service";
 import { Equipment } from "./entities/equipment.entity";
 import { DeleteEquipmentInput } from "./dto/equipment/delete-equipment.input";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { action, Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
 import { DeleteSupplementalNoteInput } from "./dto/supplemental-note/delete-supplemental-note.input";
 import { CreateWildlifeInput } from "./dto/wildlife/create-wildlife-input";
@@ -2074,6 +2074,91 @@ export class CaseFileService {
     };
 
     //--
+    //-- determines what type of action to apply to the actions
+    //--
+    const _derp = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      action: string,
+      current: action[],
+      incoming: WildlifeAction[],
+      xrefs: { action_code: string; action_type_action_xref_guid: string }[],
+      caseIdentifier: string,
+      wildlifeId: string,
+      userId: string,
+      date: Date,
+    ) => {
+      // console.log("ACTION: ", action);
+      // console.log("CURRENT: ", current);
+      // console.log("INCOMING: ", incoming);
+      // console.log("XREF: ", xrefs);
+      // console.log("CASE_ID: ", caseIdentifier);
+      // console.log("WILDLIFE_ID: ", wildlifeId);
+      // console.log("USER_ID: ", userId);
+      // console.log("DATE: ", date);
+
+      const reference = xrefs.find((item) => item.action_code === action).action_type_action_xref_guid;
+
+      if (
+        current.map((item) => item.action_type_action_xref_guid).includes(reference) &&
+        incoming.map((item) => item.action).includes(action)
+      ) {
+        const source = current.find((item) => item.action_type_action_xref_guid === reference);
+        const update = incoming.find((item) => item.action === action);
+
+        await db.action.update({
+          where: {
+            action_guid: source.action_guid,
+          },
+          data: {
+            actor_guid: update.actor,
+            action_date: update.date,
+            update_user_id: userId,
+            update_utc_timestamp: date,
+          },
+        });
+      } else if (
+        !current.map((item) => item.action_type_action_xref_guid).includes(reference) &&
+        incoming.map((item) => item.action).includes(action)
+      ) {
+        const data = incoming.find((item) => item.action === action);
+
+        await db.action.create({
+          data: {
+            case_guid: caseIdentifier,
+            wildlife_guid: wildlifeId,
+            action_type_action_xref_guid: reference,
+            actor_guid: data.actor,
+            action_date: data.date,
+            active_ind: true,
+            create_user_id: userId,
+            create_utc_timestamp: date,
+            update_user_id: userId,
+            update_utc_timestamp: date,
+          },
+        });
+      } else if (
+        current.map((item) => item.action_type_action_xref_guid).includes(reference) &&
+        !incoming.map((item) => item.action).includes(action)
+      ) {
+        const source = current.find((item) => item.action_type_action_xref_guid === reference);
+
+        await db.action.update({
+          where: {
+            action_guid: source.action_guid,
+          },
+          data: {
+            active_ind: false,
+            update_user_id: userId,
+            update_utc_timestamp: date,
+          },
+        });
+      }
+    };
+
+    //--
     //-- update the actions for the seelcted wildlife
     //-- record, depending on the drugs and outcome
     //-- actions may need to be updated, removed, or added
@@ -2142,76 +2227,19 @@ export class CaseFileService {
                 active_ind: true,
                 create_user_id: userId,
                 update_user_id: userId,
-                create_utc_timestamp: new Date(),
-                update_utc_timestamp: new Date(),
+                create_utc_timestamp: date,
+                update_utc_timestamp: date,
               };
             });
 
             await db.action.createMany({ data: items });
           } else {
-            //-- the actions list has been modified
-            let add = [];
-            let remove = [];
+            //-- prune the current actions and incoming actions
+            const currentActions = current.map((item) => item.action_type_action_xref_guid);
+            const incomingActions = actions.map((item) => item.action);
 
-            for (const xref of xrefs) {
-              const { action_type_action_xref_guid: id, action_code: actionCode } = xref;
-              //-- add new actions
-              if (
-                !current.find((item) => item.action_type_action_xref_guid === id) &&
-                actions.find((item) => item.action === actionCode)
-              ) {
-                const action = actions.find((item) => item.action === actionCode);
-
-                add = [
-                  ...add,
-                  {
-                    case_guid: caseIdentifier,
-                    wildlife_guid: wildlifeId,
-                    action_type_action_xref_guid: id,
-                    actor_guid: action.actor,
-                    action_date: action.date,
-                    active_ind: true,
-                    create_user_id: userId,
-                    update_user_id: userId,
-                    create_utc_timestamp: new Date(),
-                    update_utc_timestamp: new Date(),
-                  },
-                ];
-
-                await db.action.create({
-                  data: {
-                    case_guid: caseIdentifier,
-                    wildlife_guid: wildlifeId,
-                    action_type_action_xref_guid: id,
-                    actor_guid: action.actor,
-                    action_date: action.date,
-                    active_ind: true,
-                    create_user_id: userId,
-                    update_user_id: userId,
-                    create_utc_timestamp: new Date(),
-                    update_utc_timestamp: new Date(),
-                  },
-                });
-              }
-
-              if (
-                current.find((item) => item.action_type_action_xref_guid === id) &&
-                !actions.find((item) => item.action === actionCode)
-              ) {
-                const action = current.find((item) => item.action_type_action_xref_guid === id);
-
-                await db.action.update({
-                  where: {
-                    action_guid: action.action_guid,
-                  },
-                  data: {
-                    active_ind: false,
-                    update_user_id: userId,
-                    update_utc_timestamp: date,
-                  },
-                });
-              }
-            }
+            await _derp(db, ACTION_CODES.ADMNSTRDRG, current, actions, xrefs, caseIdentifier, wildlifeId, userId, date);
+            await _derp(db, ACTION_CODES.RECOUTCOME, current, actions, xrefs, caseIdentifier, wildlifeId, userId, date);
           }
         }
       } catch (error) {
