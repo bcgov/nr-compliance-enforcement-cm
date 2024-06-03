@@ -2076,7 +2076,7 @@ export class CaseFileService {
     //--
     //-- determines what type of action to apply to the actions
     //--
-    const _derp = async (
+    const _applyAction = async (
       db: Omit<
         PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
         "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
@@ -2090,15 +2090,6 @@ export class CaseFileService {
       userId: string,
       date: Date,
     ) => {
-      // console.log("ACTION: ", action);
-      // console.log("CURRENT: ", current);
-      // console.log("INCOMING: ", incoming);
-      // console.log("XREF: ", xrefs);
-      // console.log("CASE_ID: ", caseIdentifier);
-      // console.log("WILDLIFE_ID: ", wildlifeId);
-      // console.log("USER_ID: ", userId);
-      // console.log("DATE: ", date);
-
       const reference = xrefs.find((item) => item.action_code === action).action_type_action_xref_guid;
 
       if (
@@ -2234,12 +2225,28 @@ export class CaseFileService {
 
             await db.action.createMany({ data: items });
           } else {
-            //-- prune the current actions and incoming actions
-            const currentActions = current.map((item) => item.action_type_action_xref_guid);
-            const incomingActions = actions.map((item) => item.action);
-
-            await _derp(db, ACTION_CODES.ADMNSTRDRG, current, actions, xrefs, caseIdentifier, wildlifeId, userId, date);
-            await _derp(db, ACTION_CODES.RECOUTCOME, current, actions, xrefs, caseIdentifier, wildlifeId, userId, date);
+            await _applyAction(
+              db,
+              ACTION_CODES.ADMNSTRDRG,
+              current,
+              actions,
+              xrefs,
+              caseIdentifier,
+              wildlifeId,
+              userId,
+              date,
+            );
+            await _applyAction(
+              db,
+              ACTION_CODES.RECOUTCOME,
+              current,
+              actions,
+              xrefs,
+              caseIdentifier,
+              wildlifeId,
+              userId,
+              date,
+            );
           }
         }
       } catch (error) {
