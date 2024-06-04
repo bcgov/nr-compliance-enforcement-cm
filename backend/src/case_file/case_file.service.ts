@@ -767,7 +767,7 @@ export class CaseFileService {
 
   async updateReview(reviewInput: ReviewInput): Promise<CaseFile> {
     try {
-      const { isReviewRequired, caseIdentifier, reviewComplete } = reviewInput;
+      const { isReviewRequired, caseIdentifier, reviewComplete, leadIdentifier } = reviewInput;
       await this.prisma.$transaction(async (db) => {
         // Update review_required_ind in table case_file
         await db.case_file.update({
@@ -794,7 +794,7 @@ export class CaseFileService {
         }
       });
 
-      return this.findOneByLeadId(caseIdentifier);
+      return this.findOneByLeadId(leadIdentifier);
     } catch (err) {
       this.logger.error(err);
       throw new GraphQLError("Error in updateReview", {});
