@@ -15,6 +15,9 @@ export class HwcrOutcomeCodeService {
         display_order: true,
         active_ind: true,
       },
+      orderBy: {
+        display_order: "asc",
+      },
     });
 
     const hwcrOutcomeCodes: HwcrOutcomeCode[] = prismaHWCROutcomeCodes.map((prismaHWCROutcomeCodes) => ({
