@@ -36,6 +36,9 @@ export class ActionCodeService {
           },
         },
       },
+      orderBy: {
+        display_order: "asc",
+      },
     });
 
     const actions = queryResult.map((record) => ({
