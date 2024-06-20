@@ -92,6 +92,7 @@ export class CaseFileActionService {
         select: {
           action_type_action_xref_guid: true,
         },
+        orderBy: [{ display_order: "asc" }],
       });
 
       let caseFileActions: CaseFileAction[] = new Array();
