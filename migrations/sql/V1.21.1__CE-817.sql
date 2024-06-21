@@ -1,26 +1,9 @@
 insert into
-  case_management.action_code (
-    action_code,
+  case_management.inaction_reason_code (
+    inaction_reason_code,
+    agency_code,
     short_description,
     long_description,
-    active_ind,
-    create_user_id,
-    create_utc_timestamp
-  )
-values
-  (
-    'DUPLICATE',
-    'Duplicate',
-    'Duplicate',
-    'Y',
-    CURRENT_USER,
-    CURRENT_TIMESTAMP
-  ) on conflict do nothing;
-
-insert into
-  case_management.action_type_action_xref (
-    action_type_code,
-    action_code,
     display_order,
     active_ind,
     create_user_id,
@@ -28,9 +11,11 @@ insert into
   )
 values
   (
-    'COMPASSESS',
     'DUPLICATE',
-    5,
+    'COS',
+    'Duplicate',
+    'Duplicate',
+    3,
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
