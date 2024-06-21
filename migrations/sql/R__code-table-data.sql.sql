@@ -21,6 +21,24 @@ values
     CURRENT_TIMESTAMP
   ) on conflict do nothing;
 
+update case_management.inaction_reason_code
+set
+  display_order = 1
+where
+  inaction_reason_code = 'DUPLICATE';
+
+update case_management.inaction_reason_code
+set
+  display_order = 2
+where
+  inaction_reason_code = 'NOPUBSFTYC';
+
+update case_management.inaction_reason_code
+set
+  display_order = 3
+where
+  inaction_reason_code = 'OTHOPRPRTY';
+
 UPDATE case_management.configuration
 SET
   configuration_value = cast(configuration_value as INTEGER) + 1
