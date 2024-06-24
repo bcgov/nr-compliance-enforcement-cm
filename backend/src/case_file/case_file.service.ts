@@ -2182,11 +2182,12 @@ export class CaseFileService {
     ) => {
       try {
         //-- if there are no actions present then remove all
-        //-- actions that are associated with the caseIdentifier
+        //-- actions that are associated with the wildlifeId and caseIdentifier
         if (!actions || actions?.length === 0) {
           await db.action.updateMany({
             where: {
               case_guid: caseIdentifier,
+              wildlife_guid: wildlifeId,
             },
             data: {
               active_ind: false,
