@@ -1,8 +1,8 @@
-name: Merge to Main
+name: Merge to Release
 
 on:
   push:
-    branches: [main]
+    branches: [release/**]
     paths-ignore:
       - "*.md"
       - ".github/**"
@@ -23,15 +23,15 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 1
     steps:
-      # Get PR number for squash merges to main
+      # Get PR number for squash merges to release branch
       - name: PR Number
         id: pr
         uses: bcgov-nr/action-get-pr@v0.0.1
 
-  deploy-prod:
-    name: Deploy (prod)
-    needs: [deploy-test, vars]
-    environment: prod
+  deploy-test:
+    name: Deploy (test)
+    needs: [vars]
+    environment: test
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout CD repo
@@ -46,20 +46,22 @@ jobs:
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       - name: Update image tag And Enable it for deployment
         run: |
           cd charts/nr-compliance-enforcement-cm
-          yq eval '.global.tag="${{ needs.vars.outputs.pr }}"' -i values-prod.yaml
+          yq eval '.global.tag="${{ needs.vars.outputs.pr }}"' -i values.yaml
+          yq eval '.global.tag="${{ needs.vars.outputs.pr }}"' -i values-static.yaml
 
       - name: Commit and push update
         shell: bash
         run: |
-          git commit -am "Update image tag for pull request deployment and enable it for values-prod.yaml for PROD deployment"
+          git commit -am "Update image tag for pull request deployment and enable it for values.yaml for TEST deployment"
           git push origin main
 
   promote:
     name: Promote Images
-    needs: [deploy-prod, vars]
+    needs: [deploy-test, vars]
     runs-on: ubuntu-22.04
     permissions:
       packages: write
@@ -73,4 +75,4 @@ jobs:
           registry: ghcr.io
           repository: ${{ github.repository }}/${{ matrix.package }}
           target: ${{ needs.vars.outputs.pr }}
-          tags: prod
+          tags: test
