@@ -11,7 +11,7 @@ export class HwcrOutcomeCodeResolver {
   constructor(private readonly hwcrOutcomeCodeService: HwcrOutcomeCodeService) {}
 
   @Query("hwcrOutcomeCodes")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS_OFFICER, Role.CEEB)
   findAll() {
     return this.hwcrOutcomeCodeService.findAll();
   }
