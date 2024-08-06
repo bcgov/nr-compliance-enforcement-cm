@@ -11,7 +11,7 @@ export class ThreatLevelCodeResolver {
   constructor(private readonly threatLevelCodeService: ThreatLevelCodeService) {}
 
   @Query("threatLevelCodes")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS_OFFICER, Role.CEEB)
   findAll() {
     return this.threatLevelCodeService.findAll();
   }

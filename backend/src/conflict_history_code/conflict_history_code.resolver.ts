@@ -11,7 +11,7 @@ export class ConflictHistoryCodeResolver {
   constructor(private readonly conflictHistoryCodeService: ConflictHistoryCodeService) {}
 
   @Query("conflictHistoryCodes")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS_OFFICER, Role.CEEB)
   findAll() {
     return this.conflictHistoryCodeService.findAll();
   }

@@ -11,7 +11,7 @@ export class InactionJustificationTypeResolver {
   constructor(private readonly inactionJustificationTypeService: InactionJustificationTypeService) {}
 
   @Query("inactionJustificationCodes")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS_OFFICER, Role.CEEB)
   find(@Args("agencyCode") agencyCode?: string) {
     return this.inactionJustificationTypeService.find(agencyCode);
   }

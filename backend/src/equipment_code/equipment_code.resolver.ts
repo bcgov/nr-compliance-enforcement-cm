@@ -12,7 +12,7 @@ export class EquipmentCodeResolver {
   constructor(private readonly equipmentCodeService: EquipmentCodeService) {}
 
   @Query("equipmentCodes")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS_OFFICER, Role.CEEB)
   findAll() {
     return this.equipmentCodeService.findAll();
   }

@@ -11,7 +11,7 @@ export class AgeCodeResolver {
   constructor(private readonly ageCodeService: AgeCodeService) {}
 
   @Query("ageCodes")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS_OFFICER, Role.CEEB)
   findAll() {
     return this.ageCodeService.findAll();
   }
