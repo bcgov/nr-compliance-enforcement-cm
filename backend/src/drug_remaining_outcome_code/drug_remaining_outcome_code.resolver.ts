@@ -11,7 +11,7 @@ export class DrugRemainingOutcomeCodeResolver {
   constructor(private readonly drugRemainingOutcomeCodeService: DrugRemainingOutcomeCodeService) {}
 
   @Query("drugRemainingOutcomeCodes")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS_OFFICER, Role.CEEB)
   findAll() {
     return this.drugRemainingOutcomeCodeService.findAll();
   }
