@@ -130,6 +130,11 @@
                                     <td>null</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="ear_tag.ear_code references ear_code.ear_code via fk_ear_tag__ear_code"><a href='ear_tag.html'>ear_tag</a><span class='relatedKey'>.ear_code</span></td>
+                                                <td class="constraint detail">fk_ear_tag__ear_code</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td>
@@ -328,13 +333,23 @@
                                 <h5>Close relationships within degrees of separation</h5>
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
+                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="ear_code.html" target="_top" title="ear_code" alt="" coords="5,5,364,339">
+<area shape="rect" id="node1" href="ear_tag.html" target="_top" title="ear_tag" alt="" coords="408,5,640,181">
+<area shape="rect" id="node2" href="ear_code.html" target="_top" title="ear_code" alt="" coords="5,61,364,395">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/ear_code.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
+<area shape="rect" id="node1" href="ear_tag.html" target="_top" title="ear_tag" alt="" coords="408,15,640,191">
+<area shape="rect" id="node2" href="ear_code.html" target="_top" title="ear_code" alt="" coords="5,111,364,444">
+<area shape="rect" id="node3" href="wildlife.html" target="_top" title="wildlife" alt="" coords="115,5,254,93">
+</map>
+                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/ear_code.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>

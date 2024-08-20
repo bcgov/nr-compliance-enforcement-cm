@@ -130,6 +130,11 @@
                                     <td>null</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="drug_administered.drug_method_code references drug_method_code.drug_method_code via fk_drug_administered__drug_method_code"><a href='drug_administered.html'>drug_administered</a><span class='relatedKey'>.drug_method_code</span></td>
+                                                <td class="constraint detail">fk_drug_administered__drug_method_code</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
                                         </table>
                                     </td>
                                     <td>
@@ -328,13 +333,25 @@
                                 <h5>Close relationships within degrees of separation</h5>
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
+                                    <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="drug_method_code.html" target="_top" title="drug_method_code" alt="" coords="5,5,364,339">
+<area shape="rect" id="node1" href="drug_administered.html" target="_top" title="drug_administered" alt="" coords="408,5,704,240">
+<area shape="rect" id="node2" href="drug_method_code.html" target="_top" title="drug_method_code" alt="" coords="5,91,364,424">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/drug_method_code.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
+<area shape="rect" id="node1" href="drug_administered.html" target="_top" title="drug_administered" alt="" coords="408,91,704,325">
+<area shape="rect" id="node2" href="drug_code.html" target="_top" title="drug_code" alt="" coords="105,111,265,199">
+<area shape="rect" id="node3" href="drug_method_code.html" target="_top" title="drug_method_code" alt="" coords="5,216,364,549">
+<area shape="rect" id="node4" href="drug_remaining_outcome_code.html" target="_top" title="drug_remaining_outcome_code" alt="" coords="21,567,348,655">
+<area shape="rect" id="node5" href="wildlife.html" target="_top" title="wildlife" alt="" coords="115,5,254,93">
+</map>
+                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/drug_method_code.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>
