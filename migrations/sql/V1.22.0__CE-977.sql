@@ -99,23 +99,23 @@ CREATE TABLE
     CONSTRAINT "PK_non_compliance_decision_matrix_code" PRIMARY KEY (non_compliance_decision_matrix_code)
   );
 
-comment on table case_management.TABLE is 'Contains a list of all possible discharge codes for a CEEB decision';
+comment on table case_management.non_compliance_decision_matrix_code is 'Contains a list of all possible non_compliance_decision_matrix_code codes for a CEEB decision';
 
-comment on column case_management.TABLE.COLUMN is 'A human readable code used to identify a TABLE code.';
+comment on column case_management.non_compliance_decision_matrix_code.non_compliance_decision_matrix_code is 'A human readable code used to identify a non_compliance_decision_matrix_code code.';
 
-comment on column case_management.TABLE.short_description is 'The short description of a case management TABLE.';
+comment on column case_management.non_compliance_decision_matrix_code.short_description is 'The short description of a case management non_compliance_decision_matrix_code.';
 
-comment on column case_management.TABLE.long_description is 'The long description of a case management TABLE.';
+comment on column case_management.non_compliance_decision_matrix_code.long_description is 'The long description of a case management non_compliance_decision_matrix_code.';
 
-comment on column case_management.TABLE.active_ind is 'A boolean indicator to determine if the case management TABLE is active.';
+comment on column case_management.non_compliance_decision_matrix_code.active_ind is 'A boolean indicator to determine if the case management non_compliance_decision_matrix_code is active.';
 
-comment on column case_management.TABLE.create_user_id is 'The id of the user that created the case management TABLE.';
+comment on column case_management.non_compliance_decision_matrix_code.create_user_id is 'The id of the user that created the case management non_compliance_decision_matrix_code.';
 
-comment on column case_management.TABLE.create_utc_timestamp is 'The timestamp when the case management TABLE was created.  The timestamp is stored in UTC with no Offset.';
+comment on column case_management.non_compliance_decision_matrix_code.create_utc_timestamp is 'The timestamp when the case management non_compliance_decision_matrix_code was created.  The timestamp is stored in UTC with no Offset.';
 
-comment on column case_management.TABLE.update_user_id is 'The id of the user that updated the case management TABLE.';
+comment on column case_management.non_compliance_decision_matrix_code.update_user_id is 'The id of the user that updated the case management non_compliance_decision_matrix_code.';
 
-comment on column case_management.TABLE.update_utc_timestamp is 'The timestamp when the case management TABLE was updated.  The timestamp is stored in UTC with no Offset.';
+comment on column case_management.non_compliance_decision_matrix_code.update_utc_timestamp is 'The timestamp when the case management non_compliance_decision_matrix_code was updated.  The timestamp is stored in UTC with no Offset.';
 
 --
 -- CREATE TABLE sector_code
@@ -134,23 +134,23 @@ CREATE TABLE
     CONSTRAINT "PK_sector_code" PRIMARY KEY (sector_code)
   );
 
-comment on table case_management.TABLE is 'Contains a list of all possible TABLE codes for a CEEB decision';
+comment on table case_management.sector_code is 'Contains a list of all possible sector_code codes for a CEEB decision';
 
-comment on column case_management.TABLE.COLUMN is 'COMMENT';
+comment on column case_management.sector_code.sector_code is 'A human readable code used to identify a ipm_secord_code';
 
-comment on column case_management.TABLE.short_description is 'The short description of a case management TABLE.';
+comment on column case_management.sector_code.short_description is 'The short description of a case management sector_code.';
 
-comment on column case_management.TABLE.long_description is 'The long description of a case management TABLE.';
+comment on column case_management.sector_code.long_description is 'The long description of a case management sector_code.';
 
-comment on column case_management.TABLE.active_ind is 'A boolean indicator to determine if the case management TABLE is active.';
+comment on column case_management.sector_code.active_ind is 'A boolean indicator to determine if the case management sector_code is active.';
 
-comment on column case_management.TABLE.create_user_id is 'The id of the user that created the case management TABLE.';
+comment on column case_management.sector_code.create_user_id is 'The id of the user that created the case management sector_code.';
 
-comment on column case_management.TABLE.create_utc_timestamp is 'The timestamp when the case management TABLE was created.  The timestamp is stored in UTC with no Offset.';
+comment on column case_management.sector_code.create_utc_timestamp is 'The timestamp when the case management sector_code was created.  The timestamp is stored in UTC with no Offset.';
 
-comment on column case_management.TABLE.update_user_id is 'The id of the user that updated the case management TABLE.';
+comment on column case_management.sector_code.update_user_id is 'The id of the user that updated the case management sector_code.';
 
-comment on column case_management.TABLE.update_utc_timestamp is 'The timestamp when the case management TABLE was updated.  The timestamp is stored in UTC with no Offset.';
+comment on column case_management.sector_code.update_utc_timestamp is 'The timestamp when the case management sector_code was updated.  The timestamp is stored in UTC with no Offset.';
 
 --
 -- CREATE TABLE rational_code
@@ -169,23 +169,23 @@ CREATE TABLE
     CONSTRAINT "PK_rationale_code" PRIMARY KEY (rationale_code)
   );
 
-comment on table case_management.TABLE is 'Contains a list of all possible TABLE codes for a CEEB decision';
+comment on table case_management.rationale_code is 'Contains a list of all possible rationale_code codes for a CEEB decision';
 
-comment on column case_management.TABLE.COLUMN is 'COMMENT';
+comment on column case_management.rationale_code.rationale_code is 'A human readable code used to identify a rationale code.';
 
-comment on column case_management.TABLE.short_description is 'The short description of a case management TABLE.';
+comment on column case_management.rationale_code.short_description is 'The short description of a case management rationale_code.';
 
-comment on column case_management.TABLE.long_description is 'The long description of a case management TABLE.';
+comment on column case_management.rationale_code.long_description is 'The long description of a case management rationale_code.';
 
-comment on column case_management.TABLE.active_ind is 'A boolean indicator to determine if the case management TABLE is active.';
+comment on column case_management.rationale_code.active_ind is 'A boolean indicator to determine if the case management rationale_code is active.';
 
-comment on column case_management.TABLE.create_user_id is 'The id of the user that created the case management TABLE.';
+comment on column case_management.rationale_code.create_user_id is 'The id of the user that created the case management rationale_code.';
 
-comment on column case_management.TABLE.create_utc_timestamp is 'The timestamp when the case management TABLE was created.  The timestamp is stored in UTC with no Offset.';
+comment on column case_management.rationale_code.create_utc_timestamp is 'The timestamp when the case management rationale_code was created.  The timestamp is stored in UTC with no Offset.';
 
-comment on column case_management.TABLE.update_user_id is 'The id of the user that updated the case management TABLE.';
+comment on column case_management.rationale_code.update_user_id is 'The id of the user that updated the case management rationale_code.';
 
-comment on column case_management.TABLE.update_utc_timestamp is 'The timestamp when the case management TABLE was updated.  The timestamp is stored in UTC with no Offset.';
+comment on column case_management.rationale_code.update_utc_timestamp is 'The timestamp when the case management rationale_code was updated.  The timestamp is stored in UTC with no Offset.';
 
 --
 -- CREATE TABLE schedule_code
@@ -204,23 +204,23 @@ CREATE TABLE
     CONSTRAINT "PK_schedule_code" PRIMARY KEY (schedule_code)
   );
 
-comment on table case_management.TABLE is 'Contains a list of all possible TABLE codes for a CEEB decision';
+comment on table case_management.schedule_code is 'Contains a list of all possible schedule_code codes for a CEEB decision';
 
-comment on column case_management.TABLE.COLUMN is 'COMMENT';
+comment on column case_management.schedule_code.COLUMN is 'A human readable code used to identify a wdr schedule code';
 
-comment on column case_management.TABLE.short_description is 'The short description of a case management TABLE.';
+comment on column case_management.schedule_code.short_description is 'The short description of a case management schedule_code.';
 
-comment on column case_management.TABLE.long_description is 'The long description of a case management TABLE.';
+comment on column case_management.schedule_code.long_description is 'The long description of a case management schedule_code.';
 
-comment on column case_management.TABLE.active_ind is 'A boolean indicator to determine if the case management TABLE is active.';
+comment on column case_management.schedule_code.active_ind is 'A boolean indicator to determine if the case management schedule_code is active.';
 
-comment on column case_management.TABLE.create_user_id is 'The id of the user that created the case management TABLE.';
+comment on column case_management.schedule_code.create_user_id is 'The id of the user that created the case management schedule_code.';
 
-comment on column case_management.TABLE.create_utc_timestamp is 'The timestamp when the case management TABLE was created.  The timestamp is stored in UTC with no Offset.';
+comment on column case_management.schedule_code.create_utc_timestamp is 'The timestamp when the case management schedule_code was created.  The timestamp is stored in UTC with no Offset.';
 
-comment on column case_management.TABLE.update_user_id is 'The id of the user that updated the case management TABLE.';
+comment on column case_management.schedule_code.update_user_id is 'The id of the user that updated the case management schedule_code.';
 
-comment on column case_management.TABLE.update_utc_timestamp is 'The timestamp when the case management TABLE was updated.  The timestamp is stored in UTC with no Offset.';
+comment on column case_management.schedule_code.update_utc_timestamp is 'The timestamp when the case management schedule_code was updated.  The timestamp is stored in UTC with no Offset.';
 
 --
 -- CREATE TABLE schedule_sector_xref
