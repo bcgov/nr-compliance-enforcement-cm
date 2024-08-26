@@ -66,7 +66,7 @@ CREATE TABLE
 
 comment on table case_management.discharge_code is 'Contains a list of all possible discharge codes for a CEEB decision';
 
-comment on column case_management.discharge_code.COLUMN is 'A human readable code used to identify a discharge code.';
+comment on column case_management.discharge_code.discharge_code is 'A human readable code used to identify a discharge code.';
 
 comment on column case_management.discharge_code.short_description is 'The short description of a case management discharge_code.';
 
@@ -206,7 +206,7 @@ CREATE TABLE
 
 comment on table case_management.schedule_code is 'Contains a list of all possible schedule_code codes for a CEEB decision';
 
-comment on column case_management.schedule_code.COLUMN is 'A human readable code used to identify a wdr schedule code';
+comment on column case_management.schedule_code.schedule_code is 'A human readable code used to identify a wdr schedule code';
 
 comment on column case_management.schedule_code.short_description is 'The short description of a case management schedule_code.';
 
