@@ -13,6 +13,6 @@ export class ScheduleCodeResolver {
   @Query("scheduleCodes")
   @Roles(Role.COS_OFFICER, Role.CEEB)
   findAll() {
-    // return this.service.findAll();
+    return this.service.findAll();
   }
 }
