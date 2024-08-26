@@ -24,6 +24,7 @@ import { InactionJustificationTypeModule } from "./inaction_justification_type/i
 import { DateScalar } from "./common/custom_scalars";
 import { HWCRPreventionActionModule } from "./hwcr_prevention_action/hwcr_prevention_action.module";
 import { HWCRAssessmentActionModule } from "./hwcr_assessment_action/hwcr_assessment_action.module";
+import { ScheduleCodeModule } from "./code-tables/schedule_code/schedule_code.module";
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { HWCRAssessmentActionModule } from "./hwcr_assessment_action/hwcr_assess
     HWCRPreventionActionModule,
     CaseFileModule,
     InactionJustificationTypeModule,
+    ScheduleCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService, DateScalar],
