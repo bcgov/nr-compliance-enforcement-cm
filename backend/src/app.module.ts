@@ -25,6 +25,10 @@ import { DateScalar } from "./common/custom_scalars";
 import { HWCRPreventionActionModule } from "./hwcr_prevention_action/hwcr_prevention_action.module";
 import { HWCRAssessmentActionModule } from "./hwcr_assessment_action/hwcr_assessment_action.module";
 import { ScheduleCodeModule } from "./code-tables/schedule_code/schedule_code.module";
+import { DischargeCodeModule } from "./code-tables/discharge_code/discharge_code,module";
+import { NonComplianceCodeModule } from "./code-tables/non_compliance_code/non_compliance_code.module";
+import { RationalCodeModule } from "./code-tables/rational_code/rational_code.module";
+import { SectorCodeModule } from "./code-tables/sector_code/sector_code.module";
 
 @Module({
   imports: [
@@ -51,6 +55,10 @@ import { ScheduleCodeModule } from "./code-tables/schedule_code/schedule_code.mo
     CaseFileModule,
     InactionJustificationTypeModule,
     ScheduleCodeModule,
+    DischargeCodeModule,
+    NonComplianceCodeModule,
+    RationalCodeModule,
+    SectorCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService, DateScalar],
