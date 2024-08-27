@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "nestjs-prisma";
-import { RationalCode } from "./entities/rational_code.entity";
+import { RationaleCode } from "./entities/rationale_code.entity";
 
 @Injectable()
-export class RationalCodeService {
+export class RationaleCodeService {
   constructor(private prisma: PrismaService) {}
 
-  findAll = async (): Promise<Array<RationalCode>> => {
+  findAll = async (): Promise<Array<RationaleCode>> => {
     const codes = await this.prisma.rationale_code.findMany({
       select: {
         rationale_code: true,
@@ -18,7 +18,7 @@ export class RationalCodeService {
     });
 
     return codes.map(({ rationale_code, short_description, long_description, display_order, active_ind }) => ({
-      rationalCode: rationale_code,
+      rationaleCode: rationale_code,
       shortDescription: short_description,
       longDescription: long_description,
       displayOrder: display_order,

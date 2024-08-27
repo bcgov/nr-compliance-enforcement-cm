@@ -1,5 +1,5 @@
 export class ScheduleCode {
-  sheduleCode: string;
+  scheduleCode: string;
   shortDescription: string;
   longDescription: string;
   displayOrder: number;

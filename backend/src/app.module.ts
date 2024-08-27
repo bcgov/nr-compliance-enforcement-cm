@@ -27,7 +27,7 @@ import { HWCRAssessmentActionModule } from "./hwcr_assessment_action/hwcr_assess
 import { ScheduleCodeModule } from "./code-tables/schedule_code/schedule_code.module";
 import { DischargeCodeModule } from "./code-tables/discharge_code/discharge_code,module";
 import { NonComplianceCodeModule } from "./code-tables/non_compliance_code/non_compliance_code.module";
-import { RationalCodeModule } from "./code-tables/rational_code/rational_code.module";
+import { RationaleCodeModule } from "./code-tables/rationale_code/rationale_code.module";
 import { SectorCodeModule } from "./code-tables/sector_code/sector_code.module";
 
 @Module({
@@ -57,7 +57,7 @@ import { SectorCodeModule } from "./code-tables/sector_code/sector_code.module";
     ScheduleCodeModule,
     DischargeCodeModule,
     NonComplianceCodeModule,
-    RationalCodeModule,
+    RationaleCodeModule,
     SectorCodeModule,
   ],
   controllers: [AppController],

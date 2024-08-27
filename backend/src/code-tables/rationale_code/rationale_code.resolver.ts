@@ -3,14 +3,14 @@ import { UseGuards } from "@nestjs/common";
 import { JwtRoleGuard } from "src/auth/jwtrole.guard";
 import { Roles } from "src/auth/decorators/roles.decorator";
 import { Role } from "src/enum/role.enum";
-import { RationalCodeService } from "./rational_code.service";
+import { RationaleCodeService } from "./rationale_code.service";
 
 @UseGuards(JwtRoleGuard)
-@Resolver("RationalCode")
-export class RationalCodeResolver {
-  constructor(private readonly service: RationalCodeService) {}
+@Resolver("RationaleCode")
+export class RationaleCodeResolver {
+  constructor(private readonly service: RationaleCodeService) {}
 
-  @Query("rationalCodes")
+  @Query("rationaleCodes")
   @Roles(Role.COS_OFFICER, Role.CEEB)
   findAll() {
     return this.service.findAll();

@@ -1,5 +1,5 @@
-type RationalCode {
-  rationalCode: String
+type RationaleCode {
+  rationaleCode: String
   shortDescription: String
   longDescription: String
   displayOrder: Int
@@ -7,5 +7,5 @@ type RationalCode {
 }
 
 type Query {
-  rationalCodes: [RationalCode]!
+  rationaleCodes: [RationaleCode]!
 }

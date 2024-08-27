@@ -18,7 +18,7 @@ export class ScheduleCodeService {
     });
 
     return codes.map(({ schedule_code, short_description, long_description, display_order, active_ind }) => ({
-      sheduleCode: schedule_code,
+      scheduleCode: schedule_code,
       shortDescription: short_description,
       longDescription: long_description,
       displayOrder: display_order,
