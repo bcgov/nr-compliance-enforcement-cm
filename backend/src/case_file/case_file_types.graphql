@@ -10,6 +10,7 @@ type CaseFile {
   isReviewRequired: Boolean
   reviewComplete: CaseFileAction
   subject: [Wildlife]
+  decision: Decision
 }
 
 type Assessment {
@@ -74,4 +75,8 @@ type Drug {
   amountDiscarded: String
   discardMethod: String
   order: Int
+}
+
+type Decision { 
+
 }
