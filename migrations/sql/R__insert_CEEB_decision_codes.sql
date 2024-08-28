@@ -1166,7 +1166,7 @@ VALUES
     CURRENT_TIMESTAMP
   ),
   (
-    'WDR1',
+    'WDR2',
     'WDR schedule 2',
     'WDR schedule 2',
     20,
@@ -1312,6 +1312,258 @@ VALUES
     'RESPREC',
     4,
     'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT
+DO NOTHING;
+
+--
+-- INSERT non_compliance_decision_matrix_code values
+--
+INSERT INTO
+  case_management.non_compliance_decision_matrix_code (
+    non_compliance_decision_matrix_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+VALUES
+  (
+    'INCOMP',
+    '0 In Compliance',
+    '0 In Compliance',
+    10,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'NOIMPCT',
+    '1 No impact likely',
+    '1 No impact likely',
+    20,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'MINIMPCT',
+    '2 Minor temporary impact likely',
+    '2 Minor temporary impact likely',
+    30,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'MODIMPCT',
+    '3 Moderate temporary impact likely',
+    '3 Moderate temporary impact likely',
+    40,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'SIGIMPCT',
+    '4 Significant impact likely',
+    '4 Significant impact likely',
+    50,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'SVRIMPCT',
+    '5 Severe human health impact demonstrated/likely',
+    '5 Severe human health impact demonstrated/likely',
+    60,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'ND',
+    'Not determined',
+    'Not determined',
+    70,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT
+DO NOTHING;
+
+--
+-- INSERT rationale values
+--
+INSERT INTO
+  case_management.rationale_code (
+    rationale_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+VALUES
+  (
+    'RATIONAL01',
+    'RATIONAL_01',
+    'Rationale 01',
+    10,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'RATIONAL02',
+    'RATIONAL_02',
+    'Rationale 02',
+    20,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'RATIONAL03',
+    'RATIONAL_03',
+    'Rational 03',
+    30,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT
+DO NOTHING;
+
+--
+-- INSERT discharge_code values
+--
+INSERT INTO
+  case_management.discharge_code (
+    discharge_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+VALUES
+  (
+    'AIR_BURN',
+    'AIR_BURN',
+    'Air – burning',
+    10,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'AIR_ODOUR',
+    'AIR_ODOUR',
+    'Air – odour',
+    20,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'AIR_EMSSN',
+    'AIR_EMSSN',
+    'Air – emission',
+    30,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'AIR_DST',
+    'AIR_DST',
+    'Air – dust',
+    40,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'EFFLNT',
+    'EFFLNT',
+    'Effluent',
+    50,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'RFS_DMP',
+    'RFS_DMP',
+    'Refuse – Dumping',
+    60,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'RFS_OTHR',
+    'RFS_OTHR',
+    'Refuse - Other',
+    70,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'PSTCD',
+    'PSTCD',
+    'Pesticides',
+    80,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
   ) ON CONFLICT

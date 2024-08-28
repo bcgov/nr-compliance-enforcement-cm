@@ -16,7 +16,7 @@ export class RationaleCodeService {
         active_ind: true,
       },
     });
-
+    console.log("codes");
     return codes.map(({ rationale_code, short_description, long_description, display_order, active_ind }) => ({
       rationaleCode: rationale_code,
       shortDescription: short_description,
