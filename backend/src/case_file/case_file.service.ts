@@ -24,6 +24,8 @@ import { Wildlife } from "./entities/wildlife-entity";
 import { SubjectQueryResult } from "./dto/subject-query-result";
 import { DeleteWildlifeInput } from "./dto/wildlife/delete-wildlife-input";
 import { UpdateWildlifeInput } from "./dto/wildlife/update-wildlife-input";
+import { CreateDecisionInput } from "./dto/ceeb/decision/create-decsion-input";
+import { DecisionInput } from "./dto/ceeb/decision/decision-input";
 
 @Injectable()
 export class CaseFileService {
@@ -2361,6 +2363,83 @@ export class CaseFileService {
       return await this.findOne(caseIdentifier);
     } catch (error) {
       console.log("exception: unable to delete wildlife", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  };
+
+  //--
+  //-- decision outcomes
+  //--
+  createDecision = async (model: CreateDecisionInput): Promise<CaseFile> => {
+    let caseFileId = "";
+
+    //--
+    //-- creates a new decision record and returns the decision_guid
+    //--
+    const _addDecision = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      caseId: string,
+      decision: DecisionInput,
+      userId: string,
+    ): Promise<any> => {
+      try {
+        const { schedule, sector, discharge, nonCompliance, rationale, assignedTo, actionTaken, actionTakenDate } =
+          decision;
+
+        let record: any = {
+          case_file_guid: caseId,
+          schedule_sector_xref_guid: "",
+          discharge_code: discharge,
+          rationale_code: rationale,
+          non_compliance_decision_matrix_code: nonCompliance,
+          active_ind: true,
+          create_user_id: userId,
+          update_user_id: userId,
+          create_utc_timestamp: new Date(),
+          update_utc_timestamp: new Date(),
+        };
+
+        if (decision.inspectionNumber) {
+          record = { ...record, inspection_number: decision.inspectionNumber };
+        }
+
+        const result = await db.wildlife.create({
+          data: record,
+        });
+
+        return result?.wildlife_guid;
+      } catch (exception) {
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    try {
+      let result: CaseFile;
+
+      await this.prisma.$transaction(async (db) => {
+        const { leadIdentifier, agencyCode, caseCode, createUserId, decision } = model;
+
+        const caseFile = await this.findOneByLeadId(leadIdentifier);
+
+        if (caseFile && caseFile?.caseIdentifier) {
+          caseFileId = caseFile.caseIdentifier;
+        } else {
+          const caseInput: CreateCaseInput = { ...model };
+          caseFileId = await this.createCase(db, caseInput);
+        }
+
+        //-- add decision
+        const wildlifeId = await _addDecision(db, caseFileId, decision, createUserId);
+      });
+
+      result = await this.findOne(caseFileId);
+
+      return result;
+    } catch (error) {
+      console.log("exception: unable to create wildlife ", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };
