@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 --
 -- creates new tables to support CEEB decisions
 --
@@ -12,6 +14,7 @@ CREATE TABLE
     discharge_code varchar(10) NOT NULL,
     rationale_code varchar(10),
     inspection_number int4,
+    lead_agency varchar(10),
     non_compliance_decision_matrix_code varchar(10) NOT NULL,
     active_ind bool NOT NULL,
     create_user_id varchar(32) NOT NULL,
@@ -225,9 +228,21 @@ comment on column case_management.schedule_code.update_utc_timestamp is 'The tim
 --
 -- CREATE TABLE schedule_sector_xref
 --
+-- CREATE TABLE
+--   case_management.schedule_sector_xref (
+--     schedule_sector_xref_guid uuid NOT NULL DEFAULT case_management.uuid_generate_v4 (),
+--     schedule_code varchar(10) NOT NULL,
+--     sector_code varchar(10) NOT NULL,
+--     active_ind bool NOT NULL,
+--     create_user_id varchar(32) NOT NULL,
+--     create_utc_timestamp timestamp NOT NULL,
+--     update_user_id varchar(32) NOT NULL,
+--     update_utc_timestamp timestamp NOT NULL,
+--     CONSTRAINT "PK_schedule_sector_xref_guid" PRIMARY KEY (schedule_sector_xref_guid)
+--   );
 CREATE TABLE
   case_management.schedule_sector_xref (
-    schedule_sector_xref_guid uuid NOT NULL,
+    schedule_sector_xref_guid uuid NULL DEFAULT case_management.uuid_generate_v4 (),
     schedule_code varchar(10) NOT NULL,
     sector_code varchar(10) NOT NULL,
     active_ind bool NOT NULL,

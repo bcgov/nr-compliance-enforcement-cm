@@ -210,6 +210,7 @@ input CreateDecisionInput {
   leadIdentifier: String
   agencyCode: String
   caseCode: String
+  actor: String
   createUserId: String
   decision: DecisionInput
 }

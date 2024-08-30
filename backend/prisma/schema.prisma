@@ -179,8 +179,10 @@ model action {
   update_utc_timestamp         DateTime?               @db.Timestamp(6)
   equipment_guid               String?                 @db.Uuid
   wildlife_guid                String?                 @db.Uuid
+  decision_guid                String?                 @db.Uuid
   case_file                    case_file               @relation(fields: [case_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "FK_action__case_guid")
   action_type_action_xref      action_type_action_xref @relation(fields: [action_type_action_xref_guid], references: [action_type_action_xref_guid], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_action_type_action_xref")
+  decision                     decision?               @relation(fields: [decision_guid], references: [decision_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_action__decision_guid")
   equipment                    equipment?              @relation(fields: [equipment_guid], references: [equipment_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_action__equipment_guid")
   wildlife                     wildlife?               @relation(fields: [wildlife_guid], references: [wildlife_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_action__wildlife_guid")
 }
@@ -463,12 +465,14 @@ model decision {
   discharge_code                                         String               @db.VarChar(10)
   rationale_code                                         String?              @db.VarChar(10)
   inspection_number                                      Int?
+  lead_agency                                            String?              @db.VarChar(10)
   non_compliance_decision_matrix_code                    String               @db.VarChar(10)
   active_ind                                             Boolean
   create_user_id                                         String               @db.VarChar(32)
   create_utc_timestamp                                   DateTime             @db.Timestamp(6)
   update_user_id                                         String               @db.VarChar(32)
   update_utc_timestamp                                   DateTime             @db.Timestamp(6)
+  action                                                 action[]
   case_file                                              case_file            @relation(fields: [case_file_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__case_file_guid")
   discharge_code_decision_discharge_codeTodischarge_code discharge_code       @relation("decision_discharge_codeTodischarge_code", fields: [discharge_code], references: [discharge_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__discharge_code")
   rationale_code_decision_rationale_codeTorationale_code rationale_code?      @relation("decision_rationale_codeTorationale_code", fields: [rationale_code], references: [rationale_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__rationale_code")
@@ -540,7 +544,7 @@ model schedule_code {
 }
 
 model schedule_sector_xref {
-  schedule_sector_xref_guid                                       String        @id(map: "PK_schedule_sector_xref_guid") @db.Uuid
+  schedule_sector_xref_guid                                       String        @id(map: "PK_schedule_sector_xref_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   schedule_code                                                   String        @db.VarChar(10)
   sector_code                                                     String        @db.VarChar(10)
   active_ind                                                      Boolean

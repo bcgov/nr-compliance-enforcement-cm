@@ -80,4 +80,13 @@ type Drug {
 type Decision {
   id: String
   schedule: String
+  sector: String
+  discharge: String
+  nonCompliance: String
+  rationale: String
+  inspectionNumber: String
+  leadAgency: String
+  assignedTo: String
+  actionTaken: String
+  actionTakenDate: Date
 }

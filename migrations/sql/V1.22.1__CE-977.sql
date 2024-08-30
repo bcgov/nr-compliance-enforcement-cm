@@ -18,3 +18,16 @@ OR DELETE
 OR
 UPDATE ON case_management.decision FOR EACH ROW
 EXECUTE PROCEDURE audit_history ('decision_h', 'decision_guid');
+
+--
+-- alter action table, add new column and reference to the decision table
+--
+ALTER TABLE case_management.action
+ADD COLUMN decision_guid uuid;
+
+ALTER TABLE case_management.decision
+ALTER COLUMN decision_guid
+SET DEFAULT case_management.uuid_generate_v4 ();
+
+ALTER TABLE case_management.action
+ADD CONSTRAINT FK_action__decision_guid FOREIGN KEY (decision_guid) REFERENCES case_management.decision (decision_guid);

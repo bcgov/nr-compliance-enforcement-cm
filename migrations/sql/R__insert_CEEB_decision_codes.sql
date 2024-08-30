@@ -1568,3 +1568,57 @@ VALUES
     CURRENT_TIMESTAMP
   ) ON CONFLICT
 DO NOTHING;
+
+--
+-- add new EPO agency code
+--
+insert into
+  case_management.agency_code (
+    agency_code,
+    short_description,
+    long_description,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+values
+  (
+    'EPO',
+    'CEEB',
+    'Compliance and Environmental Enforcement Branch',
+    true,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT
+DO NOTHING;
+
+--
+-- add new ERS case_code 
+--
+insert into
+  case_management.case_code (
+    case_code,
+    short_description,
+    long_description,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+values
+  (
+    'ERS',
+    'Enforcement Complaint',
+    'Enforcement Complaint',
+    true,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT
+DO NOTHING;

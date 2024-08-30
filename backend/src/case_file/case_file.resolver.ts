@@ -126,7 +126,6 @@ export class CaseFileResolver {
   @Mutation("createDecision")
   @Roles(Role.CEEB)
   createDecision(@Args("input") input: CreateDecisionInput) {
-    return null;
+    return this.caseFileService.createDecision(input);
   }
 } //
-//
