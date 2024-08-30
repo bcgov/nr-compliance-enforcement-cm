@@ -373,7 +373,7 @@ export class CaseFileService {
     }
 
     //-- add the decision if its returned in the query result
-    if (queryResult.decision) {
+    if (queryResult.decision && queryResult.decision.length !== 0) {
       const { decision } = queryResult;
 
       const action = await this.caseFileActionService.findActionsByCaseIdAndType(
