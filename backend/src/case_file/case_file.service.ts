@@ -2757,6 +2757,8 @@ export class CaseFileService {
         }
       });
 
+      result = await this.findOne(caseIdentifier);
+
       return result;
     } catch (error) {
       console.log("exception: unable to create wildlife ", error);
