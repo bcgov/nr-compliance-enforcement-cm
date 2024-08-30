@@ -28,6 +28,7 @@ import { CreateDecisionInput } from "./dto/ceeb/decision/create-decsion-input";
 import { DecisionInput } from "./dto/ceeb/decision/decision-input";
 import { randomUUID } from "crypto";
 import { Decision } from "./entities/decision-entity";
+import { UpdateDecisionInput } from "./dto/ceeb/decision/update-decsion-input";
 
 @Injectable()
 export class CaseFileService {
@@ -2602,6 +2603,165 @@ export class CaseFileService {
     });
 
     return query.action_type_action_xref_guid;
+  };
+
+  updateDecision = async (model: UpdateDecisionInput): Promise<CaseFile> => {
+    const { caseIdentifier, updateUserId, decision } = model;
+    const { id: decisonId } = decision;
+
+    //--
+    //-- updates an existing decision record and returns the decision
+    //--
+    const _updateDecision = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      decision: DecisionInput,
+      updateUserId: string,
+      current: Date,
+    ): Promise<any> => {
+      try {
+        const { id, discharge, rationale, nonCompliance, leadAgency, inspectionNumber } = decision;
+
+        let data: any = {
+          discharge_code: discharge,
+          rationale_code: rationale,
+          non_compliance_decision_matrix_code: nonCompliance,
+          lead_agency: leadAgency,
+          inspection_number: inspectionNumber,
+          update_user_id: updateUserId,
+          update_utc_timestamp: current,
+        };
+
+        const result = await db.decision.update({
+          where: { decision_guid: id },
+          data,
+        });
+
+        return result;
+      } catch (exception) {
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    //--
+    //-- updates an existing sector/schedule xref record and returns the xref
+    //--
+    const _updateWdrXref = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      id: string,
+      decision: DecisionInput,
+      updateUserId: string,
+      current: Date,
+    ): Promise<any> => {
+      try {
+        const { sector, schedule } = decision;
+
+        let data: any = {
+          schedule_sector_xref_guid: id,
+          sector_code: sector,
+          schedule_code: schedule,
+          update_user_id: updateUserId,
+          update_utc_timestamp: current,
+        };
+
+        const result = db.schedule_sector_xref.update({
+          where: { schedule_sector_xref_guid: id },
+          data,
+        });
+
+        return result;
+      } catch (exception) {
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    //--
+    //-- updates an existing action record and returns the result
+    //--
+    const _updateAction = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      id: string,
+      decision: DecisionInput,
+      updateUserId: string,
+      current: Date,
+    ): Promise<any> => {
+      try {
+        const { actionTaken, actionTakenDate, assignedTo } = decision;
+
+        //-- get the action_type_action xref
+        const xref = await this._getActionXref(db, actionTaken, ACTION_TYPE_CODES.CEEBACTION);
+
+        const source = await db.action.findFirst({
+          where: {
+            case_guid: caseIdentifier,
+          },
+          select: {
+            action_guid: true,
+          },
+        });
+
+        let data: any = {
+          action_type_action_xref_guid: xref,
+          actor_guid: assignedTo,
+          update_user_id: updateUserId,
+          update_utc_timestamp: current,
+        };
+
+        const result = db.action.update({
+          where: { action_guid: source.action_guid },
+          data,
+        });
+
+        return result;
+      } catch (exception) {
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    try {
+      let result: CaseFile;
+      const current = new Date();
+
+      await this.prisma.$transaction(async (db) => {
+        //-- find the decision record first, if there is a record,
+        //-- apply updates to it
+        const source = await db.decision.findUnique({
+          where: {
+            case_file_guid: caseIdentifier,
+            decision_guid: decisonId,
+          },
+        });
+
+        if (source) {
+          let update = await _updateDecision(db, decision, updateUserId, current);
+
+          //-- if the update was successful update the sector/schedule xref
+          //-- and action taken
+          const xrefResult = await _updateWdrXref(
+            db,
+            source.schedule_sector_xref_guid,
+            decision,
+            updateUserId,
+            current,
+          );
+
+          const actionResult = await _updateAction(db, caseIdentifier, decision, updateUserId, current);
+        }
+      });
+
+      return result;
+    } catch (error) {
+      console.log("exception: unable to create wildlife ", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
   };
 
   //--

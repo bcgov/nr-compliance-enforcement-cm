@@ -215,7 +215,17 @@ input CreateDecisionInput {
   decision: DecisionInput
 }
 
+input UpdateDecisionInput {
+  caseIdentifier: String
+  agencyCode: String
+  caseCode: String
+  actor: String
+  updateUserId: String
+  decision: DecisionInput
+}
+
 input DecisionInput {
+  id: String
   schedule: String
   sector: String
   discharge: String
