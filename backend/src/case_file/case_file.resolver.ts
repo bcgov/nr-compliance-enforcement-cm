@@ -41,13 +41,13 @@ export class CaseFileResolver {
   }
 
   @Query("getCaseFile")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS_OFFICER, Role.CEEB)
   findOne(@Args("caseIdentifier") caseIdentifier: string) {
     return this.caseFileService.findOne(caseIdentifier);
   }
 
   @Query("getCaseFileByLeadId")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS_OFFICER, Role.CEEB)
   findOneByLeadId(@Args("leadIdentifier") leadIdentifier: string) {
     return this.caseFileService.findOneByLeadId(leadIdentifier);
   }
