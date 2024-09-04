@@ -2622,17 +2622,27 @@ export class CaseFileService {
       current: Date,
     ): Promise<any> => {
       try {
-        const { id, discharge, rationale, nonCompliance, leadAgency, inspectionNumber } = decision;
+        const { id, discharge, rationale, nonCompliance, leadAgency, inspectionNumber, actionTaken } = decision;
 
         let data: any = {
           discharge_code: discharge,
           rationale_code: rationale,
           non_compliance_decision_matrix_code: nonCompliance,
-          lead_agency: leadAgency,
-          inspection_number: inspectionNumber,
           update_user_id: updateUserId,
           update_utc_timestamp: current,
         };
+
+        if (actionTaken === "FWDLEADAGN") {
+          data = { ...data, inspection_number: null, lead_agency: leadAgency };
+        }
+
+        if (actionTaken === "RESPREC") {
+          data = { ...data, lead_agency: null, inspection_number: parseInt(inspectionNumber) };
+        }
+
+        if (actionTaken !== "RESPREC" && actionTaken !== "FWDLEADAGN") {
+          data = { ...data, inspection_number: null, lead_agency: null };
+        }
 
         const result = await db.decision.update({
           where: { decision_guid: id },
@@ -2641,6 +2651,7 @@ export class CaseFileService {
 
         return result;
       } catch (exception) {
+        this.logger.error(exception);
         throw new GraphQLError("Exception occurred. See server log for details", exception);
       }
     };
