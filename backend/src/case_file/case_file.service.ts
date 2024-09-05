@@ -335,7 +335,7 @@ export class CaseFileService {
       caseFileId,
       ACTION_TYPE_CODES.COSPRVANDEDU,
     );
-    const test = 0;
+
     let caseFile: CaseFile = {
       caseIdentifier: caseFileId,
       leadIdentifier: lead[0].lead_identifier, //this is okay because there will only be one lead for a case... for now.
