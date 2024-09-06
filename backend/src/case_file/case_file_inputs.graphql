@@ -205,3 +205,35 @@ input WildlifeActionInput {
   action: String
   activeIndicator: Boolean
 }
+
+input CreateDecisionInput {
+  leadIdentifier: String
+  agencyCode: String
+  caseCode: String
+  actor: String
+  createUserId: String
+  decision: DecisionInput
+}
+
+input UpdateDecisionInput {
+  caseIdentifier: String
+  agencyCode: String
+  caseCode: String
+  actor: String
+  updateUserId: String
+  decision: DecisionInput
+}
+
+input DecisionInput {
+  id: String
+  schedule: String
+  sector: String
+  discharge: String
+  nonCompliance: String
+  rationale: String
+  inspectionNumber: String
+  leadAgency: String
+  assignedTo: String
+  actionTaken: String
+  actionTakenDate: Date
+}

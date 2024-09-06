@@ -24,6 +24,11 @@ import { Wildlife } from "./entities/wildlife-entity";
 import { SubjectQueryResult } from "./dto/subject-query-result";
 import { DeleteWildlifeInput } from "./dto/wildlife/delete-wildlife-input";
 import { UpdateWildlifeInput } from "./dto/wildlife/update-wildlife-input";
+import { CreateDecisionInput } from "./dto/ceeb/decision/create-decsion-input";
+import { DecisionInput } from "./dto/ceeb/decision/decision-input";
+import { randomUUID } from "crypto";
+import { Decision } from "./entities/decision-entity";
+import { UpdateDecisionInput } from "./dto/ceeb/decision/update-decsion-input";
 
 @Injectable()
 export class CaseFileService {
@@ -48,21 +53,17 @@ export class CaseFileService {
     let caseFileGuid: string;
 
     try {
-      let case_file = await db.case_file.create({
-        data: {
-          agency_code: {
-            connect: {
-              agency_code: input.agencyCode,
-            },
-          },
-          create_user_id: input.createUserId,
-          create_utc_timestamp: new Date(),
-          case_code_case_file_case_codeTocase_code: {
-            connect: {
-              case_code: input.caseCode,
-            },
-          },
-        },
+      const caseRecord = {
+        case_code: input.caseCode,
+        owned_by_agency_code: input.agencyCode,
+        create_user_id: input.createUserId,
+        update_user_id: input.createUserId,
+        create_utc_timestamp: new Date(),
+        update_utc_timestamp: new Date(),
+      };
+
+      const case_file = await db.case_file.create({
+        data: caseRecord,
       });
 
       caseFileGuid = case_file.case_file_guid;
@@ -76,6 +77,7 @@ export class CaseFileService {
         },
       });
     } catch (exception) {
+      this.logger.warn(exception);
       throw new GraphQLError("Exception occurred. See server log for details", exception);
     }
     return caseFileGuid;
@@ -288,6 +290,25 @@ export class CaseFileService {
             },
           },
         },
+        decision: {
+          where: {
+            active_ind: true,
+          },
+          select: {
+            decision_guid: true,
+            discharge_code: true,
+            rationale_code: true,
+            inspection_number: true,
+            lead_agency: true,
+            non_compliance_decision_matrix_code: true,
+            schedule_sector_xref: {
+              select: {
+                schedule_code: true,
+                sector_code: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -350,6 +371,37 @@ export class CaseFileService {
     //-- are results to add to the casefile
     if (queryResult.wildlife) {
       caseFile.subject = await this._getCaseFileSubjects(queryResult);
+    }
+
+    //-- add the decision if its returned in the query result
+    if (queryResult.decision && queryResult.decision.length !== 0) {
+      const { decision } = queryResult;
+
+      const action = await this.caseFileActionService.findActionsByCaseIdAndType(
+        caseFileId,
+        ACTION_TYPE_CODES.CEEBACTION,
+      );
+
+      let record: Decision = {
+        id: decision[0].decision_guid,
+        schedule: decision[0].schedule_sector_xref.schedule_code,
+        sector: decision[0].schedule_sector_xref.sector_code,
+        discharge: decision[0].discharge_code,
+        nonCompliance: decision[0].non_compliance_decision_matrix_code,
+        rationale: decision[0].rationale_code,
+        assignedTo: action[0].actor,
+        actionTaken: action[0].actionCode,
+        actionTakenDate: action[0].date,
+      };
+
+      if (decision[0].inspection_number) {
+        record = { ...record, inspectionNumber: decision[0].inspection_number.toString() };
+      }
+      if (decision[0].lead_agency) {
+        record = { ...record, leadAgency: decision[0].lead_agency };
+      }
+
+      caseFile.decision = record;
     }
 
     return caseFile;
@@ -2361,6 +2413,366 @@ export class CaseFileService {
       return await this.findOne(caseIdentifier);
     } catch (error) {
       console.log("exception: unable to delete wildlife", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  };
+
+  //--
+  //-- decision outcomes
+  //--
+  createDecision = async (model: CreateDecisionInput): Promise<CaseFile> => {
+    let caseFileId = "";
+
+    //--
+    //-- creates a new decision record and returns the decision_guid
+    //--
+    const _addDecision = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      caseId: string,
+      decision: DecisionInput,
+      scheduleSectorXref: string,
+      userId: string,
+    ): Promise<any> => {
+      try {
+        const { discharge, nonCompliance, rationale } = decision;
+
+        let record: any = {
+          decision_guid: randomUUID(),
+          case_file_guid: caseId,
+          schedule_sector_xref_guid: scheduleSectorXref,
+          discharge_code: discharge,
+          rationale_code: rationale,
+          non_compliance_decision_matrix_code: nonCompliance,
+          active_ind: true,
+          create_user_id: userId,
+          update_user_id: userId,
+          create_utc_timestamp: new Date(),
+          update_utc_timestamp: new Date(),
+        };
+
+        if (decision.inspectionNumber) {
+          record = { ...record, inspection_number: parseInt(decision.inspectionNumber) };
+        }
+
+        if (decision.leadAgency) {
+          record = { ...record, lead_agency: decision.leadAgency };
+        }
+
+        const result = await db.decision.create({
+          data: record,
+        });
+
+        return result?.decision_guid;
+      } catch (exception) {
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    //--
+    //-- creates a schedule/sector xref record and returns the schedule_sector_xref_guid
+    //--
+    const _addWdrXref = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      decision: DecisionInput,
+      userId: string,
+    ): Promise<any> => {
+      try {
+        const { sector, schedule } = decision;
+
+        let record: any = {
+          schedule_sector_xref_guid: randomUUID(),
+          sector_code: sector,
+          schedule_code: schedule,
+          active_ind: true,
+          create_user_id: userId,
+          update_user_id: userId,
+          create_utc_timestamp: new Date(),
+          update_utc_timestamp: new Date(),
+        };
+
+        const result = await db.schedule_sector_xref.create({
+          data: record,
+        });
+
+        return result?.schedule_sector_xref_guid;
+      } catch (exception) {
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    //--
+    //-- creates an action_type_action xref
+    //--
+    const _applyAction = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      caseFileId: string,
+      decision: DecisionInput,
+      userId: string,
+    ): Promise<any> => {
+      try {
+        const { actionTaken, assignedTo, actionTakenDate } = decision;
+
+        //-- get the action_type_action xref
+        const xref = await this._getActionXref(db, actionTaken, ACTION_TYPE_CODES.CEEBACTION);
+
+        let record: any = {
+          action_guid: randomUUID(),
+          case_guid: caseFileId,
+          action_type_action_xref_guid: xref,
+          actor_guid: assignedTo,
+          action_date: actionTakenDate,
+          active_ind: true,
+          create_user_id: userId,
+          update_user_id: userId,
+          create_utc_timestamp: new Date(),
+          update_utc_timestamp: new Date(),
+        };
+
+        const result = await db.action.create({
+          data: record,
+        });
+
+        return result?.action_guid;
+      } catch (exception) {
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    try {
+      let result: CaseFile;
+
+      await this.prisma.$transaction(async (db) => {
+        const { leadIdentifier, agencyCode, caseCode, createUserId, decision } = model;
+
+        const caseFile = await this.findOneByLeadId(leadIdentifier);
+
+        if (caseFile && caseFile?.caseIdentifier) {
+          caseFileId = caseFile.caseIdentifier;
+        } else {
+          const caseInput: CreateCaseInput = { ...model };
+          caseFileId = await this.createCase(db, caseInput);
+        }
+
+        //-- create sector/schedule xref
+        const xref = await _addWdrXref(db, decision, createUserId);
+
+        //-- apply action
+        const actionId = await _applyAction(db, caseFileId, decision, createUserId);
+
+        //-- add decision
+        const decsionId = await _addDecision(db, caseFileId, decision, xref, createUserId);
+      });
+
+      result = await this.findOne(caseFileId);
+
+      return result;
+    } catch (error) {
+      console.log("exception: unable to create wildlife ", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  };
+
+  //--
+  //-- returns the action_type_action_xref_guid for a action_code/action_type_code pair
+  //--
+  _getActionXref = async (
+    db: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+    >,
+    actionCode: string,
+    actionTypeCode: string,
+  ): Promise<any> => {
+    const query = await this.prisma.action_type_action_xref.findFirst({
+      where: {
+        action_code: actionCode,
+        action_type_code: actionTypeCode,
+      },
+      select: {
+        action_type_action_xref_guid: true,
+      },
+    });
+
+    return query.action_type_action_xref_guid;
+  };
+
+  updateDecision = async (model: UpdateDecisionInput): Promise<CaseFile> => {
+    const { caseIdentifier, updateUserId, decision } = model;
+    const { id: decisonId } = decision;
+
+    //--
+    //-- updates an existing decision record and returns the decision
+    //--
+    const _updateDecision = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      decision: DecisionInput,
+      updateUserId: string,
+      current: Date,
+    ): Promise<any> => {
+      try {
+        const { id, discharge, rationale, nonCompliance, leadAgency, inspectionNumber, actionTaken } = decision;
+
+        let data: any = {
+          discharge_code: discharge,
+          rationale_code: rationale,
+          non_compliance_decision_matrix_code: nonCompliance,
+          update_user_id: updateUserId,
+          update_utc_timestamp: current,
+        };
+
+        if (actionTaken === "FWDLEADAGN") {
+          data = { ...data, inspection_number: null, lead_agency: leadAgency };
+        }
+
+        if (actionTaken === "RESPREC") {
+          data = { ...data, lead_agency: null, inspection_number: parseInt(inspectionNumber) };
+        }
+
+        if (actionTaken !== "RESPREC" && actionTaken !== "FWDLEADAGN") {
+          data = { ...data, inspection_number: null, lead_agency: null };
+        }
+
+        const result = await db.decision.update({
+          where: { decision_guid: id },
+          data,
+        });
+
+        return result;
+      } catch (exception) {
+        this.logger.error(exception);
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    //--
+    //-- updates an existing sector/schedule xref record and returns the xref
+    //--
+    const _updateWdrXref = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      id: string,
+      decision: DecisionInput,
+      updateUserId: string,
+      current: Date,
+    ): Promise<any> => {
+      try {
+        const { sector, schedule } = decision;
+
+        let data: any = {
+          schedule_sector_xref_guid: id,
+          sector_code: sector,
+          schedule_code: schedule,
+          update_user_id: updateUserId,
+          update_utc_timestamp: current,
+        };
+
+        const result = db.schedule_sector_xref.update({
+          where: { schedule_sector_xref_guid: id },
+          data,
+        });
+
+        return result;
+      } catch (exception) {
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    //--
+    //-- updates an existing action record and returns the result
+    //--
+    const _updateAction = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      id: string,
+      decision: DecisionInput,
+      updateUserId: string,
+      current: Date,
+    ): Promise<any> => {
+      try {
+        const { actionTaken, actionTakenDate, assignedTo } = decision;
+
+        //-- get the action_type_action xref
+        const xref = await this._getActionXref(db, actionTaken, ACTION_TYPE_CODES.CEEBACTION);
+
+        const source = await db.action.findFirst({
+          where: {
+            case_guid: caseIdentifier,
+          },
+          select: {
+            action_guid: true,
+          },
+        });
+
+        let data: any = {
+          action_type_action_xref_guid: xref,
+          actor_guid: assignedTo,
+          update_user_id: updateUserId,
+          update_utc_timestamp: current,
+        };
+
+        const result = db.action.update({
+          where: { action_guid: source.action_guid },
+          data,
+        });
+
+        return result;
+      } catch (exception) {
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    try {
+      let result: CaseFile;
+      const current = new Date();
+
+      await this.prisma.$transaction(async (db) => {
+        //-- find the decision record first, if there is a record,
+        //-- apply updates to it
+        const source = await db.decision.findUnique({
+          where: {
+            case_file_guid: caseIdentifier,
+            decision_guid: decisonId,
+          },
+        });
+
+        if (source) {
+          let update = await _updateDecision(db, decision, updateUserId, current);
+
+          //-- if the update was successful update the sector/schedule xref
+          //-- and action taken
+          const xrefResult = await _updateWdrXref(
+            db,
+            source.schedule_sector_xref_guid,
+            decision,
+            updateUserId,
+            current,
+          );
+
+          const actionResult = await _updateAction(db, caseIdentifier, decision, updateUserId, current);
+        }
+      });
+
+      result = await this.findOne(caseIdentifier);
+
+      return result;
+    } catch (error) {
+      console.log("exception: unable to create wildlife ", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };

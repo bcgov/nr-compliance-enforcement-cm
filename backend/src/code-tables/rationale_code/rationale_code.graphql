@@ -1,0 +1,11 @@
+type RationaleCode {
+  rationaleCode: String
+  shortDescription: String
+  longDescription: String
+  displayOrder: Int
+  activeIndicator: Boolean
+}
+
+type Query {
+  rationaleCodes: [RationaleCode]!
+}
