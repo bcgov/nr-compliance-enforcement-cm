@@ -24,4 +24,7 @@ type Mutation {
   createWildlife(input: CreateWildlifeInput!): CaseFile!
   updateWildlife(input: UpdateWildlifeInput!): CaseFile!
   deleteWildlife(input: DeleteWildlifeInput!): CaseFile!
+
+  createDecision(input: CreateDecisionInput!): CaseFile!
+  updateDecision(input: UpdateDecisionInput!): CaseFile!
 }

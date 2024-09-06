@@ -24,6 +24,12 @@ import { InactionJustificationTypeModule } from "./inaction_justification_type/i
 import { DateScalar } from "./common/custom_scalars";
 import { HWCRPreventionActionModule } from "./hwcr_prevention_action/hwcr_prevention_action.module";
 import { HWCRAssessmentActionModule } from "./hwcr_assessment_action/hwcr_assessment_action.module";
+import { ScheduleCodeModule } from "./code-tables/schedule_code/schedule_code.module";
+import { DischargeCodeModule } from "./code-tables/discharge_code/discharge_code,module";
+import { NonComplianceCodeModule } from "./code-tables/non_compliance_code/non_compliance_code.module";
+import { RationaleCodeModule } from "./code-tables/rationale_code/rationale_code.module";
+import { SectorCodeModule } from "./code-tables/sector_code/sector_code.module";
+import { CEEBDecisionActionModule } from "./ceeb_decision_action/ceeb_decision_action.module";
 
 @Module({
   imports: [
@@ -49,6 +55,12 @@ import { HWCRAssessmentActionModule } from "./hwcr_assessment_action/hwcr_assess
     HWCRPreventionActionModule,
     CaseFileModule,
     InactionJustificationTypeModule,
+    ScheduleCodeModule,
+    DischargeCodeModule,
+    NonComplianceCodeModule,
+    RationaleCodeModule,
+    SectorCodeModule,
+    CEEBDecisionActionModule,
   ],
   controllers: [AppController],
   providers: [AppService, DateScalar],

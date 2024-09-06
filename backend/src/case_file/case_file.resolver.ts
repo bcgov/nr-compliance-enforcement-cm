@@ -14,6 +14,8 @@ import { DeleteEquipmentInput } from "./dto/equipment/delete-equipment.input";
 import { CreateWildlifeInput } from "./dto/wildlife/create-wildlife-input";
 import { DeleteWildlifeInput } from "./dto/wildlife/delete-wildlife-input";
 import { UpdateWildlifeInput } from "./dto/wildlife/update-wildlife-input";
+import { CreateDecisionInput } from "./dto/ceeb/decision/create-decsion-input";
+import { UpdateDecisionInput } from "./dto/ceeb/decision/update-decsion-input";
 
 @UseGuards(JwtRoleGuard)
 @Resolver("CaseFile")
@@ -39,13 +41,13 @@ export class CaseFileResolver {
   }
 
   @Query("getCaseFile")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS_OFFICER, Role.CEEB)
   findOne(@Args("caseIdentifier") caseIdentifier: string) {
     return this.caseFileService.findOne(caseIdentifier);
   }
 
   @Query("getCaseFileByLeadId")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS_OFFICER, Role.CEEB)
   findOneByLeadId(@Args("leadIdentifier") leadIdentifier: string) {
     return this.caseFileService.findOneByLeadId(leadIdentifier);
   }
@@ -120,5 +122,17 @@ export class CaseFileResolver {
   @Roles(Role.COS_OFFICER)
   deleteWildlife(@Args("input") input: DeleteWildlifeInput) {
     return this.caseFileService.deleteWildlife(input);
+  }
+
+  @Mutation("createDecision")
+  @Roles(Role.CEEB)
+  createDecision(@Args("input") input: CreateDecisionInput) {
+    return this.caseFileService.createDecision(input);
+  }
+
+  @Mutation("updateDecision")
+  @Roles(Role.CEEB)
+  updateDecision(@Args("input") input: UpdateDecisionInput) {
+    return this.caseFileService.updateDecision(input);
   }
 }
