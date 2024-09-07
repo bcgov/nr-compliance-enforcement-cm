@@ -24,6 +24,9 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="wildlife_guid" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
             <parent column="wildlife_guid" foreignKey="fk_action__wildlife_guid" implied="false" onDeleteCascade="false" schema="case_management" table="wildlife"/>
          </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="decision_guid" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="decision_guid" foreignKey="fk_action__decision_guid" implied="false" onDeleteCascade="false" schema="case_management" table="decision"/>
+         </column>
          <primaryKey column="action_guid" sequenceNumberInPK="1"/>
          <index name="PK_action_guid" unique="true">
             <column ascending="true" name="action_guid"/>
@@ -151,6 +154,7 @@
       <table name="case_file" remarks="The central entity of the case management system." schema="case_management" type="TABLE">
          <column autoUpdated="false" defaultValue="case_management.uuid_generate_v4()" digits="0" id="0" name="case_file_guid" nullable="false" remarks="System generated unique key for a case.  This key should never be exposed to users via any system utilizing the tables." size="2147483647" type="uuid" typeCode="1111">
             <child column="case_guid" foreignKey="FK_action__case_guid" implied="false" onDeleteCascade="false" schema="case_management" table="action"/>
+            <child column="case_file_guid" foreignKey="fk_decision__case_file_guid" implied="false" onDeleteCascade="false" schema="case_management" table="decision"/>
             <child column="case_identifier" foreignKey="FK_lead__case_identifier" implied="false" onDeleteCascade="false" schema="case_management" table="lead"/>
             <child column="case_file_guid" foreignKey="fk_wildlife__case_file_guid" implied="false" onDeleteCascade="false" schema="case_management" table="wildlife"/>
          </column>
@@ -228,6 +232,66 @@
          <primaryKey column="conflict_history_code" sequenceNumberInPK="1"/>
          <index name="PK_cnfthistcd" unique="true">
             <column ascending="true" name="conflict_history_code"/>
+         </index>
+      </table>
+      <table name="decision" remarks="As a CEEB Compliance Coordinator or Officer, I need to be able to capture decision information to ensure that all information necessary in the decision making process can be captured in the complaint." schema="case_management" type="TABLE">
+         <column autoUpdated="false" defaultValue="case_management.uuid_generate_v4()" digits="0" id="0" name="decision_guid" nullable="false" remarks="Unique identifier for the decision" size="2147483647" type="uuid" typeCode="1111">
+            <child column="decision_guid" foreignKey="fk_action__decision_guid" implied="false" onDeleteCascade="false" schema="case_management" table="action"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="case_file_guid" nullable="false" remarks="Assoiciates the decision record to an existing case file" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="case_file_guid" foreignKey="fk_decision__case_file_guid" implied="false" onDeleteCascade="false" schema="case_management" table="case_file"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="schedule_sector_xref_guid" nullable="false" remarks="Defines the combination of a WDR_SCHEDULE_CODE and a SECTOR_CATEGORY_CODE" size="2147483647" type="uuid" typeCode="1111">
+            <parent column="schedule_sector_xref_guid" foreignKey="fk_decision__schedule_sector_xref_guid" implied="false" onDeleteCascade="false" schema="case_management" table="schedule_sector_xref"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="discharge_code" nullable="false" remarks="The discharge code related to a decision" size="10" type="varchar" typeCode="12">
+            <parent column="discharge_code" foreignKey="fk_decision__discharge_code" implied="false" onDeleteCascade="false" schema="case_management" table="discharge_code"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="rationale_code" nullable="true" remarks="The rationale code related to a CEEB decision" size="10" type="varchar" typeCode="12">
+            <parent column="rationale_code" foreignKey="fk_decision__rationale_code" implied="false" onDeleteCascade="false" schema="case_management" table="rationale_code"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="inspection_number" nullable="true" remarks="The NRIS inspection number for a CEEB decision" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="lead_agency" nullable="true" remarks="" size="10" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="non_compliance_decision_matrix_code" nullable="false" remarks="" size="10" type="varchar" typeCode="12">
+            <parent column="non_compliance_decision_matrix_code" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="case_management" table="non_compliance_decision_matrix_code"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="active_ind" nullable="false" remarks="A boolean indicator to determine if the case management action is active." size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="create_user_id" nullable="false" remarks="The id of the user that created the case management action." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="10" name="create_utc_timestamp" nullable="false" remarks="The timestamp when the case management action was created.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="update_user_id" nullable="false" remarks="The id of the user that updated the case management action." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="12" name="update_utc_timestamp" nullable="false" remarks="The timestamp when the case management action was updated.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="decision_guid" sequenceNumberInPK="1"/>
+         <index name="PK_decision_guid" unique="true">
+            <column ascending="true" name="decision_guid"/>
+         </index>
+      </table>
+      <table name="decision_h" remarks="" schema="case_management" type="TABLE">
+         <column autoUpdated="false" defaultValue="case_management.uuid_generate_v4()" digits="0" id="0" name="h_decision_guid" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="target_row_id" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="operation_type" nullable="false" remarks="" size="1" type="bpchar" typeCode="1"/>
+         <column autoUpdated="false" defaultValue="CURRENT_USER" digits="0" id="3" name="operation_user_id" nullable="false" remarks="" size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="operation_executed_at" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="data_after_executed_operation" nullable="true" remarks="" size="2147483647" type="jsonb" typeCode="1111"/>
+         <primaryKey column="h_decision_guid" sequenceNumberInPK="1"/>
+         <index name="PK_h_decision" unique="true">
+            <column ascending="true" name="h_decision_guid"/>
+         </index>
+      </table>
+      <table name="discharge_code" remarks="Contains a list of all possible discharge codes for a CEEB decision" schema="case_management" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="discharge_code" nullable="false" remarks="A human readable code used to identify a discharge code." size="10" type="varchar" typeCode="12">
+            <child column="discharge_code" foreignKey="fk_decision__discharge_code" implied="false" onDeleteCascade="false" schema="case_management" table="decision"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="short_description" nullable="false" remarks="The short description of a case management discharge_code." size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="long_description" nullable="true" remarks="The long description of a case management discharge_code." size="250" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="display_order" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="active_ind" nullable="false" remarks="A boolean indicator to determine if the case management discharge_code is active." size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="create_user_id" nullable="false" remarks="The id of the user that created the case management discharge_code." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="6" name="create_utc_timestamp" nullable="false" remarks="The timestamp when the case management discharge_code was created.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="update_user_id" nullable="false" remarks="The id of the user that updated the case management discharge_code." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="update_utc_timestamp" nullable="false" remarks="The timestamp when the case management discharge_code was updated.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="discharge_code" sequenceNumberInPK="1"/>
+         <index name="PK_discharge_code" unique="true">
+            <column ascending="true" name="discharge_code"/>
          </index>
       </table>
       <table name="drug_administered" remarks="While an officer is responding to a LEAD they may need to record that a WILDLIFE had a DRUG_ADMINISTERED.  This table keeps track of the type and amount of drugs administered, along with what happened to any remaining drug that was not used." schema="case_management" type="TABLE">
@@ -488,6 +552,94 @@
          <primaryKey column="h_lead_guid" sequenceNumberInPK="1"/>
          <index name="PK_h_lead" unique="true">
             <column ascending="true" name="h_lead_guid"/>
+         </index>
+      </table>
+      <table name="non_compliance_decision_matrix_code" remarks="Contains a list of all possible non_compliance_decision_matrix_code codes for a CEEB decision" schema="case_management" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="non_compliance_decision_matrix_code" nullable="false" remarks="A human readable code used to identify a non_compliance_decision_matrix_code code." size="10" type="varchar" typeCode="12">
+            <child column="non_compliance_decision_matrix_code" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="case_management" table="decision"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="short_description" nullable="false" remarks="The short description of a case management non_compliance_decision_matrix_code." size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="long_description" nullable="true" remarks="The long description of a case management non_compliance_decision_matrix_code." size="250" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="display_order" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="active_ind" nullable="false" remarks="A boolean indicator to determine if the case management non_compliance_decision_matrix_code is active." size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="create_user_id" nullable="false" remarks="The id of the user that created the case management non_compliance_decision_matrix_code." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="6" name="create_utc_timestamp" nullable="false" remarks="The timestamp when the case management non_compliance_decision_matrix_code was created.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="update_user_id" nullable="false" remarks="The id of the user that updated the case management non_compliance_decision_matrix_code." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="update_utc_timestamp" nullable="false" remarks="The timestamp when the case management non_compliance_decision_matrix_code was updated.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="non_compliance_decision_matrix_code" sequenceNumberInPK="1"/>
+         <index name="PK_non_compliance_decision_matrix_code" unique="true">
+            <column ascending="true" name="non_compliance_decision_matrix_code"/>
+         </index>
+      </table>
+      <table name="rationale_code" remarks="Contains a list of all possible rationale_code codes for a CEEB decision" schema="case_management" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="rationale_code" nullable="false" remarks="A human readable code used to identify a rationale code." size="10" type="varchar" typeCode="12">
+            <child column="rationale_code" foreignKey="fk_decision__rationale_code" implied="false" onDeleteCascade="false" schema="case_management" table="decision"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="short_description" nullable="false" remarks="The short description of a case management rationale_code." size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="long_description" nullable="true" remarks="The long description of a case management rationale_code." size="250" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="display_order" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="active_ind" nullable="false" remarks="A boolean indicator to determine if the case management rationale_code is active." size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="create_user_id" nullable="false" remarks="The id of the user that created the case management rationale_code." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="6" name="create_utc_timestamp" nullable="false" remarks="The timestamp when the case management rationale_code was created.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="update_user_id" nullable="false" remarks="The id of the user that updated the case management rationale_code." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="update_utc_timestamp" nullable="false" remarks="The timestamp when the case management rationale_code was updated.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="rationale_code" sequenceNumberInPK="1"/>
+         <index name="PK_rationale_code" unique="true">
+            <column ascending="true" name="rationale_code"/>
+         </index>
+      </table>
+      <table name="schedule_code" remarks="Contains a list of all possible schedule_code codes for a CEEB decision" schema="case_management" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="schedule_code" nullable="false" remarks="A human readable code used to identify a wdr schedule code" size="10" type="varchar" typeCode="12">
+            <child column="schedule_code" foreignKey="fk_schedule_sector_xref__schedule_code" implied="false" onDeleteCascade="false" schema="case_management" table="schedule_sector_xref"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="short_description" nullable="false" remarks="The short description of a case management schedule_code." size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="long_description" nullable="true" remarks="The long description of a case management schedule_code." size="250" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="display_order" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="active_ind" nullable="false" remarks="A boolean indicator to determine if the case management schedule_code is active." size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="create_user_id" nullable="false" remarks="The id of the user that created the case management schedule_code." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="6" name="create_utc_timestamp" nullable="false" remarks="The timestamp when the case management schedule_code was created.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="update_user_id" nullable="false" remarks="The id of the user that updated the case management schedule_code." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="update_utc_timestamp" nullable="false" remarks="The timestamp when the case management schedule_code was updated.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="schedule_code" sequenceNumberInPK="1"/>
+         <index name="PK_schedule_code" unique="true">
+            <column ascending="true" name="schedule_code"/>
+         </index>
+      </table>
+      <table name="schedule_sector_xref" remarks="" schema="case_management" type="TABLE">
+         <column autoUpdated="false" defaultValue="case_management.uuid_generate_v4()" digits="0" id="0" name="schedule_sector_xref_guid" nullable="false" remarks="" size="2147483647" type="uuid" typeCode="1111">
+            <child column="schedule_sector_xref_guid" foreignKey="fk_decision__schedule_sector_xref_guid" implied="false" onDeleteCascade="false" schema="case_management" table="decision"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="schedule_code" nullable="false" remarks="" size="10" type="varchar" typeCode="12">
+            <parent column="schedule_code" foreignKey="fk_schedule_sector_xref__schedule_code" implied="false" onDeleteCascade="false" schema="case_management" table="schedule_code"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="sector_code" nullable="false" remarks="" size="10" type="varchar" typeCode="12">
+            <parent column="sector_code" foreignKey="fk_schedule_sector_xref__sector_code" implied="false" onDeleteCascade="false" schema="case_management" table="sector_code"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="active_ind" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="create_user_id" nullable="false" remarks="" size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="5" name="create_utc_timestamp" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="update_user_id" nullable="false" remarks="" size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="7" name="update_utc_timestamp" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="schedule_sector_xref_guid" sequenceNumberInPK="1"/>
+         <index name="PK_schedule_sector_xref_guid" unique="true">
+            <column ascending="true" name="schedule_sector_xref_guid"/>
+         </index>
+      </table>
+      <table name="sector_code" remarks="Contains a list of all possible sector_code codes for a CEEB decision" schema="case_management" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="sector_code" nullable="false" remarks="A human readable code used to identify a ipm_secord_code" size="10" type="varchar" typeCode="12">
+            <child column="sector_code" foreignKey="fk_schedule_sector_xref__sector_code" implied="false" onDeleteCascade="false" schema="case_management" table="schedule_sector_xref"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="short_description" nullable="false" remarks="The short description of a case management sector_code." size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="long_description" nullable="true" remarks="The long description of a case management sector_code." size="250" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="display_order" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="active_ind" nullable="false" remarks="A boolean indicator to determine if the case management sector_code is active." size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="create_user_id" nullable="false" remarks="The id of the user that created the case management sector_code." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="6" name="create_utc_timestamp" nullable="false" remarks="The timestamp when the case management sector_code was created.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="update_user_id" nullable="false" remarks="The id of the user that updated the case management sector_code." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="update_utc_timestamp" nullable="false" remarks="The timestamp when the case management sector_code was updated.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="sector_code" sequenceNumberInPK="1"/>
+         <index name="PK_sector_code" unique="true">
+            <column ascending="true" name="sector_code"/>
          </index>
       </table>
       <table name="sex_code" remarks="Contains the list of biological sexes supported by the system.  For example M = &quot;Male&quot;" schema="case_management" type="TABLE">

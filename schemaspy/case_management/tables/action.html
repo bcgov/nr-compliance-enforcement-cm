@@ -345,6 +345,28 @@
                                     </td>
                                     <td></td>
                                 </tr>
+                                <tr>
+                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="decision_guid">decision_guid</span></td>
+                                    <td>uuid</td>
+                                    <td>2147483647</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                            <tr>
+                                                <td title="action.decision_guid references decision.decision_guid via fk_action__decision_guid"><a href='decision.html'>decision</a><span class='relatedKey'>.decision_guid</span></td>
+                                                <td class="constraint detail">fk_action__decision_guid</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -400,41 +422,88 @@
                                 <ul class="nav nav-tabs pull-left ui-sortable-handle">
                                     <li class="active"><a href="#oneDegreeImg-chart" data-toggle="tab" aria-expanded="true">One</a></li>
                                     <li class=""><a href="#twodegreesDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two degrees</a></li>
+                                    <li class=""><a href="#oneimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">One implied</a></li>
+                                    <li class=""><a href="#twoimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Two implied</a></li>
                                 </ul>
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="action.html" target="_top" title="action" alt="" coords="611,5,1023,427">
-<area shape="rect" id="node2" href="action_type_action_xref.html" target="_top" title="action_type_action_xref" alt="" coords="289,87,567,263">
-<area shape="rect" id="node3" href="case_file.html" target="_top" title="case_file" alt="" coords="5,243,245,448">
-<area shape="rect" id="node4" href="equipment.html" target="_top" title="equipment" alt="" coords="293,280,563,427">
-<area shape="rect" id="node5" href="wildlife.html" target="_top" title="wildlife" alt="" coords="312,444,544,737">
+<area shape="rect" id="node1" href="action.html" target="_top" title="action" alt="" coords="688,10,1100,460">
+<area shape="rect" id="node2" href="action_type_action_xref.html" target="_top" title="action_type_action_xref" alt="" coords="328,71,605,247">
+<area shape="rect" id="node3" href="case_file.html" target="_top" title="case_file" alt="" coords="5,458,245,663">
+<area shape="rect" id="node4" href="decision.html" target="_top" title="decision" alt="" coords="289,739,644,1003">
+<area shape="rect" id="node5" href="equipment.html" target="_top" title="equipment" alt="" coords="332,264,601,411">
+<area shape="rect" id="node6" href="wildlife.html" target="_top" title="wildlife" alt="" coords="351,428,583,722">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/action.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="action.html" target="_top" title="action" alt="" coords="1136,100,1548,521">
-<area shape="rect" id="node2" href="action_type_action_xref.html" target="_top" title="action_type_action_xref" alt="" coords="815,11,1092,187">
-<area shape="rect" id="node3" href="case_file.html" target="_top" title="case_file" alt="" coords="574,261,721,349">
-<area shape="rect" id="node4" href="equipment.html" target="_top" title="equipment" alt="" coords="819,347,1088,493">
-<area shape="rect" id="node5" href="wildlife.html" target="_top" title="wildlife" alt="" coords="884,580,1023,668">
-<area shape="rect" id="node6" href="action_code.html" target="_top" title="action_code" alt="" coords="561,111,734,199">
-<area shape="rect" id="node7" href="action_type_code.html" target="_top" title="action_type_code" alt="" coords="539,5,755,93">
-<area shape="rect" id="node8" href="case_code.html" target="_top" title="case_code" alt="" coords="275,153,434,241">
-<area shape="rect" id="node9" href="inaction_reason_code.html" target="_top" title="inaction_reason_code" alt="" coords="229,259,480,347">
-<area shape="rect" id="node10" href="agency_code.html" target="_top" title="agency_code" alt="" coords="5,293,185,381">
-<area shape="rect" id="node13" href="equipment_code.html" target="_top" title="equipment_code" alt="" coords="541,367,753,455">
-<area shape="rect" id="node15" href="age_code.html" target="_top" title="age_code" alt="" coords="571,472,723,560">
-<area shape="rect" id="node16" href="conflict_history_code.html" target="_top" title="conflict_history_code" alt="" coords="524,577,771,665">
-<area shape="rect" id="node17" href="hwcr_outcome_code.html" target="_top" title="hwcr_outcome_code" alt="" coords="527,683,767,771">
-<area shape="rect" id="node18" href="sex_code.html" target="_top" title="sex_code" alt="" coords="572,893,723,981">
-<area shape="rect" id="node19" href="threat_level_code.html" target="_top" title="threat_level_code" alt="" coords="538,788,757,876">
-<area shape="rect" id="node11" href="drug_administered.html" target="_top" title="drug_administered" alt="" coords="1227,669,1457,757">
-<area shape="rect" id="node12" href="ear_tag.html" target="_top" title="ear_tag" alt="" coords="1273,564,1411,652">
-<area shape="rect" id="node14" href="lead.html" target="_top" title="lead" alt="" coords="897,204,1010,292">
+<area shape="rect" id="node1" href="action.html" target="_top" title="action" alt="" coords="1136,148,1548,599">
+<area shape="rect" id="node2" href="action_type_action_xref.html" target="_top" title="action_type_action_xref" alt="" coords="815,27,1092,203">
+<area shape="rect" id="node3" href="case_file.html" target="_top" title="case_file" alt="" coords="574,343,721,431">
+<area shape="rect" id="node4" href="decision.html" target="_top" title="decision" alt="" coords="881,525,1026,613">
+<area shape="rect" id="node5" href="equipment.html" target="_top" title="equipment" alt="" coords="819,256,1088,403">
+<area shape="rect" id="node6" href="wildlife.html" target="_top" title="wildlife" alt="" coords="884,872,1023,960">
+<area shape="rect" id="node7" href="action_code.html" target="_top" title="action_code" alt="" coords="561,111,734,199">
+<area shape="rect" id="node8" href="action_type_code.html" target="_top" title="action_type_code" alt="" coords="539,5,755,93">
+<area shape="rect" id="node9" href="case_code.html" target="_top" title="case_code" alt="" coords="275,235,434,323">
+<area shape="rect" id="node10" href="inaction_reason_code.html" target="_top" title="inaction_reason_code" alt="" coords="229,340,480,428">
+<area shape="rect" id="node11" href="agency_code.html" target="_top" title="agency_code" alt="" coords="5,375,185,463">
+<area shape="rect" id="node12" href="discharge_code.html" target="_top" title="discharge_code" alt="" coords="547,659,748,747">
+<area shape="rect" id="node13" href="rationale_code.html" target="_top" title="rationale_code" alt="" coords="549,448,746,536">
+<area shape="rect" id="node14" href="schedule_sector_xref.html" target="_top" title="schedule_sector_xref" alt="" coords="525,553,770,641">
+<area shape="rect" id="node17" href="equipment_code.html" target="_top" title="equipment_code" alt="" coords="541,237,753,325">
+<area shape="rect" id="node19" href="age_code.html" target="_top" title="age_code" alt="" coords="571,1080,723,1168">
+<area shape="rect" id="node20" href="conflict_history_code.html" target="_top" title="conflict_history_code" alt="" coords="524,764,771,852">
+<area shape="rect" id="node21" href="hwcr_outcome_code.html" target="_top" title="hwcr_outcome_code" alt="" coords="527,869,767,957">
+<area shape="rect" id="node22" href="sex_code.html" target="_top" title="sex_code" alt="" coords="572,1185,723,1273">
+<area shape="rect" id="node23" href="threat_level_code.html" target="_top" title="threat_level_code" alt="" coords="538,975,757,1063">
+<area shape="rect" id="node15" href="drug_administered.html" target="_top" title="drug_administered" alt="" coords="1227,921,1457,1009">
+<area shape="rect" id="node16" href="ear_tag.html" target="_top" title="ear_tag" alt="" coords="1273,816,1411,904">
+<area shape="rect" id="node18" href="lead.html" target="_top" title="lead" alt="" coords="897,420,1010,508">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/action.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="oneimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="oneDegreeRelationshipsDiagramImplied" name="oneDegreeRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="action.html" target="_top" title="action" alt="" coords="688,10,1100,460">
+<area shape="rect" id="node2" href="action_type_action_xref.html" target="_top" title="action_type_action_xref" alt="" coords="328,71,605,247">
+<area shape="rect" id="node3" href="case_file.html" target="_top" title="case_file" alt="" coords="5,458,245,663">
+<area shape="rect" id="node4" href="decision.html" target="_top" title="decision" alt="" coords="289,739,644,1003">
+<area shape="rect" id="node5" href="equipment.html" target="_top" title="equipment" alt="" coords="332,264,601,411">
+<area shape="rect" id="node6" href="wildlife.html" target="_top" title="wildlife" alt="" coords="351,428,583,722">
+</map>
+                                        <a name='diagram'><img id="oneimpliedDegreeImg" src="../diagrams/tables/action.implied1degrees.png" usemap="#oneDegreeRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="twoimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="twoDegreesRelationshipsDiagramImplied" name="twoDegreesRelationshipsDiagramImplied">
+<area shape="rect" id="node1" href="action.html" target="_top" title="action" alt="" coords="1275,164,1687,615">
+<area shape="rect" id="node2" href="action_type_action_xref.html" target="_top" title="action_type_action_xref" alt="" coords="953,43,1231,219">
+<area shape="rect" id="node3" href="case_file.html" target="_top" title="case_file" alt="" coords="643,328,790,416">
+<area shape="rect" id="node4" href="decision.html" target="_top" title="decision" alt="" coords="1019,541,1165,629">
+<area shape="rect" id="node5" href="equipment.html" target="_top" title="equipment" alt="" coords="957,272,1227,419">
+<area shape="rect" id="node6" href="wildlife.html" target="_top" title="wildlife" alt="" coords="1023,963,1161,1051">
+<area shape="rect" id="node7" href="action_code.html" target="_top" title="action_code" alt="" coords="630,111,803,199">
+<area shape="rect" id="node8" href="action_type_code.html" target="_top" title="action_type_code" alt="" coords="609,5,825,93">
+<area shape="rect" id="node9" href="case_code.html" target="_top" title="case_code" alt="" coords="275,220,434,308">
+<area shape="rect" id="node10" href="inaction_reason_code.html" target="_top" title="inaction_reason_code" alt="" coords="229,325,480,413">
+<area shape="rect" id="node11" href="agency_code.html" target="_top" title="agency_code" alt="" coords="5,360,185,448">
+<area shape="rect" id="node12" href="discharge_code.html" target="_top" title="discharge_code" alt="" coords="616,644,817,732">
+<area shape="rect" id="node13" href="non_compliance_decision_matrix_code.html" target="_top" title="non_compliance_decision_matrix_code" alt="" coords="524,749,909,837">
+<area shape="rect" id="node14" href="rationale_code.html" target="_top" title="rationale_code" alt="" coords="618,433,815,521">
+<area shape="rect" id="node15" href="schedule_sector_xref.html" target="_top" title="schedule_sector_xref" alt="" coords="594,539,839,627">
+<area shape="rect" id="node18" href="equipment_code.html" target="_top" title="equipment_code" alt="" coords="611,223,823,311">
+<area shape="rect" id="node20" href="age_code.html" target="_top" title="age_code" alt="" coords="641,1065,793,1153">
+<area shape="rect" id="node21" href="conflict_history_code.html" target="_top" title="conflict_history_code" alt="" coords="593,1171,840,1259">
+<area shape="rect" id="node22" href="hwcr_outcome_code.html" target="_top" title="hwcr_outcome_code" alt="" coords="597,855,837,943">
+<area shape="rect" id="node23" href="sex_code.html" target="_top" title="sex_code" alt="" coords="641,1276,792,1364">
+<area shape="rect" id="node24" href="threat_level_code.html" target="_top" title="threat_level_code" alt="" coords="607,960,826,1048">
+<area shape="rect" id="node16" href="drug_administered.html" target="_top" title="drug_administered" alt="" coords="1366,1012,1595,1100">
+<area shape="rect" id="node17" href="ear_tag.html" target="_top" title="ear_tag" alt="" coords="1412,907,1549,995">
+<area shape="rect" id="node19" href="lead.html" target="_top" title="lead" alt="" coords="1035,436,1149,524">
+</map>
+                                        <a name='diagram'><img id="twoimpliedDegreeImg" src="../diagrams/tables/action.implied2degrees.png" usemap="#twoDegreesRelationshipsDiagramImplied" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>
