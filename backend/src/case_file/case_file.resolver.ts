@@ -16,6 +16,7 @@ import { DeleteWildlifeInput } from "./dto/wildlife/delete-wildlife-input";
 import { UpdateWildlifeInput } from "./dto/wildlife/update-wildlife-input";
 import { CreateDecisionInput } from "./dto/ceeb/decision/create-decsion-input";
 import { UpdateDecisionInput } from "./dto/ceeb/decision/update-decsion-input";
+import { CreateAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/create-authorization-outcome-input";
 
 @UseGuards(JwtRoleGuard)
 @Resolver("CaseFile")
@@ -134,5 +135,11 @@ export class CaseFileResolver {
   @Roles(Role.CEEB)
   updateDecision(@Args("input") input: UpdateDecisionInput) {
     return this.caseFileService.updateDecision(input);
+  }
+
+  @Mutation("createAuthorizationOutcome")
+  @Roles(Role.CEEB)
+  createAuthorizationOutcome(@Args("input") input: CreateAuthorizationOutcomeInput) {
+    return this.caseFileService.createAuthorizationOutcome(input);
   }
 }

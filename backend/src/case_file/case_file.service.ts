@@ -29,6 +29,7 @@ import { DecisionInput } from "./dto/ceeb/decision/decision-input";
 import { randomUUID } from "crypto";
 import { Decision } from "./entities/decision-entity";
 import { UpdateDecisionInput } from "./dto/ceeb/decision/update-decsion-input";
+import { CreateAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/create-authorization-outcome-input";
 
 @Injectable()
 export class CaseFileService {
@@ -2773,6 +2774,107 @@ export class CaseFileService {
       return result;
     } catch (error) {
       console.log("exception: unable to create wildlife ", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  };
+
+  //--
+  //-- site authorization outcome
+  //--
+  createAuthorizationOutcome = async (model: CreateAuthorizationOutcomeInput): Promise<CaseFile> => {
+    let caseFileId = "";
+
+    const _addPermit = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      caseId: string,
+      value: string,
+      userId: string,
+    ): Promise<any> => {
+      try {
+        let record: any = {
+          // authorized_permit_guid: randomUUID(),
+          case_file_guid: caseId,
+          authorization_permit_id: value,
+          create_user_id: userId,
+          update_user_id: userId,
+          create_utc_timestamp: new Date(),
+          update_utc_timestamp: new Date(),
+        };
+
+        const result = await db.authorization_permit.create({
+          data: record,
+        });
+
+        return result?.authorization_permit_guid;
+      } catch (exception) {
+        let { message } = exception;
+        this.logger.error("Unable to create new authorization_permit record: ", message);
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    const _addSite = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      caseId: string,
+      value: string,
+      userId: string,
+    ): Promise<any> => {
+      try {
+        let record: any = {
+          site_guid: randomUUID(),
+          case_file_guid: caseId,
+          site_id: value,
+          create_user_id: userId,
+          update_user_id: userId,
+          create_utc_timestamp: new Date(),
+          update_utc_timestamp: new Date(),
+        };
+
+        const result = await db.site.create({
+          data: record,
+        });
+
+        return result?.site_guid;
+      } catch (exception) {
+        let { message } = exception;
+        this.logger.error("Unable to create new site record: ", message);
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    try {
+      let result: CaseFile;
+
+      await this.prisma.$transaction(async (db) => {
+        const { leadIdentifier, createUserId, input } = model;
+
+        const caseFile = await this.findOneByLeadId(leadIdentifier);
+
+        if (caseFile && caseFile?.caseIdentifier) {
+          caseFileId = caseFile.caseIdentifier;
+        } else {
+          const caseInput: CreateCaseInput = { ...model };
+          caseFileId = await this.createCase(db, caseInput);
+        }
+
+        //-- create a new authorized_permit or site record depending on the type
+        //-- of authorization is provided
+        const { type, value } = input;
+
+        type === "permit"
+          ? await _addPermit(db, caseFileId, value, createUserId)
+          : await _addSite(db, caseFileId, value, createUserId);
+      });
+
+      return await this.findOne(caseFileId);
+    } catch (error) {
+      console.log("exception: unable to create authorization outcome ", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };
