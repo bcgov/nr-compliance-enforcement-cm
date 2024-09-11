@@ -3,8 +3,8 @@ export interface Decision {
   schedule: string;
   sector: string;
   discharge: string;
-  nonCompliance: string;
-  rationale: string;
+  nonCompliance?: string;
+  rationale?: string;
   inspectionNumber?: string;
   leadAgency?: string;
   assignedTo: string;

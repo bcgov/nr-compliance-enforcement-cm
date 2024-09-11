@@ -2437,7 +2437,16 @@ export class CaseFileService {
       userId: string,
     ): Promise<any> => {
       try {
-        const { discharge, nonCompliance, rationale } = decision;
+        let { discharge, nonCompliance, rationale } = decision;
+
+        //don't try and insert empty into the code tables.
+        if (rationale === "" || rationale === undefined) {
+          rationale = null;
+        }
+
+        if (nonCompliance === "" || nonCompliance === undefined) {
+          nonCompliance = null;
+        }
 
         let record: any = {
           decision_guid: randomUUID(),
