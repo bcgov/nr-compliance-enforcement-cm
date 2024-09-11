@@ -1,0 +1,1 @@
+ALTER TABLE case_management.decision ALTER COLUMN non_compliance_decision_matrix_code DROP NOT NULL;
