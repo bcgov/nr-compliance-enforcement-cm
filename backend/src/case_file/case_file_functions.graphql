@@ -30,4 +30,5 @@ type Mutation {
 
   createAuthorizationOutcome(input: CreateAuthorizationOutcomeInput!): CaseFile!
   updateAuthorizationOutcome(input: UpdateAuthorizationOutcomeInput!): CaseFile!
+  deleteAuthorizationOutcome(input: DeleteAuthorizationOutcomeInput!): CaseFile!
 }

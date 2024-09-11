@@ -33,6 +33,7 @@ import { CreateAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcom
 import { AuthorizationOutcomeSearchResults } from "./dto/ceeb/authorization-outcome/authorization-outcome-search-results";
 import { AuthorizationOutcome } from "./entities/authorization-outcome.entity";
 import { UpdateAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/update-authorization-outcome-input";
+import { DeleteAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/delete-authorization-outcome-input";
 
 @Injectable()
 export class CaseFileService {
@@ -2973,15 +2974,13 @@ export class CaseFileService {
   };
 
   updateAuthorizationOutcome = async (model: UpdateAuthorizationOutcomeInput): Promise<CaseFile> => {
-    const { caseIdentifier, updateUserId } = model;
+    const { caseIdentifier, updateUserId, input } = model;
     const timestamp = new Date();
 
     try {
       let result: CaseFile;
 
       await this.prisma.$transaction(async (db) => {
-        const { updateUserId, input } = model;
-        //
         //-- get the current case file and compare the current
         //-- authorization outcome to the submited outcome if the
         //-- outcome is a different type, remove the old outcome
@@ -3006,6 +3005,30 @@ export class CaseFileService {
       return await this.findOne(caseIdentifier);
     } catch (error) {
       console.log("exception: unable to create authorization outcome ", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  };
+
+  deleteAuthorizationOutcome = async (model: DeleteAuthorizationOutcomeInput): Promise<CaseFile> => {
+    const { caseIdentifier, updateUserId, id } = model;
+    const timestamp = new Date();
+
+    try {
+      await this.prisma.$transaction(async (db) => {
+        const caseFile = await this.findOne(caseIdentifier);
+
+        if (caseFile) {
+          const {
+            authorization: { type },
+          } = caseFile;
+
+          await this._removeAuthorizationOutcome(db, id, type, updateUserId, timestamp);
+        }
+      });
+
+      return await this.findOne(caseIdentifier);
+    } catch (error) {
+      console.log("exception: unable to delete authorization outcome ", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };

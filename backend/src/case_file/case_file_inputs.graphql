@@ -254,6 +254,12 @@ input UpdateAuthorizationOutcomeInput {
   input: PermitSiteInput
 }
 
+input DeleteAuthorizationOutcomeInput {
+  caseIdentifier: String!
+  updateUserId: String!
+  id: String!
+}
+
 input PermitSiteInput {
   id: String
   type: String!
