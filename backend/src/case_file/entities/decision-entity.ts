@@ -7,7 +7,7 @@ export interface Decision {
   rationale?: string;
   inspectionNumber?: string;
   leadAgency?: string;
-  assignedTo: string;
-  actionTaken: string;
-  actionTakenDate: Date;
+  assignedTo?: string;
+  actionTaken?: string;
+  actionTakenDate?: Date;
 }
