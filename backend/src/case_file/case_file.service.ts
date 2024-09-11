@@ -387,11 +387,11 @@ export class CaseFileService {
         schedule: decision[0].schedule_sector_xref.schedule_code,
         sector: decision[0].schedule_sector_xref.sector_code,
         discharge: decision[0].discharge_code,
-        nonCompliance: decision[0].non_compliance_decision_matrix_code,
-        rationale: decision[0].rationale_code,
-        assignedTo: action[0].actor,
-        actionTaken: action[0].actionCode,
-        actionTakenDate: action[0].date,
+        nonCompliance: decision[0]?.non_compliance_decision_matrix_code,
+        rationale: decision[0]?.rationale_code,
+        assignedTo: action[0]?.actor,
+        actionTaken: action[0]?.actionCode,
+        actionTakenDate: action[0]?.date,
       };
 
       if (decision[0].inspection_number) {
@@ -2575,7 +2575,9 @@ export class CaseFileService {
         const xref = await _addWdrXref(db, decision, createUserId);
 
         //-- apply action
-        const actionId = await _applyAction(db, caseFileId, decision, createUserId);
+        if (decision.actionTaken && decision.assignedTo) {
+          await _applyAction(db, caseFileId, decision, createUserId);
+        }
 
         //-- add decision
         const decsionId = await _addDecision(db, caseFileId, decision, xref, createUserId);
