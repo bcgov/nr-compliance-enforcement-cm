@@ -29,4 +29,5 @@ type Mutation {
   updateDecision(input: UpdateDecisionInput!): CaseFile!
 
   createAuthorizationOutcome(input: CreateAuthorizationOutcomeInput!): CaseFile!
+  updateAuthorizationOutcome(input: UpdateAuthorizationOutcomeInput!): CaseFile!
 }

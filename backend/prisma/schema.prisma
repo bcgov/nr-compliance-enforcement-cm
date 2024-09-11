@@ -577,6 +577,7 @@ model authorization_permit {
   authorization_permit_guid String    @id(map: "PK_authorization_permit_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   case_file_guid            String    @db.Uuid
   authorization_permit_id   String    @db.VarChar(50)
+  active_ind                Boolean?  @default(true)
   create_user_id            String    @db.VarChar(32)
   create_utc_timestamp      DateTime  @db.Timestamp(6)
   update_user_id            String?   @db.VarChar(32)
@@ -597,6 +598,7 @@ model site {
   site_guid            String    @id(map: "PK_site_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   case_file_guid       String    @db.Uuid
   site_id              String    @db.VarChar(50)
+  active_ind           Boolean?  @default(true)
   create_user_id       String    @db.VarChar(32)
   create_utc_timestamp DateTime  @db.Timestamp(6)
   update_user_id       String?   @db.VarChar(32)

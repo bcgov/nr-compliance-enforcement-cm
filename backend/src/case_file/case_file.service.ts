@@ -30,6 +30,9 @@ import { randomUUID } from "crypto";
 import { Decision } from "./entities/decision-entity";
 import { UpdateDecisionInput } from "./dto/ceeb/decision/update-decsion-input";
 import { CreateAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/create-authorization-outcome-input";
+import { AuthorizationOutcomeSearchResults } from "./dto/ceeb/authorization-outcome/authorization-outcome-search-results";
+import { AuthorizationOutcome } from "./entities/authorization-outcome.entity";
+import { UpdateAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/update-authorization-outcome-input";
 
 @Injectable()
 export class CaseFileService {
@@ -310,6 +313,24 @@ export class CaseFileService {
             },
           },
         },
+        authorization_permit: {
+          where: {
+            active_ind: true,
+          },
+          select: {
+            authorization_permit_guid: true,
+            authorization_permit_id: true,
+          },
+        },
+        site: {
+          where: {
+            active_ind: true,
+          },
+          select: {
+            site_guid: true,
+            site_id: true,
+          },
+        },
       },
     });
 
@@ -404,6 +425,10 @@ export class CaseFileService {
 
       caseFile.decision = record;
     }
+
+    //-- add the authorization if there's either authorized_permit or site
+    //-- but there can be only one
+    caseFile.authorization = this._getAuthorizationOutcome(queryResult as AuthorizationOutcomeSearchResults);
 
     return caseFile;
   };
@@ -2779,74 +2804,144 @@ export class CaseFileService {
   };
 
   //--
-  //-- site authorization outcome
+  //-- authorization outcome
   //--
-  createAuthorizationOutcome = async (model: CreateAuthorizationOutcomeInput): Promise<CaseFile> => {
-    let caseFileId = "";
+  private _addAuthorizationOutcome = async (
+    db: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+    >,
+    caseId: string,
+    type: "permit" | "site",
+    value: string,
+    userId: string,
+  ): Promise<any> => {
+    try {
+      let record: any = {
+        case_file_guid: caseId,
+        create_user_id: userId,
+        update_user_id: userId,
+        create_utc_timestamp: new Date(),
+        update_utc_timestamp: new Date(),
+      };
 
-    const _addPermit = async (
-      db: Omit<
-        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
-      >,
-      caseId: string,
-      value: string,
-      userId: string,
-    ): Promise<any> => {
-      try {
-        let record: any = {
-          // authorized_permit_guid: randomUUID(),
-          case_file_guid: caseId,
-          authorization_permit_id: value,
-          create_user_id: userId,
-          update_user_id: userId,
-          create_utc_timestamp: new Date(),
-          update_utc_timestamp: new Date(),
-        };
+      if (type === "permit") {
+        record = { ...record, authorization_permit_id: value };
 
         const result = await db.authorization_permit.create({
           data: record,
         });
 
         return result?.authorization_permit_guid;
-      } catch (exception) {
-        let { message } = exception;
-        this.logger.error("Unable to create new authorization_permit record: ", message);
-        throw new GraphQLError("Exception occurred. See server log for details", exception);
-      }
-    };
-
-    const _addSite = async (
-      db: Omit<
-        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
-      >,
-      caseId: string,
-      value: string,
-      userId: string,
-    ): Promise<any> => {
-      try {
-        let record: any = {
-          site_guid: randomUUID(),
-          case_file_guid: caseId,
-          site_id: value,
-          create_user_id: userId,
-          update_user_id: userId,
-          create_utc_timestamp: new Date(),
-          update_utc_timestamp: new Date(),
-        };
+      } else {
+        record = { ...record, site_id: value };
 
         const result = await db.site.create({
           data: record,
         });
 
-        return result?.site_guid;
-      } catch (exception) {
-        let { message } = exception;
-        this.logger.error("Unable to create new site record: ", message);
-        throw new GraphQLError("Exception occurred. See server log for details", exception);
+        return result.site_guid;
       }
+    } catch (exception) {
+      let { message } = exception;
+      this.logger.error(
+        `Unable to create new ${type === "permit" ? "authorization_permit" : "site"}  record: `,
+        message,
+      );
+      throw new GraphQLError("Exception occurred. See server log for details", exception);
+    }
+  };
+
+  private _removeAuthorizationOutcome = async (
+    db: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+    >,
+    id: string,
+    type: "permit" | "site",
+    userId: string,
+    current: Date,
+  ): Promise<any> => {
+    const softDeleteFragment = { active_ind: false, update_user_id: userId, update_utc_timestamp: current };
+
+    try {
+      if (type === "permit") {
+        const result = await db.authorization_permit.update({
+          where: { authorization_permit_guid: id },
+          data: softDeleteFragment,
+        });
+      } else {
+        const result = await db.site.update({
+          where: { site_guid: id },
+          data: softDeleteFragment,
+        });
+      }
+    } catch (exception) {
+      let { message } = exception;
+      this.logger.error(
+        `Unable to create new ${type === "permit" ? "authorization_permit" : "site"}  record: `,
+        message,
+      );
+      throw new GraphQLError("Exception occurred. See server log for details", exception);
+    }
+  };
+
+  private _updateAuthorizationOutcome = async (
+    db: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+    >,
+    id: string,
+    type: "permit" | "site",
+    value: string,
+    userId: string,
+    current: Date,
+  ): Promise<any> => {
+    const record = {
+      update_user_id: userId,
+      update_utc_timestamp: current,
+      ...(type === "permit" && { authorization_permit_id: value }),
+      ...(type === "site" && { site_id: value }),
     };
+
+    try {
+      if (type === "permit") {
+        const result = await db.authorization_permit.update({
+          where: { authorization_permit_guid: id },
+          data: record,
+        });
+      } else {
+        const result = await db.site.update({
+          where: { site_guid: id },
+          data: record,
+        });
+      }
+    } catch (exception) {
+      let { message } = exception;
+      this.logger.error(
+        `Unable to update existing ${type === "permit" ? "authorization_permit" : "site"}  record: `,
+        message,
+      );
+      throw new GraphQLError("Exception occurred. See server log for details", exception);
+    }
+  };
+
+  private _getAuthorizationOutcome = (query: AuthorizationOutcomeSearchResults): AuthorizationOutcome => {
+    const { authorization_permit: permit, site } = query;
+
+    if (permit.length !== 0) {
+      return { id: permit[0].authorization_permit_guid, type: "permit", value: permit[0].authorization_permit_id };
+    }
+
+    if (site.length !== 0) {
+      return { id: site[0].site_guid, type: "site", value: site[0].site_id };
+    }
+
+    return null;
+  };
+
+  createAuthorizationOutcome = async (model: CreateAuthorizationOutcomeInput): Promise<CaseFile> => {
+    let caseFileId = "";
 
     try {
       let result: CaseFile;
@@ -2867,12 +2962,48 @@ export class CaseFileService {
         //-- of authorization is provided
         const { type, value } = input;
 
-        type === "permit"
-          ? await _addPermit(db, caseFileId, value, createUserId)
-          : await _addSite(db, caseFileId, value, createUserId);
+        const outcome = await this._addAuthorizationOutcome(db, caseFileId, type, value, createUserId);
       });
 
       return await this.findOne(caseFileId);
+    } catch (error) {
+      console.log("exception: unable to create authorization outcome ", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  };
+
+  updateAuthorizationOutcome = async (model: UpdateAuthorizationOutcomeInput): Promise<CaseFile> => {
+    const { caseIdentifier, updateUserId } = model;
+    const timestamp = new Date();
+
+    try {
+      let result: CaseFile;
+
+      await this.prisma.$transaction(async (db) => {
+        const { updateUserId, input } = model;
+        //
+        //-- get the current case file and compare the current
+        //-- authorization outcome to the submited outcome if the
+        //-- outcome is a different type, remove the old outcome
+        //-- and add a new one or update the type if the same
+        const caseFile = await this.findOne(caseIdentifier);
+        const { authorization: current } = caseFile;
+
+        const { type, value } = input;
+        if (current.type === type) {
+          await this._updateAuthorizationOutcome(db, current.id, type, value, updateUserId, timestamp);
+        } else {
+          await this._removeAuthorizationOutcome(db, current.id, current.type, updateUserId, timestamp);
+
+          if (current.type === "permit") {
+            await this._addAuthorizationOutcome(db, caseIdentifier, type, value, updateUserId);
+          } else {
+            await this._addAuthorizationOutcome(db, caseIdentifier, type, value, updateUserId);
+          }
+        }
+      });
+
+      return await this.findOne(caseIdentifier);
     } catch (error) {
       console.log("exception: unable to create authorization outcome ", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});

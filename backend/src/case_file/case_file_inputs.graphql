@@ -246,6 +246,14 @@ input CreateAuthorizationOutcomeInput {
   input: PermitSiteInput!
 }
 
+input UpdateAuthorizationOutcomeInput {
+  caseIdentifier: String
+  agencyCode: String
+  caseCode: String
+  updateUserId: String
+  input: PermitSiteInput
+}
+
 input PermitSiteInput {
   id: String
   type: String!
