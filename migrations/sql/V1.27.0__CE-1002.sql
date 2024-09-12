@@ -51,6 +51,20 @@ CREATE TABLE
     CONSTRAINT "PK_h_authorization_permit" PRIMARY KEY (h_authorization_permit_guid)
   );
 
+COMMENT on table public.authorization_permit_h is 'History table for authorization_permit table';
+
+COMMENT on column public.authorization_permit_h.h_authorization_permit_guid is 'System generated unique key for authorization permit history. This key should never be exposed to users via any system utilizing the tables.';
+
+COMMENT on column public.authorization_permit_h.target_row_id is 'The unique key for the authorization permit that has been created or modified.';
+
+COMMENT on column public.authorization_permit_h.operation_type is 'The operation performed: I = Insert, U = Update, D = Delete';
+
+COMMENT on column public.authorization_permit_h.operation_user_id is 'The id of the user that created or modified the data in the authorization permit table.  Defaults to the logged in user if not passed in by the application.';
+
+COMMENT on column public.authorization_permit_h.operation_executed_at is 'The timestamp when the data in the authorization permit table was created or modified.  The timestamp is stored in UTC with no Offset.';
+
+COMMENT on column public.authorization_permit_h.data_after_executed_operation is 'A JSON representation of the row in the table after the operation was completed successfully.   This implies that the latest row in the audit table will always match with the current row in the live table.';
+
 --
 -- create site table
 --
@@ -98,6 +112,20 @@ CREATE TABLE
     data_after_executed_operation jsonb,
     CONSTRAINT "PK_h_site" PRIMARY KEY (h_site_guid)
   );
+
+COMMENT on table public.site_h is 'History table for site table';
+
+COMMENT on column public.site_h.h_site_guid is 'System generated unique key for site history. This key should never be exposed to users via any system utilizing the tables.';
+
+COMMENT on column public.site_h.target_row_id is 'The unique key for the site that has been created or modified.';
+
+COMMENT on column public.site_h.operation_type is 'The operation performed: I = Insert, U = Update, D = Delete';
+
+COMMENT on column public.site_h.operation_user_id is 'The id of the user that created or modified the data in the site table.  Defaults to the logged in user if not passed in by the application.';
+
+COMMENT on column public.site_h.operation_executed_at is 'The timestamp when the data in the site table was created or modified.  The timestamp is stored in UTC with no Offset.';
+
+COMMENT on column public.site_h.data_after_executed_operation is 'A JSON representation of the row in the table after the operation was completed successfully.   This implies that the latest row in the audit table will always match with the current row in the live table.';
 
 --
 -- add history triggers to authorization_permit and site tables
