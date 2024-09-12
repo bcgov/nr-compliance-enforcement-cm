@@ -92,19 +92,19 @@ export class CaseFileResolver {
   }
 
   @Mutation("createNote")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS_OFFICER, Role.CEEB)
   createNote(@Args("input") input: CreateSupplementalNoteInput) {
     return this.caseFileService.createNote(input);
   }
 
   @Mutation("updateNote")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS_OFFICER, Role.CEEB)
   updateNote(@Args("input") input: UpdateSupplementalNoteInput) {
     return this.caseFileService.updateNote(input);
   }
 
   @Mutation("deleteNote")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS_OFFICER, Role.CEEB)
   deleteNote(@Args("input") input: DeleteSupplementalNoteInput) {
     return this.caseFileService.deleteNote(input);
   }
