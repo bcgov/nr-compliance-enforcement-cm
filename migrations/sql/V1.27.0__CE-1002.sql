@@ -19,6 +19,24 @@ create table
     constraint "PK_authorization_permit_guid" PRIMARY KEY (authorization_permit_guid)
   );
 
+comment on table case_management.authorization_permit is 'Contains the authroized site id for the Authroization Outcome';
+
+comment on column case_management.authorization_permit.authorization_permit_guid is 'System generated unique key for an authorized_permit record';
+
+comment on column case_management.authorization_permit.case_file_guid is 'System generated unique key for a case.  This key should never be exposed to users via any system utilizing the tables.';
+
+comment on column case_management.authorization_permit.authorization_permit_id is 'The value used for an authorized site id';
+
+comment on column case_management.authorization_permit.active_ind is 'A boolean indicator to determine if the has been soft deleted.';
+
+comment on column case_management.authorization_permit.create_user_id is 'The id of the user that created the authroized site id.';
+
+comment on column case_management.authorization_permit.create_utc_timestamp is 'The timestamp when the authroized site id was created. The timestamp is stored in UTC with no Offset.';
+
+comment on column case_management.authorization_permit.update_user_id is 'The id of the user that updated the authroized site id';
+
+comment on column case_management.authorization_permit.update_utc_timestamp is 'The timestamp when the authroized site id was updated. The timestamp is stored in UTC with no Offset.';
+
 --
 -- create authorized_permit_h history table
 --
@@ -48,6 +66,24 @@ create table
     update_utc_timestamp timestamp NULL,
     constraint "PK_site_guid" PRIMARY KEY (site_guid)
   );
+
+comment on table case_management.site is 'Contains the unauthorized site id for the Authroization Outcome';
+
+comment on column case_management.site.site_guid is 'System generated unique key for a site record';
+
+comment on column case_management.site.case_file_guid is 'System generated unique key for a case.  This key should never be exposed to users via any system utilizing the tables.';
+
+comment on column case_management.site.site_id is 'The value used for an unauthorized site id';
+
+comment on column case_management.site.active_ind is 'A boolean indicator to determine if the record has been soft deleted.';
+
+comment on column case_management.site.create_user_id is 'The id of the user that created the unauthroized site id.';
+
+comment on column case_management.site.create_utc_timestamp is 'The timestamp when the unauthroized site id was created. The timestamp is stored in UTC with no Offset.';
+
+comment on column case_management.site.update_user_id is 'The id of the user that updated the unauthroized site id';
+
+comment on column case_management.site.update_utc_timestamp is 'The timestamp when the unauthroized site id was updated. The timestamp is stored in UTC with no Offset.';
 
 --
 -- create site_h history table
