@@ -270,23 +270,25 @@ model case_code {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model case_file {
-  case_file_guid                                                            String                @id(map: "PK_case_file_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  case_code                                                                 String                @db.VarChar(10)
-  owned_by_agency_code                                                      String                @db.VarChar(10)
-  inaction_reason_code                                                      String?               @db.VarChar(10)
+  case_file_guid                                                            String                 @id(map: "PK_case_file_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  case_code                                                                 String                 @db.VarChar(10)
+  owned_by_agency_code                                                      String                 @db.VarChar(10)
+  inaction_reason_code                                                      String?                @db.VarChar(10)
   action_not_required_ind                                                   Boolean?
   note_text                                                                 String?
   review_required_ind                                                       Boolean?
-  create_user_id                                                            String                @db.VarChar(32)
-  create_utc_timestamp                                                      DateTime              @db.Timestamp(6)
-  update_user_id                                                            String?               @db.VarChar(32)
-  update_utc_timestamp                                                      DateTime?             @db.Timestamp(6)
+  create_user_id                                                            String                 @db.VarChar(32)
+  create_utc_timestamp                                                      DateTime               @db.Timestamp(6)
+  update_user_id                                                            String?                @db.VarChar(32)
+  update_utc_timestamp                                                      DateTime?              @db.Timestamp(6)
   action                                                                    action[]
-  case_code_case_file_case_codeTocase_code                                  case_code             @relation("case_file_case_codeTocase_code", fields: [case_code], references: [case_code], onDelete: NoAction, onUpdate: NoAction, map: "FK_case_file__case_code")
-  inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code inaction_reason_code? @relation("case_file_inaction_reason_codeToinaction_reason_code", fields: [inaction_reason_code], references: [inaction_reason_code], onDelete: NoAction, onUpdate: NoAction, map: "FK_case_file__inaction_reason_code")
-  agency_code                                                               agency_code           @relation(fields: [owned_by_agency_code], references: [agency_code], onDelete: NoAction, onUpdate: NoAction, map: "FK_case_file__owned_by_agency_code")
+  authorization_permit                                                      authorization_permit[]
+  case_code_case_file_case_codeTocase_code                                  case_code              @relation("case_file_case_codeTocase_code", fields: [case_code], references: [case_code], onDelete: NoAction, onUpdate: NoAction, map: "FK_case_file__case_code")
+  inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code inaction_reason_code?  @relation("case_file_inaction_reason_codeToinaction_reason_code", fields: [inaction_reason_code], references: [inaction_reason_code], onDelete: NoAction, onUpdate: NoAction, map: "FK_case_file__inaction_reason_code")
+  agency_code                                                               agency_code            @relation(fields: [owned_by_agency_code], references: [agency_code], onDelete: NoAction, onUpdate: NoAction, map: "FK_case_file__owned_by_agency_code")
   decision                                                                  decision[]
   lead                                                                      lead[]
+  site                                                                      site[]
   wildlife                                                                  wildlife[]
 }
 
@@ -569,4 +571,46 @@ model sector_code {
   update_user_id                                                     String                 @db.VarChar(32)
   update_utc_timestamp                                               DateTime               @db.Timestamp(6)
   schedule_sector_xref_schedule_sector_xref_sector_codeTosector_code schedule_sector_xref[] @relation("schedule_sector_xref_sector_codeTosector_code")
+}
+
+model authorization_permit {
+  authorization_permit_guid String    @id(map: "PK_authorization_permit_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  case_file_guid            String    @db.Uuid
+  authorization_permit_id   String    @db.VarChar(50)
+  active_ind                Boolean?  @default(true)
+  create_user_id            String    @db.VarChar(32)
+  create_utc_timestamp      DateTime  @db.Timestamp(6)
+  update_user_id            String?   @db.VarChar(32)
+  update_utc_timestamp      DateTime? @db.Timestamp(6)
+  case_file                 case_file @relation(fields: [case_file_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_authorization_permit__case_file_guid")
+}
+
+model authorization_permit_h {
+  h_authorization_permit_guid   String   @id(map: "PK_h_authorization_permit") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  target_row_id                 String   @db.Uuid
+  operation_type                String   @db.Char(1)
+  operation_user_id             String   @default(dbgenerated("CURRENT_USER")) @db.VarChar(32)
+  operation_executed_at         DateTime @default(now()) @db.Timestamp(6)
+  data_after_executed_operation Json?
+}
+
+model site {
+  site_guid            String    @id(map: "PK_site_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  case_file_guid       String    @db.Uuid
+  site_id              String    @db.VarChar(50)
+  active_ind           Boolean?  @default(true)
+  create_user_id       String    @db.VarChar(32)
+  create_utc_timestamp DateTime  @db.Timestamp(6)
+  update_user_id       String?   @db.VarChar(32)
+  update_utc_timestamp DateTime? @db.Timestamp(6)
+  case_file            case_file @relation(fields: [case_file_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_site__case_file_guid")
+}
+
+model site_h {
+  h_site_guid                   String   @id(map: "PK_h_site") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  target_row_id                 String   @db.Uuid
+  operation_type                String   @db.Char(1)
+  operation_user_id             String   @default(dbgenerated("CURRENT_USER")) @db.VarChar(32)
+  operation_executed_at         DateTime @default(now()) @db.Timestamp(6)
+  data_after_executed_operation Json?
 }

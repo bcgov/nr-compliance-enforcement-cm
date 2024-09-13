@@ -7,4 +7,3 @@ export class UpdateDecisionInput {
   updateUserId: string;
   decision: DecisionInput;
 }
-//

@@ -1,4 +1,5 @@
 import { Assessment } from "./assessment.entity";
+import { AuthorizationOutcome } from "./authorization-outcome.entity";
 import { Decision } from "./decision-entity";
 import { Equipment } from "./equipment.entity";
 import { Prevention } from "./prevention.entity";
@@ -17,4 +18,5 @@ export class CaseFile {
   reviewComplete?: ReviewComplete;
   subject?: Array<Wildlife>;
   decision?: Decision;
+  authorization?: AuthorizationOutcome;
 }

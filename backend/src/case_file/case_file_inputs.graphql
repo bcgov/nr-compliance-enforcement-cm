@@ -237,3 +237,31 @@ input DecisionInput {
   actionTaken: String
   actionTakenDate: Date
 }
+
+input CreateAuthorizationOutcomeInput {
+  leadIdentifier: String!
+  agencyCode: String!
+  caseCode: String!
+  createUserId: String!
+  input: PermitSiteInput!
+}
+
+input UpdateAuthorizationOutcomeInput {
+  caseIdentifier: String
+  agencyCode: String
+  caseCode: String
+  updateUserId: String
+  input: PermitSiteInput
+}
+
+input DeleteAuthorizationOutcomeInput {
+  caseIdentifier: String!
+  updateUserId: String!
+  id: String!
+}
+
+input PermitSiteInput {
+  id: String
+  type: String!
+  value: String!
+}

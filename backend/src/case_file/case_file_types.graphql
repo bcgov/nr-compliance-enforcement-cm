@@ -11,6 +11,7 @@ type CaseFile {
   reviewComplete: CaseFileAction
   subject: [Wildlife]
   decision: Decision
+  authorization: PermitSite
 }
 
 type Assessment {
@@ -89,4 +90,10 @@ type Decision {
   assignedTo: String
   actionTaken: String
   actionTakenDate: Date
+}
+
+type PermitSite {
+  id: String
+  type: String
+  value: String
 }
