@@ -135,6 +135,34 @@
             <column ascending="true" name="agency_code"/>
          </index>
       </table>
+      <table name="authorization_permit" remarks="Contains the authroized site id for the Authroization Outcome" schema="case_management" type="TABLE">
+         <column autoUpdated="false" defaultValue="case_management.uuid_generate_v4()" digits="0" id="0" name="authorization_permit_guid" nullable="false" remarks="System generated unique key for an authorized_permit record" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="case_file_guid" nullable="false" remarks="System generated unique key for a case.  This key should never be exposed to users via any system utilizing the tables." size="2147483647" type="uuid" typeCode="1111">
+            <parent column="case_file_guid" foreignKey="fk_authorization_permit__case_file_guid" implied="false" onDeleteCascade="false" schema="case_management" table="case_file"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="authorization_permit_id" nullable="false" remarks="The value used for an authorized site id" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="3" name="active_ind" nullable="true" remarks="A boolean indicator to determine if the has been soft deleted." size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="create_user_id" nullable="false" remarks="The id of the user that created the authroized site id." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="5" name="create_utc_timestamp" nullable="false" remarks="The timestamp when the authroized site id was created. The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="update_user_id" nullable="true" remarks="The id of the user that updated the authroized site id" size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="7" name="update_utc_timestamp" nullable="true" remarks="The timestamp when the authroized site id was updated. The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="authorization_permit_guid" sequenceNumberInPK="1"/>
+         <index name="PK_authorization_permit_guid" unique="true">
+            <column ascending="true" name="authorization_permit_guid"/>
+         </index>
+      </table>
+      <table name="authorization_permit_h" remarks="History table for authorization_permit table" schema="case_management" type="TABLE">
+         <column autoUpdated="false" defaultValue="case_management.uuid_generate_v4()" digits="0" id="0" name="h_authorization_permit_guid" nullable="false" remarks="System generated unique key for authorization permit history. This key should never be exposed to users via any system utilizing the tables." size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="target_row_id" nullable="false" remarks="The unique key for the authorization permit that has been created or modified." size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="operation_type" nullable="false" remarks="The operation performed: I = Insert, U = Update, D = Delete" size="1" type="bpchar" typeCode="1"/>
+         <column autoUpdated="false" defaultValue="CURRENT_USER" digits="0" id="3" name="operation_user_id" nullable="false" remarks="The id of the user that created or modified the data in the authorization permit table.  Defaults to the logged in user if not passed in by the application." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="operation_executed_at" nullable="false" remarks="The timestamp when the data in the authorization permit table was created or modified.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="data_after_executed_operation" nullable="true" remarks="A JSON representation of the row in the table after the operation was completed successfully.   This implies that the latest row in the audit table will always match with the current row in the live table." size="2147483647" type="jsonb" typeCode="1111"/>
+         <primaryKey column="h_authorization_permit_guid" sequenceNumberInPK="1"/>
+         <index name="PK_h_authorization_permit" unique="true">
+            <column ascending="true" name="h_authorization_permit_guid"/>
+         </index>
+      </table>
       <table name="case_code" remarks="Contains the list of case types supported by the system.  For example HWCR = &quot;Human Wildlife Conflict&quot;" schema="case_management" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="case_code" nullable="false" remarks="A human readable code used to identify a case type." size="10" type="varchar" typeCode="12">
             <child column="case_code" foreignKey="FK_case_file__case_code" implied="false" onDeleteCascade="false" schema="case_management" table="case_file"/>
@@ -154,8 +182,10 @@
       <table name="case_file" remarks="The central entity of the case management system." schema="case_management" type="TABLE">
          <column autoUpdated="false" defaultValue="case_management.uuid_generate_v4()" digits="0" id="0" name="case_file_guid" nullable="false" remarks="System generated unique key for a case.  This key should never be exposed to users via any system utilizing the tables." size="2147483647" type="uuid" typeCode="1111">
             <child column="case_guid" foreignKey="FK_action__case_guid" implied="false" onDeleteCascade="false" schema="case_management" table="action"/>
+            <child column="case_file_guid" foreignKey="fk_authorization_permit__case_file_guid" implied="false" onDeleteCascade="false" schema="case_management" table="authorization_permit"/>
             <child column="case_file_guid" foreignKey="fk_decision__case_file_guid" implied="false" onDeleteCascade="false" schema="case_management" table="decision"/>
             <child column="case_identifier" foreignKey="FK_lead__case_identifier" implied="false" onDeleteCascade="false" schema="case_management" table="lead"/>
+            <child column="case_file_guid" foreignKey="fk_site__case_file_guid" implied="false" onDeleteCascade="false" schema="case_management" table="site"/>
             <child column="case_file_guid" foreignKey="fk_wildlife__case_file_guid" implied="false" onDeleteCascade="false" schema="case_management" table="wildlife"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="case_code" nullable="false" remarks="A human readable code used to identify a case type." size="10" type="varchar" typeCode="12">
@@ -657,6 +687,34 @@
          <primaryKey column="sex_code" sequenceNumberInPK="1"/>
          <index name="PK_sexcode" unique="true">
             <column ascending="true" name="sex_code"/>
+         </index>
+      </table>
+      <table name="site" remarks="Contains the unauthorized site id for the Authroization Outcome" schema="case_management" type="TABLE">
+         <column autoUpdated="false" defaultValue="case_management.uuid_generate_v4()" digits="0" id="0" name="site_guid" nullable="false" remarks="System generated unique key for a site record" size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="case_file_guid" nullable="false" remarks="System generated unique key for a case.  This key should never be exposed to users via any system utilizing the tables." size="2147483647" type="uuid" typeCode="1111">
+            <parent column="case_file_guid" foreignKey="fk_site__case_file_guid" implied="false" onDeleteCascade="false" schema="case_management" table="case_file"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="site_id" nullable="false" remarks="The value used for an unauthorized site id" size="50" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="3" name="active_ind" nullable="true" remarks="A boolean indicator to determine if the record has been soft deleted." size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="create_user_id" nullable="false" remarks="The id of the user that created the unauthroized site id." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="5" name="create_utc_timestamp" nullable="false" remarks="The timestamp when the unauthroized site id was created. The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="update_user_id" nullable="true" remarks="The id of the user that updated the unauthroized site id" size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="7" name="update_utc_timestamp" nullable="true" remarks="The timestamp when the unauthroized site id was updated. The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="site_guid" sequenceNumberInPK="1"/>
+         <index name="PK_site_guid" unique="true">
+            <column ascending="true" name="site_guid"/>
+         </index>
+      </table>
+      <table name="site_h" remarks="History table for site table" schema="case_management" type="TABLE">
+         <column autoUpdated="false" defaultValue="case_management.uuid_generate_v4()" digits="0" id="0" name="h_site_guid" nullable="false" remarks="System generated unique key for site history. This key should never be exposed to users via any system utilizing the tables." size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="target_row_id" nullable="false" remarks="The unique key for the site that has been created or modified." size="2147483647" type="uuid" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="operation_type" nullable="false" remarks="The operation performed: I = Insert, U = Update, D = Delete" size="1" type="bpchar" typeCode="1"/>
+         <column autoUpdated="false" defaultValue="CURRENT_USER" digits="0" id="3" name="operation_user_id" nullable="false" remarks="The id of the user that created or modified the data in the site table.  Defaults to the logged in user if not passed in by the application." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="now()" digits="6" id="4" name="operation_executed_at" nullable="false" remarks="The timestamp when the data in the site table was created or modified.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="data_after_executed_operation" nullable="true" remarks="A JSON representation of the row in the table after the operation was completed successfully.   This implies that the latest row in the audit table will always match with the current row in the live table." size="2147483647" type="jsonb" typeCode="1111"/>
+         <primaryKey column="h_site_guid" sequenceNumberInPK="1"/>
+         <index name="PK_h_site" unique="true">
+            <column ascending="true" name="h_site_guid"/>
          </index>
       </table>
       <table name="threat_level_code" remarks="A COS determination that indicates the threat level of the animal to humans.  For example 1 = &quot;Category 1&quot;" schema="case_management" type="TABLE">

@@ -24,11 +24,14 @@ wildlife
 equipment
 action_type_action_xref
 decision
+authorization_permit
 lead
+site
 ear_tag
 drug_administered
 action
 action_h
+authorization_permit_h
 case_file_h
 configuration
 configuration_h
@@ -37,4 +40,5 @@ drug_administered_h
 ear_tag_h
 flyway_schema_history
 lead_h
+site_h
 wildlife_h

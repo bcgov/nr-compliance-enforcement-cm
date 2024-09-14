@@ -1,4 +1,5 @@
 wildlife_h
+site_h
 lead_h
 flyway_schema_history
 ear_tag_h
@@ -7,11 +8,14 @@ decision_h
 configuration_h
 configuration
 case_file_h
+authorization_permit_h
 action_h
 action
 drug_administered
 ear_tag
+site
 lead
+authorization_permit
 decision
 action_type_action_xref
 equipment
