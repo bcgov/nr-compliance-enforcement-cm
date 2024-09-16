@@ -2522,22 +2522,28 @@ export class CaseFileService {
       try {
         const { sector, schedule } = decision;
 
-        let record: any = {
-          schedule_sector_xref_guid: randomUUID(),
-          sector_code: sector,
-          schedule_code: schedule,
-          active_ind: true,
-          create_user_id: userId,
-          update_user_id: userId,
-          create_utc_timestamp: new Date(),
-          update_utc_timestamp: new Date(),
-        };
+        // let record: any = {
+        //   schedule_sector_xref_guid: randomUUID(),
+        //   sector_code: sector,
+        //   schedule_code: schedule,
+        //   active_ind: true,
+        //   create_user_id: userId,
+        //   update_user_id: userId,
+        //   create_utc_timestamp: new Date(),
+        //   update_utc_timestamp: new Date(),
+        // };
 
-        const result = await db.schedule_sector_xref.create({
-          data: record,
+        let scheduleSectorXref = await this.prisma.schedule_sector_xref.findFirstOrThrow({
+          where: {
+            schedule_code: schedule,
+            sector_code: sector,
+          },
+          select: {
+            schedule_sector_xref_guid: true,
+          },
         });
 
-        return result?.schedule_sector_xref_guid;
+        return scheduleSectorXref;
       } catch (exception) {
         throw new GraphQLError("Exception occurred. See server log for details", exception);
       }

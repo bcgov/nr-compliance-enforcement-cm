@@ -1,0 +1,8 @@
+type ScheduleSectorXref {
+  sectorCode: String
+  scheduleCode: String
+}
+
+type Query {
+  ScheduleSectorXrefs: [ScheduleSectorXref]!
+}
