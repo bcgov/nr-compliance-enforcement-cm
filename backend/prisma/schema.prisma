@@ -555,6 +555,8 @@ model schedule_sector_xref {
   decision                                                        decision[]
   schedule_code_schedule_sector_xref_schedule_codeToschedule_code schedule_code @relation("schedule_sector_xref_schedule_codeToschedule_code", fields: [schedule_code], references: [schedule_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_schedule_sector_xref__schedule_code")
   sector_code_schedule_sector_xref_sector_codeTosector_code       sector_code   @relation("schedule_sector_xref_sector_codeTosector_code", fields: [sector_code], references: [sector_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_schedule_sector_xref__sector_code")
+
+  @@unique([schedule_code, sector_code], map: "uk_schedule_sector_xref__schedule_sector")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -569,4 +571,13 @@ model sector_code {
   update_user_id                                                     String                 @db.VarChar(32)
   update_utc_timestamp                                               DateTime               @db.Timestamp(6)
   schedule_sector_xref_schedule_sector_xref_sector_codeTosector_code schedule_sector_xref[] @relation("schedule_sector_xref_sector_codeTosector_code")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model spatial_ref_sys {
+  srid      Int     @id
+  auth_name String? @db.VarChar(256)
+  auth_srid Int?
+  srtext    String? @db.VarChar(2048)
+  proj4text String? @db.VarChar(2048)
 }
