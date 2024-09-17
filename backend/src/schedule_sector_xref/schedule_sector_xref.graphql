@@ -4,5 +4,5 @@ type ScheduleSectorXref {
 }
 
 type Query {
-  ScheduleSectorXrefs: [ScheduleSectorXref]!
+  scheduleSectorXrefs: [ScheduleSectorXref]!
 }

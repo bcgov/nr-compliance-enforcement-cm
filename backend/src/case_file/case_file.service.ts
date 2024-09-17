@@ -2522,17 +2522,6 @@ export class CaseFileService {
       try {
         const { sector, schedule } = decision;
 
-        // let record: any = {
-        //   schedule_sector_xref_guid: randomUUID(),
-        //   sector_code: sector,
-        //   schedule_code: schedule,
-        //   active_ind: true,
-        //   create_user_id: userId,
-        //   update_user_id: userId,
-        //   create_utc_timestamp: new Date(),
-        //   update_utc_timestamp: new Date(),
-        // };
-
         let scheduleSectorXref = await this.prisma.schedule_sector_xref.findFirstOrThrow({
           where: {
             schedule_code: schedule,
