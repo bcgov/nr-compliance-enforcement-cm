@@ -4,14 +4,15 @@ import { JwtRoleGuard } from "src/auth/jwtrole.guard";
 import { Roles } from "src/auth/decorators/roles.decorator";
 import { Role } from "src/enum/role.enum";
 import { ScheduleSectorXrefService } from "./schedule_sector_xref.service";
+import { JwtAuthGuard } from "src/auth/jwtauth.guard";
 
-@UseGuards(JwtRoleGuard)
+@UseGuards(JwtAuthGuard, JwtRoleGuard)
 @Resolver("ScheduleSectorXref")
 export class ScheduleSectorXrefResolver {
   constructor(private readonly service: ScheduleSectorXrefService) {}
 
-  @Query("ScheduleSectorXrefs")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Query("scheduleSectorXrefs")
+  @Roles(Role.CEEB, Role.COS_OFFICER)
   findAll() {
     return this.service.findAll();
   }
