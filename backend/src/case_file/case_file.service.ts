@@ -34,6 +34,7 @@ import { AuthorizationOutcomeSearchResults } from "./dto/ceeb/authorization-outc
 import { AuthorizationOutcome } from "./entities/authorization-outcome.entity";
 import { UpdateAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/update-authorization-outcome-input";
 import { DeleteAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/delete-authorization-outcome-input";
+import { ActionInput } from "./dto/action-input";
 
 @Injectable()
 export class CaseFileService {
@@ -410,11 +411,11 @@ export class CaseFileService {
         schedule: decision[0].schedule_sector_xref.schedule_code,
         sector: decision[0].schedule_sector_xref.sector_code,
         discharge: decision[0].discharge_code,
-        nonCompliance: decision[0].non_compliance_decision_matrix_code,
-        rationale: decision[0].rationale_code,
-        assignedTo: action[0].actor,
-        actionTaken: action[0].actionCode,
-        actionTakenDate: action[0].date,
+        nonCompliance: decision[0]?.non_compliance_decision_matrix_code,
+        rationale: decision[0]?.rationale_code,
+        assignedTo: action[0]?.actor,
+        actionTaken: action[0]?.actionCode,
+        actionTakenDate: action[0]?.date,
       };
 
       if (decision[0].inspection_number) {
@@ -2464,7 +2465,16 @@ export class CaseFileService {
       userId: string,
     ): Promise<any> => {
       try {
-        const { discharge, nonCompliance, rationale } = decision;
+        let { discharge, nonCompliance, rationale } = decision;
+
+        //don't try and insert empty into the code tables.
+        if (rationale === "" || rationale === undefined) {
+          rationale = null;
+        }
+
+        if (nonCompliance === "" || nonCompliance === undefined) {
+          nonCompliance = null;
+        }
 
         let record: any = {
           decision_guid: randomUUID(),
@@ -2592,11 +2602,18 @@ export class CaseFileService {
         //-- create sector/schedule xref
         const xref = await _addWdrXref(db, decision, createUserId);
 
-        //-- apply action
-        const actionId = await _applyAction(db, caseFileId, decision, createUserId);
-
         //-- add decision
         const decsionId = await _addDecision(db, caseFileId, decision, xref, createUserId);
+
+        //-- apply action
+        if (decision.actionTaken && decision.assignedTo) {
+          let action: ActionInput = {
+            actionTaken: decision.actionTaken,
+            actor: decision.assignedTo,
+            date: decision.actionTakenDate,
+          };
+          await this._addAction(db, caseFileId, decsionId, action, createUserId);
+        }
       });
 
       result = await this.findOne(caseFileId);
@@ -2726,7 +2743,8 @@ export class CaseFileService {
         PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
         "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
       >,
-      id: string,
+      caseIdentifier: string,
+      decisionId: string,
       decision: DecisionInput,
       updateUserId: string,
       current: Date,
@@ -2740,6 +2758,7 @@ export class CaseFileService {
         const source = await db.action.findFirst({
           where: {
             case_guid: caseIdentifier,
+            decision_guid: decisionId,
           },
           select: {
             action_guid: true,
@@ -2791,7 +2810,22 @@ export class CaseFileService {
             current,
           );
 
-          const actionResult = await _updateAction(db, caseIdentifier, decision, updateUserId, current);
+          //-- make sure that there is an action to update first
+          //-- otherwise create a new action
+          const currentAction = await db.action.findFirst({
+            where: { case_guid: caseIdentifier, decision_guid: decisonId },
+          });
+
+          if (!currentAction && decision.actionTaken && decision.assignedTo && decision.actionTakenDate) {
+            const action: ActionInput = {
+              actionTaken: decision.actionTaken,
+              actor: decision.assignedTo,
+              date: decision.actionTakenDate,
+            };
+            await this._addAction(db, caseIdentifier, decisonId, action, updateUserId);
+          } else if (currentAction && decision.actionTaken && decision.assignedTo && decision.actionTakenDate) {
+            await _updateAction(db, caseIdentifier, decisonId, decision, updateUserId, current);
+          }
         }
       });
 
@@ -2799,7 +2833,7 @@ export class CaseFileService {
 
       return result;
     } catch (error) {
-      console.log("exception: unable to create wildlife ", error);
+      console.log("exception: unable to update decision", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };
@@ -3030,6 +3064,46 @@ export class CaseFileService {
     } catch (error) {
       console.log("exception: unable to delete authorization outcome ", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  };
+
+  private _addAction = async (
+    db: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+    >,
+    caseFileId: string,
+    decisionId: string,
+    input: ActionInput,
+    userId: string,
+  ): Promise<any> => {
+    try {
+      const { actionTaken, actor, date } = input;
+
+      //-- get the action_type_action xref
+      const xref = await this._getActionXref(db, actionTaken, ACTION_TYPE_CODES.CEEBACTION);
+
+      let record: any = {
+        action_guid: randomUUID(),
+        case_guid: caseFileId,
+        action_type_action_xref_guid: xref,
+        decision_guid: decisionId,
+        actor_guid: actor,
+        action_date: date,
+        active_ind: true,
+        create_user_id: userId,
+        update_user_id: userId,
+        create_utc_timestamp: new Date(),
+        update_utc_timestamp: new Date(),
+      };
+      const test = 0;
+      const result = await db.action.create({
+        data: record,
+      });
+
+      return result?.action_guid;
+    } catch (exception) {
+      throw new GraphQLError("Exception occurred. See server log for details", exception);
     }
   };
 
