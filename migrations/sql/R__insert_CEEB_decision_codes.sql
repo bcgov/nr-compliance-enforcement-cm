@@ -1135,8 +1135,7 @@ VALUES
     CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --
 -- INSERT schedule_code values
@@ -1197,8 +1196,7 @@ VALUES
     CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --
 -- INSERT new action_type_code values
@@ -1220,8 +1218,7 @@ VALUES
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --
 -- INSERT new action_code values
@@ -1267,8 +1264,7 @@ VALUES
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --
 -- INSERT new action_type_action_xref values
@@ -1314,8 +1310,7 @@ VALUES
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --
 -- INSERT non_compliance_decision_matrix_code values
@@ -1409,59 +1404,7 @@ VALUES
     CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
-
---
--- INSERT rationale values
---
-INSERT INTO
-  case_management.rationale_code (
-    rationale_code,
-    short_description,
-    long_description,
-    display_order,
-    active_ind,
-    create_user_id,
-    create_utc_timestamp,
-    update_user_id,
-    update_utc_timestamp
-  )
-VALUES
-  (
-    'RATIONAL01',
-    'RATIONAL_01',
-    'Rationale 01',
-    10,
-    'Y',
-    CURRENT_USER,
-    CURRENT_TIMESTAMP,
-    CURRENT_USER,
-    CURRENT_TIMESTAMP
-  ),
-  (
-    'RATIONAL02',
-    'RATIONAL_02',
-    'Rationale 02',
-    20,
-    'Y',
-    CURRENT_USER,
-    CURRENT_TIMESTAMP,
-    CURRENT_USER,
-    CURRENT_TIMESTAMP
-  ),
-  (
-    'RATIONAL03',
-    'RATIONAL_03',
-    'Rational 03',
-    30,
-    'Y',
-    CURRENT_USER,
-    CURRENT_TIMESTAMP,
-    CURRENT_USER,
-    CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --
 -- INSERT discharge_code values
@@ -1566,8 +1509,7 @@ VALUES
     CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --
 -- add new EPO agency code
@@ -1593,8 +1535,7 @@ values
     CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --
 -- add new ERS case_code 
@@ -1620,5 +1561,4 @@ values
     CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
