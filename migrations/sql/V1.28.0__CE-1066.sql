@@ -1,5 +1,5 @@
 ALTER TABLE case_management.decision
-DROP CONSTRAINT PK_rationale_code;
+DROP CONSTRAINT fk_decision__rationale_code;
 
 ALTER TABLE case_management.decision
 RENAME COLUMN rationale_code TO rationale_text;
