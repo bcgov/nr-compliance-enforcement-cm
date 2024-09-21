@@ -282,8 +282,8 @@
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="inspection_number" nullable="true" remarks="The NRIS inspection number for a CEEB decision" size="10" type="int4" typeCode="4"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="lead_agency" nullable="true" remarks="" size="10" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="non_compliance_decision_matrix_code" nullable="false" remarks="" size="10" type="varchar" typeCode="12">
-            <parent column="non_compliance_decision_matrix_code" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="case_management" table="non_compliance_decision_matrix_code"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="non_compliance_decision_matrix_code" nullable="true" remarks="" size="10" type="varchar" typeCode="12">
+            <parent column="non_compliance_decision_matrix_code" foreignKey="fk_decision__ncdm_code" implied="false" onDeleteCascade="false" schema="case_management" table="non_compliance_decision_matrix_code"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="active_ind" nullable="false" remarks="A boolean indicator to determine if the case management action is active." size="1" type="bool" typeCode="-7"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="create_user_id" nullable="false" remarks="The id of the user that created the case management action." size="32" type="varchar" typeCode="12"/>
@@ -586,7 +586,7 @@
       </table>
       <table name="non_compliance_decision_matrix_code" remarks="Contains a list of all possible non_compliance_decision_matrix_code codes for a CEEB decision" schema="case_management" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="non_compliance_decision_matrix_code" nullable="false" remarks="A human readable code used to identify a non_compliance_decision_matrix_code code." size="10" type="varchar" typeCode="12">
-            <child column="non_compliance_decision_matrix_code" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="case_management" table="decision"/>
+            <child column="non_compliance_decision_matrix_code" foreignKey="fk_decision__ncdm_code" implied="false" onDeleteCascade="false" schema="case_management" table="decision"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="short_description" nullable="false" remarks="The short description of a case management non_compliance_decision_matrix_code." size="50" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="long_description" nullable="true" remarks="The long description of a case management non_compliance_decision_matrix_code." size="250" type="varchar" typeCode="12"/>
