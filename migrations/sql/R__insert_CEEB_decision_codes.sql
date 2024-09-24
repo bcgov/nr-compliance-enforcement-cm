@@ -1656,7 +1656,7 @@ insert into
     display_order,
     active_ind,
     create_user_id,
-    create_utc_timestamp,
+    create_utc_timestamp
   )
 values
   (
@@ -1666,7 +1666,7 @@ values
     50,
     'Y',
     CURRENT_USER,
-    CURRENT_TIMESTAMP,
+    CURRENT_TIMESTAMP
   ) ON CONFLICT DO NOTHING;
 
 insert into
