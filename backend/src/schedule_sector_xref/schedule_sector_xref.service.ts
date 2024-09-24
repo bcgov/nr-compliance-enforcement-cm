@@ -11,12 +11,29 @@ export class ScheduleSectorXrefService {
       select: {
         sector_code: true,
         schedule_code: true,
+        sector_code_schedule_sector_xref_sector_codeTosector_code: {
+          select: {
+            long_description: true,
+            short_description: true,
+          },
+        },
+        active_ind: true,
       },
     });
 
-    return codes.map(({ sector_code, schedule_code }) => ({
-      sectorCode: sector_code,
-      scheduleCode: schedule_code,
-    }));
+    return codes.map(
+      ({
+        sector_code,
+        schedule_code,
+        sector_code_schedule_sector_xref_sector_codeTosector_code: { long_description, short_description },
+        active_ind,
+      }) => ({
+        sectorCode: sector_code,
+        scheduleCode: schedule_code,
+        longDescription: long_description,
+        shortDescription: short_description,
+        activeIndicator: active_ind,
+      }),
+    );
   };
 }
