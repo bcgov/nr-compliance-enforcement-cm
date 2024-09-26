@@ -30,6 +30,7 @@ import { NonComplianceCodeModule } from "./code-tables/non_compliance_code/non_c
 import { RationaleCodeModule } from "./code-tables/rationale_code/rationale_code.module";
 import { SectorCodeModule } from "./code-tables/sector_code/sector_code.module";
 import { CEEBDecisionActionModule } from "./ceeb_decision_action/ceeb_decision_action.module";
+import { AgencyCodeModule } from "./agency_code/agency_code.module";
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CEEBDecisionActionModule } from "./ceeb_decision_action/ceeb_decision_a
     }),
     JwtAuthModule,
     AgeCodeModule,
+    AgencyCodeModule,
     EquipmentCodeModule,
     SexCodeModule,
     ThreatLevelCodeModule,
