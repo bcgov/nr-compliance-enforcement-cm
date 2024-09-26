@@ -21,6 +21,7 @@ values
     CURRENT_TIMESTAMP
   ) on conflict do nothing;
 
+-- Fix display order
 update case_management.inaction_reason_code
 set
   display_order = 1
