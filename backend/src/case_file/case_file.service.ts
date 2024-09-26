@@ -305,7 +305,7 @@ export class CaseFileService {
             discharge_code: true,
             rationale_text: true,
             inspection_number: true,
-            lead_agency: true,
+            lead_agency_code: true,
             non_compliance_decision_matrix_code: true,
             schedule_sector_xref: {
               select: {
@@ -421,8 +421,8 @@ export class CaseFileService {
       if (decision[0].inspection_number) {
         record = { ...record, inspectionNumber: decision[0].inspection_number.toString() };
       }
-      if (decision[0].lead_agency) {
-        record = { ...record, leadAgency: decision[0].lead_agency };
+      if (decision[0].lead_agency_code) {
+        record = { ...record, leadAgency: decision[0].lead_agency_code };
       }
 
       caseFile.decision = record;
@@ -2495,7 +2495,7 @@ export class CaseFileService {
         }
 
         if (decision.leadAgency) {
-          record = { ...record, lead_agency: decision.leadAgency };
+          record = { ...record, lead_agency_code: decision.leadAgency };
         }
 
         const result = await db.decision.create({
@@ -2677,15 +2677,15 @@ export class CaseFileService {
         };
 
         if (actionTaken === "FWDLEADAGN") {
-          data = { ...data, inspection_number: null, lead_agency: leadAgency };
+          data = { ...data, inspection_number: null, lead_agency_code: leadAgency };
         }
 
         if (actionTaken === "RESPREC") {
-          data = { ...data, lead_agency: null, inspection_number: parseInt(inspectionNumber) };
+          data = { ...data, lead_agency_code: null, inspection_number: parseInt(inspectionNumber) };
         }
 
         if (actionTaken !== "RESPREC" && actionTaken !== "FWDLEADAGN") {
-          data = { ...data, inspection_number: null, lead_agency: null };
+          data = { ...data, inspection_number: null, lead_agency_code: null };
         }
 
         const result = await db.decision.update({

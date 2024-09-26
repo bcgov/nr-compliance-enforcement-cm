@@ -1406,6 +1406,58 @@ VALUES
     CURRENT_TIMESTAMP
   ) ON CONFLICT DO NOTHING;
 
+< < < < < < < HEAD = = = = = = =
+--
+-- INSERT rationale values
+--
+INSERT INTO
+  case_management.rationale_code (
+    rationale_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+VALUES
+  (
+    'RATIONAL01',
+    'RATIONAL_01',
+    'Rationale 01',
+    10,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'RATIONAL02',
+    'RATIONAL_02',
+    'Rationale 02',
+    20,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'RATIONAL03',
+    'RATIONAL_03',
+    'Rational 03',
+    30,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
+
+> > > > > > > main
 --
 -- INSERT discharge_code values
 --
@@ -1512,30 +1564,292 @@ VALUES
   ) ON CONFLICT DO NOTHING;
 
 --
--- add new EPO agency code
+-- INSERT data AGENCY_CODE
 --
 insert into
   case_management.agency_code (
     agency_code,
     short_description,
     long_description,
+    display_order,
     active_ind,
     create_user_id,
-    create_utc_timestamp,
-    update_user_id,
-    update_utc_timestamp
+    create_utc_timestamp
+  )
+values
+  (
+    'ALC',
+    'Agricultural Land Commission',
+    'Agricultural Land Commission',
+    10,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
+
+insert into
+  case_management.agency_code (
+    agency_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'ENERGY',
+    'BC Energy Regulator ',
+    'BC Energy Regulator',
+    20,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
+
+insert into
+  case_management.agency_code (
+    agency_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'PARKS',
+    'BC Parks',
+    'BC Parks',
+    30,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
+
+insert into
+  case_management.agency_code (
+    agency_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'CEB',
+    'Compliance and Enforcement Branch',
+    'Compliance and Enforcement Branch',
+    40,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
+
+insert into
+  case_management.agency_code (
+    agency_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
   )
 values
   (
     'EPO',
     'CEEB',
     'Compliance and Environmental Enforcement Branch',
-    true,
-    CURRENT_USER,
-    CURRENT_TIMESTAMP,
+    50,
+    'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
   ) ON CONFLICT DO NOTHING;
+
+insert into
+  case_management.agency_code (
+    agency_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'ECCC',
+    'Environment and Climate Change Canada',
+    'Environment and Climate Change Canada',
+    70,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
+
+insert into
+  case_management.agency_code (
+    agency_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'EAO',
+    'Environmental Assessment Office',
+    'Environmental Assessment Office',
+    80,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
+
+insert into
+  case_management.agency_code (
+    agency_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'FSIB',
+    'Food Safety Inspection Branch',
+    'Food Safety Inspection Branch',
+    90,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
+
+insert into
+  case_management.agency_code (
+    agency_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'HEALTH',
+    'Health Authority',
+    'Health Authority',
+    100,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
+
+insert into
+  case_management.agency_code (
+    agency_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'MHSED',
+    'Mines Health, Safety and Enforcement Division',
+    'Mines Health, Safety and Enforcement Division',
+    110,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
+
+insert into
+  case_management.agency_code (
+    agency_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'MUNI',
+    'Municipality / Regional District',
+    'Municipality / Regional District',
+    120,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
+
+insert into
+  case_management.agency_code (
+    agency_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'MOTI',
+    'Transport Canada / MOTI',
+    'Transport Canada / MOTI',
+    130,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
+
+insert into
+  case_management.agency_code (
+    agency_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'OTHER',
+    'Other',
+    'Other',
+    140,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
+
+update case_management.agency_code
+set
+  display_order = 60
+where
+  agency_code = 'COS';
+
+update case_management.agency_code
+set
+  display_order = 50
+where
+  agency_code = 'EPO';
 
 --
 -- add new ERS case_code 
