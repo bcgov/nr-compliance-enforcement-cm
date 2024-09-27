@@ -466,7 +466,7 @@ model decision {
   case_file_guid                                                                                                        String                               @db.Uuid
   schedule_sector_xref_guid                                                                                             String                               @db.Uuid
   discharge_code                                                                                                        String                               @db.VarChar(10)
-  rationale_code                                                                                                        String?                              @db.VarChar(10)
+  rationale_text                                                                                                        String?                              @db.VarChar(10)
   inspection_number                                                                                                     Int?
   lead_agency_code                                                                                                      String?                              @db.VarChar(10)
   non_compliance_decision_matrix_code                                                                                   String?                              @db.VarChar(10)
@@ -479,7 +479,6 @@ model decision {
   case_file                                                                                                             case_file                            @relation(fields: [case_file_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__case_file_guid")
   discharge_code_decision_discharge_codeTodischarge_code                                                                discharge_code                       @relation("decision_discharge_codeTodischarge_code", fields: [discharge_code], references: [discharge_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__discharge_code")
   non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code non_compliance_decision_matrix_code? @relation("decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code", fields: [non_compliance_decision_matrix_code], references: [non_compliance_decision_matrix_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__ncdm_code")
-  rationale_code_decision_rationale_codeTorationale_code                                                                rationale_code?                      @relation("decision_rationale_codeTorationale_code", fields: [rationale_code], references: [rationale_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__rationale_code")
   schedule_sector_xref                                                                                                  schedule_sector_xref                 @relation(fields: [schedule_sector_xref_guid], references: [schedule_sector_xref_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__schedule_sector_xref_guid")
 }
 
@@ -518,20 +517,6 @@ model non_compliance_decision_matrix_code {
   update_user_id                                                                             String     @db.VarChar(32)
   update_utc_timestamp                                                                       DateTime   @db.Timestamp(6)
   decision_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code decision[] @relation("decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code")
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model rationale_code {
-  rationale_code                                   String     @id(map: "PK_rationale_code") @db.VarChar(10)
-  short_description                                String     @db.VarChar(50)
-  long_description                                 String?    @db.VarChar(250)
-  display_order                                    Int
-  active_ind                                       Boolean
-  create_user_id                                   String     @db.VarChar(32)
-  create_utc_timestamp                             DateTime   @db.Timestamp(6)
-  update_user_id                                   String     @db.VarChar(32)
-  update_utc_timestamp                             DateTime   @db.Timestamp(6)
-  decision_decision_rationale_codeTorationale_code decision[] @relation("decision_rationale_codeTorationale_code")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
