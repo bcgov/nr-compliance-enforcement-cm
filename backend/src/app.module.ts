@@ -27,7 +27,6 @@ import { HWCRAssessmentActionModule } from "./hwcr_assessment_action/hwcr_assess
 import { ScheduleCodeModule } from "./code-tables/schedule_code/schedule_code.module";
 import { DischargeCodeModule } from "./code-tables/discharge_code/discharge_code,module";
 import { NonComplianceCodeModule } from "./code-tables/non_compliance_code/non_compliance_code.module";
-import { RationaleCodeModule } from "./code-tables/rationale_code/rationale_code.module";
 import { SectorCodeModule } from "./code-tables/sector_code/sector_code.module";
 import { CEEBDecisionActionModule } from "./ceeb_decision_action/ceeb_decision_action.module";
 import { AgencyCodeModule } from "./agency_code/agency_code.module";
@@ -61,7 +60,6 @@ import { ScheduleSectorXrefModule } from "./schedule_sector_xref/schedule_sector
     ScheduleCodeModule,
     DischargeCodeModule,
     NonComplianceCodeModule,
-    RationaleCodeModule,
     SectorCodeModule,
     CEEBDecisionActionModule,
     ScheduleSectorXrefModule,

@@ -303,7 +303,7 @@ export class CaseFileService {
           select: {
             decision_guid: true,
             discharge_code: true,
-            rationale_code: true,
+            rationale_text: true,
             inspection_number: true,
             lead_agency_code: true,
             non_compliance_decision_matrix_code: true,
@@ -412,7 +412,7 @@ export class CaseFileService {
         sector: decision[0].schedule_sector_xref.sector_code,
         discharge: decision[0].discharge_code,
         nonCompliance: decision[0]?.non_compliance_decision_matrix_code,
-        rationale: decision[0]?.rationale_code,
+        rationale: decision[0]?.rationale_text,
         assignedTo: action[0]?.actor,
         actionTaken: action[0]?.actionCode,
         actionTakenDate: action[0]?.date,
@@ -2481,7 +2481,7 @@ export class CaseFileService {
           case_file_guid: caseId,
           schedule_sector_xref_guid: scheduleSectorXref,
           discharge_code: discharge,
-          rationale_code: rationale,
+          rationale_text: rationale,
           non_compliance_decision_matrix_code: nonCompliance,
           active_ind: true,
           create_user_id: userId,
@@ -2668,7 +2668,7 @@ export class CaseFileService {
 
         let data: any = {
           discharge_code: discharge,
-          rationale_code: rationale,
+          rationale_text: rationale,
           non_compliance_decision_matrix_code: nonCompliance,
           update_user_id: updateUserId,
           update_utc_timestamp: current,
