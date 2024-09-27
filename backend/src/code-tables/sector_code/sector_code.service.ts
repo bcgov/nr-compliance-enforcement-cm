@@ -15,6 +15,7 @@ export class SectorCodeService {
         display_order: true,
         active_ind: true,
       },
+      orderBy: [{ display_order: "asc" }],
     });
 
     return codes.map(({ sector_code, short_description, long_description, display_order, active_ind }) => ({

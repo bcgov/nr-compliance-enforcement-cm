@@ -2504,14 +2504,15 @@ export class CaseFileService {
 
         return result?.decision_guid;
       } catch (exception) {
-        throw new GraphQLError("Exception occurred. See server log for details", exception);
+        const { message } = exception;
+        throw new Error("Exception occurred in _addDecision. See server log for details", message);
       }
     };
 
     //--
-    //-- creates a schedule/sector xref record and returns the schedule_sector_xref_guid
+    //-- finds a schedule/sector xref record and returns the schedule_sector_xref_guid
     //--
-    const _addWdrXref = async (
+    const _findWdrXref = async (
       db: Omit<
         PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
         "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
@@ -2522,24 +2523,20 @@ export class CaseFileService {
       try {
         const { sector, schedule } = decision;
 
-        let record: any = {
-          schedule_sector_xref_guid: randomUUID(),
-          sector_code: sector,
-          schedule_code: schedule,
-          active_ind: true,
-          create_user_id: userId,
-          update_user_id: userId,
-          create_utc_timestamp: new Date(),
-          update_utc_timestamp: new Date(),
-        };
-
-        const result = await db.schedule_sector_xref.create({
-          data: record,
+        let scheduleSectorXref = await this.prisma.schedule_sector_xref.findFirstOrThrow({
+          where: {
+            schedule_code: schedule,
+            sector_code: sector,
+          },
+          select: {
+            schedule_sector_xref_guid: true,
+          },
         });
 
-        return result?.schedule_sector_xref_guid;
+        return scheduleSectorXref;
       } catch (exception) {
-        throw new GraphQLError("Exception occurred. See server log for details", exception);
+        const { message } = exception;
+        throw new Error("Exception occurred in _findWdrXref. See server log for details", message);
       }
     };
 
@@ -2580,7 +2577,8 @@ export class CaseFileService {
 
         return result?.action_guid;
       } catch (exception) {
-        throw new GraphQLError("Exception occurred. See server log for details", exception);
+        const { message } = exception;
+        throw new Error("Exception occurred in _applyAction. See server log for details", message);
       }
     };
 
@@ -2599,11 +2597,11 @@ export class CaseFileService {
           caseFileId = await this.createCase(db, caseInput);
         }
 
-        //-- create sector/schedule xref
-        const xref = await _addWdrXref(db, decision, createUserId);
+        //-- find the sector/schedule xref entry
+        const xref = await _findWdrXref(db, decision, createUserId);
 
         //-- add decision
-        const decsionId = await _addDecision(db, caseFileId, decision, xref, createUserId);
+        const decsionId = await _addDecision(db, caseFileId, decision, xref.schedule_sector_xref_guid, createUserId);
 
         //-- apply action
         if (decision.actionTaken && decision.assignedTo) {
@@ -2620,8 +2618,8 @@ export class CaseFileService {
 
       return result;
     } catch (error) {
-      console.log("exception: unable to create wildlife ", error);
-      throw new GraphQLError("Exception occurred. See server log for details", {});
+      const { message } = error;
+      throw new Error("Exception occurred in _findWdrXref. See server log for details", message);
     }
   };
 
@@ -2701,7 +2699,7 @@ export class CaseFileService {
     };
 
     //--
-    //-- updates an existing sector/schedule xref record and returns the xref
+    //-- updates an existing decision with new sector/schedule xref guid
     //--
     const _updateWdrXref = async (
       db: Omit<
@@ -2717,15 +2715,26 @@ export class CaseFileService {
         const { sector, schedule } = decision;
 
         let data: any = {
-          schedule_sector_xref_guid: id,
-          sector_code: sector,
-          schedule_code: schedule,
+          decision_guid: id,
           update_user_id: updateUserId,
           update_utc_timestamp: current,
         };
 
-        const result = db.schedule_sector_xref.update({
-          where: { schedule_sector_xref_guid: id },
+        let scheduleSectorXref = await this.prisma.schedule_sector_xref.findFirstOrThrow({
+          where: {
+            schedule_code: decision.schedule,
+            sector_code: decision.sector,
+          },
+          select: {
+            schedule_sector_xref_guid: true,
+          },
+        });
+
+        if (scheduleSectorXref) {
+          data = { ...data, schedule_sector_xref_guid: scheduleSectorXref.schedule_sector_xref_guid };
+        }
+        const result = db.decision.update({
+          where: { decision_guid: id },
           data,
         });
 
@@ -2802,13 +2811,7 @@ export class CaseFileService {
 
           //-- if the update was successful update the sector/schedule xref
           //-- and action taken
-          const xrefResult = await _updateWdrXref(
-            db,
-            source.schedule_sector_xref_guid,
-            decision,
-            updateUserId,
-            current,
-          );
+          const xrefResult = await _updateWdrXref(db, update.decision_guid, decision, updateUserId, current);
 
           //-- make sure that there is an action to update first
           //-- otherwise create a new action
