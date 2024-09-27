@@ -4045,7 +4045,8 @@ where
 
 update case_management.sector_code
 set
-  long_description = 'Meat by-product processing industry'
+  long_description = 'Meat by-product processing industry',
+  display_order = 340
 where
   sector_code = 'MEATBYPROD';
 
@@ -4542,6 +4543,57 @@ where sector_code IN
  'VENDGENLAN'
  );
 
+--
+-- Add Other/None as a schedule/sector code 
+-- INSERT sector_code value
+--
+INSERT INTO
+  case_management.sector_code (
+    sector_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+VALUES
+  (
+    'NONE',
+    'None',
+    'None',
+    1030,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT
+DO NOTHING;
+INSERT INTO
+  case_management.schedule_sector_xref (
+    schedule_sector_xref_guid,
+    schedule_code,
+    sector_code,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+VALUES
+  (
+    uuid_generate_v4 (),
+    'OTHER',
+    'NONE',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
 
 
 --------------------------

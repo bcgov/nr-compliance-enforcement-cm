@@ -19,6 +19,13 @@ export class ScheduleSectorXrefService {
         },
         active_ind: true,
       },
+      orderBy: [
+        {
+          sector_code_schedule_sector_xref_sector_codeTosector_code: {
+            display_order: "asc",
+          },
+        },
+      ],
     });
 
     return codes.map(
