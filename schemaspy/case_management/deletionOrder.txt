@@ -27,7 +27,6 @@ threat_level_code
 sex_code
 sector_code
 schedule_code
-rationale_code
 non_compliance_decision_matrix_code
 hwcr_outcome_code
 equipment_code

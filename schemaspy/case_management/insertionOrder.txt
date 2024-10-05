@@ -12,7 +12,6 @@ ear_code
 equipment_code
 hwcr_outcome_code
 non_compliance_decision_matrix_code
-rationale_code
 schedule_code
 sector_code
 sex_code

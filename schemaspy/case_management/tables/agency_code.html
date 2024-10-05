@@ -136,6 +136,11 @@
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                             <tr>
+                                                <td title="decision.lead_agency_code references agency_code.agency_code via fk_decision__lead_agency_code"><a href='decision.html'>decision</a><span class='relatedKey'>.lead_agency_code</span></td>
+                                                <td class="constraint detail">fk_decision__lead_agency_code</td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
+                                            </tr>
+                                            <tr>
                                                 <td title="inaction_reason_code.agency_code references agency_code.agency_code via FK_inaction_reason_code__agency_code"><a href='inaction_reason_code.html'>inaction_reason_code</a><span class='relatedKey'>.agency_code</span></td>
                                                 <td class="constraint detail">FK_inaction_reason_code__agency_code</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
@@ -267,6 +272,23 @@
                                     </td>
                                     <td><p>The timestamp when the agency was updated.  The timestamp is stored in UTC with no Offset.</p></td>
                                 </tr>
+                                <tr>
+                                    <td><span id="display_order">display_order</span></td>
+                                    <td>int4</td>
+                                    <td>10</td>
+                                    <td title='nullable'>√</td>
+                                    <td title=''></td>
+                                    <td>null</td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table border='0' cellspacing='0' cellpadding='0'>
+                                        </table>
+                                    </td>
+                                    <td><p>The order in which the values of the agency should be displayed when presented to a user in a list.</p></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -327,23 +349,27 @@
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
 <area shape="rect" id="node1" href="case_file.html" target="_top" title="case_file" alt="" coords="703,5,943,211">
-<area shape="rect" id="node2" href="inaction_reason_code.html" target="_top" title="inaction_reason_code" alt="" coords="408,116,659,263">
-<area shape="rect" id="node3" href="agency_code.html" target="_top" title="agency_code" alt="" coords="5,89,364,393">
+<area shape="rect" id="node2" href="inaction_reason_code.html" target="_top" title="inaction_reason_code" alt="" coords="408,93,659,240">
+<area shape="rect" id="node3" href="agency_code.html" target="_top" title="agency_code" alt="" coords="5,120,364,453">
+<area shape="rect" id="node4" href="decision.html" target="_top" title="decision" alt="" coords="987,39,1341,303">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/agency_code.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="action.html" target="_top" title="action" alt="" coords="1187,53,1316,141">
-<area shape="rect" id="node2" href="case_file.html" target="_top" title="case_file" alt="" coords="703,214,849,302">
-<area shape="rect" id="node3" href="decision.html" target="_top" title="decision" alt="" coords="945,53,1091,141">
-<area shape="rect" id="node4" href="wildlife.html" target="_top" title="wildlife" alt="" coords="949,158,1087,246">
-<area shape="rect" id="node6" href="case_code.html" target="_top" title="case_code" alt="" coords="454,109,613,197">
-<area shape="rect" id="node7" href="inaction_reason_code.html" target="_top" title="inaction_reason_code" alt="" coords="408,214,659,302">
-<area shape="rect" id="node8" href="agency_code.html" target="_top" title="agency_code" alt="" coords="5,241,364,545">
-<area shape="rect" id="node5" href="authorization_permit.html" target="_top" title="authorization_permit" alt="" coords="893,263,1143,351">
-<area shape="rect" id="node9" href="lead.html" target="_top" title="lead" alt="" coords="961,369,1075,457">
-<area shape="rect" id="node10" href="site.html" target="_top" title="site" alt="" coords="964,474,1072,562">
+<area shape="rect" id="node1" href="action.html" target="_top" title="action" alt="" coords="1425,47,1555,135">
+<area shape="rect" id="node2" href="case_file.html" target="_top" title="case_file" alt="" coords="822,221,969,309">
+<area shape="rect" id="node3" href="decision.html" target="_top" title="decision" alt="" coords="1184,468,1329,556">
+<area shape="rect" id="node4" href="wildlife.html" target="_top" title="wildlife" alt="" coords="1187,47,1326,135">
+<area shape="rect" id="node6" href="case_code.html" target="_top" title="case_code" alt="" coords="454,116,613,204">
+<area shape="rect" id="node7" href="inaction_reason_code.html" target="_top" title="inaction_reason_code" alt="" coords="408,221,659,309">
+<area shape="rect" id="node8" href="agency_code.html" target="_top" title="agency_code" alt="" coords="5,284,364,617">
+<area shape="rect" id="node9" href="discharge_code.html" target="_top" title="discharge_code" alt="" coords="795,399,996,487">
+<area shape="rect" id="node10" href="non_compliance_decision_matrix_code.html" target="_top" title="non_compliance_decision_matrix_code" alt="" coords="703,504,1088,592">
+<area shape="rect" id="node11" href="schedule_sector_xref.html" target="_top" title="schedule_sector_xref" alt="" coords="773,609,1018,697">
+<area shape="rect" id="node5" href="authorization_permit.html" target="_top" title="authorization_permit" alt="" coords="1132,152,1381,240">
+<area shape="rect" id="node12" href="lead.html" target="_top" title="lead" alt="" coords="1200,257,1313,345">
+<area shape="rect" id="node13" href="site.html" target="_top" title="site" alt="" coords="1203,363,1311,451">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/agency_code.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
