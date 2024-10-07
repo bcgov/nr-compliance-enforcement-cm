@@ -26,7 +26,7 @@ COPY --from=buildWithDevDeps /app/node_modules/prisma ./node_modules/prisma
 
 RUN npm run build
 
-# Deploy container
+# Deploy container 
 # Distroless has node, but not npm
 FROM gcr.io/distroless/nodejs20-debian11:nonroot
 ENV NODE_ENV production
