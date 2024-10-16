@@ -31,6 +31,7 @@ import { SectorCodeModule } from "./code-tables/sector_code/sector_code.module";
 import { CEEBDecisionActionModule } from "./ceeb_decision_action/ceeb_decision_action.module";
 import { AgencyCodeModule } from "./agency_code/agency_code.module";
 import { ScheduleSectorXrefModule } from "./schedule_sector_xref/schedule_sector_xref.module";
+import { LeadModule } from "./lead/lead.module";
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { ScheduleSectorXrefModule } from "./schedule_sector_xref/schedule_sector
     SectorCodeModule,
     CEEBDecisionActionModule,
     ScheduleSectorXrefModule,
+    LeadModule,
   ],
   controllers: [AppController],
   providers: [AppService, DateScalar],
