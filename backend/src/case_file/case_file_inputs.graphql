@@ -12,6 +12,7 @@ input AssessmentDetailsInput {
   actionNotRequired: Boolean!
   actionJustificationCode: String
   actions: [AssessmentActionInput]!
+  actionLinkedComplaintIdentifier: String
 }
 
 input AssessmentActionInput {
