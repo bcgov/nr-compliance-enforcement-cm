@@ -13,7 +13,7 @@ input AssessmentDetailsInput {
   actionJustificationCode: String
   actions: [AssessmentActionInput]!
   actionLinkedComplaintIdentifier: String
-  closeComplaintOnSuccess: Boolean
+  actionCloseComplaint: Boolean
 }
 
 input AssessmentActionInput {
