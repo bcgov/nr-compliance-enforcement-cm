@@ -4,4 +4,5 @@ export class AssessmentDetailsInput {
   actionJustificationCode: string;
   actions: [AssessmentActionInput];
   actionLinkedComplaintIdentifier: string;
+  closeComplaintOnSuccess: boolean;
 }
