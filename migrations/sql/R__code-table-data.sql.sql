@@ -4995,6 +4995,72 @@ set
 where
   agency_code = 'MOTI';
 
+INSERT INTO
+  case_management.action_code (
+    action_code,
+    short_description,
+    long_description,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+VALUES
+  (
+    'NOACTION',
+    'No action',
+    'No action',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
+
+INSERT INTO
+  case_management.action_type_action_xref (
+    action_type_code,
+    action_code,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+VALUES
+  (
+    'CEEBACTION',
+    'NOACTION',
+    20,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
+
+update case_management.action_type_action_xref
+set
+  display_order = 10
+where
+  action_type_code = 'CEEBACTION'
+  and action_code = 'FWDLEADAGN';
+
+update case_management.action_type_action_xref
+set
+  display_order = 30
+where
+  action_type_code = 'CEEBACTION'
+  and action_code = 'RESPNFA';
+
+update case_management.action_type_action_xref
+set
+  display_order = 40
+where
+  action_type_code = 'CEEBACTION'
+  and action_code = 'RESPAUTO';
+
+update case_management.action_type_action_xref
+set
+  display_order = 50
+where
+  action_type_code = 'CEEBACTION'
+  and action_code = 'RESPREC';
+
 --------------------------
 -- New Changes above this line
 -------------------------
