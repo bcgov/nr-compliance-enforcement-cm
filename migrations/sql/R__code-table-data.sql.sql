@@ -41,7 +41,6 @@ where
   inaction_reason_code = 'OTHOPRPRTY';
 
 -- CEEB Decision Codes
-
 --
 -- INSERT sector_code values
 --
@@ -1179,8 +1178,7 @@ VALUES
     CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --
 -- INSERT schedule_code values
@@ -1241,8 +1239,7 @@ VALUES
     CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --
 -- INSERT new action_type_code values
@@ -1264,8 +1261,7 @@ VALUES
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --
 -- INSERT new action_code values
@@ -1311,8 +1307,7 @@ VALUES
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --
 -- INSERT new action_type_action_xref values
@@ -1358,8 +1353,7 @@ VALUES
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --
 -- INSERT non_compliance_decision_matrix_code values
@@ -1453,8 +1447,7 @@ VALUES
     CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --
 -- INSERT discharge_code values
@@ -1561,7 +1554,6 @@ VALUES
     CURRENT_TIMESTAMP
   ) ON CONFLICT DO NOTHING;
 
-
 --
 -- add new EPO agency code
 --
@@ -1586,8 +1578,7 @@ values
     CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --
 -- INSERT data AGENCY_CODE
@@ -1865,7 +1856,7 @@ values
     CURRENT_TIMESTAMP
   ) on conflict do nothing;
 
-  update case_management.agency_code
+update case_management.agency_code
 set
   display_order = 60
 where
@@ -1876,7 +1867,6 @@ set
   display_order = 50
 where
   agency_code = 'EPO';
-
 
 --
 -- add new ERS case_code 
@@ -1902,13 +1892,11 @@ values
     CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --------------------
 -- CE-1054 Schedule Sector XREFs
 --------------------
-
 -- END WDR Schedule 1
 INSERT INTO
   case_management.schedule_sector_xref (
@@ -4215,13 +4203,10 @@ VALUES
   ) ON CONFLICT DO NOTHING;
 
 -- END IPM Sector Type
-  
-  ------------
-  -- CE-1065: Update Sector/Category Drop Down values
-  ------------
-
-  -- WDR Schedule 2
-
+------------
+-- CE-1065: Update Sector/Category Drop Down values
+------------
+-- WDR Schedule 2
 update case_management.sector_code
 set
   long_description = 'Abrasives industry'
@@ -4389,7 +4374,7 @@ set
   long_description = 'Oil and natural gas industry - large'
 where
   sector_code = 'OILNATGASL';
- 
+
 update case_management.sector_code
 set
   long_description = 'Ozone depleting substances and other halocarbons management'
@@ -4457,8 +4442,7 @@ set
 where
   sector_code = 'VENEERPLY';
 
-  -- WDR Schedule 2
-
+-- WDR Schedule 2
 update case_management.sector_code
 set
   long_description = 'Agricultural operations'
@@ -4560,7 +4544,7 @@ set
   long_description = 'Pipeline transport industry'
 where
   sector_code = 'PIPETRANI';
- 
+
 update case_management.sector_code
 set
   long_description = 'Placer mining industry'
@@ -4628,7 +4612,6 @@ where
   sector_code = 'WOODTREIN';
 
 -- IPM/Sector
-
 update case_management.sector_code
 set
   long_description = 'User/service - Aerial'
@@ -4759,43 +4742,40 @@ VALUES
     CURRENT_TIMESTAMP
   ),
   (
-  'USAFMGTION',
-  'USAFMGTION',
-  'User/service - Fumigation',
-  695,
-  'Y',
-  CURRENT_USER,
-  CURRENT_TIMESTAMP,
-  CURRENT_USER,
-  CURRENT_TIMESTAMP
- ),
- (
-  'USINDSTVEG',
-  'USINDSTVEG',
-  'User/service - Industrial vegetation',
-  710,
-  'Y',
-  CURRENT_USER,
-  CURRENT_TIMESTAMP,
-  CURRENT_USER,
-  CURRENT_TIMESTAMP
- ),
- (
-  'USSTRCSGAR',
-  'USSTRCSGAR',
-  'User/service - Structural – SGARs',
-  865,
-  'Y',
-  CURRENT_USER,
-  CURRENT_TIMESTAMP,
-  CURRENT_USER,
-  CURRENT_TIMESTAMP
- )
- ON CONFLICT
- DO NOTHING;
+    'USAFMGTION',
+    'USAFMGTION',
+    'User/service - Fumigation',
+    695,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'USINDSTVEG',
+    'USINDSTVEG',
+    'User/service - Industrial vegetation',
+    710,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'USSTRCSGAR',
+    'USSTRCSGAR',
+    'User/service - Structural – SGARs',
+    865,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
 
 -- add schedule_sector_xrefs
-
 INSERT INTO
   case_management.schedule_sector_xref (
     schedule_sector_xref_guid,
@@ -4877,66 +4857,63 @@ VALUES
     CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  )
-   ON CONFLICT DO NOTHING;
-
+  ) ON CONFLICT DO NOTHING;
 
 -- The following codes are no longer relevant.  They can be deleted rather than inactivated as 
 -- we aren't live yet.
+delete from case_management.schedule_sector_xref
+where
+  sector_code IN (
+    'SGENRODEN',
+    'USRAGRGEN',
+    'USRAGGENE',
+    'USRFORENU',
+    'USRFORE50H',
+    'USRFORE500',
+    'USRFOREMOR',
+    'USRFUMCON',
+    'USRFUMSHS',
+    'USRINDPAVE',
+    'USRMOSAEBA',
+    'USRMOSGRBA',
+    'USRNETTRE',
+    'USRPESTNS',
+    'USRPESTPL',
+    'USRPESTSE',
+    'USRFORMNB',
+    'USRFORNU2',
+    'USRFORSEO',
+    'USRFUMCO2',
+    'VENDGENERA',
+    'VENDGENLAN'
+  );
 
-delete from case_management.schedule_sector_xref 
-where sector_code IN 
- (
- 'SGENRODEN',
- 'USRAGRGEN',
- 'USRAGGENE',
- 'USRFORENU', 
- 'USRFORE50H', 
- 'USRFORE500', 
- 'USRFOREMOR', 
- 'USRFUMCON', 
- 'USRFUMSHS', 
- 'USRINDPAVE', 
- 'USRMOSAEBA', 
- 'USRMOSGRBA', 
- 'USRNETTRE', 
- 'USRPESTNS', 
- 'USRPESTPL', 
- 'USRPESTSE', 
- 'USRFORMNB',
- 'USRFORNU2', 
- 'USRFORSEO',
- 'USRFUMCO2',  
- 'VENDGENERA',
- 'VENDGENLAN'
- );
-
-delete from  case_management.sector_code 
-where sector_code IN 
- (
- 'SGENRODEN',
- 'USRAGRGEN',
- 'USRAGGENE',
- 'USRFORENU', 
- 'USRFORE50H', 
- 'USRFORE500', 
- 'USRFOREMOR', 
- 'USRFUMCON', 
- 'USRFUMSHS', 
- 'USRINDPAVE', 
- 'USRMOSAEBA', 
- 'USRMOSGRBA', 
- 'USRNETTRE', 
- 'USRPESTNS', 
- 'USRPESTPL', 
- 'USRPESTSE', 
- 'USRFORMNB',
- 'USRFORNU2', 
- 'USRFORSEO',
- 'USRFUMCO2',  
- 'VENDGENERA',
- 'VENDGENLAN'
- );
+delete from case_management.sector_code
+where
+  sector_code IN (
+    'SGENRODEN',
+    'USRAGRGEN',
+    'USRAGGENE',
+    'USRFORENU',
+    'USRFORE50H',
+    'USRFORE500',
+    'USRFOREMOR',
+    'USRFUMCON',
+    'USRFUMSHS',
+    'USRINDPAVE',
+    'USRMOSAEBA',
+    'USRMOSGRBA',
+    'USRNETTRE',
+    'USRPESTNS',
+    'USRPESTPL',
+    'USRPESTSE',
+    'USRFORMNB',
+    'USRFORNU2',
+    'USRFORSEO',
+    'USRFUMCO2',
+    'VENDGENERA',
+    'VENDGENLAN'
+  );
 
 --
 -- Add Other/None as a schedule/sector code 
@@ -4965,8 +4942,8 @@ VALUES
     CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT
-DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
+
 INSERT INTO
   case_management.schedule_sector_xref (
     schedule_sector_xref_guid,
@@ -4990,11 +4967,37 @@ VALUES
     CURRENT_TIMESTAMP
   ) ON CONFLICT DO NOTHING;
 
+insert into
+  case_management.agency_code (
+    agency_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'TRANSPORT',
+    'Transport Canada',
+    'Transport Canada',
+    135,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
+
+update case_management.agency_code
+set
+  short_description = 'MOTI',
+  long_description = 'MOTI'
+where
+  agency_code = 'MOTI';
 
 --------------------------
 -- New Changes above this line
 -------------------------
-
 UPDATE case_management.configuration
 SET
   configuration_value = cast(configuration_value as INTEGER) + 1
