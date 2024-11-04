@@ -302,15 +302,41 @@ export class CaseFileService {
           },
           select: {
             decision_guid: true,
-            discharge_code: true,
+            discharge_code_decision_discharge_codeTodischarge_code: {
+              select: {
+                discharge_code: true,
+                long_description: true,
+              },
+            },
             rationale_text: true,
             inspection_number: true,
-            lead_agency_code: true,
-            non_compliance_decision_matrix_code: true,
+            agency_code: {
+              select: {
+                agency_code: true,
+                long_description: true,
+              },
+            },
+            non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code:
+              {
+                select: {
+                  non_compliance_decision_matrix_code: true,
+                  long_description: true,
+                },
+              },
             schedule_sector_xref: {
               select: {
-                schedule_code: true,
-                sector_code: true,
+                schedule_code_schedule_sector_xref_schedule_codeToschedule_code: {
+                  select: {
+                    schedule_code: true,
+                    long_description: true,
+                  },
+                },
+                sector_code_schedule_sector_xref_sector_codeTosector_code: {
+                  select: {
+                    sector_code: true,
+                    long_description: true,
+                  },
+                },
               },
             },
           },
@@ -408,21 +434,38 @@ export class CaseFileService {
 
       let record: Decision = {
         id: decision[0].decision_guid,
-        schedule: decision[0].schedule_sector_xref.schedule_code,
-        sector: decision[0].schedule_sector_xref.sector_code,
-        discharge: decision[0].discharge_code,
-        nonCompliance: decision[0]?.non_compliance_decision_matrix_code,
+        schedule:
+          decision[0].schedule_sector_xref.schedule_code_schedule_sector_xref_schedule_codeToschedule_code
+            .schedule_code,
+        scheduleLongDescription:
+          decision[0].schedule_sector_xref.schedule_code_schedule_sector_xref_schedule_codeToschedule_code
+            .long_description,
+        sector: decision[0].schedule_sector_xref.sector_code_schedule_sector_xref_sector_codeTosector_code.sector_code,
+        sectorLongDescription:
+          decision[0].schedule_sector_xref.sector_code_schedule_sector_xref_sector_codeTosector_code.long_description,
+        discharge: decision[0].discharge_code_decision_discharge_codeTodischarge_code.discharge_code,
+        dischargeLongDescription: decision[0].discharge_code_decision_discharge_codeTodischarge_code.long_description,
+        nonCompliance:
+          decision[0]
+            ?.non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code
+            .non_compliance_decision_matrix_code,
+        nonComplianceLongDescription:
+          decision[0]
+            ?.non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code
+            .long_description,
         rationale: decision[0]?.rationale_text,
         assignedTo: action[0]?.actor,
         actionTaken: action[0]?.actionCode,
+        actionTakenLongDescription: action[0]?.longDescription,
         actionTakenDate: action[0]?.date,
       };
 
       if (decision[0].inspection_number) {
         record = { ...record, inspectionNumber: decision[0].inspection_number.toString() };
       }
-      if (decision[0].lead_agency_code) {
-        record = { ...record, leadAgency: decision[0].lead_agency_code };
+      if (decision[0].agency_code) {
+        record = { ...record, leadAgency: decision[0].agency_code.agency_code };
+        record = { ...record, leadAgencyLongDescription: decision[0].agency_code.long_description };
       }
 
       caseFile.decision = record;
