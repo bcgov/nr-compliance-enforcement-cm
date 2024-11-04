@@ -448,11 +448,11 @@ export class CaseFileService {
         nonCompliance:
           decision[0]
             ?.non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code
-            .non_compliance_decision_matrix_code,
+            ?.non_compliance_decision_matrix_code,
         nonComplianceLongDescription:
           decision[0]
             ?.non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code
-            .long_description,
+            ?.long_description,
         rationale: decision[0]?.rationale_text,
         assignedTo: action[0]?.actor,
         actionTaken: action[0]?.actionCode,
