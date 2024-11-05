@@ -5033,6 +5033,298 @@ VALUES
     CURRENT_TIMESTAMP
   ) ON CONFLICT DO NOTHING;
 
+---Insert data to case_location_code 
+INSERT INTO
+  case_management.case_location_code (
+    case_location_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'RURAL',
+    'Rural',
+    'Rural',
+    10,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'URBAN',
+    'Urban',
+    'Urban',
+    20,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'WLDNS',
+    'Wilderness',
+    'Wilderness',
+    30,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
+
+-- Insert new action_type_code CAT1ASSESS
+INSERT INTO
+  case_management.action_type_code (
+    action_type_code,
+    short_description,
+    long_description,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+VALUES
+  (
+    'CAT1ASSESS',
+    'Category 1 Assessment',
+    'Additional assessment options for large carnivores',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
+
+-- Insert new action_codes for assessment
+INSERT INTO
+  case_management.action_code (
+    action_code,
+    short_description,
+    long_description,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+VALUES
+  (
+    'SGHTNGS',
+    'Sighting',
+    'Sighting',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'FOODCOND',
+    'Food conditioned',
+    'Food conditioned',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'DAMGPROP',
+    'Damage to property',
+    'Damage to property',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'INJPRES',
+    'Injured, Present',
+    'Injured, Present',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'FSBCHRG',
+    'Follow/stalk/bluff charge',
+    'Follow/stalk/bluff charge',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'LVSTKILL',
+    'Livestock or pet, killed or injured',
+    'Livestock or pet, killed or injured',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'ENTRDWLL',
+    'Enters dwelling - temporary or permanent',
+    'Enters dwelling - temporary or permanent',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'NATPRYCP',
+    'Natural prey/crops',
+    'Natural prey/crops',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'CONFINED',
+    'Confined or treed',
+    'Confined or treed',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'SCHPRES',
+    'School/park/playground present',
+    'School/park/playground present',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'HUMINJ',
+    'Human injury/death',
+    'Human injury/death',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'COUGNGT',
+    'Cougar - sighting at night or tracks found',
+    'Cougar - sighting at night or tracks found',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'COUGDAY',
+    'Cougar - day time sighting',
+    'Cougar - day time sighting',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
+
+--Insert new xref for above action_codes
+INSERT INTO
+  case_management.action_type_action_xref (
+    action_type_code,
+    action_code,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+VALUES
+  (
+    'COMPASSESS',
+    'SGHTNGS',
+    10,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'COMPASSESS',
+    'FOODCOND',
+    20,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'COMPASSESS',
+    'DAMGPROP',
+    30,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'COMPASSESS',
+    'INJPRES',
+    40,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'COMPASSESS',
+    'FSBCHRG',
+    50,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'COMPASSESS',
+    'LVSTKILL',
+    60,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'COMPASSESS',
+    'ENTRDWLL',
+    70,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'COMPASSESS',
+    'NATPRYCP',
+    80,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'COMPASSESS',
+    'CONFINED',
+    90,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'COMPASSESS',
+    'SCHPRES',
+    100,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'COMPASSESS',
+    'HUMINJ',
+    110,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'CAT1ASSESS',
+    'COUGNGT',
+    10,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'CAT1ASSESS',
+    'COUGDAY',
+    20,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
+
 update case_management.action_type_action_xref
 set
   display_order = 10
@@ -5060,6 +5352,24 @@ set
 where
   action_type_code = 'CEEBACTION'
   and action_code = 'RESPREC';
+
+UPDATE case_management.action_code
+SET
+  active_ind = 'N'
+WHERE
+  action_code = 'ASSESSRISK'
+  OR action_code = 'ASSESSHLTH'
+  OR action_code = 'ASSESSHIST'
+  OR action_code = 'CNFRMIDENT';
+
+UPDATE case_management.action_type_action_xref
+SET
+  active_ind = 'N'
+WHERE
+  action_code = 'ASSESSRISK'
+  OR action_code = 'ASSESSHLTH'
+  OR action_code = 'ASSESSHIST'
+  OR action_code = 'CNFRMIDENT';
 
 --------------------------
 -- New Changes above this line
