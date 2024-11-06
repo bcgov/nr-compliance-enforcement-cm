@@ -172,7 +172,7 @@ input WildlifeInput {
   conflictHistory: String
   outcome: String
   tags: [EarTagInput]
-  drugs: [DrugInput]
+  drugs: [DrugInputV2]
   actions: [WildlifeActionInput]
 }
 
@@ -196,6 +196,20 @@ input DrugInput {
   remainingUse: String
   amountDiscarded: String
   discardMethod: String
+
+  order: Int
+}
+
+input DrugInputV2 {
+  id: String
+
+  vial: String!
+  drug: String!
+  amountUsed: String!
+  injectionMethod: String!
+
+  remainingUse: String
+  additionalComments: String
 
   order: Int
 }
