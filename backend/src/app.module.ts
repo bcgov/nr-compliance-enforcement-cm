@@ -32,6 +32,7 @@ import { CEEBDecisionActionModule } from "./ceeb_decision_action/ceeb_decision_a
 import { AgencyCodeModule } from "./agency_code/agency_code.module";
 import { ScheduleSectorXrefModule } from "./schedule_sector_xref/schedule_sector_xref.module";
 import { LeadModule } from "./lead/lead.module";
+import { CaseLocationCodeModule } from "./code-tables/case_location_code/case_location_code.module";
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { LeadModule } from "./lead/lead.module";
     CEEBDecisionActionModule,
     ScheduleSectorXrefModule,
     LeadModule,
+    CaseLocationCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService, DateScalar],

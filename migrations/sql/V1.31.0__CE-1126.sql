@@ -17,6 +17,8 @@ create table
 
 comment on table case_management.case_location_code is 'Contains the list of location types a user can select to indicate that where they take an action on a case. Values are Organization specific.';
 
+comment on column case_management.case_location_code.case_location_code is 'A human readable code used to identify a location type.';
+
 comment on column case_management.case_location_code.short_description is 'The short description of the location type where the case was taken.';
 
 comment on column case_management.case_location_code.long_description is 'The long description of the location type where the case was taken.';
@@ -41,6 +43,16 @@ ADD attended_ind boolean DEFAULT 'N',
 ADD case_location_code varchar(10),
 ADD case_conflict_history_code varchar(10),
 ADD case_threat_level_code varchar(10);
+
+comment on column case_management.case_file.complainant_contacted_ind is 'A boolean indicator to determine if complainant is contacted.';
+
+comment on column case_management.case_file.attended_ind is 'A boolean indicator to determine if the COS officer attended the assessment.';
+
+comment on column case_management.case_file.case_location_code is 'A human readable code used to identify a location type.';
+
+comment on column case_management.case_file.case_conflict_history_code is 'A human readable code used to identify a conflict history type.';
+
+comment on column case_management.case_file.case_threat_level_code is 'A human readable code used to identify a threat level type.';
 
 ALTER TABLE case_management.case_file ADD CONSTRAINT FK_case_file__case_conflict_history_code FOREIGN KEY (case_conflict_history_code) REFERENCES case_management.conflict_history_code (conflict_history_code),
 ADD CONSTRAINT FK_case_file__case_threat_level_code FOREIGN KEY (case_threat_level_code) REFERENCES case_management.threat_level_code (threat_level_code),

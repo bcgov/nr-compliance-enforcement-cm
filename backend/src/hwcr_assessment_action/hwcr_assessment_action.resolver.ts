@@ -16,4 +16,10 @@ export class HWCRAssessmentActionResolver {
   find() {
     return this.actionCodeService.findAllCodesByType(ACTION_TYPE_CODES.COMPASSESS);
   }
+
+  @Query("HWCRAssessmentCat1Actions")
+  @Roles(Role.COS_OFFICER, Role.CEEB)
+  findCat1Actions() {
+    return this.actionCodeService.findAllCodesByType(ACTION_TYPE_CODES.CAT1ASSESS);
+  }
 }
