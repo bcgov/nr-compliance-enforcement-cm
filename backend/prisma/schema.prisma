@@ -247,13 +247,14 @@ model agency_code {
   agency_code                                                        String                 @id(map: "PK_agency_code") @db.VarChar(10)
   short_description                                                  String?                @db.VarChar(50)
   long_description                                                   String?                @db.VarChar(250)
-  display_order                                                      Int?
   active_ind                                                         Boolean?
   create_user_id                                                     String                 @db.VarChar(32)
   create_utc_timestamp                                               DateTime               @db.Timestamp(6)
   update_user_id                                                     String?                @db.VarChar(32)
   update_utc_timestamp                                               DateTime?              @db.Timestamp(6)
+  display_order                                                      Int?
   case_file                                                          case_file[]
+  decision                                                           decision[]
   inaction_reason_code_inaction_reason_code_agency_codeToagency_code inaction_reason_code[] @relation("inaction_reason_code_agency_codeToagency_code")
 }
 
@@ -476,7 +477,7 @@ model decision {
   case_file_guid                                                                                                        String                               @db.Uuid
   schedule_sector_xref_guid                                                                                             String                               @db.Uuid
   discharge_code                                                                                                        String                               @db.VarChar(10)
-  rationale_text                                                                                                        String?                              @db.VarChar(10)
+  rationale_text                                                                                                        String?                              @db.VarChar(4000)
   inspection_number                                                                                                     Int?
   lead_agency_code                                                                                                      String?                              @db.VarChar(10)
   non_compliance_decision_matrix_code                                                                                   String?                              @db.VarChar(10)
@@ -488,6 +489,7 @@ model decision {
   action                                                                                                                action[]
   case_file                                                                                                             case_file                            @relation(fields: [case_file_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__case_file_guid")
   discharge_code_decision_discharge_codeTodischarge_code                                                                discharge_code                       @relation("decision_discharge_codeTodischarge_code", fields: [discharge_code], references: [discharge_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__discharge_code")
+  agency_code                                                                                                           agency_code?                         @relation(fields: [lead_agency_code], references: [agency_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__lead_agency_code")
   non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code non_compliance_decision_matrix_code? @relation("decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code", fields: [non_compliance_decision_matrix_code], references: [non_compliance_decision_matrix_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__ncdm_code")
   schedule_sector_xref                                                                                                  schedule_sector_xref                 @relation(fields: [schedule_sector_xref_guid], references: [schedule_sector_xref_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__schedule_sector_xref_guid")
 }
@@ -613,15 +615,6 @@ model site_h {
   operation_user_id             String   @default(dbgenerated("CURRENT_USER")) @db.VarChar(32)
   operation_executed_at         DateTime @default(now()) @db.Timestamp(6)
   data_after_executed_operation Json?
-}
-
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-model spatial_ref_sys {
-  srid      Int     @id
-  auth_name String? @db.VarChar(256)
-  auth_srid Int?
-  srtext    String? @db.VarChar(2048)
-  proj4text String? @db.VarChar(2048)
 }
 
 model case_location_code {

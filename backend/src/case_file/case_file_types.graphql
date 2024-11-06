@@ -81,14 +81,20 @@ type Drug {
 type Decision {
   id: String
   schedule: String
+  scheduleLongDescription: String
   sector: String
+  sectorLongDescription: String
   discharge: String
+  dischargeLongDescription: String
   nonCompliance: String
+  nonComplianceLongDescription: String
   rationale: String
   inspectionNumber: String
   leadAgency: String
+  leadAgencyLongDescription: String
   assignedTo: String
   actionTaken: String
+  actionTakenLongDescription: String
   actionTakenDate: Date
 }
 
