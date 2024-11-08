@@ -51,3 +51,12 @@ UPDATE case_management.drug_administered
 ALTER TABLE case_management.drug_administered DROP COLUMN adverse_reaction_text;
 ALTER TABLE case_management.drug_administered DROP COLUMN drug_discarded_amount;
 ALTER TABLE case_management.drug_administered DROP COLUMN discard_method_text;
+
+
+--
+-- Bump CM configuration to trigger re-fetch of code tables
+--
+
+UPDATE case_management.configuration
+SET configuration_value = configuration_value::int + 1
+WHERE configuration_code = 'CDTABLEVER';
