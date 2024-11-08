@@ -53,7 +53,7 @@ type Wildlife {
   conflictHistory: String
   outcome: String
   tags: [EarTag]
-  drugs: [DrugV2]
+  drugs: [Drug]
   actions: [CaseFileAction]
   order: Int
 }
@@ -66,19 +66,6 @@ type EarTag {
 }
 
 type Drug {
-  id: String
-  vial: String
-  drug: String
-  amountUsed: String
-  injectionMethod: String
-  reactions: String
-  remainingUse: String
-  amountDiscarded: String
-  discardMethod: String
-  order: Int
-}
-
-type DrugV2 {
   id: String
   vial: String
   drug: String

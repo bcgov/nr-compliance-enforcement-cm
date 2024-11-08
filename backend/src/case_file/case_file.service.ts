@@ -18,7 +18,7 @@ import { DeleteSupplementalNoteInput } from "./dto/supplemental-note/delete-supp
 import { CreateWildlifeInput } from "./dto/wildlife/create-wildlife-input";
 import { WildlifeInput } from "./dto/wildlife/wildlife-input";
 import { EarTagInput } from "./dto/wildlife/ear-tag-input";
-import { DrugInputV2 } from "./dto/wildlife/drug-input";
+import { DrugInput } from "./dto/wildlife/drug-input";
 import { WildlifeAction } from "./dto/wildlife/wildlife-action";
 import { Wildlife } from "./entities/wildlife-entity";
 import { SubjectQueryResult } from "./dto/subject-query-result";
@@ -1725,7 +1725,7 @@ export class CaseFileService {
         "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
       >,
       wildlifeId: string,
-      drugs: Array<DrugInputV2>,
+      drugs: Array<DrugInput>,
       userId: string,
     ) => {
       if (drugs && drugs.length !== 0) {
@@ -2031,7 +2031,7 @@ export class CaseFileService {
         "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
       >,
       wildlifeId: string,
-      drugs: Array<DrugInputV2>,
+      drugs: Array<DrugInput>,
       userId: string,
       date: Date,
     ) => {
