@@ -101,8 +101,7 @@ export class CaseFileService {
       createAssessmentInput: CreateAssessmentInput,
     ): Promise<string> => {
       let caseFileGuid: string;
-      console.log(createAssessmentInput);
-      console.log(createAssessmentInput.assessmentDetails.locationType);
+
       try {
         let case_file = await db.case_file.create({
           data: {
@@ -195,6 +194,45 @@ export class CaseFileService {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
               action_type_code: ACTION_TYPE_CODES.COMPASSESS,
+              action_code: action.actionCode,
+            },
+            select: {
+              action_type_action_xref_guid: true,
+            },
+          });
+          await db.action.create({
+            data: {
+              case_guid: caseFileGuid,
+              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+              actor_guid: action.actor,
+              action_date: action.date,
+              active_ind: action.activeIndicator,
+              create_user_id: createAssessmentInput.createUserId,
+              create_utc_timestamp: new Date(),
+            },
+          });
+        }
+
+        //Add category 1 actions
+        let cat1Action_codes_objects = await db.action_type_action_xref.findMany({
+          where: { action_type_code: ACTION_TYPE_CODES.CAT1ASSESS },
+          select: { action_code: true, action_type_action_xref_guid: true },
+        });
+
+        let cat1Action_codes: Array<string> = [];
+        for (const action_code_object of cat1Action_codes_objects) {
+          cat1Action_codes.push(action_code_object.action_code);
+        }
+
+        for (const cat1Action of createAssessmentInput.assessmentDetails.actions) {
+          if (action_codes.indexOf(cat1Action.actionCode) === -1) {
+            throw "Some action code values where not passed from the client";
+          }
+        }
+        for (const action of createAssessmentInput.assessmentDetails.cat1Actions) {
+          let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
+            where: {
+              action_type_code: ACTION_TYPE_CODES.CAT1ASSESS,
               action_code: action.actionCode,
             },
             select: {
@@ -430,6 +468,11 @@ export class CaseFileService {
       ACTION_TYPE_CODES.COMPASSESS,
     );
 
+    const assessmentCat1Actions = await this.caseFileActionService.findActionsByCaseIdAndType(
+      caseFileId,
+      ACTION_TYPE_CODES.CAT1ASSESS,
+    );
+
     const preventionActions = await this.caseFileActionService.findActionsByCaseIdAndType(
       caseFileId,
       ACTION_TYPE_CODES.COSPRVANDEDU,
@@ -460,6 +503,7 @@ export class CaseFileService {
               key: categoryLevel ? categoryLevel.short_description : "",
               value: categoryLevel ? categoryLevel.threat_level_code : "",
             },
+            cat1Actions: assessmentCat1Actions,
           }
         : null,
       preventionDetails: preventionActions
@@ -664,11 +708,32 @@ export class CaseFileService {
           }
         }
 
-        let assessmentCount: number = updateAssessmentInput.assessmentDetails.actions.length;
-        if (assessmentCount === 0) {
+        //Handle cat1actions
+        for (const action of updateAssessmentInput.assessmentDetails.cat1Actions) {
+          let actionTypeActionXref = await this.prisma.action_type_action_xref.findFirstOrThrow({
+            where: {
+              action_type_code: ACTION_TYPE_CODES.CAT1ASSESS,
+              action_code: action.actionCode,
+            },
+            select: {
+              action_type_action_xref_guid: true,
+              action_code: true,
+              action_type_code: true,
+            },
+          });
+
           await db.action.updateMany({
-            where: { case_guid: caseIdentifier },
-            data: { active_ind: false },
+            where: {
+              case_guid: caseIdentifier,
+              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+            },
+            data: {
+              actor_guid: action.actor,
+              action_date: action.date,
+              active_ind: action.activeIndicator,
+              update_user_id: updateAssessmentInput.updateUserId,
+              update_utc_timestamp: new Date(),
+            },
           });
         }
       });
