@@ -38,8 +38,8 @@ comment on column case_management.case_location_code.update_utc_timestamp is 'Th
 --
 -- ALTER TABLE 
 --
-ALTER TABLE case_management.case_file ADD complainant_contacted_ind boolean DEFAULT 'N',
-ADD attended_ind boolean DEFAULT 'N',
+ALTER TABLE case_management.case_file ADD complainant_contacted_ind boolean,
+ADD attended_ind boolean,
 ADD case_location_code varchar(10),
 ADD case_conflict_history_code varchar(10),
 ADD case_threat_level_code varchar(10);

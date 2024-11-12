@@ -1,5 +1,10 @@
 scalar Date
 
+input KeyValuePairInput {
+  key: String
+  value: String
+}
+
 input CreateAssessmentInput {
   leadIdentifier: String
   assessmentDetails: AssessmentDetailsInput!
@@ -14,6 +19,12 @@ input AssessmentDetailsInput {
   actions: [AssessmentActionInput]!
   actionLinkedComplaintIdentifier: String
   actionCloseComplaint: Boolean
+  contactedComplainant: Boolean
+  attended: Boolean
+  locationType: KeyValuePairInput
+  conflictHistory: KeyValuePairInput
+  categoryLevel: KeyValuePairInput
+  cat1Actions: [AssessmentActionInput]
 }
 
 input AssessmentActionInput {
@@ -169,11 +180,11 @@ input WildlifeInput {
   sex: String
   age: String
   categoryLevel: String
-  conflictHistory: String
   outcome: String
   tags: [EarTagInput]
   drugs: [DrugInput]
   actions: [WildlifeActionInput]
+  identifyingFeatures: String
 }
 
 input EarTagInput {

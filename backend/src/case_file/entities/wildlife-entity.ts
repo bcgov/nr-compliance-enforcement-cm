@@ -7,7 +7,7 @@ export interface Wildlife {
   sex?: string;
   age?: string;
   categoryLevel?: string;
-  conflictHistory?: string;
+  identifyingFeatures?: string;
   outcome?: string;
   tags?: Array<EarTag>;
   drugs?: Array<DrugUsed>;

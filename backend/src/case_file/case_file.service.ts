@@ -101,7 +101,8 @@ export class CaseFileService {
       createAssessmentInput: CreateAssessmentInput,
     ): Promise<string> => {
       let caseFileGuid: string;
-
+      console.log(createAssessmentInput);
+      console.log(createAssessmentInput.assessmentDetails.locationType);
       try {
         let case_file = await db.case_file.create({
           data: {
@@ -126,6 +127,29 @@ export class CaseFileService {
                 case_code: createAssessmentInput.caseCode,
               },
             },
+            complainant_contacted_ind: createAssessmentInput.assessmentDetails.contactedComplainant,
+            attended_ind: createAssessmentInput.assessmentDetails.attended,
+            case_file__case_location_code: createAssessmentInput.assessmentDetails.locationType
+              ? {
+                  connect: {
+                    case_location_code: createAssessmentInput.assessmentDetails.locationType.value,
+                  },
+                }
+              : undefined,
+            case_file__conflict_history_code: createAssessmentInput.assessmentDetails.conflictHistory
+              ? {
+                  connect: {
+                    conflict_history_code: createAssessmentInput.assessmentDetails.conflictHistory.value,
+                  },
+                }
+              : undefined,
+            case_file__threat_level_code: createAssessmentInput.assessmentDetails.categoryLevel
+              ? {
+                  connect: {
+                    threat_level_code: createAssessmentInput.assessmentDetails.categoryLevel.value,
+                  },
+                }
+              : undefined,
           },
         });
 
@@ -209,6 +233,26 @@ export class CaseFileService {
         action_not_required_ind: true,
         inaction_reason_code: true,
         note_text: true,
+        complainant_contacted_ind: true,
+        attended_ind: true,
+        case_file__case_location_code: {
+          select: {
+            case_location_code: true,
+            short_description: true,
+          },
+        },
+        case_file__conflict_history_code: {
+          select: {
+            conflict_history_code: true,
+            short_description: true,
+          },
+        },
+        case_file__threat_level_code: {
+          select: {
+            threat_level_code: true,
+            short_description: true,
+          },
+        },
         inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: {
           select: {
             short_description: true,
@@ -257,7 +301,7 @@ export class CaseFileService {
             species_code: true,
             age_code: true,
             sex_code: true,
-            conflict_history_code: true,
+            identifying_features: true,
             threat_level_code: true,
             hwcr_outcome_code: true,
             create_utc_timestamp: true,
@@ -369,6 +413,11 @@ export class CaseFileService {
       inaction_reason_code: inactionReasonCode,
       inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: reason,
       review_required_ind: isReviewRequired,
+      complainant_contacted_ind: contactedComplainant,
+      attended_ind: attended,
+      case_file__case_location_code: locationType,
+      case_file__conflict_history_code: conflictHistory,
+      case_file__threat_level_code: categoryLevel,
     } = queryResult;
 
     const reviewCompleteAction = await this.caseFileActionService.findActionByCaseIdAndCaseCode(
@@ -397,6 +446,20 @@ export class CaseFileService {
             actionJustificationLongDescription: !reason ? "" : reason.long_description,
             actionJustificationActiveIndicator: !reason ? false : reason.active_ind,
             actions: assessmentActions,
+            contactedComplainant,
+            attended,
+            conflictHistory: {
+              key: conflictHistory ? conflictHistory.short_description : "",
+              value: conflictHistory ? conflictHistory.conflict_history_code : "",
+            },
+            locationType: {
+              key: locationType ? locationType.short_description : "",
+              value: locationType ? locationType.case_location_code : "",
+            },
+            categoryLevel: {
+              key: categoryLevel ? categoryLevel.short_description : "",
+              value: categoryLevel ? categoryLevel.threat_level_code : "",
+            },
           }
         : null,
       preventionDetails: preventionActions
@@ -512,6 +575,29 @@ export class CaseFileService {
                 }
               : undefined,
             action_not_required_ind: updateAssessmentInput.assessmentDetails.actionNotRequired,
+            complainant_contacted_ind: updateAssessmentInput.assessmentDetails.contactedComplainant,
+            attended_ind: updateAssessmentInput.assessmentDetails.attended,
+            case_file__case_location_code: updateAssessmentInput.assessmentDetails.locationType
+              ? {
+                  connect: {
+                    case_location_code: updateAssessmentInput.assessmentDetails.locationType.value,
+                  },
+                }
+              : undefined,
+            case_file__conflict_history_code: updateAssessmentInput.assessmentDetails.conflictHistory
+              ? {
+                  connect: {
+                    conflict_history_code: updateAssessmentInput.assessmentDetails.conflictHistory.value,
+                  },
+                }
+              : undefined,
+            case_file__threat_level_code: updateAssessmentInput.assessmentDetails.categoryLevel
+              ? {
+                  connect: {
+                    threat_level_code: updateAssessmentInput.assessmentDetails.categoryLevel.value,
+                  },
+                }
+              : undefined,
             update_user_id: updateAssessmentInput.updateUserId,
             update_utc_timestamp: new Date(),
           },
@@ -1504,7 +1590,7 @@ export class CaseFileService {
     return equipmentDetails;
   };
 
-  //-- get all of the subjects for the case files, this can be wildlife as well
+  //-- get all of the subjects (outcome animal) for the case files, this can be wildlife as well
   //-- as people <future state>
   private _getCaseFileSubjects = async (query: SubjectQueryResult): Promise<Wildlife[]> => {
     let result: Array<Wildlife>;
@@ -1521,7 +1607,7 @@ export class CaseFileService {
             sex_code: sex,
             age_code: age,
             threat_level_code: categoryLevel,
-            conflict_history_code: conflictHistory,
+            identifying_features: identifyingFeatures,
             hwcr_outcome_code: outcome,
             ear_tag,
             drug_administered,
@@ -1600,7 +1686,7 @@ export class CaseFileService {
             sex,
             age,
             categoryLevel,
-            conflictHistory,
+            identifyingFeatures,
             outcome,
             order: idx + 1,
           };
@@ -1667,8 +1753,8 @@ export class CaseFileService {
           record = { ...record, threat_level_code: wildlife.categoryLevel };
         }
 
-        if (wildlife.conflictHistory) {
-          record = { ...record, conflict_history_code: wildlife.conflictHistory };
+        if (wildlife.identifyingFeatures) {
+          record = { ...record, identifying_features: wildlife.identifyingFeatures };
         }
 
         if (wildlife.outcome) {
@@ -1880,7 +1966,7 @@ export class CaseFileService {
       date: Date,
     ) => {
       try {
-        const { id, species, sex, age, categoryLevel, conflictHistory, outcome } = input;
+        const { id, species, sex, age, categoryLevel, identifyingFeatures, outcome } = input;
 
         //-- create a new data record to update based on the input provided
         let data = {
@@ -1888,7 +1974,7 @@ export class CaseFileService {
           sex_code: sex || null,
           age_code: age || null,
           threat_level_code: categoryLevel || null,
-          conflict_history_code: conflictHistory || null,
+          identifying_features: identifyingFeatures || null,
           hwcr_outcome_code: outcome || null,
           update_user_id: userId,
           update_utc_timestamp: date,
