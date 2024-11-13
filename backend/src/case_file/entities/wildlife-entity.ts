@@ -27,9 +27,7 @@ export interface DrugUsed {
   drug: string;
   amountUsed: string;
   injectionMethod: string;
-  reactions?: string;
 
   remainingUse?: string;
-  amountDiscarded?: string;
-  discardMethod?: string;
+  additionalComments?: string;
 }

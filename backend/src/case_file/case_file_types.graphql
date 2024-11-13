@@ -82,10 +82,8 @@ type Drug {
   drug: String
   amountUsed: String
   injectionMethod: String
-  reactions: String
   remainingUse: String
-  amountDiscarded: String
-  discardMethod: String
+  additionalComments: String
   order: Int
 }
 

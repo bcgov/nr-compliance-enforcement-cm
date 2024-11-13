@@ -30,9 +30,7 @@ export interface SubjectQueryResult {
       drug_remaining_outcome_code: string;
       vial_number: string;
       drug_used_amount: string;
-      drug_discarded_amount: string;
-      discard_method_text: string;
-      adverse_reaction_text: string;
+      additional_comments_text: string;
       create_user_id: string;
       create_utc_timestamp: Date;
       update_user_id: string;
