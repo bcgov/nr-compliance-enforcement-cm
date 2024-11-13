@@ -1549,10 +1549,8 @@ export class CaseFileService {
                   drug_code: drug,
                   drug_used_amount: amountUsed,
                   drug_method_code: injectionMethod,
-                  adverse_reaction_text: reactions,
                   drug_remaining_outcome_code: remainingUse,
-                  drug_discarded_amount: amountDiscarded,
-                  discard_method_text: discardMethod,
+                  additional_comments_text: additionalComments,
                 },
                 idx,
               ) => {
@@ -1562,10 +1560,8 @@ export class CaseFileService {
                   drug,
                   amountUsed,
                   injectionMethod,
-                  reactions,
                   remainingUse,
-                  amountDiscarded,
-                  discardMethod,
+                  additionalComments,
                   order: idx + 1,
                 };
               },
@@ -1740,11 +1736,9 @@ export class CaseFileService {
               drug: drug_code,
               amountUsed: drug_used_amount,
               injectionMethod: drug_method_code,
-              reactions: adverse_reaction_text,
 
               remainingUse: drug_remaining_outcome_code,
-              amountDiscarded: drug_discarded_amount,
-              discardMethod: discard_method_text,
+              additionalComments: additional_comments_text,
             }) => {
               return {
                 wildlife_guid: wildlifeId,
@@ -1753,9 +1747,7 @@ export class CaseFileService {
                 drug_remaining_outcome_code,
                 vial_number,
                 drug_used_amount,
-                drug_discarded_amount,
-                discard_method_text,
-                adverse_reaction_text,
+                additional_comments_text,
                 active_ind: true,
                 create_user_id: userId,
                 update_user_id: userId,
@@ -2057,11 +2049,9 @@ export class CaseFileService {
               vial: vial_number,
               drug: drug_code,
               amountUsed: drug_used_amount,
-              amountDiscarded: drug_discarded_amount,
               injectionMethod: drug_method_code,
-              reactions: adverse_reaction_text,
               remainingUse: drug_remaining_outcome_code,
-              discardMethod: discard_method_text,
+              additionalComments: additional_comments_text,
             }) => {
               return {
                 wildlife_guid: wildlifeId,
@@ -2070,10 +2060,8 @@ export class CaseFileService {
                 drug_code,
                 drug_used_amount,
                 drug_method_code,
-                adverse_reaction_text,
                 drug_remaining_outcome_code,
-                drug_discarded_amount,
-                discard_method_text,
+                additional_comments_text,
 
                 active_ind: true,
                 create_user_id: userId,
@@ -2116,10 +2104,8 @@ export class CaseFileService {
                 drug: drug_code,
                 amountUsed: drug_used_amount,
                 injectionMethod: drug_method_code,
-                discardMethod: discard_method_text,
-                reactions: adverse_reaction_text,
-                amountDiscarded: drug_discarded_amount,
                 remainingUse: drug_remaining_outcome_code,
+                additionalComments: additional_comments_text,
               }) => {
                 await db.drug_administered.update({
                   where: {
@@ -2131,9 +2117,7 @@ export class CaseFileService {
                     drug_method_code,
                     drug_remaining_outcome_code,
                     drug_used_amount,
-                    drug_discarded_amount,
-                    discard_method_text,
-                    adverse_reaction_text,
+                    additional_comments_text,
                     update_user_id: userId,
                     update_utc_timestamp: date,
                   },
@@ -2164,10 +2148,8 @@ export class CaseFileService {
                 drug: drug_code,
                 amountUsed: drug_used_amount,
                 injectionMethod: drug_method_code,
-                reactions: adverse_reaction_text,
                 remainingUse: drug_remaining_outcome_code,
-                amountDiscarded: drug_discarded_amount,
-                discardMethod: discard_method_text,
+                additionalComments: additional_comments_text,
               }) => {
                 return {
                   wildlife_guid: wildlifeId,
@@ -2176,10 +2158,8 @@ export class CaseFileService {
                   drug_code,
                   drug_used_amount,
                   drug_method_code,
-                  adverse_reaction_text,
                   drug_remaining_outcome_code,
-                  drug_discarded_amount,
-                  discard_method_text,
+                  additional_comments_text,
 
                   active_ind: true,
                   create_user_id: userId,
