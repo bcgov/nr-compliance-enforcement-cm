@@ -32,6 +32,7 @@ input AssessmentActionInput {
   date: Date!
   actionCode: String!
   activeIndicator: Boolean!
+  isLegacy: Boolean
 }
 
 input UpdateAssessmentInput {

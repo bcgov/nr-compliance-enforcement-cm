@@ -439,7 +439,6 @@ model wildlife {
   wildlife_guid                        String              @id(map: "PK_wildlife_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   case_file_guid                       String              @db.Uuid
   threat_level_code                    String?             @db.VarChar(10)
-  conflict_history_code                String?             @db.VarChar(10)
   sex_code                             String?             @db.VarChar(10)
   age_code                             String?             @db.VarChar(10)
   hwcr_outcome_code                    String?             @db.VarChar(10)

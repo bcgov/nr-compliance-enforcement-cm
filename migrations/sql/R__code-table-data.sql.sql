@@ -5130,8 +5130,8 @@ VALUES
   ),
   (
     'INJPRES',
-    'Injured, Present',
-    'Injured, Present',
+    'Injured, present',
+    'Injured, present',
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP

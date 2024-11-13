@@ -62,3 +62,25 @@ ALTER TABLE case_management.wildlife
 DROP CONSTRAINT FK_wildlife__conflict_history_code;
 
 ALTER TABLE case_management.wildlife ADD identifying_features varchar(4000);
+
+-- Handling existing data: move conflict_history_code from table wildlife to table case_file 
+UPDATE case_management.case_file AS cf
+SET
+  case_conflict_history_code = subtable.conflict_history_code
+FROM
+  (
+    SELECT DISTINCT
+      ON (case_file_guid) case_file_guid,
+      conflict_history_code
+    FROM
+      case_management.wildlife
+    WHERE
+      conflict_history_code notnull
+    ORDER BY 
+      case_file_guid, array_position(array['H', 'M', 'L', 'U'], conflict_history_code)
+  ) AS subtable
+WHERE
+  cf.case_file_guid = subtable.case_file_guid;
+
+ALTER TABLE case_management.wildlife
+DROP column conflict_history_code;

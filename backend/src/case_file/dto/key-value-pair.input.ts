@@ -1,4 +1,4 @@
 export class KeyValuePairInput {
-  value: string | undefined;
-  key: string | undefined;
+  value: string | undefined | null;
+  key: string | undefined | null;
 }
