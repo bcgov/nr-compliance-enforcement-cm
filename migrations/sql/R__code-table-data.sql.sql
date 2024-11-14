@@ -5397,7 +5397,7 @@ VALUES
     now (),
     'FLYWAY',
     now ()
-  );
+  ) on conflict do nothing;
 
 --
 -- UPDATE Reverse distribution -> Returned to vet
