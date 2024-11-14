@@ -13,4 +13,5 @@ export interface WildlifeInput {
   tags?: Array<EarTagInput>;
   drugs?: Array<DrugInput>;
   actions?: Array<WildlifeAction>;
+  identifyingFeatures?: string;
 }

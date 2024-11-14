@@ -126,6 +126,29 @@ export class CaseFileService {
                 case_code: createAssessmentInput.caseCode,
               },
             },
+            complainant_contacted_ind: createAssessmentInput.assessmentDetails.contactedComplainant,
+            attended_ind: createAssessmentInput.assessmentDetails.attended,
+            case_file__case_location_code: createAssessmentInput.assessmentDetails.locationType
+              ? {
+                  connect: {
+                    case_location_code: createAssessmentInput.assessmentDetails.locationType.value,
+                  },
+                }
+              : undefined,
+            case_file__conflict_history_code: createAssessmentInput.assessmentDetails.conflictHistory
+              ? {
+                  connect: {
+                    conflict_history_code: createAssessmentInput.assessmentDetails.conflictHistory.value,
+                  },
+                }
+              : undefined,
+            case_file__threat_level_code: createAssessmentInput.assessmentDetails.categoryLevel
+              ? {
+                  connect: {
+                    threat_level_code: createAssessmentInput.assessmentDetails.categoryLevel.value,
+                  },
+                }
+              : undefined,
           },
         });
 
@@ -189,6 +212,45 @@ export class CaseFileService {
             },
           });
         }
+
+        //Add category 1 actions
+        let cat1Action_codes_objects = await db.action_type_action_xref.findMany({
+          where: { action_type_code: ACTION_TYPE_CODES.CAT1ASSESS },
+          select: { action_code: true, action_type_action_xref_guid: true },
+        });
+
+        let cat1Action_codes: Array<string> = [];
+        for (const action_code_object of cat1Action_codes_objects) {
+          cat1Action_codes.push(action_code_object.action_code);
+        }
+
+        for (const cat1Action of createAssessmentInput.assessmentDetails.actions) {
+          if (action_codes.indexOf(cat1Action.actionCode) === -1) {
+            throw "Some action code values where not passed from the client";
+          }
+        }
+        for (const action of createAssessmentInput.assessmentDetails.cat1Actions) {
+          let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
+            where: {
+              action_type_code: ACTION_TYPE_CODES.CAT1ASSESS,
+              action_code: action.actionCode,
+            },
+            select: {
+              action_type_action_xref_guid: true,
+            },
+          });
+          await db.action.create({
+            data: {
+              case_guid: caseFileGuid,
+              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+              actor_guid: action.actor,
+              action_date: action.date,
+              active_ind: action.activeIndicator,
+              create_user_id: createAssessmentInput.createUserId,
+              create_utc_timestamp: new Date(),
+            },
+          });
+        }
       });
       caseFileOutput = await this.findOne(caseFileGuid);
     } catch (exception) {
@@ -209,6 +271,26 @@ export class CaseFileService {
         action_not_required_ind: true,
         inaction_reason_code: true,
         note_text: true,
+        complainant_contacted_ind: true,
+        attended_ind: true,
+        case_file__case_location_code: {
+          select: {
+            case_location_code: true,
+            short_description: true,
+          },
+        },
+        case_file__conflict_history_code: {
+          select: {
+            conflict_history_code: true,
+            short_description: true,
+          },
+        },
+        case_file__threat_level_code: {
+          select: {
+            threat_level_code: true,
+            short_description: true,
+          },
+        },
         inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: {
           select: {
             short_description: true,
@@ -257,7 +339,7 @@ export class CaseFileService {
             species_code: true,
             age_code: true,
             sex_code: true,
-            conflict_history_code: true,
+            identifying_features: true,
             threat_level_code: true,
             hwcr_outcome_code: true,
             create_utc_timestamp: true,
@@ -369,6 +451,11 @@ export class CaseFileService {
       inaction_reason_code: inactionReasonCode,
       inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: reason,
       review_required_ind: isReviewRequired,
+      complainant_contacted_ind: contactedComplainant,
+      attended_ind: attended,
+      case_file__case_location_code: locationType,
+      case_file__conflict_history_code: conflictHistory,
+      case_file__threat_level_code: categoryLevel,
     } = queryResult;
 
     const reviewCompleteAction = await this.caseFileActionService.findActionByCaseIdAndCaseCode(
@@ -379,6 +466,11 @@ export class CaseFileService {
     const assessmentActions = await this.caseFileActionService.findActionsByCaseIdAndType(
       caseFileId,
       ACTION_TYPE_CODES.COMPASSESS,
+    );
+
+    const assessmentCat1Actions = await this.caseFileActionService.findActionsByCaseIdAndType(
+      caseFileId,
+      ACTION_TYPE_CODES.CAT1ASSESS,
     );
 
     const preventionActions = await this.caseFileActionService.findActionsByCaseIdAndType(
@@ -397,6 +489,21 @@ export class CaseFileService {
             actionJustificationLongDescription: !reason ? "" : reason.long_description,
             actionJustificationActiveIndicator: !reason ? false : reason.active_ind,
             actions: assessmentActions,
+            contactedComplainant,
+            attended,
+            conflictHistory: {
+              key: conflictHistory ? conflictHistory.short_description : "",
+              value: conflictHistory ? conflictHistory.conflict_history_code : "",
+            },
+            locationType: {
+              key: locationType ? locationType.short_description : "",
+              value: locationType ? locationType.case_location_code : "",
+            },
+            categoryLevel: {
+              key: categoryLevel ? categoryLevel.short_description : "",
+              value: categoryLevel ? categoryLevel.threat_level_code : "",
+            },
+            cat1Actions: assessmentCat1Actions,
           }
         : null,
       preventionDetails: preventionActions
@@ -512,6 +619,29 @@ export class CaseFileService {
                 }
               : undefined,
             action_not_required_ind: updateAssessmentInput.assessmentDetails.actionNotRequired,
+            complainant_contacted_ind: updateAssessmentInput.assessmentDetails.contactedComplainant,
+            attended_ind: updateAssessmentInput.assessmentDetails.attended,
+            case_file__case_location_code: updateAssessmentInput.assessmentDetails.locationType
+              ? {
+                  connect: {
+                    case_location_code: updateAssessmentInput.assessmentDetails.locationType.value,
+                  },
+                }
+              : undefined,
+            case_file__conflict_history_code: updateAssessmentInput.assessmentDetails.conflictHistory
+              ? {
+                  connect: {
+                    conflict_history_code: updateAssessmentInput.assessmentDetails.conflictHistory.value,
+                  },
+                }
+              : undefined,
+            case_file__threat_level_code: updateAssessmentInput.assessmentDetails.categoryLevel
+              ? {
+                  connect: {
+                    threat_level_code: updateAssessmentInput.assessmentDetails.categoryLevel.value,
+                  },
+                }
+              : undefined,
             update_user_id: updateAssessmentInput.updateUserId,
             update_utc_timestamp: new Date(),
           },
@@ -578,11 +708,32 @@ export class CaseFileService {
           }
         }
 
-        let assessmentCount: number = updateAssessmentInput.assessmentDetails.actions.length;
-        if (assessmentCount === 0) {
+        //Handle cat1actions
+        for (const action of updateAssessmentInput.assessmentDetails.cat1Actions) {
+          let actionTypeActionXref = await this.prisma.action_type_action_xref.findFirstOrThrow({
+            where: {
+              action_type_code: ACTION_TYPE_CODES.CAT1ASSESS,
+              action_code: action.actionCode,
+            },
+            select: {
+              action_type_action_xref_guid: true,
+              action_code: true,
+              action_type_code: true,
+            },
+          });
+
           await db.action.updateMany({
-            where: { case_guid: caseIdentifier },
-            data: { active_ind: false },
+            where: {
+              case_guid: caseIdentifier,
+              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+            },
+            data: {
+              actor_guid: action.actor,
+              action_date: action.date,
+              active_ind: action.activeIndicator,
+              update_user_id: updateAssessmentInput.updateUserId,
+              update_utc_timestamp: new Date(),
+            },
           });
         }
       });
@@ -1504,7 +1655,7 @@ export class CaseFileService {
     return equipmentDetails;
   };
 
-  //-- get all of the subjects for the case files, this can be wildlife as well
+  //-- get all of the subjects (outcome animal) for the case files, this can be wildlife as well
   //-- as people <future state>
   private _getCaseFileSubjects = async (query: SubjectQueryResult): Promise<Wildlife[]> => {
     let result: Array<Wildlife>;
@@ -1521,7 +1672,7 @@ export class CaseFileService {
             sex_code: sex,
             age_code: age,
             threat_level_code: categoryLevel,
-            conflict_history_code: conflictHistory,
+            identifying_features: identifyingFeatures,
             hwcr_outcome_code: outcome,
             ear_tag,
             drug_administered,
@@ -1596,7 +1747,7 @@ export class CaseFileService {
             sex,
             age,
             categoryLevel,
-            conflictHistory,
+            identifyingFeatures,
             outcome,
             order: idx + 1,
           };
@@ -1663,8 +1814,8 @@ export class CaseFileService {
           record = { ...record, threat_level_code: wildlife.categoryLevel };
         }
 
-        if (wildlife.conflictHistory) {
-          record = { ...record, conflict_history_code: wildlife.conflictHistory };
+        if (wildlife.identifyingFeatures) {
+          record = { ...record, identifying_features: wildlife.identifyingFeatures };
         }
 
         if (wildlife.outcome) {
@@ -1872,7 +2023,7 @@ export class CaseFileService {
       date: Date,
     ) => {
       try {
-        const { id, species, sex, age, categoryLevel, conflictHistory, outcome } = input;
+        const { id, species, sex, age, categoryLevel, identifyingFeatures, outcome } = input;
 
         //-- create a new data record to update based on the input provided
         let data = {
@@ -1880,7 +2031,7 @@ export class CaseFileService {
           sex_code: sex || null,
           age_code: age || null,
           threat_level_code: categoryLevel || null,
-          conflict_history_code: conflictHistory || null,
+          identifying_features: identifyingFeatures || null,
           hwcr_outcome_code: outcome || null,
           update_user_id: userId,
           update_utc_timestamp: date,

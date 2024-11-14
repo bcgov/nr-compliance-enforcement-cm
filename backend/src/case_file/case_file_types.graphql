@@ -1,5 +1,10 @@
 scalar Date
 
+type KeyValuePair {
+  key: String
+  value: String
+}
+
 type CaseFile {
   caseIdentifier: String
   leadIdentifier: String
@@ -21,6 +26,12 @@ type Assessment {
   actionJustificationLongDescription: String
   actionJustificationActiveIndicator: Boolean
   actions: [CaseFileAction]
+  contactedComplainant: Boolean
+  attended: Boolean
+  locationType: KeyValuePair
+  conflictHistory: KeyValuePair
+  categoryLevel: KeyValuePair
+  cat1Actions: [CaseFileAction]
 }
 
 type Prevention {
@@ -50,7 +61,7 @@ type Wildlife {
   sex: String
   age: String
   categoryLevel: String
-  conflictHistory: String
+  identifyingFeatures: String
   outcome: String
   tags: [EarTag]
   drugs: [Drug]

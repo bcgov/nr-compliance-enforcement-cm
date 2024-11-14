@@ -8,4 +8,5 @@ type CaseFileAction {
   activeIndicator: Boolean
   shortDescription: String!
   longDescription: String!
+  isLegacy: Boolean
 }

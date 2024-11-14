@@ -24,6 +24,7 @@ export class ActionCodeService {
     queryResult = await xrefDataContext.findMany({
       where: {
         action_type_code: actionTypeCode,
+        active_ind: true,
       },
       select: {
         action_code: true,

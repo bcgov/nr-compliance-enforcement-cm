@@ -16,7 +16,7 @@ export interface SubjectQueryResult {
     }[];
     wildlife_guid: string;
     threat_level_code: string;
-    conflict_history_code: string;
+    identifying_features: string;
     sex_code: string;
     age_code: string;
     hwcr_outcome_code: string;
