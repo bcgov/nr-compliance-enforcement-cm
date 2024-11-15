@@ -5375,7 +5375,7 @@ WHERE
 -- INSERT INTO drug_method_code
 --
 INSERT INTO
-  drug_method_code (
+  case_management.drug_method_code (
     drug_method_code,
     short_description,
     long_description,
@@ -5397,7 +5397,7 @@ VALUES
     now (),
     'FLYWAY',
     now ()
-  );
+  ) on conflict do nothing;
 
 --
 -- UPDATE Reverse distribution -> Returned to vet
