@@ -5375,7 +5375,7 @@ WHERE
 -- INSERT INTO drug_method_code
 --
 INSERT INTO
-  drug_method_code (
+  case_management.drug_method_code (
     drug_method_code,
     short_description,
     long_description,
