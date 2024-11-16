@@ -23,7 +23,6 @@ wildlife
 case_file
 schedule_sector_xref
 inaction_reason_code
-threat_level_code
 sex_code
 sector_code
 schedule_code
@@ -36,8 +35,10 @@ drug_method_code
 drug_code
 discharge_code
 conflict_history_code
+case_location_code
 case_code
 age_code
 action_type_code
 action_code
+threat_level_code
 agency_code

@@ -1,8 +1,10 @@
 agency_code
+threat_level_code
 action_code
 action_type_code
 age_code
 case_code
+case_location_code
 conflict_history_code
 discharge_code
 drug_code
@@ -15,7 +17,6 @@ non_compliance_decision_matrix_code
 schedule_code
 sector_code
 sex_code
-threat_level_code
 inaction_reason_code
 schedule_sector_xref
 case_file

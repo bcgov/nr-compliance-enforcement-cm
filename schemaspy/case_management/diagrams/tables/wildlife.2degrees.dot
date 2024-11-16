@@ -7,6 +7,9 @@ digraph "twoDegreesRelationshipsDiagram" {
   "action":"wildlife_guid":w -> "wildlife":"wildlife_guid.type":e [arrowhead=none dir=back arrowtail=crowodot];
   "authorization_permit":"elipses":w -> "case_file":"case_file_guid":e [arrowhead=none dir=back arrowtail=crowodot];
   "case_file":"case_code":w -> "case_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "case_file":"case_conflict_history_code":w -> "conflict_history_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "case_file":"case_location_code":w -> "case_location_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
+  "case_file":"case_threat_level_code":w -> "threat_level_code":"threat_level_code":e [arrowhead=none dir=back arrowtail=crowodot];
   "case_file":"inaction_reason_code":w -> "inaction_reason_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "case_file":"owned_by_agency_code":w -> "agency_code":"elipses":e [arrowhead=none dir=back arrowtail=crowodot];
   "decision":"elipses":w -> "case_file":"case_file_guid":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -22,7 +25,6 @@ digraph "twoDegreesRelationshipsDiagram" {
   "site":"elipses":w -> "case_file":"case_file_guid":e [arrowhead=none dir=back arrowtail=crowodot];
   "wildlife":"age_code":w -> "age_code":"age_code":e [arrowhead=none dir=back arrowtail=crowodot];
   "wildlife":"case_file_guid":w -> "case_file":"case_file_guid":e [arrowhead=none dir=back arrowtail=crowodot];
-  "wildlife":"conflict_history_code":w -> "conflict_history_code":"conflict_history_code":e [arrowhead=none dir=back arrowtail=crowodot];
   "wildlife":"hwcr_outcome_code":w -> "hwcr_outcome_code":"hwcr_outcome_code":e [arrowhead=none dir=back arrowtail=crowodot];
   "wildlife":"sex_code":w -> "sex_code":"sex_code":e [arrowhead=none dir=back arrowtail=crowodot];
   "wildlife":"threat_level_code":w -> "threat_level_code":"threat_level_code":e [arrowhead=none dir=back arrowtail=crowodot];
@@ -98,17 +100,27 @@ digraph "twoDegreesRelationshipsDiagram" {
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="50" HEIGHT="16"><B>case_file</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 3</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">6 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 6</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">6 &gt;</TD></TR>
     </TABLE>>
     URL="case_file.html"
     target="_top"
     tooltip="case_file"
   ];
+  "case_location_code" [
+   label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="113" HEIGHT="16"><B>case_location_code</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
+      <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
+    </TABLE>>
+    URL="case_location_code.html"
+    target="_top"
+    tooltip="case_location_code"
+  ];
   "conflict_history_code" [
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="125" HEIGHT="16"><B>conflict_history_code</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="conflict_history_code" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="137" HEIGHT="16">conflict_history_code</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
       <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
     </TABLE>>
@@ -273,9 +285,8 @@ digraph "twoDegreesRelationshipsDiagram" {
    label=<
     <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
       <TR><TD COLSPAN="3"  BGCOLOR="#f5f5f5"><TABLE BORDER="0" CELLSPACING="0"><TR><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="104" HEIGHT="16"><B>threat_level_code</B></TD><TD ALIGN="RIGHT">[table]</TD></TR></TABLE></TD></TR>
-      <TR><TD PORT="threat_level_code" COLSPAN="3" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="137" HEIGHT="16">threat_level_code</TD></TR></TABLE></TD></TR>
       <TR><TD PORT="elipses" COLSPAN="3" ALIGN="LEFT">...</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">1 &gt;</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">2 &gt;</TD></TR>
     </TABLE>>
     URL="threat_level_code.html"
     target="_top"
@@ -288,7 +299,6 @@ digraph "twoDegreesRelationshipsDiagram" {
       <TR><TD PORT="wildlife_guid" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/primaryKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="137" HEIGHT="16">wildlife_guid</TD></TR></TABLE></TD><TD PORT="wildlife_guid.type" ALIGN="LEFT">uuid[2147483647]</TD></TR>
       <TR><TD PORT="case_file_guid" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="137" HEIGHT="16">case_file_guid</TD></TR></TABLE></TD><TD PORT="case_file_guid.type" ALIGN="LEFT">uuid[2147483647]</TD></TR>
       <TR><TD PORT="threat_level_code" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="137" HEIGHT="16">threat_level_code</TD></TR></TABLE></TD><TD PORT="threat_level_code.type" ALIGN="LEFT">varchar[10]</TD></TR>
-      <TR><TD PORT="conflict_history_code" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="137" HEIGHT="16">conflict_history_code</TD></TR></TABLE></TD><TD PORT="conflict_history_code.type" ALIGN="LEFT">varchar[10]</TD></TR>
       <TR><TD PORT="sex_code" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="137" HEIGHT="16">sex_code</TD></TR></TABLE></TD><TD PORT="sex_code.type" ALIGN="LEFT">varchar[10]</TD></TR>
       <TR><TD PORT="age_code" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="137" HEIGHT="16">age_code</TD></TR></TABLE></TD><TD PORT="age_code.type" ALIGN="LEFT">varchar[10]</TD></TR>
       <TR><TD PORT="hwcr_outcome_code" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"><IMG SRC="../../images/foreignKeys.png"/></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="137" HEIGHT="16">hwcr_outcome_code</TD></TR></TABLE></TD><TD PORT="hwcr_outcome_code.type" ALIGN="LEFT">varchar[10]</TD></TR>
@@ -298,7 +308,8 @@ digraph "twoDegreesRelationshipsDiagram" {
       <TR><TD PORT="update_user_id" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="137" HEIGHT="16">update_user_id</TD></TR></TABLE></TD><TD PORT="update_user_id.type" ALIGN="LEFT">varchar[32]</TD></TR>
       <TR><TD PORT="update_utc_timestamp" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="137" HEIGHT="16">update_utc_timestamp</TD></TR></TABLE></TD><TD PORT="update_utc_timestamp.type" ALIGN="LEFT">timestamp[29,6]</TD></TR>
       <TR><TD PORT="active_ind" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="137" HEIGHT="16">active_ind</TD></TR></TABLE></TD><TD PORT="active_ind.type" ALIGN="LEFT">bool[1]</TD></TR>
-      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 6</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3 &gt;</TD></TR>
+      <TR><TD PORT="identifying_features" COLSPAN="2" ALIGN="LEFT"><TABLE BORDER="0" CELLSPACING="0" ALIGN="LEFT"><TR ALIGN="LEFT"><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="15" HEIGHT="16"></TD><TD ALIGN="LEFT" FIXEDSIZE="TRUE" WIDTH="137" HEIGHT="16">identifying_features</TD></TR></TABLE></TD><TD PORT="identifying_features.type" ALIGN="LEFT">varchar[4000]</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#ffffff">&lt; 5</TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">  </TD><TD ALIGN="RIGHT" BGCOLOR="#ffffff">3 &gt;</TD></TR>
     </TABLE>>
     URL="wildlife.html"
     target="_top"

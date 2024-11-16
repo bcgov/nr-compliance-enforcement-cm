@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>inaction_reason_code - default.case_management</title>
+        <title>case_location_code - default.case_management</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -73,7 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>inaction_reason_code</h1><p><span id="recordNumber">-1</span> rows</p><br />
+                    <h1>case_location_code</h1><p><span id="recordNumber">-1</span> rows</p><br />
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <i class="fa fa-file-text-o"></i>
@@ -84,7 +84,7 @@
                             </div>
                         </div><!-- /.box-header -->
                         <div class="box-body clearfix">
-                            <p>Contains the list of available reasons a user can select to indicate that the reason why they did not take any action on a case. Values are Organization specific.</p>
+                            <p>Contains the list of location types a user can select to indicate that where they take an action on a case. Values are Organization specific.</p>
                         </div><!-- /.box-body -->
                     </div>
                 </section>
@@ -122,7 +122,7 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="inaction_reason_code">inaction_reason_code</span></td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="case_location_code">case_location_code</span></td>
                                     <td>varchar</td>
                                     <td>10</td>
                                     <td title=''></td>
@@ -131,8 +131,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="case_file.inaction_reason_code references inaction_reason_code.inaction_reason_code via FK_case_file__inaction_reason_code"><a href='case_file.html'>case_file</a><span class='relatedKey'>.inaction_reason_code</span></td>
-                                                <td class="constraint detail">FK_case_file__inaction_reason_code</td>
+                                                <td title="case_file.case_location_code references case_location_code.case_location_code via fk_case_file__case_location_code"><a href='case_file.html'>case_file</a><span class='relatedKey'>.case_location_code</span></td>
+                                                <td class="constraint detail">fk_case_file__case_location_code</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -141,29 +141,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>A human readable code used to identify a reason why no action on the case was taken.</p></td>
-                                </tr>
-                                <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="agency_code">agency_code</span></td>
-                                    <td>varchar</td>
-                                    <td>10</td>
-                                    <td title=''></td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="inaction_reason_code.agency_code references agency_code.agency_code via FK_inaction_reason_code__agency_code"><a href='agency_code.html'>agency_code</a><span class='relatedKey'>.agency_code</span></td>
-                                                <td class="constraint detail">FK_inaction_reason_code__agency_code</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td><p>A human readable code used to identify an agency.</p></td>
+                                    <td><p>A human readable code used to identify a location type.</p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="short_description">short_description</span></td>
@@ -180,7 +158,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>The short description of the reason why no action on the case was taken.</p></td>
+                                    <td><p>The short description of the location type where the case was taken.</p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="long_description">long_description</span></td>
@@ -197,7 +175,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>The long description of the reason why no action on the case was taken.</p></td>
+                                    <td><p>The long description of the location type where the case was taken.</p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="display_order">display_order</span></td>
@@ -214,7 +192,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>The order in which the values of the reasons why no action on the case was taken should be displayed when presented to a user in a list.</p></td>
+                                    <td><p>The order in which the values of the location type should be displayed when presented to a user in a list.</p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="active_ind">active_ind</span></td>
@@ -231,7 +209,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>A boolean indicator to determine if the reason why no action on the case was taken is active.</p></td>
+                                    <td><p>A boolean indicator to determine if the location type is active.</p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="create_user_id">create_user_id</span></td>
@@ -248,7 +226,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>The id of the user that created the reason why no action on the case was taken.</p></td>
+                                    <td><p>The id of the user that created the location type.</p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="create_utc_timestamp">create_utc_timestamp</span></td>
@@ -265,7 +243,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>The timestamp when the reason why no action on the case was taken was created. The timestamp is stored in UTC with no Offset.</p></td>
+                                    <td><p>The timestamp when the location type was created. The timestamp is stored in UTC with no Offset.</p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="update_user_id">update_user_id</span></td>
@@ -282,7 +260,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>The id of the user that updated the reason why no action on the case was taken.</p></td>
+                                    <td><p>The id of the user that updated the location type.</p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="update_utc_timestamp">update_utc_timestamp</span></td>
@@ -299,7 +277,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>The timestamp when the reason why no action on the case was taken was updated. The timestamp is stored in UTC with no Offset.</p></td>
+                                    <td><p>The timestamp when the location type was updated. The timestamp is stored in UTC with no Offset.</p></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -332,10 +310,10 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> PK_inaction_reason_code</td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> PK_case_location_code</td>
                                     <td>Primary key</td>
                                     <td><span title='Ascending'>Asc</span></td>
-                                    <td>inaction_reason_code</td>
+                                    <td>case_location_code</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -360,29 +338,28 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="case_file.html" target="_top" title="case_file" alt="" coords="684,5,952,299">
-<area shape="rect" id="node2" href="inaction_reason_code.html" target="_top" title="inaction_reason_code" alt="" coords="281,115,640,477">
-<area shape="rect" id="node3" href="agency_code.html" target="_top" title="agency_code" alt="" coords="5,93,237,211">
+<area shape="rect" id="node1" href="case_file.html" target="_top" title="case_file" alt="" coords="408,5,676,299">
+<area shape="rect" id="node2" href="case_location_code.html" target="_top" title="case_location_code" alt="" coords="5,120,364,453">
 </map>
-                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/inaction_reason_code.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/case_location_code.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="action.html" target="_top" title="action" alt="" coords="1116,495,1245,583">
-<area shape="rect" id="node2" href="case_file.html" target="_top" title="case_file" alt="" coords="632,554,779,642">
-<area shape="rect" id="node3" href="decision.html" target="_top" title="decision" alt="" coords="875,322,1020,410">
-<area shape="rect" id="node4" href="wildlife.html" target="_top" title="wildlife" alt="" coords="878,779,1017,867">
-<area shape="rect" id="node6" href="case_code.html" target="_top" title="case_code" alt="" coords="329,437,488,525">
-<area shape="rect" id="node7" href="conflict_history_code.html" target="_top" title="conflict_history_code" alt="" coords="285,542,532,630">
-<area shape="rect" id="node8" href="case_location_code.html" target="_top" title="case_location_code" alt="" coords="293,647,524,735">
-<area shape="rect" id="node9" href="threat_level_code.html" target="_top" title="threat_level_code" alt="" coords="299,789,518,877">
-<area shape="rect" id="node10" href="inaction_reason_code.html" target="_top" title="inaction_reason_code" alt="" coords="229,57,588,419">
-<area shape="rect" id="node11" href="agency_code.html" target="_top" title="agency_code" alt="" coords="5,94,185,182">
-<area shape="rect" id="node5" href="authorization_permit.html" target="_top" title="authorization_permit" alt="" coords="823,569,1072,657">
-<area shape="rect" id="node12" href="lead.html" target="_top" title="lead" alt="" coords="891,674,1004,762">
-<area shape="rect" id="node13" href="site.html" target="_top" title="site" alt="" coords="893,427,1001,515">
+<area shape="rect" id="node1" href="action.html" target="_top" title="action" alt="" coords="1237,211,1367,299">
+<area shape="rect" id="node2" href="case_file.html" target="_top" title="case_file" alt="" coords="632,217,900,511">
+<area shape="rect" id="node3" href="decision.html" target="_top" title="decision" alt="" coords="996,37,1141,125">
+<area shape="rect" id="node4" href="wildlife.html" target="_top" title="wildlife" alt="" coords="999,495,1138,583">
+<area shape="rect" id="node6" href="case_code.html" target="_top" title="case_code" alt="" coords="329,103,488,191">
+<area shape="rect" id="node7" href="conflict_history_code.html" target="_top" title="conflict_history_code" alt="" coords="285,700,532,788">
+<area shape="rect" id="node8" href="case_location_code.html" target="_top" title="case_location_code" alt="" coords="229,349,588,683">
+<area shape="rect" id="node9" href="threat_level_code.html" target="_top" title="threat_level_code" alt="" coords="299,805,518,893">
+<area shape="rect" id="node10" href="inaction_reason_code.html" target="_top" title="inaction_reason_code" alt="" coords="283,244,534,332">
+<area shape="rect" id="node11" href="agency_code.html" target="_top" title="agency_code" alt="" coords="5,171,185,259">
+<area shape="rect" id="node5" href="authorization_permit.html" target="_top" title="authorization_permit" alt="" coords="944,284,1193,372">
+<area shape="rect" id="node12" href="lead.html" target="_top" title="lead" alt="" coords="1012,389,1125,477">
+<area shape="rect" id="node13" href="site.html" target="_top" title="site" alt="" coords="1015,143,1123,231">
 </map>
-                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/inaction_reason_code.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/case_location_code.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>
