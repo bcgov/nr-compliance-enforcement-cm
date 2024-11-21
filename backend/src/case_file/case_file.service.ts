@@ -602,6 +602,50 @@ export class CaseFileService {
     return caseFileOutput;
   }
 
+  async findManyBySearchString(searchString: string) {
+    let caseFileOutput: Array<CaseFile> = [];
+
+    const caseIdRecords = await this.prisma.lead.findMany({
+      where: {
+        OR: [
+          {
+            case_file: {
+              authorization_permit: {
+                some: {
+                  authorization_permit_id: {
+                    contains: searchString,
+                  },
+                },
+              },
+            },
+          },
+          {
+            case_file: {
+              site: {
+                some: {
+                  site_id: {
+                    contains: searchString,
+                  },
+                },
+              },
+            },
+          },
+        ],
+      },
+      select: {
+        lead_identifier: true,
+        case_identifier: true,
+      },
+    });
+    for (const caseIdRecord of caseIdRecords) {
+      caseFileOutput.push({
+        caseIdentifier: caseIdRecord.case_identifier,
+        leadIdentifier: caseIdRecord.lead_identifier,
+      });
+    }
+    return caseFileOutput;
+  }
+
   async updateAssessment(caseIdentifier: string, updateAssessmentInput: UpdateAssessmentInput) {
     let caseFileOutput: CaseFile;
 
