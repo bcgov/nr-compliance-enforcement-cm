@@ -615,6 +615,7 @@ export class CaseFileService {
                   authorization_permit_id: {
                     contains: searchString,
                   },
+                  active_ind: true,
                 },
               },
             },
@@ -626,6 +627,7 @@ export class CaseFileService {
                   site_id: {
                     contains: searchString,
                   },
+                  active_ind: true,
                 },
               },
             },
