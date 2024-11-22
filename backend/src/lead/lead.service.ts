@@ -56,4 +56,37 @@ export class LeadService {
     }
     return leadIdentifiers;
   }
+
+  async getLeadsByOutcomeAnimal(outcomeAnimalInput: string): Promise<string[]> {
+    const outcomeResult = await this.prisma.wildlife.findMany({
+      where: {
+        hwcr_outcome_code: outcomeAnimalInput,
+      },
+      select: {
+        case_file_guid: true,
+      },
+    });
+
+    const caseGuids: string[] = [];
+    for (let outcome of outcomeResult) {
+      caseGuids.push(outcome.case_file_guid);
+    }
+    const leadResults = await this.prisma.lead.findMany({
+      where: {
+        case_identifier: {
+          in: caseGuids,
+        },
+      },
+      select: {
+        lead_identifier: true,
+      },
+    });
+
+    const leadIdentifiers: string[] = [];
+    for (let leadId of leadResults) {
+      leadIdentifiers.push(leadId.lead_identifier);
+    }
+
+    return leadIdentifiers;
+  }
 }

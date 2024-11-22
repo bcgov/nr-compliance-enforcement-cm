@@ -15,4 +15,10 @@ export class LeadResolver {
   findOne(@Args("actionCode") actionCode: string) {
     return this.leadService.getLeadsByActionTaken(actionCode);
   }
+
+  @Query("getLeadsByOutcomeAnimal")
+  @Roles(Role.COS_OFFICER)
+  findLeadsByOutcomeAnimal(@Args("outcomeAnimalCode") actionCode: string) {
+    return this.leadService.getLeadsByOutcomeAnimal(actionCode);
+  }
 }

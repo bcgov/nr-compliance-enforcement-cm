@@ -1,3 +1,7 @@
 type Query {
   getLeadsByActionTaken(actionCode: String!): [String]
 }
+
+type Query {
+  getLeadsByOutcomeAnimal(outcomeAnimalCode: String!): [String]
+}
