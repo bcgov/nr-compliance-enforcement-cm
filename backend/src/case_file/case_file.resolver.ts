@@ -55,6 +55,12 @@ export class CaseFileResolver {
     return this.caseFileService.findOneByLeadId(leadIdentifier);
   }
 
+  @Query("getCasesFilesBySearchString")
+  @Roles(Role.COS_OFFICER, Role.CEEB)
+  findManyBySearchString(@Args("searchString") searchString: string) {
+    return this.caseFileService.findManyBySearchString(searchString);
+  }
+
   @Mutation("updateAssessment")
   @Roles(Role.COS_OFFICER)
   updateAssessment(@Args("updateAssessmentInput") updateAssessmentInput: UpdateAssessmentInput) {

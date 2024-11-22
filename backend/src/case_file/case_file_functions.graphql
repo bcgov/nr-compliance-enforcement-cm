@@ -1,6 +1,7 @@
 type Query {
   getCaseFile(caseIdentifier: String!): CaseFile
   getCaseFileByLeadId(leadIdentifier: String!): CaseFile
+  getCasesFilesBySearchString(searchString: String!): [CaseFile]
 }
 
 type Mutation {
