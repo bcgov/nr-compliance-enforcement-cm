@@ -39,7 +39,7 @@ import { ActionInput } from "./dto/action-input";
 @Injectable()
 export class CaseFileService {
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     private readonly caseFileActionService: CaseFileActionService,
   ) {}
 
@@ -337,18 +337,78 @@ export class CaseFileService {
           select: {
             wildlife_guid: true,
             species_code: true,
-            age_code: true,
-            sex_code: true,
+            age_code_wildlife_age_codeToage_code: {
+              select: {
+                age_code: true,
+                short_description: true,
+              },
+            },
+            sex_code_wildlife_sex_codeTosex_code: {
+              select: {
+                sex_code: true,
+                short_description: true,
+              },
+            },
             identifying_features: true,
             threat_level_code: true,
-            hwcr_outcome_code: true,
+            threat_level_code_wildlife_threat_level_codeTothreat_level_code: {
+              select: {
+                threat_level_code: true,
+                short_description: true,
+              },
+            },
+            hwcr_outcome_code_wildlife_hwcr_outcome_codeTohwcr_outcome_code: {
+              select: {
+                hwcr_outcome_code: true,
+                short_description: true,
+              },
+            },
             create_utc_timestamp: true,
             drug_administered: {
+              select: {
+                drug_administered_guid: true,
+                wildlife_guid: true,
+                drug_code_drug_administered_drug_codeTodrug_code: {
+                  select: {
+                    drug_code: true,
+                    short_description: true,
+                  },
+                },
+                drug_method_code_drug_administered_drug_method_codeTodrug_method_code: {
+                  select: {
+                    drug_method_code: true,
+                    short_description: true,
+                  },
+                },
+                drug_remaining_outcome_code_drug_administered_drug_remaining_outcome_codeTodrug_remaining_outcome_code:
+                  {
+                    select: {
+                      drug_remaining_outcome_code: true,
+                      short_description: true,
+                    },
+                  },
+                vial_number: true,
+                drug_used_amount: true,
+                additional_comments_text: true,
+                create_utc_timestamp: true,
+              },
               where: {
                 active_ind: true,
               },
             },
             ear_tag: {
+              select: {
+                ear_tag_guid: true,
+                wildlife_guid: true,
+                ear_code_ear_tag_ear_codeToear_code: {
+                  select: {
+                    ear_code: true,
+                    short_description: true,
+                  },
+                },
+                ear_tag_identifier: true,
+                create_utc_timestamp: true,
+              },
               where: {
                 active_ind: true,
               },
@@ -1558,8 +1618,27 @@ export class CaseFileService {
   private findEquipmentDetails = async (caseIdentifier: string): Promise<Equipment[]> => {
     const actions = await this.prisma.action.findMany({
       where: { case_guid: caseIdentifier },
-      include: {
-        equipment: true,
+      select: {
+        action_type_action_xref_guid: true,
+        action_guid: true,
+        actor_guid: true,
+        action_date: true,
+        active_ind: true,
+        equipment: {
+          select: {
+            equipment_guid: true,
+            active_ind: true,
+            equipment_code: true,
+            equipment_location_desc: true,
+            create_utc_timestamp: true,
+            was_animal_captured: true,
+            equipment_code_equipment_equipment_codeToequipment_code: {
+              select: {
+                short_description: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -1624,6 +1703,7 @@ export class CaseFileService {
           ({
             id: equipment.equipment_guid,
             typeCode: equipment.equipment_code,
+            typeDescription: equipment.equipment_code_equipment_equipment_codeToequipment_code.short_description,
             activeIndicator: equipment.active_ind,
             address: equipment.equipment_location_desc,
             xCoordinate: longitudeString,
@@ -1669,26 +1749,46 @@ export class CaseFileService {
           const {
             wildlife_guid: id,
             species_code: species,
-            sex_code: sex,
-            age_code: age,
-            threat_level_code: categoryLevel,
+            sex_code_wildlife_sex_codeTosex_code: sexObject,
+            age_code_wildlife_age_codeToage_code: ageObject,
+            threat_level_code_wildlife_threat_level_codeTothreat_level_code: categoryLevelObject,
             identifying_features: identifyingFeatures,
-            hwcr_outcome_code: outcome,
+            hwcr_outcome_code_wildlife_hwcr_outcome_codeTohwcr_outcome_code: outcomeObject,
             ear_tag,
             drug_administered,
             action,
           } = item;
 
+          const sex = sexObject?.sex_code;
+          const sexDescription = sexObject?.short_description;
+
+          const age = ageObject?.age_code;
+          const ageDescription = ageObject?.short_description;
+
+          const categoryLevel = categoryLevelObject?.threat_level_code;
+          const categoryLevelDescription = categoryLevelObject?.short_description;
+
+          const outcome = outcomeObject?.hwcr_outcome_code;
+          const outcomeDescription = outcomeObject?.short_description;
+
           const tags = ear_tag
             .sort((a, b) => a.create_utc_timestamp.getTime() - b.create_utc_timestamp.getTime())
-            .map(({ ear_tag_guid: id, ear_code: ear, ear_tag_identifier: identifier }, idx) => {
-              return {
-                id,
-                ear,
-                identifier,
-                order: idx + 1,
-              };
-            });
+            .map(
+              (
+                { ear_tag_guid: id, ear_code_ear_tag_ear_codeToear_code: earObject, ear_tag_identifier: identifier },
+                idx,
+              ) => {
+                const ear = earObject?.ear_code;
+                const earDescription = earObject?.short_description;
+                return {
+                  id,
+                  ear,
+                  earDescription,
+                  identifier,
+                  order: idx + 1,
+                };
+              },
+            );
 
           const drugs = drug_administered
             .sort((a, b) => a.create_utc_timestamp.getTime() - b.create_utc_timestamp.getTime())
@@ -1697,21 +1797,31 @@ export class CaseFileService {
                 {
                   drug_administered_guid: id,
                   vial_number: vial,
-                  drug_code: drug,
+                  drug_code_drug_administered_drug_codeTodrug_code: drugObject,
+                  drug_method_code_drug_administered_drug_method_codeTodrug_method_code: drugMethodObject,
+                  drug_remaining_outcome_code_drug_administered_drug_remaining_outcome_codeTodrug_remaining_outcome_code:
+                    drugRemainingObject,
                   drug_used_amount: amountUsed,
-                  drug_method_code: injectionMethod,
-                  drug_remaining_outcome_code: remainingUse,
                   additional_comments_text: additionalComments,
                 },
                 idx,
               ) => {
+                const drug = drugObject?.drug_code;
+                const drugDescription = drugObject?.short_description;
+                const injectionMethod = drugMethodObject?.drug_method_code;
+                const injectionMethodDescription = drugMethodObject?.short_description;
+                const remainingUse = drugRemainingObject?.drug_remaining_outcome_code;
+                const remainingUseDescription = drugRemainingObject?.short_description;
                 return {
                   id,
                   vial,
                   drug,
+                  drugDescription,
                   amountUsed,
                   injectionMethod,
+                  injectionMethodDescription,
                   remainingUse,
+                  remainingUseDescription,
                   additionalComments,
                   order: idx + 1,
                 };
@@ -1745,10 +1855,14 @@ export class CaseFileService {
             id,
             species,
             sex,
+            sexDescription,
             age,
+            ageDescription,
             categoryLevel,
+            categoryLevelDescription,
             identifyingFeatures,
             outcome,
+            outcomeDescription,
             order: idx + 1,
           };
 

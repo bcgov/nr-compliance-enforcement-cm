@@ -46,6 +46,7 @@ type Note {
 type EquipmentDetails {
   id: String
   typeCode: String
+  typeDescription: String
   activeIndicator: Boolean
   address: String
   xCoordinate: String
@@ -59,10 +60,14 @@ type Wildlife {
   id: String
   species: String!
   sex: String
+  sexDescription: String
   age: String
+  ageDescription: String
   categoryLevel: String
+  categoryLevelDescription: String
   identifyingFeatures: String
   outcome: String
+  outcomeDescription: String
   tags: [EarTag]
   drugs: [Drug]
   actions: [CaseFileAction]
@@ -72,6 +77,7 @@ type Wildlife {
 type EarTag {
   id: String
   ear: String
+  earDescription: String
   identifier: String
   order: Int
 }
@@ -80,9 +86,12 @@ type Drug {
   id: String
   vial: String
   drug: String
+  drugDescription: String
   amountUsed: String
   injectionMethod: String
+  injectionMethodDescription: String
   remainingUse: String
+  remainingUseDescription: String
   additionalComments: String
   order: Int
 }
