@@ -15,38 +15,54 @@ export interface SubjectQueryResult {
       action_date: Date;
     }[];
     wildlife_guid: string;
-    threat_level_code: string;
-    conflict_history_code: string;
-    sex_code: string;
-    age_code: string;
-    hwcr_outcome_code: string;
+    threat_level_code_wildlife_threat_level_codeTothreat_level_code: {
+      threat_level_code: string;
+      short_description: string;
+    };
+    identifying_features: string;
+    sex_code_wildlife_sex_codeTosex_code: {
+      sex_code: string;
+      short_description: string;
+    };
+    age_code_wildlife_age_codeToage_code: {
+      age_code: string;
+      short_description: string;
+    };
+    hwcr_outcome_code_wildlife_hwcr_outcome_codeTohwcr_outcome_code: {
+      hwcr_outcome_code: string;
+      short_description: string;
+    };
     species_code: string;
     create_utc_timestamp: Date;
     drug_administered: {
       drug_administered_guid: string;
       wildlife_guid: string;
-      drug_code: string;
-      drug_method_code: string;
-      drug_remaining_outcome_code: string;
+      drug_code_drug_administered_drug_codeTodrug_code: {
+        drug_code: string;
+        short_description: string;
+      };
+      drug_method_code_drug_administered_drug_method_codeTodrug_method_code: {
+        drug_method_code: string;
+        short_description: string;
+      };
+      drug_remaining_outcome_code_drug_administered_drug_remaining_outcome_codeTodrug_remaining_outcome_code: {
+        drug_remaining_outcome_code: string;
+        short_description: string;
+      };
       vial_number: string;
       drug_used_amount: string;
-      drug_discarded_amount: string;
-      discard_method_text: string;
-      adverse_reaction_text: string;
-      create_user_id: string;
+      additional_comments_text: string;
       create_utc_timestamp: Date;
-      update_user_id: string;
-      update_utc_timestamp: Date;
     }[];
     ear_tag: {
       ear_tag_guid: string;
       wildlife_guid: string;
-      ear_code: string;
+      ear_code_ear_tag_ear_codeToear_code: {
+        ear_code: string;
+        short_description: string;
+      };
       ear_tag_identifier: string;
-      create_user_id: string;
       create_utc_timestamp: Date;
-      update_user_id: string;
-      update_utc_timestamp: Date;
     }[];
   }[];
 }

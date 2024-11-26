@@ -8,4 +8,5 @@ export class CaseFileAction {
   longDescription: string;
   actionTypeCode?: string;
   displayOrder?: number;
+  isLegacy?: boolean;
 }

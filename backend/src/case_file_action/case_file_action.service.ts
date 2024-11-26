@@ -24,6 +24,7 @@ export class CaseFileActionService {
             action_code: actionCode,
             short_description: shortDescription,
             long_description: longDescription,
+            active_ind: isNotLegacy,
           },
         },
       } = actionResult;
@@ -38,6 +39,7 @@ export class CaseFileActionService {
         actionCode,
         shortDescription,
         longDescription,
+        isLegacy: !isNotLegacy,
       };
     }
   }
@@ -66,6 +68,7 @@ export class CaseFileActionService {
                   action_code: true,
                   short_description: true,
                   long_description: true,
+                  active_ind: true,
                 },
               },
             },

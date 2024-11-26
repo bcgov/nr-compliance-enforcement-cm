@@ -24,11 +24,22 @@ import { Wildlife } from "./entities/wildlife-entity";
 import { SubjectQueryResult } from "./dto/subject-query-result";
 import { DeleteWildlifeInput } from "./dto/wildlife/delete-wildlife-input";
 import { UpdateWildlifeInput } from "./dto/wildlife/update-wildlife-input";
+import { CreateDecisionInput } from "./dto/ceeb/decision/create-decsion-input";
+import { DecisionInput } from "./dto/ceeb/decision/decision-input";
+import { randomUUID } from "crypto";
+import { Decision } from "./entities/decision-entity";
+import { UpdateDecisionInput } from "./dto/ceeb/decision/update-decsion-input";
+import { CreateAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/create-authorization-outcome-input";
+import { AuthorizationOutcomeSearchResults } from "./dto/ceeb/authorization-outcome/authorization-outcome-search-results";
+import { AuthorizationOutcome } from "./entities/authorization-outcome.entity";
+import { UpdateAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/update-authorization-outcome-input";
+import { DeleteAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/delete-authorization-outcome-input";
+import { ActionInput } from "./dto/action-input";
 
 @Injectable()
 export class CaseFileService {
   constructor(
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
     private readonly caseFileActionService: CaseFileActionService,
   ) {}
 
@@ -48,21 +59,17 @@ export class CaseFileService {
     let caseFileGuid: string;
 
     try {
-      let case_file = await db.case_file.create({
-        data: {
-          agency_code: {
-            connect: {
-              agency_code: input.agencyCode,
-            },
-          },
-          create_user_id: input.createUserId,
-          create_utc_timestamp: new Date(),
-          case_code_case_file_case_codeTocase_code: {
-            connect: {
-              case_code: input.caseCode,
-            },
-          },
-        },
+      const caseRecord = {
+        case_code: input.caseCode,
+        owned_by_agency_code: input.agencyCode,
+        create_user_id: input.createUserId,
+        update_user_id: input.createUserId,
+        create_utc_timestamp: new Date(),
+        update_utc_timestamp: new Date(),
+      };
+
+      const case_file = await db.case_file.create({
+        data: caseRecord,
       });
 
       caseFileGuid = case_file.case_file_guid;
@@ -76,6 +83,7 @@ export class CaseFileService {
         },
       });
     } catch (exception) {
+      this.logger.warn(exception);
       throw new GraphQLError("Exception occurred. See server log for details", exception);
     }
     return caseFileGuid;
@@ -118,6 +126,29 @@ export class CaseFileService {
                 case_code: createAssessmentInput.caseCode,
               },
             },
+            complainant_contacted_ind: createAssessmentInput.assessmentDetails.contactedComplainant,
+            attended_ind: createAssessmentInput.assessmentDetails.attended,
+            case_file__case_location_code: createAssessmentInput.assessmentDetails.locationType
+              ? {
+                  connect: {
+                    case_location_code: createAssessmentInput.assessmentDetails.locationType.value,
+                  },
+                }
+              : undefined,
+            case_file__conflict_history_code: createAssessmentInput.assessmentDetails.conflictHistory
+              ? {
+                  connect: {
+                    conflict_history_code: createAssessmentInput.assessmentDetails.conflictHistory.value,
+                  },
+                }
+              : undefined,
+            case_file__threat_level_code: createAssessmentInput.assessmentDetails.categoryLevel
+              ? {
+                  connect: {
+                    threat_level_code: createAssessmentInput.assessmentDetails.categoryLevel.value,
+                  },
+                }
+              : undefined,
           },
         });
 
@@ -181,6 +212,45 @@ export class CaseFileService {
             },
           });
         }
+
+        //Add category 1 actions
+        let cat1Action_codes_objects = await db.action_type_action_xref.findMany({
+          where: { action_type_code: ACTION_TYPE_CODES.CAT1ASSESS },
+          select: { action_code: true, action_type_action_xref_guid: true },
+        });
+
+        let cat1Action_codes: Array<string> = [];
+        for (const action_code_object of cat1Action_codes_objects) {
+          cat1Action_codes.push(action_code_object.action_code);
+        }
+
+        for (const cat1Action of createAssessmentInput.assessmentDetails.actions) {
+          if (action_codes.indexOf(cat1Action.actionCode) === -1) {
+            throw "Some action code values where not passed from the client";
+          }
+        }
+        for (const action of createAssessmentInput.assessmentDetails.cat1Actions) {
+          let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
+            where: {
+              action_type_code: ACTION_TYPE_CODES.CAT1ASSESS,
+              action_code: action.actionCode,
+            },
+            select: {
+              action_type_action_xref_guid: true,
+            },
+          });
+          await db.action.create({
+            data: {
+              case_guid: caseFileGuid,
+              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+              actor_guid: action.actor,
+              action_date: action.date,
+              active_ind: action.activeIndicator,
+              create_user_id: createAssessmentInput.createUserId,
+              create_utc_timestamp: new Date(),
+            },
+          });
+        }
       });
       caseFileOutput = await this.findOne(caseFileGuid);
     } catch (exception) {
@@ -201,6 +271,26 @@ export class CaseFileService {
         action_not_required_ind: true,
         inaction_reason_code: true,
         note_text: true,
+        complainant_contacted_ind: true,
+        attended_ind: true,
+        case_file__case_location_code: {
+          select: {
+            case_location_code: true,
+            short_description: true,
+          },
+        },
+        case_file__conflict_history_code: {
+          select: {
+            conflict_history_code: true,
+            short_description: true,
+          },
+        },
+        case_file__threat_level_code: {
+          select: {
+            threat_level_code: true,
+            short_description: true,
+          },
+        },
         inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: {
           select: {
             short_description: true,
@@ -247,18 +337,78 @@ export class CaseFileService {
           select: {
             wildlife_guid: true,
             species_code: true,
-            age_code: true,
-            sex_code: true,
-            conflict_history_code: true,
+            age_code_wildlife_age_codeToage_code: {
+              select: {
+                age_code: true,
+                short_description: true,
+              },
+            },
+            sex_code_wildlife_sex_codeTosex_code: {
+              select: {
+                sex_code: true,
+                short_description: true,
+              },
+            },
+            identifying_features: true,
             threat_level_code: true,
-            hwcr_outcome_code: true,
+            threat_level_code_wildlife_threat_level_codeTothreat_level_code: {
+              select: {
+                threat_level_code: true,
+                short_description: true,
+              },
+            },
+            hwcr_outcome_code_wildlife_hwcr_outcome_codeTohwcr_outcome_code: {
+              select: {
+                hwcr_outcome_code: true,
+                short_description: true,
+              },
+            },
             create_utc_timestamp: true,
             drug_administered: {
+              select: {
+                drug_administered_guid: true,
+                wildlife_guid: true,
+                drug_code_drug_administered_drug_codeTodrug_code: {
+                  select: {
+                    drug_code: true,
+                    short_description: true,
+                  },
+                },
+                drug_method_code_drug_administered_drug_method_codeTodrug_method_code: {
+                  select: {
+                    drug_method_code: true,
+                    short_description: true,
+                  },
+                },
+                drug_remaining_outcome_code_drug_administered_drug_remaining_outcome_codeTodrug_remaining_outcome_code:
+                  {
+                    select: {
+                      drug_remaining_outcome_code: true,
+                      short_description: true,
+                    },
+                  },
+                vial_number: true,
+                drug_used_amount: true,
+                additional_comments_text: true,
+                create_utc_timestamp: true,
+              },
               where: {
                 active_ind: true,
               },
             },
             ear_tag: {
+              select: {
+                ear_tag_guid: true,
+                wildlife_guid: true,
+                ear_code_ear_tag_ear_codeToear_code: {
+                  select: {
+                    ear_code: true,
+                    short_description: true,
+                  },
+                },
+                ear_tag_identifier: true,
+                create_utc_timestamp: true,
+              },
               where: {
                 active_ind: true,
               },
@@ -288,6 +438,69 @@ export class CaseFileService {
             },
           },
         },
+        decision: {
+          where: {
+            active_ind: true,
+          },
+          select: {
+            decision_guid: true,
+            discharge_code_decision_discharge_codeTodischarge_code: {
+              select: {
+                discharge_code: true,
+                long_description: true,
+              },
+            },
+            rationale_text: true,
+            inspection_number: true,
+            agency_code: {
+              select: {
+                agency_code: true,
+                long_description: true,
+              },
+            },
+            non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code:
+              {
+                select: {
+                  non_compliance_decision_matrix_code: true,
+                  long_description: true,
+                },
+              },
+            schedule_sector_xref: {
+              select: {
+                schedule_code_schedule_sector_xref_schedule_codeToschedule_code: {
+                  select: {
+                    schedule_code: true,
+                    long_description: true,
+                  },
+                },
+                sector_code_schedule_sector_xref_sector_codeTosector_code: {
+                  select: {
+                    sector_code: true,
+                    long_description: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        authorization_permit: {
+          where: {
+            active_ind: true,
+          },
+          select: {
+            authorization_permit_guid: true,
+            authorization_permit_id: true,
+          },
+        },
+        site: {
+          where: {
+            active_ind: true,
+          },
+          select: {
+            site_guid: true,
+            site_id: true,
+          },
+        },
       },
     });
 
@@ -298,6 +511,11 @@ export class CaseFileService {
       inaction_reason_code: inactionReasonCode,
       inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: reason,
       review_required_ind: isReviewRequired,
+      complainant_contacted_ind: contactedComplainant,
+      attended_ind: attended,
+      case_file__case_location_code: locationType,
+      case_file__conflict_history_code: conflictHistory,
+      case_file__threat_level_code: categoryLevel,
     } = queryResult;
 
     const reviewCompleteAction = await this.caseFileActionService.findActionByCaseIdAndCaseCode(
@@ -308,6 +526,11 @@ export class CaseFileService {
     const assessmentActions = await this.caseFileActionService.findActionsByCaseIdAndType(
       caseFileId,
       ACTION_TYPE_CODES.COMPASSESS,
+    );
+
+    const assessmentCat1Actions = await this.caseFileActionService.findActionsByCaseIdAndType(
+      caseFileId,
+      ACTION_TYPE_CODES.CAT1ASSESS,
     );
 
     const preventionActions = await this.caseFileActionService.findActionsByCaseIdAndType(
@@ -326,6 +549,21 @@ export class CaseFileService {
             actionJustificationLongDescription: !reason ? "" : reason.long_description,
             actionJustificationActiveIndicator: !reason ? false : reason.active_ind,
             actions: assessmentActions,
+            contactedComplainant,
+            attended,
+            conflictHistory: {
+              key: conflictHistory ? conflictHistory.short_description : "",
+              value: conflictHistory ? conflictHistory.conflict_history_code : "",
+            },
+            locationType: {
+              key: locationType ? locationType.short_description : "",
+              value: locationType ? locationType.case_location_code : "",
+            },
+            categoryLevel: {
+              key: categoryLevel ? categoryLevel.short_description : "",
+              value: categoryLevel ? categoryLevel.threat_level_code : "",
+            },
+            cat1Actions: assessmentCat1Actions,
           }
         : null,
       preventionDetails: preventionActions
@@ -352,6 +590,58 @@ export class CaseFileService {
       caseFile.subject = await this._getCaseFileSubjects(queryResult);
     }
 
+    //-- add the decision if its returned in the query result
+    if (queryResult.decision && queryResult.decision.length !== 0) {
+      const { decision } = queryResult;
+
+      const action = await this.caseFileActionService.findActionsByCaseIdAndType(
+        caseFileId,
+        ACTION_TYPE_CODES.CEEBACTION,
+      );
+
+      let record: Decision = {
+        id: decision[0].decision_guid,
+        schedule:
+          decision[0].schedule_sector_xref.schedule_code_schedule_sector_xref_schedule_codeToschedule_code
+            .schedule_code,
+        scheduleLongDescription:
+          decision[0].schedule_sector_xref.schedule_code_schedule_sector_xref_schedule_codeToschedule_code
+            .long_description,
+        sector: decision[0].schedule_sector_xref.sector_code_schedule_sector_xref_sector_codeTosector_code.sector_code,
+        sectorLongDescription:
+          decision[0].schedule_sector_xref.sector_code_schedule_sector_xref_sector_codeTosector_code.long_description,
+        discharge: decision[0].discharge_code_decision_discharge_codeTodischarge_code.discharge_code,
+        dischargeLongDescription: decision[0].discharge_code_decision_discharge_codeTodischarge_code.long_description,
+        nonCompliance:
+          decision[0]
+            ?.non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code
+            ?.non_compliance_decision_matrix_code,
+        nonComplianceLongDescription:
+          decision[0]
+            ?.non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code
+            ?.long_description,
+        rationale: decision[0]?.rationale_text,
+        assignedTo: action[0]?.actor,
+        actionTaken: action[0]?.actionCode,
+        actionTakenLongDescription: action[0]?.longDescription,
+        actionTakenDate: action[0]?.date,
+      };
+
+      if (decision[0].inspection_number) {
+        record = { ...record, inspectionNumber: decision[0].inspection_number.toString() };
+      }
+      if (decision[0].agency_code) {
+        record = { ...record, leadAgency: decision[0].agency_code.agency_code };
+        record = { ...record, leadAgencyLongDescription: decision[0].agency_code.long_description };
+      }
+
+      caseFile.decision = record;
+    }
+
+    //-- add the authorization if there's either authorized_permit or site
+    //-- but there can be only one
+    caseFile.authorization = this._getAuthorizationOutcome(queryResult as AuthorizationOutcomeSearchResults);
+
     return caseFile;
   };
 
@@ -372,6 +662,52 @@ export class CaseFileService {
     return caseFileOutput;
   }
 
+  async findManyBySearchString(searchString: string) {
+    let caseFileOutput: Array<CaseFile> = [];
+
+    const caseIdRecords = await this.prisma.lead.findMany({
+      where: {
+        OR: [
+          {
+            case_file: {
+              authorization_permit: {
+                some: {
+                  authorization_permit_id: {
+                    contains: searchString,
+                  },
+                  active_ind: true,
+                },
+              },
+            },
+          },
+          {
+            case_file: {
+              site: {
+                some: {
+                  site_id: {
+                    contains: searchString,
+                  },
+                  active_ind: true,
+                },
+              },
+            },
+          },
+        ],
+      },
+      select: {
+        lead_identifier: true,
+        case_identifier: true,
+      },
+    });
+    for (const caseIdRecord of caseIdRecords) {
+      caseFileOutput.push({
+        caseIdentifier: caseIdRecord.case_identifier,
+        leadIdentifier: caseIdRecord.lead_identifier,
+      });
+    }
+    return caseFileOutput;
+  }
+
   async updateAssessment(caseIdentifier: string, updateAssessmentInput: UpdateAssessmentInput) {
     let caseFileOutput: CaseFile;
 
@@ -389,6 +725,29 @@ export class CaseFileService {
                 }
               : undefined,
             action_not_required_ind: updateAssessmentInput.assessmentDetails.actionNotRequired,
+            complainant_contacted_ind: updateAssessmentInput.assessmentDetails.contactedComplainant,
+            attended_ind: updateAssessmentInput.assessmentDetails.attended,
+            case_file__case_location_code: updateAssessmentInput.assessmentDetails.locationType
+              ? {
+                  connect: {
+                    case_location_code: updateAssessmentInput.assessmentDetails.locationType.value,
+                  },
+                }
+              : undefined,
+            case_file__conflict_history_code: updateAssessmentInput.assessmentDetails.conflictHistory
+              ? {
+                  connect: {
+                    conflict_history_code: updateAssessmentInput.assessmentDetails.conflictHistory.value,
+                  },
+                }
+              : undefined,
+            case_file__threat_level_code: updateAssessmentInput.assessmentDetails.categoryLevel
+              ? {
+                  connect: {
+                    threat_level_code: updateAssessmentInput.assessmentDetails.categoryLevel.value,
+                  },
+                }
+              : undefined,
             update_user_id: updateAssessmentInput.updateUserId,
             update_utc_timestamp: new Date(),
           },
@@ -455,11 +814,32 @@ export class CaseFileService {
           }
         }
 
-        let assessmentCount: number = updateAssessmentInput.assessmentDetails.actions.length;
-        if (assessmentCount === 0) {
+        //Handle cat1actions
+        for (const action of updateAssessmentInput.assessmentDetails.cat1Actions) {
+          let actionTypeActionXref = await this.prisma.action_type_action_xref.findFirstOrThrow({
+            where: {
+              action_type_code: ACTION_TYPE_CODES.CAT1ASSESS,
+              action_code: action.actionCode,
+            },
+            select: {
+              action_type_action_xref_guid: true,
+              action_code: true,
+              action_type_code: true,
+            },
+          });
+
           await db.action.updateMany({
-            where: { case_guid: caseIdentifier },
-            data: { active_ind: false },
+            where: {
+              case_guid: caseIdentifier,
+              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+            },
+            data: {
+              actor_guid: action.actor,
+              action_date: action.date,
+              active_ind: action.activeIndicator,
+              update_user_id: updateAssessmentInput.updateUserId,
+              update_utc_timestamp: new Date(),
+            },
           });
         }
       });
@@ -1284,8 +1664,27 @@ export class CaseFileService {
   private findEquipmentDetails = async (caseIdentifier: string): Promise<Equipment[]> => {
     const actions = await this.prisma.action.findMany({
       where: { case_guid: caseIdentifier },
-      include: {
-        equipment: true,
+      select: {
+        action_type_action_xref_guid: true,
+        action_guid: true,
+        actor_guid: true,
+        action_date: true,
+        active_ind: true,
+        equipment: {
+          select: {
+            equipment_guid: true,
+            active_ind: true,
+            equipment_code: true,
+            equipment_location_desc: true,
+            create_utc_timestamp: true,
+            was_animal_captured: true,
+            equipment_code_equipment_equipment_codeToequipment_code: {
+              select: {
+                short_description: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -1350,6 +1749,7 @@ export class CaseFileService {
           ({
             id: equipment.equipment_guid,
             typeCode: equipment.equipment_code,
+            typeDescription: equipment.equipment_code_equipment_equipment_codeToequipment_code.short_description,
             activeIndicator: equipment.active_ind,
             address: equipment.equipment_location_desc,
             xCoordinate: longitudeString,
@@ -1381,7 +1781,7 @@ export class CaseFileService {
     return equipmentDetails;
   };
 
-  //-- get all of the subjects for the case files, this can be wildlife as well
+  //-- get all of the subjects (outcome animal) for the case files, this can be wildlife as well
   //-- as people <future state>
   private _getCaseFileSubjects = async (query: SubjectQueryResult): Promise<Wildlife[]> => {
     let result: Array<Wildlife>;
@@ -1395,26 +1795,46 @@ export class CaseFileService {
           const {
             wildlife_guid: id,
             species_code: species,
-            sex_code: sex,
-            age_code: age,
-            threat_level_code: categoryLevel,
-            conflict_history_code: conflictHistory,
-            hwcr_outcome_code: outcome,
+            sex_code_wildlife_sex_codeTosex_code: sexObject,
+            age_code_wildlife_age_codeToage_code: ageObject,
+            threat_level_code_wildlife_threat_level_codeTothreat_level_code: categoryLevelObject,
+            identifying_features: identifyingFeatures,
+            hwcr_outcome_code_wildlife_hwcr_outcome_codeTohwcr_outcome_code: outcomeObject,
             ear_tag,
             drug_administered,
             action,
           } = item;
 
+          const sex = sexObject?.sex_code;
+          const sexDescription = sexObject?.short_description;
+
+          const age = ageObject?.age_code;
+          const ageDescription = ageObject?.short_description;
+
+          const categoryLevel = categoryLevelObject?.threat_level_code;
+          const categoryLevelDescription = categoryLevelObject?.short_description;
+
+          const outcome = outcomeObject?.hwcr_outcome_code;
+          const outcomeDescription = outcomeObject?.short_description;
+
           const tags = ear_tag
             .sort((a, b) => a.create_utc_timestamp.getTime() - b.create_utc_timestamp.getTime())
-            .map(({ ear_tag_guid: id, ear_code: ear, ear_tag_identifier: identifier }, idx) => {
-              return {
-                id,
-                ear,
-                identifier,
-                order: idx + 1,
-              };
-            });
+            .map(
+              (
+                { ear_tag_guid: id, ear_code_ear_tag_ear_codeToear_code: earObject, ear_tag_identifier: identifier },
+                idx,
+              ) => {
+                const ear = earObject?.ear_code;
+                const earDescription = earObject?.short_description;
+                return {
+                  id,
+                  ear,
+                  earDescription,
+                  identifier,
+                  order: idx + 1,
+                };
+              },
+            );
 
           const drugs = drug_administered
             .sort((a, b) => a.create_utc_timestamp.getTime() - b.create_utc_timestamp.getTime())
@@ -1423,26 +1843,32 @@ export class CaseFileService {
                 {
                   drug_administered_guid: id,
                   vial_number: vial,
-                  drug_code: drug,
+                  drug_code_drug_administered_drug_codeTodrug_code: drugObject,
+                  drug_method_code_drug_administered_drug_method_codeTodrug_method_code: drugMethodObject,
+                  drug_remaining_outcome_code_drug_administered_drug_remaining_outcome_codeTodrug_remaining_outcome_code:
+                    drugRemainingObject,
                   drug_used_amount: amountUsed,
-                  drug_method_code: injectionMethod,
-                  adverse_reaction_text: reactions,
-                  drug_remaining_outcome_code: remainingUse,
-                  drug_discarded_amount: amountDiscarded,
-                  discard_method_text: discardMethod,
+                  additional_comments_text: additionalComments,
                 },
                 idx,
               ) => {
+                const drug = drugObject?.drug_code;
+                const drugDescription = drugObject?.short_description;
+                const injectionMethod = drugMethodObject?.drug_method_code;
+                const injectionMethodDescription = drugMethodObject?.short_description;
+                const remainingUse = drugRemainingObject?.drug_remaining_outcome_code;
+                const remainingUseDescription = drugRemainingObject?.short_description;
                 return {
                   id,
                   vial,
                   drug,
+                  drugDescription,
                   amountUsed,
                   injectionMethod,
-                  reactions,
+                  injectionMethodDescription,
                   remainingUse,
-                  amountDiscarded,
-                  discardMethod,
+                  remainingUseDescription,
+                  additionalComments,
                   order: idx + 1,
                 };
               },
@@ -1475,10 +1901,14 @@ export class CaseFileService {
             id,
             species,
             sex,
+            sexDescription,
             age,
+            ageDescription,
             categoryLevel,
-            conflictHistory,
+            categoryLevelDescription,
+            identifyingFeatures,
             outcome,
+            outcomeDescription,
             order: idx + 1,
           };
 
@@ -1544,8 +1974,8 @@ export class CaseFileService {
           record = { ...record, threat_level_code: wildlife.categoryLevel };
         }
 
-        if (wildlife.conflictHistory) {
-          record = { ...record, conflict_history_code: wildlife.conflictHistory };
+        if (wildlife.identifyingFeatures) {
+          record = { ...record, identifying_features: wildlife.identifyingFeatures };
         }
 
         if (wildlife.outcome) {
@@ -1617,11 +2047,9 @@ export class CaseFileService {
               drug: drug_code,
               amountUsed: drug_used_amount,
               injectionMethod: drug_method_code,
-              reactions: adverse_reaction_text,
 
               remainingUse: drug_remaining_outcome_code,
-              amountDiscarded: drug_discarded_amount,
-              discardMethod: discard_method_text,
+              additionalComments: additional_comments_text,
             }) => {
               return {
                 wildlife_guid: wildlifeId,
@@ -1630,9 +2058,7 @@ export class CaseFileService {
                 drug_remaining_outcome_code,
                 vial_number,
                 drug_used_amount,
-                drug_discarded_amount,
-                discard_method_text,
-                adverse_reaction_text,
+                additional_comments_text,
                 active_ind: true,
                 create_user_id: userId,
                 update_user_id: userId,
@@ -1757,7 +2183,7 @@ export class CaseFileService {
       date: Date,
     ) => {
       try {
-        const { id, species, sex, age, categoryLevel, conflictHistory, outcome } = input;
+        const { id, species, sex, age, categoryLevel, identifyingFeatures, outcome } = input;
 
         //-- create a new data record to update based on the input provided
         let data = {
@@ -1765,7 +2191,7 @@ export class CaseFileService {
           sex_code: sex || null,
           age_code: age || null,
           threat_level_code: categoryLevel || null,
-          conflict_history_code: conflictHistory || null,
+          identifying_features: identifyingFeatures || null,
           hwcr_outcome_code: outcome || null,
           update_user_id: userId,
           update_utc_timestamp: date,
@@ -1934,11 +2360,9 @@ export class CaseFileService {
               vial: vial_number,
               drug: drug_code,
               amountUsed: drug_used_amount,
-              amountDiscarded: drug_discarded_amount,
               injectionMethod: drug_method_code,
-              reactions: adverse_reaction_text,
               remainingUse: drug_remaining_outcome_code,
-              discardMethod: discard_method_text,
+              additionalComments: additional_comments_text,
             }) => {
               return {
                 wildlife_guid: wildlifeId,
@@ -1947,10 +2371,8 @@ export class CaseFileService {
                 drug_code,
                 drug_used_amount,
                 drug_method_code,
-                adverse_reaction_text,
                 drug_remaining_outcome_code,
-                drug_discarded_amount,
-                discard_method_text,
+                additional_comments_text,
 
                 active_ind: true,
                 create_user_id: userId,
@@ -1993,10 +2415,8 @@ export class CaseFileService {
                 drug: drug_code,
                 amountUsed: drug_used_amount,
                 injectionMethod: drug_method_code,
-                discardMethod: discard_method_text,
-                reactions: adverse_reaction_text,
-                amountDiscarded: drug_discarded_amount,
                 remainingUse: drug_remaining_outcome_code,
+                additionalComments: additional_comments_text,
               }) => {
                 await db.drug_administered.update({
                   where: {
@@ -2008,9 +2428,7 @@ export class CaseFileService {
                     drug_method_code,
                     drug_remaining_outcome_code,
                     drug_used_amount,
-                    drug_discarded_amount,
-                    discard_method_text,
-                    adverse_reaction_text,
+                    additional_comments_text,
                     update_user_id: userId,
                     update_utc_timestamp: date,
                   },
@@ -2041,10 +2459,8 @@ export class CaseFileService {
                 drug: drug_code,
                 amountUsed: drug_used_amount,
                 injectionMethod: drug_method_code,
-                reactions: adverse_reaction_text,
                 remainingUse: drug_remaining_outcome_code,
-                amountDiscarded: drug_discarded_amount,
-                discardMethod: discard_method_text,
+                additionalComments: additional_comments_text,
               }) => {
                 return {
                   wildlife_guid: wildlifeId,
@@ -2053,10 +2469,8 @@ export class CaseFileService {
                   drug_code,
                   drug_used_amount,
                   drug_method_code,
-                  adverse_reaction_text,
                   drug_remaining_outcome_code,
-                  drug_discarded_amount,
-                  discard_method_text,
+                  additional_comments_text,
 
                   active_ind: true,
                   create_user_id: userId,
@@ -2362,6 +2776,671 @@ export class CaseFileService {
     } catch (error) {
       console.log("exception: unable to delete wildlife", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  };
+
+  //--
+  //-- decision outcomes
+  //--
+  createDecision = async (model: CreateDecisionInput): Promise<CaseFile> => {
+    let caseFileId = "";
+
+    //--
+    //-- creates a new decision record and returns the decision_guid
+    //--
+    const _addDecision = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      caseId: string,
+      decision: DecisionInput,
+      scheduleSectorXref: string,
+      userId: string,
+    ): Promise<any> => {
+      try {
+        let { discharge, nonCompliance, rationale } = decision;
+
+        //don't try and insert empty into the code tables.
+        if (rationale === "" || rationale === undefined) {
+          rationale = null;
+        }
+
+        if (nonCompliance === "" || nonCompliance === undefined) {
+          nonCompliance = null;
+        }
+
+        let record: any = {
+          decision_guid: randomUUID(),
+          case_file_guid: caseId,
+          schedule_sector_xref_guid: scheduleSectorXref,
+          discharge_code: discharge,
+          rationale_text: rationale,
+          non_compliance_decision_matrix_code: nonCompliance,
+          active_ind: true,
+          create_user_id: userId,
+          update_user_id: userId,
+          create_utc_timestamp: new Date(),
+          update_utc_timestamp: new Date(),
+        };
+
+        if (decision.inspectionNumber) {
+          record = { ...record, inspection_number: parseInt(decision.inspectionNumber) };
+        }
+
+        if (decision.leadAgency) {
+          record = { ...record, lead_agency_code: decision.leadAgency };
+        }
+
+        const result = await db.decision.create({
+          data: record,
+        });
+
+        return result?.decision_guid;
+      } catch (exception) {
+        const { message } = exception;
+        throw new Error("Exception occurred in _addDecision. See server log for details", message);
+      }
+    };
+
+    //--
+    //-- finds a schedule/sector xref record and returns the schedule_sector_xref_guid
+    //--
+    const _findWdrXref = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      decision: DecisionInput,
+      userId: string,
+    ): Promise<any> => {
+      try {
+        const { sector, schedule } = decision;
+
+        let scheduleSectorXref = await this.prisma.schedule_sector_xref.findFirstOrThrow({
+          where: {
+            schedule_code: schedule,
+            sector_code: sector,
+          },
+          select: {
+            schedule_sector_xref_guid: true,
+          },
+        });
+
+        return scheduleSectorXref;
+      } catch (exception) {
+        const { message } = exception;
+        throw new Error("Exception occurred in _findWdrXref. See server log for details", message);
+      }
+    };
+
+    //--
+    //-- creates an action_type_action xref
+    //--
+    const _applyAction = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      caseFileId: string,
+      decision: DecisionInput,
+      userId: string,
+    ): Promise<any> => {
+      try {
+        const { actionTaken, assignedTo, actionTakenDate } = decision;
+
+        //-- get the action_type_action xref
+        const xref = await this._getActionXref(db, actionTaken, ACTION_TYPE_CODES.CEEBACTION);
+
+        let record: any = {
+          action_guid: randomUUID(),
+          case_guid: caseFileId,
+          action_type_action_xref_guid: xref,
+          actor_guid: assignedTo,
+          action_date: actionTakenDate,
+          active_ind: true,
+          create_user_id: userId,
+          update_user_id: userId,
+          create_utc_timestamp: new Date(),
+          update_utc_timestamp: new Date(),
+        };
+
+        const result = await db.action.create({
+          data: record,
+        });
+
+        return result?.action_guid;
+      } catch (exception) {
+        const { message } = exception;
+        throw new Error("Exception occurred in _applyAction. See server log for details", message);
+      }
+    };
+
+    try {
+      let result: CaseFile;
+
+      await this.prisma.$transaction(async (db) => {
+        const { leadIdentifier, agencyCode, caseCode, createUserId, decision } = model;
+
+        const caseFile = await this.findOneByLeadId(leadIdentifier);
+
+        if (caseFile && caseFile?.caseIdentifier) {
+          caseFileId = caseFile.caseIdentifier;
+        } else {
+          const caseInput: CreateCaseInput = { ...model };
+          caseFileId = await this.createCase(db, caseInput);
+        }
+
+        //-- find the sector/schedule xref entry
+        const xref = await _findWdrXref(db, decision, createUserId);
+
+        //-- add decision
+        const decsionId = await _addDecision(db, caseFileId, decision, xref.schedule_sector_xref_guid, createUserId);
+
+        //-- apply action
+        if (decision.actionTaken && decision.assignedTo) {
+          let action: ActionInput = {
+            actionTaken: decision.actionTaken,
+            actor: decision.assignedTo,
+            date: decision.actionTakenDate,
+          };
+          await this._addAction(db, caseFileId, decsionId, action, createUserId);
+        }
+      });
+
+      result = await this.findOne(caseFileId);
+
+      return result;
+    } catch (error) {
+      const { message } = error;
+      throw new Error("Exception occurred in _findWdrXref. See server log for details", message);
+    }
+  };
+
+  //--
+  //-- returns the action_type_action_xref_guid for a action_code/action_type_code pair
+  //--
+  _getActionXref = async (
+    db: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+    >,
+    actionCode: string,
+    actionTypeCode: string,
+  ): Promise<any> => {
+    const query = await this.prisma.action_type_action_xref.findFirst({
+      where: {
+        action_code: actionCode,
+        action_type_code: actionTypeCode,
+      },
+      select: {
+        action_type_action_xref_guid: true,
+      },
+    });
+
+    return query.action_type_action_xref_guid;
+  };
+
+  updateDecision = async (model: UpdateDecisionInput): Promise<CaseFile> => {
+    const { caseIdentifier, updateUserId, decision } = model;
+    const { id: decisonId } = decision;
+
+    //--
+    //-- updates an existing decision record and returns the decision
+    //--
+    const _updateDecision = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      decision: DecisionInput,
+      updateUserId: string,
+      current: Date,
+    ): Promise<any> => {
+      try {
+        const { id, discharge, rationale, nonCompliance, leadAgency, inspectionNumber, actionTaken } = decision;
+
+        let data: any = {
+          discharge_code: discharge,
+          rationale_text: rationale,
+          non_compliance_decision_matrix_code: nonCompliance,
+          update_user_id: updateUserId,
+          update_utc_timestamp: current,
+        };
+
+        if (actionTaken === "FWDLEADAGN") {
+          data = { ...data, inspection_number: null, lead_agency_code: leadAgency };
+        }
+
+        if (actionTaken === "RESPREC") {
+          data = { ...data, lead_agency_code: null, inspection_number: parseInt(inspectionNumber) };
+        }
+
+        if (actionTaken !== "RESPREC" && actionTaken !== "FWDLEADAGN") {
+          data = { ...data, inspection_number: null, lead_agency_code: null };
+        }
+
+        const result = await db.decision.update({
+          where: { decision_guid: id },
+          data,
+        });
+
+        return result;
+      } catch (exception) {
+        this.logger.error(exception);
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    //--
+    //-- updates an existing decision with new sector/schedule xref guid
+    //--
+    const _updateWdrXref = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      id: string,
+      decision: DecisionInput,
+      updateUserId: string,
+      current: Date,
+    ): Promise<any> => {
+      try {
+        const { sector, schedule } = decision;
+
+        let data: any = {
+          decision_guid: id,
+          update_user_id: updateUserId,
+          update_utc_timestamp: current,
+        };
+
+        let scheduleSectorXref = await this.prisma.schedule_sector_xref.findFirstOrThrow({
+          where: {
+            schedule_code: decision.schedule,
+            sector_code: decision.sector,
+          },
+          select: {
+            schedule_sector_xref_guid: true,
+          },
+        });
+
+        if (scheduleSectorXref) {
+          data = { ...data, schedule_sector_xref_guid: scheduleSectorXref.schedule_sector_xref_guid };
+        }
+        const result = db.decision.update({
+          where: { decision_guid: id },
+          data,
+        });
+
+        return result;
+      } catch (exception) {
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    //--
+    //-- updates an existing action record and returns the result
+    //--
+    const _updateAction = async (
+      db: Omit<
+        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+      >,
+      caseIdentifier: string,
+      decisionId: string,
+      decision: DecisionInput,
+      updateUserId: string,
+      current: Date,
+    ): Promise<any> => {
+      try {
+        const { actionTaken, actionTakenDate, assignedTo } = decision;
+
+        //-- get the action_type_action xref
+        const xref = await this._getActionXref(db, actionTaken, ACTION_TYPE_CODES.CEEBACTION);
+
+        const source = await db.action.findFirst({
+          where: {
+            case_guid: caseIdentifier,
+            decision_guid: decisionId,
+          },
+          select: {
+            action_guid: true,
+          },
+        });
+
+        let data: any = {
+          action_type_action_xref_guid: xref,
+          actor_guid: assignedTo,
+          update_user_id: updateUserId,
+          update_utc_timestamp: current,
+        };
+
+        const result = db.action.update({
+          where: { action_guid: source.action_guid },
+          data,
+        });
+
+        return result;
+      } catch (exception) {
+        throw new GraphQLError("Exception occurred. See server log for details", exception);
+      }
+    };
+
+    try {
+      let result: CaseFile;
+      const current = new Date();
+
+      await this.prisma.$transaction(async (db) => {
+        //-- find the decision record first, if there is a record,
+        //-- apply updates to it
+        const source = await db.decision.findUnique({
+          where: {
+            case_file_guid: caseIdentifier,
+            decision_guid: decisonId,
+          },
+        });
+
+        if (source) {
+          let update = await _updateDecision(db, decision, updateUserId, current);
+
+          //-- if the update was successful update the sector/schedule xref
+          //-- and action taken
+          const xrefResult = await _updateWdrXref(db, update.decision_guid, decision, updateUserId, current);
+
+          //-- make sure that there is an action to update first
+          //-- otherwise create a new action
+          const currentAction = await db.action.findFirst({
+            where: { case_guid: caseIdentifier, decision_guid: decisonId },
+          });
+
+          if (!currentAction && decision.actionTaken && decision.assignedTo && decision.actionTakenDate) {
+            const action: ActionInput = {
+              actionTaken: decision.actionTaken,
+              actor: decision.assignedTo,
+              date: decision.actionTakenDate,
+            };
+            await this._addAction(db, caseIdentifier, decisonId, action, updateUserId);
+          } else if (currentAction && decision.actionTaken && decision.assignedTo && decision.actionTakenDate) {
+            await _updateAction(db, caseIdentifier, decisonId, decision, updateUserId, current);
+          }
+        }
+      });
+
+      result = await this.findOne(caseIdentifier);
+
+      return result;
+    } catch (error) {
+      console.log("exception: unable to update decision", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  };
+
+  //--
+  //-- authorization outcome
+  //--
+  private _addAuthorizationOutcome = async (
+    db: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+    >,
+    caseId: string,
+    type: "permit" | "site",
+    value: string,
+    userId: string,
+  ): Promise<any> => {
+    try {
+      let record: any = {
+        case_file_guid: caseId,
+        create_user_id: userId,
+        update_user_id: userId,
+        create_utc_timestamp: new Date(),
+        update_utc_timestamp: new Date(),
+      };
+
+      if (type === "permit") {
+        record = { ...record, authorization_permit_id: value };
+
+        const result = await db.authorization_permit.create({
+          data: record,
+        });
+
+        return result?.authorization_permit_guid;
+      } else {
+        record = { ...record, site_id: value };
+
+        const result = await db.site.create({
+          data: record,
+        });
+
+        return result.site_guid;
+      }
+    } catch (exception) {
+      let { message } = exception;
+      this.logger.error(
+        `Unable to create new ${type === "permit" ? "authorization_permit" : "site"}  record: `,
+        message,
+      );
+      throw new GraphQLError("Exception occurred. See server log for details", exception);
+    }
+  };
+
+  private _removeAuthorizationOutcome = async (
+    db: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+    >,
+    id: string,
+    type: "permit" | "site",
+    userId: string,
+    current: Date,
+  ): Promise<any> => {
+    const softDeleteFragment = { active_ind: false, update_user_id: userId, update_utc_timestamp: current };
+
+    try {
+      if (type === "permit") {
+        const result = await db.authorization_permit.update({
+          where: { authorization_permit_guid: id },
+          data: softDeleteFragment,
+        });
+      } else {
+        const result = await db.site.update({
+          where: { site_guid: id },
+          data: softDeleteFragment,
+        });
+      }
+    } catch (exception) {
+      let { message } = exception;
+      this.logger.error(
+        `Unable to create new ${type === "permit" ? "authorization_permit" : "site"}  record: `,
+        message,
+      );
+      throw new GraphQLError("Exception occurred. See server log for details", exception);
+    }
+  };
+
+  private _updateAuthorizationOutcome = async (
+    db: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+    >,
+    id: string,
+    type: "permit" | "site",
+    value: string,
+    userId: string,
+    current: Date,
+  ): Promise<any> => {
+    const record = {
+      update_user_id: userId,
+      update_utc_timestamp: current,
+      ...(type === "permit" && { authorization_permit_id: value }),
+      ...(type === "site" && { site_id: value }),
+    };
+
+    try {
+      if (type === "permit") {
+        const result = await db.authorization_permit.update({
+          where: { authorization_permit_guid: id },
+          data: record,
+        });
+      } else {
+        const result = await db.site.update({
+          where: { site_guid: id },
+          data: record,
+        });
+      }
+    } catch (exception) {
+      let { message } = exception;
+      this.logger.error(
+        `Unable to update existing ${type === "permit" ? "authorization_permit" : "site"}  record: `,
+        message,
+      );
+      throw new GraphQLError("Exception occurred. See server log for details", exception);
+    }
+  };
+
+  private _getAuthorizationOutcome = (query: AuthorizationOutcomeSearchResults): AuthorizationOutcome => {
+    const { authorization_permit: permit, site } = query;
+
+    if (permit.length !== 0) {
+      return { id: permit[0].authorization_permit_guid, type: "permit", value: permit[0].authorization_permit_id };
+    }
+
+    if (site.length !== 0) {
+      return { id: site[0].site_guid, type: "site", value: site[0].site_id };
+    }
+
+    return null;
+  };
+
+  createAuthorizationOutcome = async (model: CreateAuthorizationOutcomeInput): Promise<CaseFile> => {
+    let caseFileId = "";
+
+    try {
+      let result: CaseFile;
+
+      await this.prisma.$transaction(async (db) => {
+        const { leadIdentifier, createUserId, input } = model;
+
+        const caseFile = await this.findOneByLeadId(leadIdentifier);
+
+        if (caseFile && caseFile?.caseIdentifier) {
+          caseFileId = caseFile.caseIdentifier;
+        } else {
+          const caseInput: CreateCaseInput = { ...model };
+          caseFileId = await this.createCase(db, caseInput);
+        }
+
+        //-- create a new authorized_permit or site record depending on the type
+        //-- of authorization is provided
+        const { type, value } = input;
+
+        const outcome = await this._addAuthorizationOutcome(db, caseFileId, type, value, createUserId);
+      });
+
+      return await this.findOne(caseFileId);
+    } catch (error) {
+      console.log("exception: unable to create authorization outcome ", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  };
+
+  updateAuthorizationOutcome = async (model: UpdateAuthorizationOutcomeInput): Promise<CaseFile> => {
+    const { caseIdentifier, updateUserId, input } = model;
+    const timestamp = new Date();
+
+    try {
+      let result: CaseFile;
+
+      await this.prisma.$transaction(async (db) => {
+        //-- get the current case file and compare the current
+        //-- authorization outcome to the submited outcome if the
+        //-- outcome is a different type, remove the old outcome
+        //-- and add a new one or update the type if the same
+        const caseFile = await this.findOne(caseIdentifier);
+        const { authorization: current } = caseFile;
+
+        const { type, value } = input;
+        if (current.type === type) {
+          await this._updateAuthorizationOutcome(db, current.id, type, value, updateUserId, timestamp);
+        } else {
+          await this._removeAuthorizationOutcome(db, current.id, current.type, updateUserId, timestamp);
+
+          if (current.type === "permit") {
+            await this._addAuthorizationOutcome(db, caseIdentifier, type, value, updateUserId);
+          } else {
+            await this._addAuthorizationOutcome(db, caseIdentifier, type, value, updateUserId);
+          }
+        }
+      });
+
+      return await this.findOne(caseIdentifier);
+    } catch (error) {
+      console.log("exception: unable to create authorization outcome ", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  };
+
+  deleteAuthorizationOutcome = async (model: DeleteAuthorizationOutcomeInput): Promise<CaseFile> => {
+    const { caseIdentifier, updateUserId, id } = model;
+    const timestamp = new Date();
+
+    try {
+      await this.prisma.$transaction(async (db) => {
+        const caseFile = await this.findOne(caseIdentifier);
+
+        if (caseFile) {
+          const {
+            authorization: { type },
+          } = caseFile;
+
+          await this._removeAuthorizationOutcome(db, id, type, updateUserId, timestamp);
+        }
+      });
+
+      return await this.findOne(caseIdentifier);
+    } catch (error) {
+      console.log("exception: unable to delete authorization outcome ", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  };
+
+  private _addAction = async (
+    db: Omit<
+      PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+      "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+    >,
+    caseFileId: string,
+    decisionId: string,
+    input: ActionInput,
+    userId: string,
+  ): Promise<any> => {
+    try {
+      const { actionTaken, actor, date } = input;
+
+      //-- get the action_type_action xref
+      const xref = await this._getActionXref(db, actionTaken, ACTION_TYPE_CODES.CEEBACTION);
+
+      let record: any = {
+        action_guid: randomUUID(),
+        case_guid: caseFileId,
+        action_type_action_xref_guid: xref,
+        decision_guid: decisionId,
+        actor_guid: actor,
+        action_date: date,
+        active_ind: true,
+        create_user_id: userId,
+        update_user_id: userId,
+        create_utc_timestamp: new Date(),
+        update_utc_timestamp: new Date(),
+      };
+      const test = 0;
+      const result = await db.action.create({
+        data: record,
+      });
+
+      return result?.action_guid;
+    } catch (exception) {
+      throw new GraphQLError("Exception occurred. See server log for details", exception);
     }
   };
 
