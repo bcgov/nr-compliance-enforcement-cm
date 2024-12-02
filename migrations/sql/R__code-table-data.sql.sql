@@ -5207,7 +5207,23 @@ VALUES
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
+  ),
+  (
+    'UNFNDED',
+    'Unfounded',
+    'Unfounded',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
   ) ON CONFLICT DO NOTHING;
+
+-- Update action type descriptions
+update case_management.action_code
+set
+  short_description = 'Injured/Distressed/Deceased',
+  long_description = 'Injured/Distressed/Deceased'
+where
+  action_code = 'INJPRES';
 
 --Insert new xref for above action_codes
 INSERT INTO
@@ -5304,6 +5320,14 @@ VALUES
     'COMPASSESS',
     'HUMINJ',
     110,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'COMPASSESS',
+    'UNFNDED',
+    120,
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
