@@ -57,20 +57,61 @@ export class LeadService {
     return leadIdentifiers;
   }
 
-  async getLeadsByOutcomeAnimal(outcomeAnimalInput: string): Promise<string[]> {
-    const outcomeResult = await this.prisma.wildlife.findMany({
-      where: {
-        hwcr_outcome_code: outcomeAnimalInput,
-      },
-      select: {
-        case_file_guid: true,
-      },
-    });
+  async getLeadsByOutcomeAnimal(outcomeAnimalCode, startDate, endDate): Promise<string[]> {
+    let outcomeResultByCode;
+    let outcomeResultByDate;
+    let caseGuids: string[] = [];
 
-    const caseGuids: string[] = [];
-    for (let outcome of outcomeResult) {
-      caseGuids.push(outcome.case_file_guid);
+    //Check if filter Outcome Animal by code is on
+    if (outcomeAnimalCode !== "undefined") {
+      outcomeResultByCode = await this.prisma.wildlife.findMany({
+        where: {
+          hwcr_outcome_code: outcomeAnimalCode,
+        },
+        select: {
+          case_file_guid: true,
+        },
+      });
+      for (let outcome of outcomeResultByCode) {
+        caseGuids.push(outcome.case_file_guid);
+      }
     }
+
+    //Check if filter Outcome Animal date range is on
+    if (startDate !== "undefined") {
+      //Find action_type_action_xref_guid that represents outcome animal action
+      const xrefResult = await this.prisma.action_type_action_xref.findFirst({
+        where: {
+          action_code: ACTION_CODES.RECOUTCOME,
+        },
+        select: {
+          action_type_action_xref_guid: true,
+        },
+      });
+      outcomeResultByDate = await this.prisma.action.findMany({
+        where: {
+          action_type_action_xref_guid: xrefResult.action_type_action_xref_guid,
+          action_date: {
+            gte: new Date(startDate),
+            lte: endDate !== "undefined" ? new Date(endDate) : new Date(),
+          },
+        },
+        select: {
+          case_guid: true,
+        },
+      });
+
+      for (let outcome of outcomeResultByDate) {
+        caseGuids.push(outcome.case_guid);
+      }
+    }
+
+    //if 2 filters are on, get the mutual case_guid
+    if (outcomeAnimalCode !== "undefined" && startDate !== "undefined") {
+      const duplicates = caseGuids.filter((item, index) => caseGuids.indexOf(item) !== index);
+      caseGuids = Array.from(new Set(duplicates));
+    }
+
     const leadResults = await this.prisma.lead.findMany({
       where: {
         case_identifier: {
