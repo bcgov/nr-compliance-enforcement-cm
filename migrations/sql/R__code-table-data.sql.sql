@@ -5220,8 +5220,8 @@ VALUES
 -- Update action type descriptions
 update case_management.action_code
 set
-  short_description = 'Injured/Distressed/Deceased',
-  long_description = 'Injured/Distressed/Deceased'
+  short_description = 'Present - injured/distressed/deceased',
+  long_description = 'Present - injured/distressed/deceased'
 where
   action_code = 'INJPRES';
 
