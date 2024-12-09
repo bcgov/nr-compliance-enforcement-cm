@@ -18,7 +18,11 @@ export class LeadResolver {
 
   @Query("getLeadsByOutcomeAnimal")
   @Roles(Role.COS_OFFICER)
-  findLeadsByOutcomeAnimal(@Args("outcomeAnimalCode") actionCode: string) {
-    return this.leadService.getLeadsByOutcomeAnimal(actionCode);
+  findLeadsByOutcomeAnimal(
+    @Args("outcomeAnimalCode") outcomeAnimalCode: string,
+    @Args("startDate") startDate: string,
+    @Args("endDate") endDate: string,
+  ) {
+    return this.leadService.getLeadsByOutcomeAnimal(outcomeAnimalCode, startDate, endDate);
   }
 }

@@ -3,5 +3,5 @@ type Query {
 }
 
 type Query {
-  getLeadsByOutcomeAnimal(outcomeAnimalCode: String!): [String]
+  getLeadsByOutcomeAnimal(outcomeAnimalCode: String!, startDate: String!, endDate: String!): [String]
 }
