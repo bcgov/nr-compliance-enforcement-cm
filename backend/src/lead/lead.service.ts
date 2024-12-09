@@ -93,7 +93,7 @@ export class LeadService {
           action_type_action_xref_guid: xrefResult.action_type_action_xref_guid,
           action_date: {
             gte: new Date(startDate),
-            lte: endDate !== "undefined" ? new Date(endDate) : new Date(),
+            lte: endDate !== "undefined" ? new Date(endDate) : new Date().toISOString(), //utc time,
           },
         },
         select: {
