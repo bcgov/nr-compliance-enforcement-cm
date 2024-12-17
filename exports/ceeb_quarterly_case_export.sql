@@ -3,17 +3,17 @@
 -- see https://github.com/bcgov/nr-compliance-enforcement-cm/wiki/Data-Exports for more information
 -----------------------------------------------------
 select 
-	le.lead_identifier as "Complaint Identifer",
-	sc.long_description as "WDR Schedule/IPM Sector Type",
+	le.lead_identifier as "Record ID",
+	--sc.long_description as "WDR Schedule/IPM Sector Type",
 	sec.long_description as "Sector/Category",
 	dc.long_description as "Discharge Type",
 	ac.long_description  as "Action Taken",
-	TO_CHAR(((act.action_date at time zone 'UTC') at time zone 'PDT'), 'MM/DD/YYYY') as "Date Action Taken",
-	CASE 
-		WHEN s.site_id is not null THEN 'U' || s.site_id
-		when ap.authorization_permit_id is not null then ap.authorization_permit_id 
-		ELSE ''
-	END as "Authorization Number"
+	TO_CHAR(((act.action_date at time zone 'UTC') at time zone 'PDT'), 'MM/DD/YYYY') as "Date Action Taken"
+	--CASE 
+	--	WHEN s.site_id is not null THEN 'U' || s.site_id
+	--	when ap.authorization_permit_id is not null then ap.authorization_permit_id 
+	--	ELSE ''
+	--END as "Authorization Number"
 from
 	case_management.lead le
 left join case_management.case_file cf on
