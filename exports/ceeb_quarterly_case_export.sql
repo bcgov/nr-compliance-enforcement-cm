@@ -39,6 +39,6 @@ left join case_management.action_type_action_xref atax on
 left join case_management.action_code ac on
     ac.action_code = atax.action_code 
   where cf.owned_by_agency_code  = 'EPO'
-  and 	act.action_date BETWEEN 'YYYY-MM-DD' AND 'YYYY-MM-DD' -- replace placeholders with actual values
+  and 	act.action_date >= CURRENT_DATE - INTERVAL '1 year'
 	order by 
 	le.lead_identifier asc
