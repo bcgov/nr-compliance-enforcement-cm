@@ -19,8 +19,8 @@ const generateHWCRCaseData = () => {
     case_code: 'HWCR',
     owned_by_agency_code: 'COS',
     action_not_required_ind: action_not_required_ind,
-    note_text: faker.lorem.sentence(), // Random note text
-    review_required_ind: faker.datatype.boolean(), // True or false
+    note_text: null, // not implmented
+    review_required_ind: null // not implemented
   }
 
   if(action_not_required_ind){
@@ -47,7 +47,7 @@ const generateLeadData = (year, num, case_file_guid) => {
   }
 }
 
-const generateActionData = (case_file_guid, actions)  => {
+const generateActionData = (case_file_guid, actions, wildlife_guid = null)  => {
   return {
     action_guid: faker.datatype.uuid(), // Generates a random GUID (UUID)
     case_guid: case_file_guid,
@@ -56,18 +56,41 @@ const generateActionData = (case_file_guid, actions)  => {
     action_date: faker.date.recent().toISOString(),
     active_ind: true,
     equipment_guid: null, // Not implemented
-    wildlife_guid: null, // Not implmented
+    wildlife_guid: wildlife_guid, // Not implmented
     decision_guid: null // Not implemented
   }
 }
 
-const getActionXrefs = async () => {
+const generateWildlifeData = async (case_file_guid) => {
+  return {
+    wildlife_guid: faker.datatype.uuid(), 
+    case_file_guid: case_file_guid,
+    threat_level_code: faker.random.arrayElement(['1', '2', '3', 'U']), // Random threat level code
+    sex_code: faker.random.arrayElement(['M', 'F', 'U']), // Random sex code
+    age_code: faker.random.arrayElement(['ADLT', 'YRLN', 'YOFY', 'UNKN']), // Random age code
+    hwcr_outcome_code: faker.random.arrayElement(['LESSLETHAL', 
+      'DEADONARR', 'GONEONARR', 'REFRTOBIO', 'SHRTRELOC', 'TRANSLCTD', 'TRANSREHB', 
+      'EUTHCOS', 'EUTHOTH', 'DESTRYCOS', 'DESTRYOTH']), // Random outcome code
+    species_code: faker.random.arrayElement(['BISON', 
+      'BLKBEAR', 'RACCOON', 'MTNGOAT', 'MOOSE', 'WOLVERN', 'LYNX', 
+      'FERALHOG', 'GRZBEAR', 'FOX', 'ELK']), // Random outcome code
+    active_ind: true,
+    identifying_features: faker.lorem.sentence(),
+  }
+}
+
+const getActionXrefs = async (type, action = null) => {
   try {
-    const result = await client.query(`
-      select action_type_action_xref_guid
-      from case_management.action_type_action_xref
-      where action_type_code = 'COMPASSESS'
-    `);
+    let query = `
+    SELECT action_type_action_xref_guid
+    FROM case_management.action_type_action_xref
+    WHERE action_type_code = '${type}'
+  `;
+
+  if (action) {
+    query += ` AND action_code = '${action}'`;  // Assuming 'action' is a column in the table
+  }
+    const result = await client.query(query);
     return result.rows.map(row => row.action_type_action_xref_guid);  // Return an array of action_type_action_xref_guid
   } catch (err) {
     console.error('Error fetching action types:', err);
@@ -78,18 +101,29 @@ const getActionXrefs = async () => {
 const generateBulkData = async (year, num, type) => {
   let cases = [];
 
-  const actions = await getActionXrefs();
+  const assessmentActions = await getActionXrefs('COMPASSESS');
+  const outcomeActions = await getActionXrefs('WILDLIFE', 'RECOUTCOME');
 
   if(type === 'HWCR') {
     for (let i = 0; i < num; i++) {
       const generatedCase = generateHWCRCaseData();
       const generatedLead = generateLeadData(year, i, generatedCase.case_file_guid);
-      const generatedAction = generateActionData(generatedCase.case_file_guid, actions);
+      const generatedAssessmentAction = generateActionData(generatedCase.case_file_guid, assessmentActions);
+
+      let generatedWildlife = null; // Default value if action is not requried
+      let generatedWildifeAction = null;  // Default value if action is not requried
+      if(!generatedCase.action_not_required_ind)
+      {
+         generatedWildlife = await generateWildlifeData(generatedCase.case_file_guid);
+         generatedWildifeAction = generateActionData(generatedCase.case_file_guid, outcomeActions, generatedWildlife.wildlife_guid);
+      }
 
       cases.push({
         case: generatedCase,
         lead: generatedLead,
-        action: generatedAction
+        assessmentAction: generatedAssessmentAction,
+        wildlife: generatedWildlife,
+        wildlifeAction: generatedWildifeAction
       });
     }    
   }
@@ -176,8 +210,8 @@ const leadInsertPromises = records.map(caseFile =>
 );
 await Promise.all(leadInsertPromises);
 
-// Insert actions into the database
-const actionInsertPromises = records.map(caseFile => 
+// Insert assessment actions into the database
+const assessmentActionInsertPromises = records.map(caseFile => 
   client.query(
     `INSERT INTO case_management.action (
       action_guid,
@@ -198,15 +232,15 @@ const actionInsertPromises = records.map(caseFile =>
       $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
     )`,
     [
-      caseFile.action.action_guid,
-      caseFile.action.case_guid,
-      caseFile.action.action_type_action_xref_guid,
-      caseFile.action.actor_guid,
-      caseFile.action.action_date,
-      caseFile.action.active_ind,
-      caseFile.action.equipment_guid,
-      caseFile.action.wildlife_guid,
-      caseFile.action.decision_guid, 
+      caseFile.assessmentAction.action_guid,
+      caseFile.assessmentAction.case_guid,
+      caseFile.assessmentAction.action_type_action_xref_guid,
+      caseFile.assessmentAction.actor_guid,
+      caseFile.assessmentAction.action_date,
+      caseFile.assessmentAction.active_ind,
+      caseFile.assessmentAction.equipment_guid,
+      caseFile.assessmentAction.wildlife_guid,
+      caseFile.assessmentAction.decision_guid, 
       'Bulk Data Load', // create_user_id
       currentTimestamp, // create_utc_timestamp
       'Bulk Data Load', // update_user_id
@@ -214,7 +248,90 @@ const actionInsertPromises = records.map(caseFile =>
     ]
   )
 );
-await Promise.all(actionInsertPromises);
+await Promise.all(assessmentActionInsertPromises);
+
+// Insert wildlife into the database
+const wildlifeInsertPromises = records
+  .filter(caseFile => caseFile.wildlife)  // Only include records that have wildlife data
+  .map(caseFile => 
+    client.query(`
+      INSERT INTO case_management.wildlife (
+        wildlife_guid,
+        case_file_guid,
+        threat_level_code,
+        sex_code,
+        age_code,
+        hwcr_outcome_code,
+        species_code,
+        active_ind,
+        identifying_features,
+        create_user_id, 
+        create_utc_timestamp, 
+        update_user_id, 
+        update_utc_timestamp
+      )
+      VALUES (
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+      )`,
+      [
+        caseFile.wildlife.wildlife_guid,
+        caseFile.wildlife.case_file_guid,
+        caseFile.wildlife.threat_level_code,
+        caseFile.wildlife.sex_code,
+        caseFile.wildlife.age_code,
+        caseFile.wildlife.hwcr_outcome_code,
+        caseFile.wildlife.species_code,
+        caseFile.wildlife.active_ind,
+        caseFile.wildlife.identifying_features, 
+        'Bulk Data Load', // create_user_id
+        currentTimestamp, // create_utc_timestamp
+        'Bulk Data Load', // update_user_id
+        currentTimestamp // update_utc_timestamp
+      ]
+    )
+  );
+
+await Promise.all(wildlifeInsertPromises);  
+// Insert assessment actions into the database
+const wildlifeActionInsertPromises = records.filter(caseFile => caseFile.wildlife)
+  .map(caseFile => 
+  client.query(
+    `INSERT INTO case_management.action (
+      action_guid,
+      case_guid,
+      action_type_action_xref_guid, 
+      actor_guid,
+      action_date,
+      active_ind,
+      equipment_guid,
+      wildlife_guid,
+      decision_guid,
+      create_user_id, 
+      create_utc_timestamp, 
+      update_user_id, 
+      update_utc_timestamp
+    ) 
+    VALUES (
+      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+    )`,
+    [
+      caseFile.wildlifeAction.action_guid,
+      caseFile.wildlifeAction.case_guid,
+      caseFile.wildlifeAction.action_type_action_xref_guid,
+      caseFile.wildlifeAction.actor_guid,
+      caseFile.wildlifeAction.action_date,
+      caseFile.wildlifeAction.active_ind,
+      caseFile.wildlifeAction.equipment_guid,
+      caseFile.wildlifeAction.wildlife_guid,
+      caseFile.wildlifeAction.decision_guid, 
+      'Bulk Data Load', // create_user_id
+      currentTimestamp, // create_utc_timestamp
+      'Bulk Data Load', // update_user_id
+      currentTimestamp // update_utc_timestamp
+    ]
+  )
+);
+await Promise.all(wildlifeActionInsertPromises);
 
 // Commit transaction
 await client.query('COMMIT');
