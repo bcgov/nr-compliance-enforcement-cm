@@ -79,6 +79,24 @@ const generateWildlifeData = async (case_file_guid) => {
   }
 }
 
+const generateSiteData = (case_file_guid) => {
+  return {
+    site_guid:faker.datatype.uuid(), // Generates a random GUID (UUID)
+    case_file_guid: case_file_guid,
+    site_id: faker.datatype.number({ min: 1, max: 9999999999 }).toString(),
+    active_ind: true
+  }
+}
+
+const generateAuthorizationData = (case_file_guid) => {
+  return {
+    authorization_permit_guid: faker.datatype.uuid(), //Generates a random GUID (UUID)
+    case_file_guid: case_file_guid,
+    authorization_permit_id: faker.datatype.number({ min: 1, max: 9999999999 }).toString(),
+    active_ind: true
+  }
+}
+
 const getActionXrefs = async (type, action = null) => {
   try {
     let query = `
@@ -98,14 +116,14 @@ const getActionXrefs = async (type, action = null) => {
   }
 };
 
-const generateBulkData = async (year, num, type) => {
+const generateBulkData = async (year, num, type, startingSequence) => {
   let cases = [];
 
   const assessmentActions = await getActionXrefs('COMPASSESS');
   const outcomeActions = await getActionXrefs('WILDLIFE', 'RECOUTCOME');
 
   if(type === 'HWCR') {
-    for (let i = 0; i < num; i++) {
+    for (let i = startingSequence; i < num + startingSequence; i++) {
       const generatedCase = generateHWCRCaseData();
       const generatedLead = generateLeadData(year, i, generatedCase.case_file_guid);
       const generatedAssessmentAction = generateActionData(generatedCase.case_file_guid, assessmentActions);
@@ -125,216 +143,416 @@ const generateBulkData = async (year, num, type) => {
         wildlife: generatedWildlife,
         wildlifeAction: generatedWildifeAction
       });
-    }    
+    } 
+  } else if (type === 'CEEB') {  // Intentional repeated code here to avoid needing to do multi-pass inserts
+    for (let i = startingSequence; i < num + startingSequence; i++) {
+      const generatedCase = generateHWCRCaseData();
+      const generatedLead = generateLeadData(year, i, generatedCase.case_file_guid);
+      
+      let generatedSite = null;
+      let generatedAuthorization = null;
+      
+      if (i % 2 === 0) {
+        // Even iterator - generate site data
+        generatedSite = generateSiteData(generatedCase.case_file_guid);
+      } else {
+        // Odd iterator - generate authorization data
+        generatedAuthorization = generateAuthorizationData(generatedCase.case_file_guid);
+      }
+      
+      cases.push({
+        case: generatedCase,
+        lead: generatedLead,
+        site: generatedSite,
+        authorization: generatedAuthorization
+      });
+    } 
+  } else {
+    console.log (`${type} not supported, please provide either 'HWCR' or 'CEEB'`);
   }
 
   return cases;
 };
 
-const insertData = async (records) => {
+const insertHWCRData = async (records) => {
   try {
     const currentTimestamp = new Date().toISOString(); // Get the current timestamp
 
     // Begin transaction
     await client.query('BEGIN');
 
-// Insert cases into the database
-const caseInsertPromises = records.map(caseFile => 
-  client.query(
-    `INSERT INTO case_management.case_file (
-      case_file_guid, 
-      case_code, 
-      owned_by_agency_code, 
-      inaction_reason_code, 
-      action_not_required_ind, 
-      note_text, 
-      review_required_ind, 
-      complainant_contacted_ind, 
-      attended_ind, 
-      case_location_code, 
-      case_conflict_history_code, 
-      case_threat_level_code, 
-      create_user_id, 
-      create_utc_timestamp, 
-      update_user_id, 
-      update_utc_timestamp
-    ) 
-    VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
-    )`,
-    [
-      caseFile.case.case_file_guid, 
-      caseFile.case.case_code, 
-      caseFile.case.owned_by_agency_code, 
-      caseFile.case.inaction_reason_code, 
-      caseFile.case.action_not_required_ind, 
-      caseFile.case.note_text, 
-      caseFile.case.review_required_ind, 
-      caseFile.case.complainant_contacted_ind, 
-      caseFile.case.attended_ind, 
-      caseFile.case.case_location_code, 
-      caseFile.case.case_conflict_history_code, 
-      caseFile.case.case_threat_level_code, 
-      'Bulk Data Load', // create_user_id
-      currentTimestamp, // create_utc_timestamp
-      'Bulk Data Load', // update_user_id
-      currentTimestamp // update_utc_timestamp
-    ]
-  )
-);
-await Promise.all(caseInsertPromises);
+    // Arrays to hold the data for bulk inserts
+    const caseValues = [];
+    const leadValues = [];
+    const assessmentActionValues = [];
+    const wildlifeValues = [];
+    const wildlifeActionValues = [];
 
-// Insert leads into the database
-const leadInsertPromises = records.map(caseFile => 
-  client.query(
-    `INSERT INTO case_management.lead (
-      lead_identifier,
-      case_identifier, 
-      create_user_id, 
-      create_utc_timestamp, 
-      update_user_id, 
-      update_utc_timestamp
-    ) 
-    VALUES (
-      $1, $2, $3, $4, $5, $6
-    )`,
-    [
-      caseFile.lead.lead_identifier, 
-      caseFile.lead.case_identifier, 
-      'Bulk Data Load', // create_user_id
-      currentTimestamp, // create_utc_timestamp
-      'Bulk Data Load', // update_user_id
-      currentTimestamp // update_utc_timestamp
-    ]
-  )
-);
-await Promise.all(leadInsertPromises);
-
-// Insert assessment actions into the database
-const assessmentActionInsertPromises = records.map(caseFile => 
-  client.query(
-    `INSERT INTO case_management.action (
-      action_guid,
-      case_guid,
-      action_type_action_xref_guid, 
-      actor_guid,
-      action_date,
-      active_ind,
-      equipment_guid,
-      wildlife_guid,
-      decision_guid,
-      create_user_id, 
-      create_utc_timestamp, 
-      update_user_id, 
-      update_utc_timestamp
-    ) 
-    VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
-    )`,
-    [
-      caseFile.assessmentAction.action_guid,
-      caseFile.assessmentAction.case_guid,
-      caseFile.assessmentAction.action_type_action_xref_guid,
-      caseFile.assessmentAction.actor_guid,
-      caseFile.assessmentAction.action_date,
-      caseFile.assessmentAction.active_ind,
-      caseFile.assessmentAction.equipment_guid,
-      caseFile.assessmentAction.wildlife_guid,
-      caseFile.assessmentAction.decision_guid, 
-      'Bulk Data Load', // create_user_id
-      currentTimestamp, // create_utc_timestamp
-      'Bulk Data Load', // update_user_id
-      currentTimestamp // update_utc_timestamp
-    ]
-  )
-);
-await Promise.all(assessmentActionInsertPromises);
-
-// Insert wildlife into the database
-const wildlifeInsertPromises = records
-  .filter(caseFile => caseFile.wildlife)  // Only include records that have wildlife data
-  .map(caseFile => 
-    client.query(`
-      INSERT INTO case_management.wildlife (
-        wildlife_guid,
-        case_file_guid,
-        threat_level_code,
-        sex_code,
-        age_code,
-        hwcr_outcome_code,
-        species_code,
-        active_ind,
-        identifying_features,
-        create_user_id, 
-        create_utc_timestamp, 
-        update_user_id, 
-        update_utc_timestamp
-      )
-      VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
-      )`,
-      [
-        caseFile.wildlife.wildlife_guid,
-        caseFile.wildlife.case_file_guid,
-        caseFile.wildlife.threat_level_code,
-        caseFile.wildlife.sex_code,
-        caseFile.wildlife.age_code,
-        caseFile.wildlife.hwcr_outcome_code,
-        caseFile.wildlife.species_code,
-        caseFile.wildlife.active_ind,
-        caseFile.wildlife.identifying_features, 
+    // Prepare the values for bulk insertion
+    records.forEach((caseFile) => {
+      // Prepare case data
+      caseValues.push([
+        caseFile.case.case_file_guid,
+        caseFile.case.case_code,
+        caseFile.case.owned_by_agency_code,
+        caseFile.case.inaction_reason_code,
+        caseFile.case.action_not_required_ind,
+        caseFile.case.note_text,
+        caseFile.case.review_required_ind,
+        caseFile.case.complainant_contacted_ind,
+        caseFile.case.attended_ind,
+        caseFile.case.case_location_code,
+        caseFile.case.case_conflict_history_code,
+        caseFile.case.case_threat_level_code,
         'Bulk Data Load', // create_user_id
         currentTimestamp, // create_utc_timestamp
         'Bulk Data Load', // update_user_id
         currentTimestamp // update_utc_timestamp
-      ]
-    )
-  );
+      ]);
 
-await Promise.all(wildlifeInsertPromises);  
-// Insert assessment actions into the database
-const wildlifeActionInsertPromises = records.filter(caseFile => caseFile.wildlife)
-  .map(caseFile => 
-  client.query(
-    `INSERT INTO case_management.action (
-      action_guid,
-      case_guid,
-      action_type_action_xref_guid, 
-      actor_guid,
-      action_date,
-      active_ind,
-      equipment_guid,
-      wildlife_guid,
-      decision_guid,
-      create_user_id, 
-      create_utc_timestamp, 
-      update_user_id, 
-      update_utc_timestamp
-    ) 
-    VALUES (
-      $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
-    )`,
-    [
-      caseFile.wildlifeAction.action_guid,
-      caseFile.wildlifeAction.case_guid,
-      caseFile.wildlifeAction.action_type_action_xref_guid,
-      caseFile.wildlifeAction.actor_guid,
-      caseFile.wildlifeAction.action_date,
-      caseFile.wildlifeAction.active_ind,
-      caseFile.wildlifeAction.equipment_guid,
-      caseFile.wildlifeAction.wildlife_guid,
-      caseFile.wildlifeAction.decision_guid, 
-      'Bulk Data Load', // create_user_id
-      currentTimestamp, // create_utc_timestamp
-      'Bulk Data Load', // update_user_id
-      currentTimestamp // update_utc_timestamp
-    ]
-  )
-);
-await Promise.all(wildlifeActionInsertPromises);
+      // Prepare lead data
+      leadValues.push([
+        caseFile.lead.lead_identifier,
+        caseFile.lead.case_identifier,
+        'Bulk Data Load', // create_user_id
+        currentTimestamp, // create_utc_timestamp
+        'Bulk Data Load', // update_user_id
+        currentTimestamp // update_utc_timestamp
+      ]);
 
-// Commit transaction
-await client.query('COMMIT');
+      // Prepare assessment action data
+      assessmentActionValues.push([
+        caseFile.assessmentAction.action_guid,
+        caseFile.assessmentAction.case_guid,
+        caseFile.assessmentAction.action_type_action_xref_guid,
+        caseFile.assessmentAction.actor_guid,
+        caseFile.assessmentAction.action_date,
+        caseFile.assessmentAction.active_ind,
+        caseFile.assessmentAction.equipment_guid,
+        caseFile.assessmentAction.wildlife_guid,
+        caseFile.assessmentAction.decision_guid,
+        'Bulk Data Load', // create_user_id
+        currentTimestamp, // create_utc_timestamp
+        'Bulk Data Load', // update_user_id
+        currentTimestamp // update_utc_timestamp
+      ]);
+
+      // Prepare wildlife data (only if it exists)
+      if (caseFile.wildlife) {
+        wildlifeValues.push([
+          caseFile.wildlife.wildlife_guid,
+          caseFile.wildlife.case_file_guid,
+          caseFile.wildlife.threat_level_code,
+          caseFile.wildlife.sex_code,
+          caseFile.wildlife.age_code,
+          caseFile.wildlife.hwcr_outcome_code,
+          caseFile.wildlife.species_code,
+          caseFile.wildlife.active_ind,
+          caseFile.wildlife.identifying_features,
+          'Bulk Data Load', // create_user_id
+          currentTimestamp, // create_utc_timestamp
+          'Bulk Data Load', // update_user_id
+          currentTimestamp // update_utc_timestamp
+        ]);
+      }
+
+      // Prepare wildlife action data (only if wildlife exists)
+      if (caseFile.wildlife) {
+        wildlifeActionValues.push([
+          caseFile.wildlifeAction.action_guid,
+          caseFile.wildlifeAction.case_guid,
+          caseFile.wildlifeAction.action_type_action_xref_guid,
+          caseFile.wildlifeAction.actor_guid,
+          caseFile.wildlifeAction.action_date,
+          caseFile.wildlifeAction.active_ind,
+          caseFile.wildlifeAction.equipment_guid,
+          caseFile.wildlifeAction.wildlife_guid,
+          caseFile.wildlifeAction.decision_guid,
+          'Bulk Data Load', // create_user_id
+          currentTimestamp, // create_utc_timestamp
+          'Bulk Data Load', // update_user_id
+          currentTimestamp // update_utc_timestamp
+        ]);
+      }
+    });
+
+    // Bulk insert for case files
+    if (caseValues.length > 0) {
+      await client.query(
+        `INSERT INTO case_management.case_file (
+          case_file_guid, 
+          case_code, 
+          owned_by_agency_code, 
+          inaction_reason_code, 
+          action_not_required_ind, 
+          note_text, 
+          review_required_ind, 
+          complainant_contacted_ind, 
+          attended_ind, 
+          case_location_code, 
+          case_conflict_history_code, 
+          case_threat_level_code, 
+          create_user_id, 
+          create_utc_timestamp, 
+          update_user_id, 
+          update_utc_timestamp
+        ) VALUES 
+        ${caseValues.map((_, i) => `($${i * 16 + 1}, $${i * 16 + 2}, $${i * 16 + 3}, $${i * 16 + 4}, $${i * 16 + 5}, $${i * 16 + 6}, $${i * 16 + 7}, $${i * 16 + 8}, $${i * 16 + 9}, $${i * 16 + 10}, $${i * 16 + 11}, $${i * 16 + 12}, $${i * 16 + 13}, $${i * 16 + 14}, $${i * 16 + 15}, $${i * 16 + 16})`).join(', ')}`
+        , caseValues.flat()
+      );
+    }
+
+    // Bulk insert for leads
+    if (leadValues.length > 0) {
+      await client.query(
+        `INSERT INTO case_management.lead (
+          lead_identifier,
+          case_identifier, 
+          create_user_id, 
+          create_utc_timestamp, 
+          update_user_id, 
+          update_utc_timestamp
+        ) VALUES 
+        ${leadValues.map((_, i) => `($${i * 6 + 1}, $${i * 6 + 2}, $${i * 6 + 3}, $${i * 6 + 4}, $${i * 6 + 5}, $${i * 6 + 6})`).join(', ')}`
+        , leadValues.flat()
+      );
+    }
+
+    // Bulk insert for assessment actions
+    if (assessmentActionValues.length > 0) {
+      await client.query(
+        `INSERT INTO case_management.action (
+          action_guid,
+          case_guid,
+          action_type_action_xref_guid, 
+          actor_guid,
+          action_date,
+          active_ind,
+          equipment_guid,
+          wildlife_guid,
+          decision_guid,
+          create_user_id, 
+          create_utc_timestamp, 
+          update_user_id, 
+          update_utc_timestamp
+        ) VALUES 
+        ${assessmentActionValues.map((_, i) => `($${i * 13 + 1}, $${i * 13 + 2}, $${i * 13 + 3}, $${i * 13 + 4}, $${i * 13 + 5}, $${i * 13 + 6}, $${i * 13 + 7}, $${i * 13 + 8}, $${i * 13 + 9}, $${i * 13 + 10}, $${i * 13 + 11}, $${i * 13 + 12}, $${i * 13 + 13})`).join(', ')}`
+        , assessmentActionValues.flat()
+      );
+    }
+
+    // Bulk insert for wildlife (only if data exists)
+    if (wildlifeValues.length > 0) {
+      await client.query(
+        `INSERT INTO case_management.wildlife (
+          wildlife_guid,
+          case_file_guid,
+          threat_level_code,
+          sex_code,
+          age_code,
+          hwcr_outcome_code,
+          species_code,
+          active_ind,
+          identifying_features,
+          create_user_id, 
+          create_utc_timestamp, 
+          update_user_id, 
+          update_utc_timestamp
+        ) VALUES 
+        ${wildlifeValues.map((_, i) => `($${i * 13 + 1}, $${i * 13 + 2}, $${i * 13 + 3}, $${i * 13 + 4}, $${i * 13 + 5}, $${i * 13 + 6}, $${i * 13 + 7}, $${i * 13 + 8}, $${i * 13 + 9}, $${i * 13 + 10}, $${i * 13 + 11}, $${i * 13 + 12}, $${i * 13 + 13})`).join(', ')}`
+        , wildlifeValues.flat()
+      );
+    }
+
+    // Bulk insert for wildlife actions (only if data exists)
+    if (wildlifeActionValues.length > 0) {
+      await client.query(
+        `INSERT INTO case_management.action (
+          action_guid,
+          case_guid,
+          action_type_action_xref_guid, 
+          actor_guid,
+          action_date,
+          active_ind,
+          equipment_guid,
+          wildlife_guid,
+          decision_guid,
+          create_user_id, 
+          create_utc_timestamp, 
+          update_user_id, 
+          update_utc_timestamp
+        ) VALUES 
+        ${wildlifeActionValues.map((_, i) => `($${i * 13 + 1}, $${i * 13 + 2}, $${i * 13 + 3}, $${i * 13 + 4}, $${i * 13 + 5}, $${i * 13 + 6}, $${i * 13 + 7}, $${i * 13 + 8}, $${i * 13 + 9}, $${i * 13 + 10}, $${i * 13 + 11}, $${i * 13 + 12}, $${i * 13 + 13})`).join(', ')}`
+        , wildlifeActionValues.flat()
+      );
+    }
+
+    // Commit transaction
+    await client.query('COMMIT');
+  } catch (err) {
+    console.error('Error loading data:', err);
+    await client.query('ROLLBACK');
+  } finally {
+    await client.end();
+  }
+};
+
+const insertCEEBData = async (records) => {
+  try {
+    const currentTimestamp = new Date().toISOString(); // Get the current timestamp
+
+    // Begin transaction
+    await client.query('BEGIN');
+
+    // Arrays to hold the data for bulk inserts
+    const caseValues = [];
+    const leadValues = [];
+    const authorizationValues = [];
+    const siteValues = [];
+
+    // Prepare the values for bulk insertion
+    records.forEach((caseFile) => {
+      // Prepare case data
+      caseValues.push([
+        caseFile.case.case_file_guid,
+        caseFile.case.case_code,
+        caseFile.case.owned_by_agency_code,
+        caseFile.case.inaction_reason_code,
+        caseFile.case.action_not_required_ind,
+        caseFile.case.note_text,
+        caseFile.case.review_required_ind,
+        caseFile.case.complainant_contacted_ind,
+        caseFile.case.attended_ind,
+        caseFile.case.case_location_code,
+        caseFile.case.case_conflict_history_code,
+        caseFile.case.case_threat_level_code,
+        'Bulk Data Load', // create_user_id
+        currentTimestamp, // create_utc_timestamp
+        'Bulk Data Load', // update_user_id
+        currentTimestamp // update_utc_timestamp
+      ]);
+
+      // Prepare lead data
+      leadValues.push([
+        caseFile.lead.lead_identifier,
+        caseFile.lead.case_identifier,
+        'Bulk Data Load', // create_user_id
+        currentTimestamp, // create_utc_timestamp
+        'Bulk Data Load', // update_user_id
+        currentTimestamp // update_utc_timestamp
+      ]);
+
+      // Prepare authorization data (only if it exists)
+      if (caseFile.authorization) {
+        authorizationValues.push([
+          caseFile.authorization.authorization_permit_guid,
+          caseFile.authorization.case_file_guid,
+          caseFile.authorization.authorization_permit_id,
+          caseFile.authorization.active_ind,
+          'Bulk Data Load', // create_user_id
+          currentTimestamp, // create_utc_timestamp
+          'Bulk Data Load', // update_user_id
+          currentTimestamp // update_utc_timestamp
+        ]);
+      }
+
+    // Prepare site data (only if it exists)
+    if (caseFile.site) {
+      siteValues.push([
+        caseFile.site.site_guid,
+        caseFile.site.case_file_guid,
+        caseFile.site.site_id,
+        caseFile.site.active_ind,
+        'Bulk Data Load', // create_user_id
+        currentTimestamp, // create_utc_timestamp
+        'Bulk Data Load', // update_user_id
+        currentTimestamp // update_utc_timestamp
+      ]);
+    }
+
+
+    });
+
+    // Bulk insert for case files
+    if (caseValues.length > 0) {
+      await client.query(
+        `INSERT INTO case_management.case_file (
+          case_file_guid, 
+          case_code, 
+          owned_by_agency_code, 
+          inaction_reason_code, 
+          action_not_required_ind, 
+          note_text, 
+          review_required_ind, 
+          complainant_contacted_ind, 
+          attended_ind, 
+          case_location_code, 
+          case_conflict_history_code, 
+          case_threat_level_code, 
+          create_user_id, 
+          create_utc_timestamp, 
+          update_user_id, 
+          update_utc_timestamp
+        ) VALUES 
+        ${caseValues.map((_, i) => `($${i * 16 + 1}, $${i * 16 + 2}, $${i * 16 + 3}, $${i * 16 + 4}, $${i * 16 + 5}, $${i * 16 + 6}, $${i * 16 + 7}, $${i * 16 + 8}, $${i * 16 + 9}, $${i * 16 + 10}, $${i * 16 + 11}, $${i * 16 + 12}, $${i * 16 + 13}, $${i * 16 + 14}, $${i * 16 + 15}, $${i * 16 + 16})`).join(', ')}`
+        , caseValues.flat()
+      );
+    }
+
+    // Bulk insert for leads
+    if (leadValues.length > 0) {
+      await client.query(
+        `INSERT INTO case_management.lead (
+          lead_identifier,
+          case_identifier, 
+          create_user_id, 
+          create_utc_timestamp, 
+          update_user_id, 
+          update_utc_timestamp
+        ) VALUES 
+        ${leadValues.map((_, i) => `($${i * 6 + 1}, $${i * 6 + 2}, $${i * 6 + 3}, $${i * 6 + 4}, $${i * 6 + 5}, $${i * 6 + 6})`).join(', ')}`
+        , leadValues.flat()
+      );
+    }
+
+    // Bulk insert for authorizations
+    if (authorizationValues.length > 0) {
+      await client.query(
+        `INSERT INTO case_management.authorization_permit (
+          authorization_permit_guid,
+          case_file_guid,
+          authorization_permit_id, 
+          active_ind,
+          create_user_id, 
+          create_utc_timestamp, 
+          update_user_id, 
+          update_utc_timestamp
+        ) VALUES 
+        ${authorizationValues.map((_, i) => `($${i * 8 + 1}, $${i * 8 + 2}, $${i * 8 + 3}, $${i * 8 + 4}, $${i * 8 + 5}, $${i * 8 + 6}, $${i * 8 + 7}, $${i * 8 + 8})`).join(', ')}`
+        , authorizationValues.flat()
+      );
+    }
+
+    // Bulk insert for sites
+    if (siteValues.length >0) {
+      await client.query(
+        `INSERT INTO case_management.site (
+          site_guid,
+          case_file_guid,
+          site_id, 
+          active_ind,
+          create_user_id, 
+          create_utc_timestamp, 
+          update_user_id, 
+          update_utc_timestamp
+        ) VALUES
+        ${siteValues.map((_, i) => `($${i * 8 + 1}, $${i * 8 + 2}, $${i * 8 + 3}, $${i * 8 + 4}, $${i * 8 + 5}, $${i * 8 + 6}, $${i * 8 + 7}, $${i * 8 + 8})`).join(', ')}`
+        , siteValues.flat()
+      );
+    }
+
+    // Commit transaction
+    await client.query('COMMIT');
   } catch (err) {
     console.error('Error loading data:', err);
     await client.query('ROLLBACK');
@@ -345,15 +563,19 @@ await client.query('COMMIT');
 
 const main = async () => {
   // Adjust these as required.
-// No more than 10k at a time or the insert will blow up.
-// This script assumes requisite complaint data exists.
-  const yearPrefix = 25;
-  const numRecords = 10;
-  const type = 'HWCR';
+  // This script assumes requisite complaint data exists and that there are no conflicts in the case management database
+  const yearPrefix = 10; // The year prefix of the complaint
+  const startingSequence = 6000 // The complaint sequence number you want to start at
+  const numRecords = 1000; // How many records are being generated
+  const type = 'CEEB'; // The Type of case to generate.   Currently supported: HWCR, CEEB
 
   // Ensure that the bulk data is generated before starting insertion
-  const records = await generateBulkData(yearPrefix, numRecords, type);
-  await insertData(records);  // Ensure insertion happens after bulk data is ready
+  const records = await generateBulkData(yearPrefix, numRecords, type, startingSequence);
+  if(type === 'HWCR'){
+    await insertHWCRData(records);
+  } else {
+    await insertCEEBData(records);
+  }
 };
 
 main().catch((err) => {
