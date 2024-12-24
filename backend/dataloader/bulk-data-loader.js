@@ -603,9 +603,9 @@ const insertCEEBData = async (records) => {
 const main = async () => {
   // Adjust these as required.
   // This script assumes requisite complaint data exists and that there are no conflicts in the case management database
-  const yearPrefix = 9; // The year prefix of the complaint
-  const startingSequence = 90000 // The complaint sequence number you want to start at
-  const numRecords = 5000; // How many records are being generated.  4K Max
+  const yearPrefix = 25; // The year prefix of the complaint
+  const startingSequence = 0 // The complaint sequence number you want to start at
+  const numRecords = 4000; // How many records are being generated.  4K Max
   const type = 'HWCR'; // The Type of case to generate.   Currently supported: HWCR, CEEB
 
   // Validate parameters
