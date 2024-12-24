@@ -11,8 +11,9 @@ const client = new Client({
 
 client.connect();
 
+// Generates HWCR data.  Currently only assessment and outcomes are implemented.
 const generateHWCRCaseData = () => {
-  const action_not_required_ind = faker.datatype.boolean();
+  const action_not_required_ind = faker.datatype.boolean(); // 50% chance of action required / not required.
 
   let generatedCase = {
     case_file_guid: faker.datatype.uuid(), // Generates a random GUID (UUID)
@@ -23,7 +24,7 @@ const generateHWCRCaseData = () => {
     review_required_ind: null // not implemented
   }
 
-  if(action_not_required_ind){
+  if(action_not_required_ind){ // If No action is required the only assessment data is the inaction reason
     return {
       ...generatedCase,
       inaction_reason_code: faker.random.arrayElement(['DUPLICATE', 'NOPUBSFTYC', 'OTHOPRPRTY']), // Random inaction reason  
@@ -40,13 +41,23 @@ const generateHWCRCaseData = () => {
   }
 }
 
+// Generates Lead data.   
+// Params:
+//     year = prefix for constructing complaint identifier
+//     num = sequence for constructing complaint identifier
+//     case_file_guid = Fk to case table
 const generateLeadData = (year, num, case_file_guid) => {
   return {
-    lead_identifier: `${year}-${num.toString().padStart(6, '0')}`,
+    lead_identifier: `${year}-${num.toString().padStart(6, '0')}`, //Format into YY-###### format
     case_identifier: case_file_guid
   }
 }
 
+// Generates data for the action table.   
+// Params:
+//    case_file_guid = foreign key to case
+//    actions = an array of actions to select from (allows caller to control type they want)
+//    wildlife_guid = optional foreign key to wildlife record
 const generateActionData = (case_file_guid, actions, wildlife_guid = null)  => {
   return {
     action_guid: faker.datatype.uuid(), // Generates a random GUID (UUID)
@@ -61,6 +72,9 @@ const generateActionData = (case_file_guid, actions, wildlife_guid = null)  => {
   }
 }
 
+// Generates data for the wildlife table
+// Params:
+//    case_file_guid = foreign key to case
 const generateWildlifeData = async (case_file_guid) => {
   return {
     wildlife_guid: faker.datatype.uuid(), 
@@ -79,6 +93,9 @@ const generateWildlifeData = async (case_file_guid) => {
   }
 }
 
+// Generates data for the site table
+// Params:
+//    case_file_guid = foreign key to case
 const generateSiteData = (case_file_guid) => {
   return {
     site_guid:faker.datatype.uuid(), // Generates a random GUID (UUID)
@@ -88,6 +105,9 @@ const generateSiteData = (case_file_guid) => {
   }
 }
 
+// Generates data for the authorization_permit table
+// Params:
+//    case_file_guid = foreign key to case
 const generateAuthorizationData = (case_file_guid) => {
   return {
     authorization_permit_guid: faker.datatype.uuid(), //Generates a random GUID (UUID)
@@ -97,6 +117,10 @@ const generateAuthorizationData = (case_file_guid) => {
   }
 }
 
+// Return specific action_type_action_xref_guids to ensure logical actions being added to case
+// Params:
+//   type = Return only actions of the provided action_type_code
+//   action = Return a specific action type code (e.g. Record Outcome)
 const getActionXrefs = async (type, action = null) => {
   try {
     let query = `
@@ -116,6 +140,12 @@ const getActionXrefs = async (type, action = null) => {
   }
 };
 
+// The main driver method for generating the bulk data
+// Params:
+//     year = prefix for constructing complaint identifier
+//     num = sequence for constructing complaint identifier
+//     type = the type of case data to generate.  Currently supported: HWCR, CEEB
+//     startingSequence = the complaint number to start at.   data will be added incrementally from this value
 const generateBulkData = async (year, num, type, startingSequence) => {
   let cases = [];
 
@@ -174,6 +204,9 @@ const generateBulkData = async (year, num, type, startingSequence) => {
   return cases;
 };
 
+// Bulk inserts HWCR data in the database.   Maximum supported data size is 10,000 records per call
+// Params:
+//   records: all the data
 const insertHWCRData = async (records) => {
   try {
     const currentTimestamp = new Date().toISOString(); // Get the current timestamp
@@ -397,6 +430,9 @@ const insertHWCRData = async (records) => {
   }
 };
 
+// Bulk inserts CEEB data in the database.   Maximum supported data size is 10,000 records per call
+// Params:
+//   records: all the data
 const insertCEEBData = async (records) => {
   try {
     const currentTimestamp = new Date().toISOString(); // Get the current timestamp
@@ -561,6 +597,7 @@ const insertCEEBData = async (records) => {
   }
 };
 
+// Main method.   Exists in order to synchronously handle data dependencies (e.g. make sure cases are inserted first, then wildlife, then everything else.)
 const main = async () => {
   // Adjust these as required.
   // This script assumes requisite complaint data exists and that there are no conflicts in the case management database
