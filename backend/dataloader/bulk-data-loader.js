@@ -1,3 +1,5 @@
+// Instruction for running: from backend directory: node dataloader/bulk-data-loader.js
+// Ensure that parameters in main method are updated as required
 require('dotenv').config();
 const { Client } = require('pg');
 const faker = require('faker');
@@ -204,7 +206,7 @@ const generateBulkData = async (year, num, type, startingSequence) => {
   return cases;
 };
 
-// Bulk inserts HWCR data in the database.   Maximum supported data size is 10,000 records per call
+// Bulk inserts HWCR data in the database.   Maximum supported data size is 4,000 records per call
 // Params:
 //   records: all the data
 const insertHWCRData = async (records) => {
@@ -430,7 +432,7 @@ const insertHWCRData = async (records) => {
   }
 };
 
-// Bulk inserts CEEB data in the database.   Maximum supported data size is 10,000 records per call
+// Bulk inserts CEEB data in the database.   Maximum supported data size is 4,000 records per call
 // Params:
 //   records: all the data
 const insertCEEBData = async (records) => {
@@ -601,11 +603,17 @@ const insertCEEBData = async (records) => {
 const main = async () => {
   // Adjust these as required.
   // This script assumes requisite complaint data exists and that there are no conflicts in the case management database
-  const yearPrefix = 10; // The year prefix of the complaint
-  const startingSequence = 6000 // The complaint sequence number you want to start at
-  const numRecords = 1000; // How many records are being generated
-  const type = 'CEEB'; // The Type of case to generate.   Currently supported: HWCR, CEEB
+  const yearPrefix = 9; // The year prefix of the complaint
+  const startingSequence = 90000 // The complaint sequence number you want to start at
+  const numRecords = 5000; // How many records are being generated.  4K Max
+  const type = 'HWCR'; // The Type of case to generate.   Currently supported: HWCR, CEEB
 
+  // Validate parameters
+  if (numRecords > 4000) {
+    console.log ("Please adjust the numRecords parameter to be less than 4000");
+    client.end();
+    return;
+  }
   // Ensure that the bulk data is generated before starting insertion
   const records = await generateBulkData(yearPrefix, numRecords, type, startingSequence);
   if(type === 'HWCR'){
