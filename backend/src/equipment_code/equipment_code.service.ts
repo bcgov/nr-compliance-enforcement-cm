@@ -16,6 +16,9 @@ export class EquipmentCodeService {
         active_ind: true,
         is_trap_ind: true,
       },
+      orderBy: {
+        display_order: "asc",
+      },
     });
 
     const equipmentCodes: EquipmentCode[] = prismaEquipmentCodes.map((prismaEquipmentCodes) => ({
