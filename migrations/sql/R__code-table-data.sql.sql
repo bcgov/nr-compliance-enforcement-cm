@@ -5599,6 +5599,15 @@ set
 where 
   hwcr_outcome_code = 'LESSLETHAL';
 
+-------------------------
+-- Action Code Updates
+-------------------------
+update case_management.action_code
+set
+  short_description = 'Explained/directed livestock owner to the Wildlife Act',
+  long_description = 'Explained/directed livestock owner to the Wildlife Act'
+where
+  action_code = 'DIRLOWLACT';
 
 --------------------------
 -- New Changes above this line
