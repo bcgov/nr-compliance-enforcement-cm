@@ -5489,6 +5489,127 @@ where
   hwcr_outcome_code = 'DESTRYOTH';
 
 --------------------------
+-- Equipment code updates
+-------------------------
+update case_management.equipment_code
+set
+  active_ind = 'N'
+where
+  equipment_code IN ('BRSNR', 'BRLTR', 'CRFTR', 'CRLTR');
+
+insert into equipment_code (equipment_code, short_description, long_description, display_order, active_ind, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp, is_trap_ind)
+values
+      ('FTRAP', 'Foothold trap', 'Foothold trap', 10, true, 'FLYWAY', now(), 'FLYWAY', now(), 'Y'),
+      ('LTRAP', 'Live trap', 'Live trap', 20, true, 'FLYWAY', now(), 'FLYWAY', now(), 'Y'), 
+      ('LLTHL', 'Less lethal', 'Less lethal', 60, true, 'FLYWAY', now(), 'FLYWAY', now(), 'N'),
+      ('K9UNT', 'K9 unit', 'K9 unit', 70, true, 'FLYWAY', now(), 'FLYWAY', now(), 'N')
+on conflict do nothing; 
+
+update case_management.equipment_code
+set
+  display_order = 30
+where
+  equipment_code = 'NKSNR';
+
+update case_management.equipment_code
+set
+  display_order = 40
+where
+  equipment_code = 'SIGNG';
+
+update case_management.equipment_code
+set
+  display_order = 50
+where
+  equipment_code = 'TRCAM';
+
+
+--------------------------
+-- Outcome code updates
+-------------------------
+
+update case_management.hwcr_outcome_code 
+set
+  short_description = 'Relocated - within home range',
+  long_description = 'Relocated - within home range'
+where 
+  hwcr_outcome_code = 'SHRTRELOC';
+
+update case_management.hwcr_outcome_code 
+set
+  short_description = 'Translocated - outside home range',
+  long_description = 'Translocated - outside home range'
+where 
+  hwcr_outcome_code = 'TRANSLCTD';
+
+update case_management.hwcr_outcome_code 
+set
+  short_description = 'Euthanized by other',
+  long_description = 'Euthanized by other'
+where 
+  hwcr_outcome_code = 'EUTHOTH';
+
+update case_management.hwcr_outcome_code 
+set
+  short_description = 'Dispatched by other',
+  long_description = 'Dispatched by other'
+where 
+  hwcr_outcome_code = 'DESTRYOTH';
+
+insert into
+  case_management.hwcr_outcome_code (
+    hwcr_outcome_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+values
+  (
+    'RELSITE',
+    'Released on-site',
+    'Released on-site',
+    65,
+    true,
+    'FLYWAY',
+    now (),
+    'FLYWAY',
+    now ()
+  ),
+    (
+    'NOTRCVD',
+    'Not recovered',
+    'Not recovered',
+    55,
+    true,
+    'FLYWAY',
+    now (),
+    'FLYWAY',
+    now ()
+  ) 
+on conflict do nothing;
+
+update case_management.hwcr_outcome_code
+set
+  active_ind = 'N'
+where 
+  hwcr_outcome_code = 'LESSLETHAL';
+
+-------------------------
+-- Action Code Updates
+-------------------------
+update case_management.action_code
+set
+  short_description = 'Explained/directed livestock owner to the Wildlife Act',
+  long_description = 'Explained/directed livestock owner to the Wildlife Act'
+where
+  action_code = 'DIRLOWLACT';
+
+--------------------------
 -- New Changes above this line
 -------------------------
 UPDATE case_management.configuration
