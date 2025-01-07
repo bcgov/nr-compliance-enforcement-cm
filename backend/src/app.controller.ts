@@ -16,4 +16,9 @@ export class AppController {
       return Promise.resolve(result);
     } else throw new HttpException("Unable to connect to database", 503);
   }
+  @Get()
+  @Public()
+  getHello(): string {
+    return this.appService.getHello();
+  }
 }

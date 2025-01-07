@@ -5,6 +5,10 @@ import { PrismaService } from "nestjs-prisma";
 export class AppService {
   constructor(private readonly prisma: PrismaService) {}
 
+  getHello(): string {
+    return "Hello from Emerald!";
+  }
+
   async getDBHealthCheck(): Promise<string> {
     try {
       await this.prisma.$queryRaw`SELECT 1`;
