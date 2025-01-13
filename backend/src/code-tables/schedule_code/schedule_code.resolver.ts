@@ -11,7 +11,7 @@ export class ScheduleCodeResolver {
   constructor(private readonly service: ScheduleCodeService) {}
 
   @Query("scheduleCodes")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   findAll() {
     return this.service.findAll();
   }

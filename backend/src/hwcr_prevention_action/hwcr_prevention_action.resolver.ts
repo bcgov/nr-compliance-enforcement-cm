@@ -12,7 +12,7 @@ export class HWCRPreventionActionResolver {
   constructor(private readonly actionCodeService: ActionCodeService) {}
 
   @Query("HWCRPreventionActions")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   find() {
     return this.actionCodeService.findAllCodesByType(ACTION_TYPE_CODES.COSPRVANDEDU);
   }

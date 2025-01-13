@@ -11,7 +11,7 @@ export class NonComplianceCodeResolver {
   constructor(private readonly service: NonComplianceCodeService) {}
 
   @Query("nonComplianceCodes")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   findAll() {
     return this.service.findAll();
   }

@@ -11,7 +11,7 @@ export class AgencyCodeResolver {
   constructor(private readonly agencyCodeService: AgencyCodeService) {}
 
   @Query("agencyCodes")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   findAll() {
     return this.agencyCodeService.findAll();
   }

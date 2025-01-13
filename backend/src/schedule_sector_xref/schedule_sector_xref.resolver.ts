@@ -12,7 +12,7 @@ export class ScheduleSectorXrefResolver {
   constructor(private readonly service: ScheduleSectorXrefService) {}
 
   @Query("scheduleSectorXrefs")
-  @Roles(Role.CEEB, Role.COS_OFFICER)
+  @Roles(Role.CEEB, Role.COS)
   findAll() {
     return this.service.findAll();
   }

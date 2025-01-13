@@ -11,7 +11,7 @@ export class DischargeCodeResolver {
   constructor(private readonly service: DischargeCodeService) {}
 
   @Query("dischargeCodes")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   findAll() {
     return this.service.findAll();
   }
