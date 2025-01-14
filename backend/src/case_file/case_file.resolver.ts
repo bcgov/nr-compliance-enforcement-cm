@@ -26,109 +26,109 @@ export class CaseFileResolver {
   constructor(private readonly caseFileService: CaseFileService) {}
 
   @Mutation("createAssessment")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS)
   createAssessment(@Args("createAssessmentInput") createAssessmentInput: CreateAssessmentInput) {
     return this.caseFileService.createAssessment(createAssessmentInput);
   }
 
   @Mutation("createPrevention")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS)
   createPrevention(@Args("createPreventionInput") createPreventionInput: CreatePreventionInput) {
     return this.caseFileService.createPrevention(createPreventionInput);
   }
 
   @Mutation("createReview")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS)
   createReview(@Args("reviewInput") reviewInput: ReviewInput) {
     return this.caseFileService.createReview(reviewInput);
   }
 
   @Query("getCaseFile")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   findOne(@Args("caseIdentifier") caseIdentifier: string) {
     return this.caseFileService.findOne(caseIdentifier);
   }
 
   @Query("getCaseFileByLeadId")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   findOneByLeadId(@Args("leadIdentifier") leadIdentifier: string) {
     return this.caseFileService.findOneByLeadId(leadIdentifier);
   }
 
   @Query("getCasesFilesBySearchString")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   findManyBySearchString(@Args("searchString") searchString: string) {
     return this.caseFileService.findManyBySearchString(searchString);
   }
 
   @Mutation("updateAssessment")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS)
   updateAssessment(@Args("updateAssessmentInput") updateAssessmentInput: UpdateAssessmentInput) {
     return this.caseFileService.updateAssessment(updateAssessmentInput.caseIdentifier, updateAssessmentInput);
   }
 
   @Mutation("updatePrevention")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS)
   updatePrevention(@Args("updatePreventionInput") updatePreventionInput: UpdatePreventionInput) {
     return this.caseFileService.updatePrevention(updatePreventionInput.caseIdentifier, updatePreventionInput);
   }
 
   @Mutation("createEquipment")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS)
   createEquipment(@Args("createEquipmentInput") createEquipmentInput: CreateEquipmentInput) {
     return this.caseFileService.createEquipment(createEquipmentInput);
   }
 
   @Mutation("updateEquipment")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS)
   updateEquipment(@Args("updateEquipmentInput") updateEquipmentInput: UpdateEquipmentInput) {
     return this.caseFileService.updateEquipment(updateEquipmentInput);
   }
 
   @Mutation("deleteEquipment")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS)
   deleteEquipment(@Args("deleteEquipmentInput") deleteEquipmentInput: DeleteEquipmentInput) {
     return this.caseFileService.deleteEquipment(deleteEquipmentInput);
   }
 
   @Mutation("updateReview")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS)
   updateReview(@Args("reviewInput") reviewInput: ReviewInput) {
     return this.caseFileService.updateReview(reviewInput);
   }
 
   @Mutation("createNote")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   createNote(@Args("input") input: CreateSupplementalNoteInput) {
     return this.caseFileService.createNote(input);
   }
 
   @Mutation("updateNote")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   updateNote(@Args("input") input: UpdateSupplementalNoteInput) {
     return this.caseFileService.updateNote(input);
   }
 
   @Mutation("deleteNote")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   deleteNote(@Args("input") input: DeleteSupplementalNoteInput) {
     return this.caseFileService.deleteNote(input);
   }
 
   @Mutation("createWildlife")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS)
   createWildlife(@Args("input") input: CreateWildlifeInput) {
     return this.caseFileService.createWildlife(input);
   }
 
   @Mutation("updateWildlife")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS)
   updateWildlife(@Args("input") input: UpdateWildlifeInput) {
     return this.caseFileService.updateWildlife(input);
   }
 
   @Mutation("deleteWildlife")
-  @Roles(Role.COS_OFFICER)
+  @Roles(Role.COS)
   deleteWildlife(@Args("input") input: DeleteWildlifeInput) {
     return this.caseFileService.deleteWildlife(input);
   }

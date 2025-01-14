@@ -11,7 +11,7 @@ export class ConfigurationResolver {
   constructor(private readonly configurationService: ConfigurationService) {}
 
   @Query("configurationCodes")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   findOne(@Args("configurationCode") configurationCode?: string) {
     return this.configurationService.find(configurationCode);
   }

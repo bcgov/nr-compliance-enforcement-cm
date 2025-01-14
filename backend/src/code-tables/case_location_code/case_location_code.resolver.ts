@@ -11,7 +11,7 @@ export class CaseLocationCodeResolver {
   constructor(private readonly service: CaseLocationCodeService) {}
 
   @Query("caseLocationCodes")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   findAll() {
     return this.service.findAll();
   }

@@ -11,7 +11,7 @@ export class EarCodeResolver {
   constructor(private readonly earCodeService: EarCodeService) {}
 
   @Query("earCodes")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   findAll() {
     return this.earCodeService.findAll();
   }

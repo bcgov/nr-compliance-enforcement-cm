@@ -12,13 +12,13 @@ export class HWCRAssessmentActionResolver {
   constructor(private readonly actionCodeService: ActionCodeService) {}
 
   @Query("HWCRAssessmentActions")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   find() {
     return this.actionCodeService.findAllCodesByType(ACTION_TYPE_CODES.COMPASSESS);
   }
 
   @Query("HWCRAssessmentCat1Actions")
-  @Roles(Role.COS_OFFICER, Role.CEEB)
+  @Roles(Role.COS, Role.CEEB)
   findCat1Actions() {
     return this.actionCodeService.findAllCodesByType(ACTION_TYPE_CODES.CAT1ASSESS);
   }
