@@ -62,4 +62,4 @@ services:
     working_dir: "/app"
     depends_on:
       migrations:
-        condition: service_started
+        condition: service_completed_successfully

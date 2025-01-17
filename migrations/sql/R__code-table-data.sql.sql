@@ -5523,6 +5523,22 @@ set
 where
   equipment_code = 'TRCAM';
 
+INSERT INTO
+  equipment_code (equipment_code, short_description, long_description, display_order, active_ind, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
+VALUES
+  ('SNR', 'Snare', 'Snare', 5, true, 'FLYWAY', now(), 'FLYWAY', now())
+ON conflict do nothing;
+
+UPDATE equipment
+SET
+  equipment_code = 'SNR'
+WHERE
+  equipment_code = 'NKSNR';
+
+DELETE FROM
+  equipment_code
+WHERE
+  equipment_code = 'NKSNR';
 
 --------------------------
 -- Outcome code updates
