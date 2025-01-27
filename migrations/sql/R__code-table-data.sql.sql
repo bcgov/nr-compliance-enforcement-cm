@@ -1869,7 +1869,7 @@ where
   agency_code = 'EPO';
 
 --
--- add new ERS case_code 
+-- add new ERS and GIR case_code
 --
 insert into
   case_management.case_code (
@@ -1892,7 +1892,17 @@ values
     CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT DO NOTHING;
+  ),
+  (
+    'GIR',
+    'General Incident Report',
+    'General Incident Report',
+    true,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+   ) ON CONFLICT DO NOTHING;
 
 --------------------
 -- CE-1054 Schedule Sector XREFs
