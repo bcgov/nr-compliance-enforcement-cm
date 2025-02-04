@@ -5550,6 +5550,14 @@ DELETE FROM
 WHERE
   equipment_code = 'NKSNR';
 
+update equipment_code 
+set 
+  has_quantity_ind = true 
+where 
+  active_ind = true 
+and 
+  equipment_code in ('FTRAP', 'SNR', 'SIGNG', 'TRCAM');
+
 --------------------------
 -- Outcome code updates
 -------------------------
@@ -5643,3 +5651,4 @@ SET
   configuration_value = cast(configuration_value as INTEGER) + 1
 WHERE
   configuration_code = 'CDTABLEVER';
+

@@ -54,6 +54,7 @@ type EquipmentDetails {
   createDate: Date
   actions: [CaseFileAction]
   wasAnimalCaptured: String
+  quantity: Int
 }
 
 type Wildlife {
