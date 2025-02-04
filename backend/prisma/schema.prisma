@@ -373,7 +373,7 @@ model equipment {
   update_user_id                                          String                   @db.VarChar(32)
   update_utc_timestamp                                    DateTime                 @db.Timestamp(6)
   was_animal_captured                                     String                   @default("U") @db.Char(1)
-  quantity                                                Int                      @default(1) @db.SmallInt
+  quantity                                                Int?                     @db.SmallInt
   action                                                  action[]
   equipment_code_equipment_equipment_codeToequipment_code equipment_code?          @relation("equipment_equipment_codeToequipment_code", fields: [equipment_code], references: [equipment_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_equipment__equipment_code")
 }
