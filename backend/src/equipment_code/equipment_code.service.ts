@@ -15,6 +15,7 @@ export class EquipmentCodeService {
         display_order: true,
         active_ind: true,
         is_trap_ind: true,
+        has_quantity_ind: true,
       },
       orderBy: {
         display_order: "asc",
@@ -28,6 +29,7 @@ export class EquipmentCodeService {
       displayOrder: prismaEquipmentCodes.display_order,
       activeIndicator: prismaEquipmentCodes.active_ind,
       isTrapIndicator: prismaEquipmentCodes.is_trap_ind,
+      hasQuantityIndicator: prismaEquipmentCodes.has_quantity_ind,
     }));
 
     return equipmentCodes;

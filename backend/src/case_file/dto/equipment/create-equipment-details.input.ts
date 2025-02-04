@@ -8,4 +8,5 @@ export interface CreateEquipmentDetailsInput {
   equipmentTypeActiveIndicator: boolean;
   actions: EquipmentActionItem[];
   wasAnimalCaptured: string;
+  quantity?: number;
 }

@@ -12,4 +12,5 @@ export class Equipment {
   createDate: Date;
   actions: CaseFileAction[];
   wasAnimalCaptured: string;
+  quantity?: number;
 }

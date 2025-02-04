@@ -1420,6 +1420,7 @@ export class CaseFileService {
           equipment_code: createEquipmentInput.equipment[0].typeCode,
           equipment_location_desc: createEquipmentInput.equipment[0].address,
           was_animal_captured: createEquipmentInput.equipment[0].wasAnimalCaptured,
+          quantity: createEquipmentInput.equipment[0].quantity,
           // exclude equipment_geometry_point because prisma can't handle this =gracefully
         };
 
@@ -1528,6 +1529,7 @@ export class CaseFileService {
           equipment_location_desc: equipmentRecord.address,
           active_ind: equipmentRecord.actionEquipmentTypeActiveIndicator,
           was_animal_captured: equipmentRecord.wasAnimalCaptured,
+          quantity: equipmentRecord.quantity,
         };
 
         // Update the equipment record
@@ -1678,6 +1680,7 @@ export class CaseFileService {
             equipment_location_desc: true,
             create_utc_timestamp: true,
             was_animal_captured: true,
+            quantity: true,
             equipment_code_equipment_equipment_codeToequipment_code: {
               select: {
                 short_description: true,
@@ -1757,6 +1760,7 @@ export class CaseFileService {
             createDate: create_utc_timestamp,
             actions: [],
             wasAnimalCaptured: equipment.was_animal_captured,
+            quantity: equipment.quantity,
           } as Equipment);
 
         // Append the action to this equipment's list of actions

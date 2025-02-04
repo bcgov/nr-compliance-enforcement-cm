@@ -5,6 +5,7 @@ type EquipmentCode {
   displayOrder: Int
   activeIndicator: Boolean
   isTrapIndicator: Boolean
+  hasQuantityIndicator: Boolean
 }
 
 type Query {
