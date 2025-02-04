@@ -5556,7 +5556,7 @@ set
 where 
   active_ind = true 
 and 
-  equipment_code in ('FTRAP', 'SNR', 'SIGNG', 'TRCAM');
+  equipment_code in ('FTRAP', 'SNR', 'SIGNG', 'TRCAM', 'LTRAP');
 
 --------------------------
 -- Outcome code updates
