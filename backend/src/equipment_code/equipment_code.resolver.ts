@@ -1,5 +1,5 @@
 import { Resolver, Query } from "@nestjs/graphql";
-import { Role } from "../enum/role.enum";
+import { coreRoles } from "../enum/role.enum";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/jwtauth.guard";
@@ -12,7 +12,7 @@ export class EquipmentCodeResolver {
   constructor(private readonly equipmentCodeService: EquipmentCodeService) {}
 
   @Query("equipmentCodes")
-  @Roles(Role.COS, Role.CEEB)
+  @Roles(coreRoles)
   findAll() {
     return this.equipmentCodeService.findAll();
   }
