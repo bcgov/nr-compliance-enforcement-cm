@@ -507,6 +507,7 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="update_user_id" nullable="false" remarks="The id of the user that updated the equipment record." size="32" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="update_utc_timestamp" nullable="false" remarks="The timestamp when the equipment record was updated.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="'U'::bpchar" digits="0" id="9" name="was_animal_captured" nullable="false" remarks="Indicates if an animal was captured by the EQUIPMENT. Values are limited to 'Y' (Yes) 'N' (No) and 'U' (Unknown - Not Specified Yet). The default is 'U'" size="1" type="bpchar" typeCode="1"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="quantity" nullable="true" remarks="Indicates the number of EQUIPMENT used. Values should be a positive integer or null if not applicable." size="5" type="int2" typeCode="5"/>
          <primaryKey column="equipment_guid" sequenceNumberInPK="1"/>
          <index name="PK_equipment_guid" unique="true">
             <column ascending="true" name="equipment_guid"/>
@@ -525,6 +526,7 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="update_user_id" nullable="false" remarks="The id of the user that updated the equipment type." size="32" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="update_utc_timestamp" nullable="false" remarks="The timestamp when the equipment type was updated.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
          <column autoUpdated="false" defaultValue="true" digits="0" id="9" name="is_trap_ind" nullable="false" remarks="Indicates if the EQUIPMENT_CODE value represents a trap.   Default to 'true'.   For EQUIPMENT_CODE values such as Signage or Trail cameras the value is 'false'" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="false" digits="0" id="10" name="has_quantity_ind" nullable="false" remarks="Indicates if the type of equipment allows a quantity to be speciofied.   Default to 'false'." size="1" type="bool" typeCode="-7"/>
          <primaryKey column="equipment_code" sequenceNumberInPK="1"/>
          <index name="PK_equipmntcd" unique="true">
             <column ascending="true" name="equipment_code"/>
