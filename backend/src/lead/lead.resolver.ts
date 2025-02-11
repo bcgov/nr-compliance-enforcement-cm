@@ -17,7 +17,7 @@ export class LeadResolver {
   }
 
   @Query("getLeadsByOutcomeAnimal")
-  @Roles(Role.COS)
+  @Roles(Role.COS, Role.PARKS)
   findLeadsByOutcomeAnimal(
     @Args("outcomeAnimalCode") outcomeAnimalCode: string,
     @Args("startDate") startDate: string,

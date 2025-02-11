@@ -3,7 +3,7 @@ import { UseGuards } from "@nestjs/common";
 import { ScheduleCodeService } from "./schedule_code.service";
 import { JwtRoleGuard } from "src/auth/jwtrole.guard";
 import { Roles } from "src/auth/decorators/roles.decorator";
-import { Role } from "src/enum/role.enum";
+import { coreRoles } from "src/enum/role.enum";
 
 @UseGuards(JwtRoleGuard)
 @Resolver("ScheduleCode")
@@ -11,7 +11,7 @@ export class ScheduleCodeResolver {
   constructor(private readonly service: ScheduleCodeService) {}
 
   @Query("scheduleCodes")
-  @Roles(Role.COS, Role.CEEB)
+  @Roles(coreRoles)
   findAll() {
     return this.service.findAll();
   }
