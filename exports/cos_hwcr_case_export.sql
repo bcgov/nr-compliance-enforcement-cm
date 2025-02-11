@@ -2,7 +2,7 @@
 -- Monthly HWCR Case Export query to be run for COS statistics
 -- see https://github.com/bcgov/nr-compliance-enforcement-cm/wiki/Data-Exports for more information
 -----------------------------------------------------
-select 
+select distinct
 	le.lead_identifier as "Complaint Identifer",
 	case 
         	when cf.attended_ind is true then 'Yes'
@@ -15,17 +15,19 @@ select
        		else 'Unknown' 
 	end as "Action Required",
 	wl.species_code as "Species",
-    case
-        when wlh.data_after_executed_operation ->> 'species_code' != wl.species_code THEN 'YES!'
+	case
+        when wlh.data_after_executed_operation ->> 'species_code' != wl.species_code THEN 
+        	wlh.data_after_executed_operation ->> 'species_code'
         else ''
-    END AS "Was species changed?",
+    END AS "Original Species",
 	ac.short_description as "Age",
 	hoc.short_description as "Outcome",
 	oat.action_date as "Outcome Date",
 	case
-     when wlh.data_after_executed_operation ->> 'hwcr_outcome_code' != wl.hwcr_outcome_code THEN 'YES!'
+    when wlh.data_after_executed_operation ->> 'hwcr_outcome_code' != wl.hwcr_outcome_code THEN 
+		prv_hoc.short_description
     else ''
-    END AS "Was outcome changed?",
+    END AS "Original Outcome",
 	case 
         	when eat.was_animal_captured = 'N' then 'Yes'
 	        else 'No'
@@ -48,6 +50,8 @@ left join case_management.age_code ac on
 	ac.age_code = wl.age_code
 left join case_management.hwcr_outcome_code hoc on
 	hoc.hwcr_outcome_code = wl.hwcr_outcome_code
+left join case_management.hwcr_outcome_code prv_hoc on
+	prv_hoc.hwcr_outcome_code = wlh.data_after_executed_operation ->> 'hwcr_outcome_code' 
 left join ( -- wildlife actions
 	select 
 		action_date, 
