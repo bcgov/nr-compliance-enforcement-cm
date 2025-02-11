@@ -5,6 +5,11 @@
 select 
 	le.lead_identifier as "Complaint Identifer",
 	case 
+        	when cf.attended_ind is true then 'Yes'
+        	when cf.attended_ind  is false then 'No'
+       		else 'Unknown' 
+	end as "Attended",
+	case 
         	when cf.action_not_required_ind  is true then 'No'
         	when cf.action_not_required_ind  is false then 'Yes'
        		else 'Unknown' 
