@@ -101,6 +101,6 @@ left join ( -- Advide Provided
 		case_guid
 ) pat on 
 	pat.case_guid = cf.case_file_guid 
-  where cf.owned_by_agency_code  = 'COS'
+  where cf.owned_by_agency_code  = 'COS' and cf.case_code in ('HWCR', 'ERS')
 	order by 
 	le.lead_identifier asc
