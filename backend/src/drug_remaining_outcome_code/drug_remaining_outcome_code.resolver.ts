@@ -1,8 +1,8 @@
-import { Resolver, Query, Args } from "@nestjs/graphql";
+import { Resolver, Query } from "@nestjs/graphql";
 import { DrugRemainingOutcomeCodeService } from "./drug_remaining_outcome_code.service";
 import { JwtRoleGuard } from "../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
-import { Role } from "../enum/role.enum";
+import { coreRoles } from "../enum/role.enum";
 import { Roles } from "../auth/decorators/roles.decorator";
 
 @UseGuards(JwtRoleGuard)
@@ -11,7 +11,7 @@ export class DrugRemainingOutcomeCodeResolver {
   constructor(private readonly drugRemainingOutcomeCodeService: DrugRemainingOutcomeCodeService) {}
 
   @Query("drugRemainingOutcomeCodes")
-  @Roles(Role.COS, Role.CEEB)
+  @Roles(coreRoles)
   findAll() {
     return this.drugRemainingOutcomeCodeService.findAll();
   }
