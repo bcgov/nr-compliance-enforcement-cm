@@ -4,6 +4,9 @@ on:
   pull_request:
     types: [closed]
 
+env:
+  GITOPS_REPO_BRANCH: feat/new-pipeline # TODO: change back to main when ready
+
 concurrency:
   # PR open and close use the same group, allowing only one at a time
   group: pr-${{ github.workflow }}-${{ github.event.number }}
@@ -32,9 +35,8 @@ jobs:
         shell: bash
         run: |
           PR_NUMBER=$(echo ${{ github.event.number }})
-          PR_NUMBER_MOD_FIVE=$(($PR_NUMBER % 5))
-          echo "DEPLOYMENT_NUMBER=$(($PR_NUMBER_MOD_FIVE + 1))" >> $GITHUB_OUTPUT
-
+          PR_NUMBER_MOD_TEN=$(($PR_NUMBER % 10))
+          echo "DEPLOYMENT_NUMBER=$(($PR_NUMBER_MOD_TEN))" >> $GITHUB_OUTPUT
 
       - name: Configure git
         # From https://github.com/orgs/community/discussions/26560#discussioncomment-3531273
@@ -43,15 +45,26 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-      - name: Update image tag And Enable it for deployment
+      - name: Include new infrastructure changes on merge
+        # in addition to new infra changes, we also update the base image tag
+        # so that our next test release will use the tag from this PR
+        #
+        # why do this instead of promoting the tag out of the PR? In the event we have 10+
+        # PRs open after the last release merge, we could promote an invalid build #
+        if: ${{ github.event.pull_request.merged == true }}
         run: |
           DEPLOYMENT_NUMBER=${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}
-          cd charts/nr-compliance-enforcement-cm
-          yq eval '.global.enabled=false' -i values-"$DEPLOYMENT_NUMBER".yaml
+          ./.github/scripts/gitops.sh updatebase dev-$DEPLOYMENT_NUMBER
+          ./.github/scripts/gitops.sh tag base ${{ github.event.number }}
 
-      - name: Commit and push update
-        shell: bash
+      - name: Disable dev environment
         run: |
-          git commit -am "removing the deployment and disable it for values-${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}.yaml"
-          git push origin main
+          DEPLOYMENT_NUMBER=${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}
+          ./.github/scripts/gitops.sh disable dev-$DEPLOYMENT_NUMBER
+    
+      - name: Commit and push update
+        run: |
+          DEPLOYMENT_NUMBER=${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}
+          ./.github/scripts/gitops.sh commit dev-$DEPLOYMENT_NUMBER
+          git push origin ${{ env.GITOPS_REPO_BRANCH }}
 

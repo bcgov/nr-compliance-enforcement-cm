@@ -1,0 +1,57 @@
+# name: Merge To Release
+
+# on:
+#   push:
+#     branches: 
+#       - "release/**"
+#       - "!main" # do not trigger on main branch
+#     paths-ignore:
+#       - "*.md"
+#       - ".github/**"
+#       - ".graphics/**"
+#       - "!.github/workflows/**"
+
+# env:
+#     GITOPS_REPO_BRANCH: feat/new-pipeline # TODO: change back to main when ready
+
+# jobs:
+#   vars:
+#     name: Set Variables
+#     outputs:
+#       pr: ${{ steps.pr.outputs.pr }}
+#     runs-on: ubuntu-22.04
+#     timeout-minutes: 1
+#     steps:
+#       # Get PR number for squash merges to release branch
+#       - name: PR Number
+#         id: pr
+#         uses: bcgov-nr/action-get-pr@v0.0.1
+
+#   deploy-test:
+#     name: Deploy (test)
+#     needs: [vars]
+#     environment: test
+#     runs-on: ubuntu-22.04
+#     steps:
+#       - name: Checkout CD repo
+#         uses: actions/checkout@v4
+#         with:
+#           repository: bcgov-c/tenant-gitops-dc0a4a
+#           ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+#           ref: ${{ env.GITOPS_REPO_BRANCH }}
+#       - name: Configure git
+#         # From https://github.com/orgs/community/discussions/26560#discussioncomment-3531273
+#         run: |
+#           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+#           git config --global user.name "github-actions[bot]"
+#           git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+#       - name: Roll latest changes out to test
+#         run: |
+#           ./.github/scripts/gitops.sh candidate
+#           ./.github/scripts/gitops.sh commit test
+  
+#       - name: Commit and push update
+#         run: |
+#           ./.github/scripts/gitops.sh commit test
+#           git push origin ${{ env.GITOPS_REPO_BRANCH }}
