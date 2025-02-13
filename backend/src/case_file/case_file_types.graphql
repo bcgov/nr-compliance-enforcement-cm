@@ -10,7 +10,7 @@ type CaseFile {
   leadIdentifier: String
   assessmentDetails: Assessment
   preventionDetails: Prevention
-  note: Note
+  notes: [Note]
   equipment: [EquipmentDetails]
   isReviewRequired: Boolean
   reviewComplete: CaseFileAction
@@ -39,8 +39,9 @@ type Prevention {
 }
 
 type Note {
-  note: String!
-  action: CaseFileAction!
+  id: String
+  note: String
+  actions: [CaseFileAction]
 }
 
 type EquipmentDetails {
