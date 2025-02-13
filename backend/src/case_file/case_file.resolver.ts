@@ -4,7 +4,7 @@ import { CreateAssessmentInput, CreateEquipmentInput, CreatePreventionInput } fr
 import { UpdateAssessmentInput, UpdateEquipmentInput, UpdatePreventionInput } from "./dto/update-case_file.input";
 import { JwtRoleGuard } from "../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
-import { Role } from "../enum/role.enum";
+import { Role, coreRoles } from "../enum/role.enum";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { ReviewInput } from "./dto/review-input";
 import { CreateNoteInput } from "./dto/note/create-note.input";
@@ -26,109 +26,109 @@ export class CaseFileResolver {
   constructor(private readonly caseFileService: CaseFileService) {}
 
   @Mutation("createAssessment")
-  @Roles(Role.COS)
+  @Roles(Role.COS, Role.PARKS)
   createAssessment(@Args("createAssessmentInput") createAssessmentInput: CreateAssessmentInput) {
     return this.caseFileService.createAssessment(createAssessmentInput);
   }
 
   @Mutation("createPrevention")
-  @Roles(Role.COS)
+  @Roles(Role.COS, Role.PARKS)
   createPrevention(@Args("createPreventionInput") createPreventionInput: CreatePreventionInput) {
     return this.caseFileService.createPrevention(createPreventionInput);
   }
 
   @Mutation("createReview")
-  @Roles(Role.COS)
+  @Roles(Role.COS, Role.PARKS)
   createReview(@Args("reviewInput") reviewInput: ReviewInput) {
     return this.caseFileService.createReview(reviewInput);
   }
 
   @Query("getCaseFile")
-  @Roles(Role.COS, Role.CEEB)
+  @Roles(coreRoles)
   findOne(@Args("caseIdentifier") caseIdentifier: string) {
     return this.caseFileService.findOne(caseIdentifier);
   }
 
   @Query("getCaseFileByLeadId")
-  @Roles(Role.COS, Role.CEEB)
+  @Roles(coreRoles)
   findOneByLeadId(@Args("leadIdentifier") leadIdentifier: string) {
     return this.caseFileService.findOneByLeadId(leadIdentifier);
   }
 
   @Query("getCasesFilesBySearchString")
-  @Roles(Role.COS, Role.CEEB)
+  @Roles(coreRoles)
   findManyBySearchString(@Args("searchString") searchString: string) {
     return this.caseFileService.findManyBySearchString(searchString);
   }
 
   @Mutation("updateAssessment")
-  @Roles(Role.COS)
+  @Roles(Role.COS, Role.PARKS)
   updateAssessment(@Args("updateAssessmentInput") updateAssessmentInput: UpdateAssessmentInput) {
     return this.caseFileService.updateAssessment(updateAssessmentInput.caseIdentifier, updateAssessmentInput);
   }
 
   @Mutation("updatePrevention")
-  @Roles(Role.COS)
+  @Roles(Role.COS, Role.PARKS)
   updatePrevention(@Args("updatePreventionInput") updatePreventionInput: UpdatePreventionInput) {
     return this.caseFileService.updatePrevention(updatePreventionInput.caseIdentifier, updatePreventionInput);
   }
 
   @Mutation("createEquipment")
-  @Roles(Role.COS)
+  @Roles(Role.COS, Role.PARKS)
   createEquipment(@Args("createEquipmentInput") createEquipmentInput: CreateEquipmentInput) {
     return this.caseFileService.createEquipment(createEquipmentInput);
   }
 
   @Mutation("updateEquipment")
-  @Roles(Role.COS)
+  @Roles(Role.COS, Role.PARKS)
   updateEquipment(@Args("updateEquipmentInput") updateEquipmentInput: UpdateEquipmentInput) {
     return this.caseFileService.updateEquipment(updateEquipmentInput);
   }
 
   @Mutation("deleteEquipment")
-  @Roles(Role.COS)
+  @Roles(Role.COS, Role.PARKS)
   deleteEquipment(@Args("deleteEquipmentInput") deleteEquipmentInput: DeleteEquipmentInput) {
     return this.caseFileService.deleteEquipment(deleteEquipmentInput);
   }
 
   @Mutation("updateReview")
-  @Roles(Role.COS)
+  @Roles(Role.COS, Role.PARKS)
   updateReview(@Args("reviewInput") reviewInput: ReviewInput) {
     return this.caseFileService.updateReview(reviewInput);
   }
 
   @Mutation("createNote")
-  @Roles(Role.COS, Role.CEEB)
+  @Roles(coreRoles)
   createNote(@Args("input") input: CreateNoteInput) {
     return this.caseFileService.createNote(input);
   }
 
   @Mutation("updateNote")
-  @Roles(Role.COS, Role.CEEB)
+  @Roles(coreRoles)
   updateNote(@Args("input") input: UpdateNoteInput) {
     return this.caseFileService.updateNote(input);
   }
 
   @Mutation("deleteNote")
-  @Roles(Role.COS, Role.CEEB)
+  @Roles(coreRoles)
   deleteNote(@Args("input") input: DeleteNoteInput) {
     return this.caseFileService.deleteNote(input);
   }
 
   @Mutation("createWildlife")
-  @Roles(Role.COS)
+  @Roles(Role.COS, Role.PARKS)
   createWildlife(@Args("input") input: CreateWildlifeInput) {
     return this.caseFileService.createWildlife(input);
   }
 
   @Mutation("updateWildlife")
-  @Roles(Role.COS)
+  @Roles(Role.COS, Role.PARKS)
   updateWildlife(@Args("input") input: UpdateWildlifeInput) {
     return this.caseFileService.updateWildlife(input);
   }
 
   @Mutation("deleteWildlife")
-  @Roles(Role.COS)
+  @Roles(Role.COS, Role.PARKS)
   deleteWildlife(@Args("input") input: DeleteWildlifeInput) {
     return this.caseFileService.deleteWildlife(input);
   }

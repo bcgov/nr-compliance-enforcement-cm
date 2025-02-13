@@ -1,8 +1,8 @@
-import { Resolver, Query, Args } from "@nestjs/graphql";
+import { Resolver, Query } from "@nestjs/graphql";
 import { HwcrOutcomeCodeService } from "./hwcr_outcome_code.service";
 import { JwtRoleGuard } from "../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
-import { Role } from "../enum/role.enum";
+import { coreRoles } from "../enum/role.enum";
 import { Roles } from "../auth/decorators/roles.decorator";
 
 @UseGuards(JwtRoleGuard)
@@ -11,7 +11,7 @@ export class HwcrOutcomeCodeResolver {
   constructor(private readonly hwcrOutcomeCodeService: HwcrOutcomeCodeService) {}
 
   @Query("hwcrOutcomeCodes")
-  @Roles(Role.COS, Role.CEEB)
+  @Roles(coreRoles)
   findAll() {
     return this.hwcrOutcomeCodeService.findAll();
   }
