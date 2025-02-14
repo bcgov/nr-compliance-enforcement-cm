@@ -1,4 +1,4 @@
-export class CreateSupplementalNoteInput {
+export class CreateNoteInput {
   leadIdentifier: string;
   agencyCode: string;
   caseCode: string;

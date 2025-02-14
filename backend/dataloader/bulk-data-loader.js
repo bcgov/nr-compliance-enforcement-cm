@@ -22,7 +22,6 @@ const generateHWCRCaseData = () => {
     case_code: 'HWCR',
     owned_by_agency_code: 'COS',
     action_not_required_ind: action_not_required_ind,
-    note_text: null, // not implmented
     review_required_ind: null // not implemented
   }
 
@@ -232,7 +231,6 @@ const insertHWCRData = async (records) => {
         caseFile.case.owned_by_agency_code,
         caseFile.case.inaction_reason_code,
         caseFile.case.action_not_required_ind,
-        caseFile.case.note_text,
         caseFile.case.review_required_ind,
         caseFile.case.complainant_contacted_ind,
         caseFile.case.attended_ind,
@@ -320,7 +318,6 @@ const insertHWCRData = async (records) => {
           owned_by_agency_code, 
           inaction_reason_code, 
           action_not_required_ind, 
-          note_text, 
           review_required_ind, 
           complainant_contacted_ind, 
           attended_ind, 
@@ -457,7 +454,6 @@ const insertCEEBData = async (records) => {
         caseFile.case.owned_by_agency_code,
         caseFile.case.inaction_reason_code,
         caseFile.case.action_not_required_ind,
-        caseFile.case.note_text,
         caseFile.case.review_required_ind,
         caseFile.case.complainant_contacted_ind,
         caseFile.case.attended_ind,
@@ -520,7 +516,6 @@ const insertCEEBData = async (records) => {
           owned_by_agency_code, 
           inaction_reason_code, 
           action_not_required_ind, 
-          note_text, 
           review_required_ind, 
           complainant_contacted_ind, 
           attended_ind, 

@@ -4,9 +4,10 @@ import { UpdateAssessmentInput, UpdateEquipmentInput, UpdatePreventionInput } fr
 import { PrismaService } from "nestjs-prisma";
 import { CaseFile } from "./entities/case_file.entity";
 import { GraphQLError } from "graphql";
-import { CreateSupplementalNoteInput } from "./dto/supplemental-note/create-supplemental-note.input";
 import { ACTION_CODES } from "../common/action_codes";
-import { UpdateSupplementalNoteInput } from "./dto/supplemental-note/update-supplemental-note.input";
+import { CreateNoteInput } from "./dto/note/create-note.input";
+import { UpdateNoteInput } from "./dto/note/update-note.input";
+import { DeleteNoteInput } from "./dto/note/delete-note.input";
 import { ACTION_TYPE_CODES } from "../common/action_type_codes";
 import { ReviewInput } from "./dto/review-input";
 import { CaseFileActionService } from "../case_file_action/case_file_action.service";
@@ -14,7 +15,6 @@ import { Equipment } from "./entities/equipment.entity";
 import { DeleteEquipmentInput } from "./dto/equipment/delete-equipment.input";
 import { action, Prisma, PrismaClient } from "@prisma/client";
 import { DefaultArgs } from "@prisma/client/runtime/library";
-import { DeleteSupplementalNoteInput } from "./dto/supplemental-note/delete-supplemental-note.input";
 import { CreateWildlifeInput } from "./dto/wildlife/create-wildlife-input";
 import { WildlifeInput } from "./dto/wildlife/wildlife-input";
 import { EarTagInput } from "./dto/wildlife/ear-tag-input";
@@ -35,6 +35,7 @@ import { AuthorizationOutcome } from "./entities/authorization-outcome.entity";
 import { UpdateAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/update-authorization-outcome-input";
 import { DeleteAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/delete-authorization-outcome-input";
 import { ActionInput } from "./dto/action-input";
+import { Note } from "./entities/note.entity";
 
 @Injectable()
 export class CaseFileService {
@@ -261,6 +262,7 @@ export class CaseFileService {
 
   findOne = async (id: string): Promise<CaseFile> => {
     const equipmentDetails = await this.findEquipmentDetails(id);
+    const caseNotes = await this.findCaseNotes(id);
     const queryResult = await this.prisma.case_file.findUnique({
       where: {
         case_file_guid: id,
@@ -270,7 +272,6 @@ export class CaseFileService {
         review_required_ind: true,
         action_not_required_ind: true,
         inaction_reason_code: true,
-        note_text: true,
         complainant_contacted_ind: true,
         attended_ind: true,
         case_file__case_location_code: {
@@ -573,12 +574,7 @@ export class CaseFileService {
         : null,
       isReviewRequired: isReviewRequired,
       reviewComplete: reviewCompleteAction ?? null,
-      note: queryResult.note_text
-        ? {
-            note: queryResult.note_text,
-            action: await this.caseFileActionService.findActionByCaseIdAndCaseCode(caseFileId, ACTION_CODES.UPDATENOTE),
-          }
-        : null,
+      notes: caseNotes,
       equipment: equipmentDetails,
       //-- for now wildlife will populate the subject property
       //-- though this may not be the case at a later date
@@ -1182,10 +1178,77 @@ export class CaseFileService {
   }
 
   //----------------------
-  //-- supplemental notes
+  //--  notes
   //----------------------
-  createNote = async (model: CreateSupplementalNoteInput): Promise<CaseFile> => {
-    let caseFileId = "";
+
+  findCaseNotes = async (caseIdentifier: string): Promise<Array<Note>> => {
+    const queryResult = await this.prisma.case_note.findMany({
+      where: {
+        case_file_guid: caseIdentifier,
+        active_ind: true,
+      },
+      select: {
+        case_note_guid: true,
+        case_note: true,
+        update_user_id: true,
+        update_utc_timestamp: true,
+        action: {
+          select: {
+            action_guid: true,
+            actor_guid: true,
+            action_date: true,
+            active_ind: true,
+            action_type_action_xref: {
+              select: {
+                action_code_action_type_action_xref_action_codeToaction_code: {
+                  select: {
+                    action_code: true,
+                    short_description: true,
+                    long_description: true,
+                    active_ind: true,
+                  },
+                  // where active_ind is true
+                },
+              },
+            },
+          },
+          orderBy: {
+            action_date: "asc",
+          },
+        },
+      },
+      orderBy: {
+        create_utc_timestamp: "asc",
+      },
+    });
+
+    const notes: Array<Note> = queryResult.map((note) => {
+      return {
+        id: note.case_note_guid,
+        note: note.case_note,
+        actions: note.action.map((action) => {
+          return {
+            actionId: action.action_guid,
+            actor: action.actor_guid,
+            date: action.action_date,
+            activeIndicator: action.active_ind,
+            actionCode:
+              action.action_type_action_xref.action_code_action_type_action_xref_action_codeToaction_code.action_code,
+            shortDescription:
+              action.action_type_action_xref.action_code_action_type_action_xref_action_codeToaction_code
+                .short_description,
+            longDescription:
+              action.action_type_action_xref.action_code_action_type_action_xref_action_codeToaction_code
+                .long_description,
+          };
+        }),
+      };
+    });
+    return notes;
+  };
+
+  createNote = async (model: CreateNoteInput): Promise<CaseFile> => {
+    let caseIdentifier = "";
 
     try {
       let result: CaseFile;
@@ -1195,66 +1258,55 @@ export class CaseFileService {
         const caseFile = await this.findOneByLeadId(leadIdentifier);
 
         if (caseFile && caseFile?.caseIdentifier) {
-          caseFileId = caseFile.caseIdentifier;
+          caseIdentifier = caseFile.caseIdentifier;
         } else {
           const caseInput: CreateCaseInput = { ...model };
-          caseFileId = await this.createCase(db, caseInput);
+          caseIdentifier = await this.createCase(db, caseInput);
         }
 
-        await this._upsertNote(db, caseFileId, note, actor, createUserId);
+        await this._upsertNote(db, caseIdentifier, note, actor, createUserId);
       });
 
-      result = await this.findOne(caseFileId);
+      result = await this.findOne(caseIdentifier);
 
       return result;
     } catch (error) {
-      this.logger.error("exception: unable to create supplemental note", error);
+      this.logger.error("exception: unable to create  note", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };
 
-  updateNote = async (model: UpdateSupplementalNoteInput): Promise<CaseFile> => {
-    const { caseIdentifier: caseFileId, actor, note, updateUserId, actionId } = model;
+  updateNote = async (model: UpdateNoteInput): Promise<CaseFile> => {
+    const { caseIdentifier, id, actor, note, updateUserId } = model;
 
     try {
       let result: CaseFile;
 
       await this.prisma.$transaction(async (db) => {
-        const caseId = await this._upsertNote(db, caseFileId, note, actor, updateUserId, actionId);
+        await this._upsertNote(db, caseIdentifier, note, actor, updateUserId, id);
 
-        result = await this.findOne(caseId);
+        // Return updated case, not just the note
+        result = await this.findOne(caseIdentifier);
       });
 
       return result;
     } catch (error) {
-      this.logger.error("exception: unable to update supplemental note", error);
+      this.logger.error("exception: unable to update  note", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };
 
-  private _upsertNote = async (
+  private readonly _upsertNote = async (
     db: Omit<
       PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
       "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
     >,
-    caseId: string,
+    caseIdentifier: string,
     note: string,
     actor: string,
     userId: string,
-    actionId: string = "",
+    id: string = "",
   ): Promise<string> => {
-    const _hasAction = async (caseId: string): Promise<boolean> => {
-      const xrefId = await _getNoteActionXref();
-
-      const query = await this.prisma.action.findFirst({
-        where: {
-          case_guid: caseId,
-          action_type_action_xref_guid: xrefId,
-        },
-      });
-      return query !== null;
-    };
-
     const _getNoteActionXref = async (): Promise<string> => {
       const query = await this.prisma.action_type_action_xref.findFirst({
         where: {
@@ -1271,16 +1323,96 @@ export class CaseFileService {
 
     try {
       const current = new Date();
-
-      const hasAction = await _hasAction(caseId);
       const xrefId = await _getNoteActionXref();
 
-      //-- if an action doens't exist for the note create one
-      //-- otherwise update the note action before updating the note
-      if (!hasAction) {
+      // Upsert the note
+      if (!id) {
+        const case_note = await db.case_note.create({
+          data: {
+            case_file_guid: caseIdentifier,
+            case_note: note,
+            create_user_id: userId,
+            create_utc_timestamp: current,
+            update_user_id: userId,
+            update_utc_timestamp: current,
+          },
+        });
+        id = case_note.case_note_guid;
+      } else {
+        await db.case_note.update({
+          where: {
+            case_note_guid: id,
+          },
+          data: {
+            case_note: note,
+            update_user_id: userId,
+            update_utc_timestamp: current,
+          },
+        });
+      }
+
+      // Create the update note action record
+      await db.action.create({
+        data: {
+          case_guid: caseIdentifier,
+          case_note_guid: id,
+          action_type_action_xref_guid: xrefId,
+          actor_guid: actor,
+          active_ind: true,
+          action_date: current,
+          create_user_id: userId,
+          create_utc_timestamp: current,
+          update_user_id: userId,
+          update_utc_timestamp: current,
+        },
+      });
+      return id;
+    } catch (error) {
+      this.logger.error("exception: unable to create  note", error);
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  };
+
+  deleteNote = async (model: DeleteNoteInput): Promise<CaseFile> => {
+    const _getNoteActionXref = async (): Promise<string> => {
+      const query = await this.prisma.action_type_action_xref.findFirst({
+        where: {
+          action_code: ACTION_CODES.UPDATENOTE,
+          action_type_code: ACTION_TYPE_CODES.CASEACTION,
+        },
+        select: {
+          action_type_action_xref_guid: true,
+        },
+      });
+
+      return query.action_type_action_xref_guid;
+    };
+
+    try {
+      const { caseIdentifier, id, updateUserId: userId, actor } = model;
+      const current = new Date();
+      const xrefId = await _getNoteActionXref();
+
+      await this.prisma.$transaction(async (db) => {
+        if (!caseIdentifier) {
+          throw new Error(`Unable to delete note for note id: ${id}`);
+        }
+
+        await db.case_note.update({
+          where: {
+            case_note_guid: id,
+          },
+          data: {
+            active_ind: false,
+            update_user_id: userId,
+            update_utc_timestamp: current,
+          },
+        });
+
         await db.action.create({
           data: {
-            case_guid: caseId,
+            case_guid: caseIdentifier,
+            case_note_guid: id,
             action_type_action_xref_guid: xrefId,
             actor_guid: actor,
             active_ind: true,
@@ -1291,104 +1423,11 @@ export class CaseFileService {
             update_utc_timestamp: current,
           },
         });
-      } else if (hasAction && !actionId) {
-        //-- create a new note when there is an existing action (note was deleted)
-        //-- and there is no actionId
-        const action = await this.prisma.action.findFirst({
-          select: {
-            action_guid: true,
-          },
-          where: {
-            case_guid: caseId,
-            action_type_action_xref_guid: xrefId,
-          },
-        });
-
-        await db.action.update({
-          where: {
-            action_guid: action.action_guid,
-          },
-          data: {
-            actor_guid: actor,
-            active_ind: true,
-            action_date: current,
-            update_user_id: userId,
-            update_utc_timestamp: current,
-          },
-        });
-      } else {
-        await db.action.update({
-          where: {
-            action_guid: actionId,
-          },
-          data: {
-            actor_guid: actor,
-            active_ind: true,
-            action_date: current,
-            update_user_id: userId,
-            update_utc_timestamp: current,
-          },
-        });
-      }
-
-      //-- the system can't create a note as the note is part of the case file
-      //-- this means that the note will always update the case file
-      await db.case_file.update({
-        where: {
-          case_file_guid: caseId,
-        },
-        data: {
-          note_text: note,
-          update_user_id: userId,
-          update_utc_timestamp: current,
-        },
-      });
-
-      return caseId;
-    } catch (error) {
-      this.logger.error("exception: unable to create supplemental note", error);
-      throw new GraphQLError("Exception occurred. See server log for details", {});
-    }
-  };
-
-  deleteNote = async (model: DeleteSupplementalNoteInput): Promise<CaseFile> => {
-    const { caseIdentifier, updateUserId: userId, actor, actionId } = model;
-    const current = new Date();
-
-    try {
-      await this.prisma.$transaction(async (db) => {
-        if (!actionId || !caseIdentifier) {
-          throw new Error(`Unable to delete note for caseIdentifier: ${caseIdentifier}`);
-        }
-
-        await db.case_file.update({
-          where: {
-            case_file_guid: caseIdentifier,
-          },
-          data: {
-            note_text: "",
-            update_user_id: userId,
-            update_utc_timestamp: current,
-          },
-        });
-
-        await db.action.update({
-          where: {
-            action_guid: actionId,
-          },
-          data: {
-            actor_guid: actor,
-            action_date: current,
-            active_ind: false,
-            update_user_id: userId,
-            update_utc_timestamp: current,
-          },
-        });
       });
 
       return await this.findOne(caseIdentifier);
     } catch (error) {
-      this.logger.error("exception: unable to delete supplemental note", error);
+      this.logger.error("exception: unable to delete  note", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   };
@@ -3408,7 +3447,7 @@ export class CaseFileService {
     }
   };
 
-  private _addAction = async (
+  private readonly _addAction = async (
     db: Omit<
       PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
       "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"

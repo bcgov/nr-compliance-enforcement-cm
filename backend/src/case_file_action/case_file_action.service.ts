@@ -83,6 +83,44 @@ export class CaseFileActionService {
     }
   }
 
+  //Used to find the action for a note based on case_note_guid
+  async findActionsByNoteId(id: string) {
+    const actionContext = this.prisma.action;
+
+    try {
+      let actionResult = await actionContext.findMany({
+        where: {
+          case_note_guid: id,
+        },
+        select: {
+          action_guid: true,
+          actor_guid: true,
+          active_ind: true,
+          action_type_action_xref: {
+            select: {
+              action_type_code: true,
+              display_order: true,
+              action_code_action_type_action_xref_action_codeToaction_code: {
+                select: {
+                  action_code: true,
+                  short_description: true,
+                  long_description: true,
+                  active_ind: true,
+                },
+              },
+            },
+          },
+          action_date: true,
+        },
+        orderBy: [{ action_date: "desc" }],
+      });
+
+      return this.mapActionResult(actionResult);
+    } catch (exception) {
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  }
+
   //Used to return the all the actions of a given type for a specific case
   async findActionsByCaseIdAndType(caseId: string, actionTypeCode: string) {
     const actionCodeXrefContext = this.prisma.action_type_action_xref;

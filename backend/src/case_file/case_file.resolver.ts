@@ -7,9 +7,9 @@ import { UseGuards } from "@nestjs/common";
 import { Role, coreRoles } from "../enum/role.enum";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { ReviewInput } from "./dto/review-input";
-import { CreateSupplementalNoteInput } from "./dto/supplemental-note/create-supplemental-note.input";
-import { UpdateSupplementalNoteInput } from "./dto/supplemental-note/update-supplemental-note.input";
-import { DeleteSupplementalNoteInput } from "./dto/supplemental-note/delete-supplemental-note.input";
+import { CreateNoteInput } from "./dto/note/create-note.input";
+import { UpdateNoteInput } from "./dto/note/update-note.input";
+import { DeleteNoteInput } from "./dto/note/delete-note.input";
 import { DeleteEquipmentInput } from "./dto/equipment/delete-equipment.input";
 import { CreateWildlifeInput } from "./dto/wildlife/create-wildlife-input";
 import { DeleteWildlifeInput } from "./dto/wildlife/delete-wildlife-input";
@@ -99,19 +99,19 @@ export class CaseFileResolver {
 
   @Mutation("createNote")
   @Roles(coreRoles)
-  createNote(@Args("input") input: CreateSupplementalNoteInput) {
+  createNote(@Args("input") input: CreateNoteInput) {
     return this.caseFileService.createNote(input);
   }
 
   @Mutation("updateNote")
   @Roles(coreRoles)
-  updateNote(@Args("input") input: UpdateSupplementalNoteInput) {
+  updateNote(@Args("input") input: UpdateNoteInput) {
     return this.caseFileService.updateNote(input);
   }
 
   @Mutation("deleteNote")
   @Roles(coreRoles)
-  deleteNote(@Args("input") input: DeleteSupplementalNoteInput) {
+  deleteNote(@Args("input") input: DeleteNoteInput) {
     return this.caseFileService.deleteNote(input);
   }
 
