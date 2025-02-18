@@ -1,7 +1,12 @@
 name: PR
-
 on:
   pull_request:
+    branches:
+      - "release/**"
+      - "!main"
+
+env:
+  GITOPS_REPO_BRANCH: main
 
 concurrency:
   # Cancel in progress for PR open and close
@@ -30,7 +35,7 @@ jobs:
           package: ${{ matrix.package }}
           tag: ${{ github.event.number }}
           tag_fallback: latest
-          triggers: ('${{ matrix.package }}/')
+          # triggers: ('${{ matrix.package }}/') 
       - uses: shrink/actions-docker-registry-tag@v4
         with:
           registry: ghcr.io
@@ -51,14 +56,15 @@ jobs:
         with:
           repository: bcgov-c/tenant-gitops-dc0a4a
           ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
-          ref: main
+          ref: ${{ env.GITOPS_REPO_BRANCH }}
+
       - name: Calculate Deployment Number
         id: get-deployment-number
         shell: bash
         run: |
           PR_NUMBER=$(echo ${{ github.event.number }})
-          PR_NUMBER_MOD_FIVE=$(($PR_NUMBER % 5))
-          echo "DEPLOYMENT_NUMBER=$(($PR_NUMBER_MOD_FIVE + 1))" >> $GITHUB_OUTPUT
+          PR_NUMBER_MOD_TEN=$(($PR_NUMBER % 10))
+          echo "DEPLOYMENT_NUMBER=$(($PR_NUMBER_MOD_TEN))" >> $GITHUB_OUTPUT
 
       - name: Configure git
         # From https://github.com/orgs/community/discussions/26560#discussioncomment-3531273
@@ -67,20 +73,18 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-      - name: Update image tag And Enable it for deployment
+      - name: Update dev environment tag and enable it for deployment
         run: |
           DEPLOYMENT_NUMBER=${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}
-          cd charts/nr-compliance-enforcement-cm
-          yq eval '.global.enabled=true' -i values-"$DEPLOYMENT_NUMBER".yaml
-          yq eval '.global.tag="${{ needs.builds.outputs.sha }}"' -i values-"$DEPLOYMENT_NUMBER".yaml
-
+          ./.github/scripts/gitops.sh tag dev-$DEPLOYMENT_NUMBER ${{ needs.builds.outputs.sha }}
+          ./.github/scripts/gitops.sh enable dev-$DEPLOYMENT_NUMBER
 
       - name: Commit and push update
         shell: bash
         run: |
-          git commit -am "Update image tag for pull request deployment and enable it for values-${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}.yaml"
-          git push origin main
-
+          DEPLOYMENT_NUMBER=${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}
+          ./.github/scripts/gitops.sh commitall "Updating dev-$DEPLOYMENT_NUMBER for PR ${{ github.event.number }}"
+          git push origin ${{ env.GITOPS_REPO_BRANCH }}
 
   validate:
     name: Validate
