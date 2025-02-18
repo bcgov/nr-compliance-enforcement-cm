@@ -1,0 +1,50 @@
+name: Dev-triggered GitOps Sync
+
+on:
+  # NOTE: this trigger only fires if the workflow is part of the default branch (main)
+  issue_comment:
+    types: [created, edited]
+
+env:
+    GITOPS_REPO_BRANCH: feat/new-pipeline # TODO: change back to main when ready
+      
+jobs:
+  gitops-sync:
+    name: GitOps Sync Dev Environment
+    if: github.event.issue.pull_request != '' && contains(github.event.comment.body, '/gitops sync')
+    environment: dev
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout CD repo
+        uses: actions/checkout@v4
+        with:
+          repository: bcgov-c/tenant-gitops-dc0a4a
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+          ref: ${{ env.GITOPS_REPO_BRANCH }}
+
+      - name: Calculate Deployment Number
+        id: get-deployment-number
+        shell: bash
+        run: |
+          PR_NUMBER=$(echo ${{ github.event.number }})
+          PR_NUMBER_MOD_TEN=$(($PR_NUMBER % 10))
+          echo "DEPLOYMENT_NUMBER=$(($PR_NUMBER_MOD_TEN))" >> $GITHUB_OUTPUT
+
+      - name: Configure git
+        # From https://github.com/orgs/community/discussions/26560#discussioncomment-3531273
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Update dev environment tag and enable it for deployment
+        run: |
+          DEPLOYMENT_NUMBER=${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}
+          ./.github/scripts/gitops.sh fs dev-$DEPLOYMENT_NUMBER
+
+      - name: Commit and push update
+        shell: bash
+        run: |
+          DEPLOYMENT_NUMBER=${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}
+          ./.github/scripts/gitops.sh commitall "(Force) Syncing dev-$DEPLOYMENT_NUMBER from open PR ${{ github.event.number }}"
+          git push origin ${{ env.GITOPS_REPO_BRANCH }}

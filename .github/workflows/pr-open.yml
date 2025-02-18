@@ -73,7 +73,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-      - name: Update image tag And Enable it for deployment
+      - name: Update dev environment tag and enable it for deployment
         run: |
           DEPLOYMENT_NUMBER=${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}
           ./.github/scripts/gitops.sh tag dev-$DEPLOYMENT_NUMBER ${{ needs.builds.outputs.sha }}
