@@ -90,7 +90,7 @@ input ReviewActionInput {
   activeIndicator: Boolean
 }
 
-input CreateSupplementalNoteInput {
+input CreateNoteInput {
   leadIdentifier: String!
   note: String!
   actor: String!
@@ -99,19 +99,19 @@ input CreateSupplementalNoteInput {
   createUserId: String!
 }
 
-input UpdateSupplementalNoteInput {
+input UpdateNoteInput {
   caseIdentifier: String!
+  id: String!
   note: String!
   actor: String!
   updateUserId: String!
-  actionId: String!
 }
 
-input DeleteSupplementalNoteInput {
+input DeleteNoteInput {
   caseIdentifier: String!
+  id: String!
   actor: String!
   updateUserId: String!
-  actionId: String!
 }
 
 input CreateEquipmentInput {
