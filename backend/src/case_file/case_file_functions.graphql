@@ -14,9 +14,9 @@ type Mutation {
   createReview(reviewInput: ReviewInput!): CaseFile!
   updateReview(reviewInput: ReviewInput!): CaseFile!
 
-  createNote(input: CreateSupplementalNoteInput!): CaseFile!
-  updateNote(input: UpdateSupplementalNoteInput!): CaseFile!
-  deleteNote(input: DeleteSupplementalNoteInput!): CaseFile!
+  createNote(input: CreateNoteInput!): CaseFile!
+  updateNote(input: UpdateNoteInput!): CaseFile!
+  deleteNote(input: DeleteNoteInput!): CaseFile!
 
   createEquipment(createEquipmentInput: CreateEquipmentInput!): CaseFile!
   updateEquipment(updateEquipmentInput: UpdateEquipmentInput!): CaseFile!
