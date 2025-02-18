@@ -14,12 +14,12 @@ select distinct
         	when cf.action_not_required_ind  is false then 'Yes'
        		else 'Unknown' 
 	end as "Action Required",
-	wl.species_code as "Species",
+	wl.species_code as "Outcome Species",
 	case
         when wlh.data_after_executed_operation ->> 'species_code' != wl.species_code THEN 
         	wlh.data_after_executed_operation ->> 'species_code'
         else ''
-    END AS "Original Species",
+    END AS "Original Outcome Species",
 	ac.short_description as "Age",
 	hoc.short_description as "Outcome",
 	oat.action_date as "Outcome Date",
