@@ -28,7 +28,7 @@ jobs:
         with:
           repository: bcgov-c/tenant-gitops-dc0a4a
           ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
-          ref: main
+          ref: ${{ env.GITOPS_REPO_BRANCH }}
 
       - name: Calculate Deployment Number
         id: get-deployment-number
