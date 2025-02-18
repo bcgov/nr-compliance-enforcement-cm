@@ -36,7 +36,7 @@ select distinct
 		when pat.prev_count >= 1 then 'Yes'
 		else 'No' 
 	end as "Advice Provided",
-	cf.note_text 
+	cn.case_note 
 from
 	case_management.lead le
 left join case_management.case_file cf on
@@ -100,7 +100,8 @@ left join ( -- Advide Provided
 	group by
 		case_guid
 ) pat on 
-	pat.case_guid = cf.case_file_guid 
+	pat.case_guid = cf.case_file_guid
+left join case_management.case_note cn on cn.case_file_guid = cf.case_file_guid and cn.active_ind = true
   where cf.owned_by_agency_code  = 'COS' and cf.case_code in ('HWCR', 'ERS')
 	order by 
 	le.lead_identifier asc
