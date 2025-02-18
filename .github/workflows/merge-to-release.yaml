@@ -49,9 +49,15 @@
 #       - name: Roll latest changes out to test
 #         run: |
 #           ./.github/scripts/gitops.sh candidate
-#           ./.github/scripts/gitops.sh commit test
-  
+
+#       - name: Update static (shared) dev environment
+#         # TODO: deprecate this step
+#         run: |
+#           TEST_TAG=$(./.github/scripts/gitops.sh gettag test)
+#             ./.github/scripts/gitops.sh tag static $TEST_TAG
+#           ./.github/scripts/gitops.sh static
+
 #       - name: Commit and push update
 #         run: |
-#           ./.github/scripts/gitops.sh commit test
+#           ./.github/scripts/gitops.sh commitall "Updating test for PR ${{ needs.vars.outputs.pr }}"
 #           git push origin ${{ env.GITOPS_REPO_BRANCH }}

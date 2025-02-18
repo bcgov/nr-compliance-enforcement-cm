@@ -65,6 +65,6 @@ jobs:
       - name: Commit and push update
         run: |
           DEPLOYMENT_NUMBER=${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}
-          ./.github/scripts/gitops.sh commit dev-$DEPLOYMENT_NUMBER
+          ./.github/scripts/gitops.sh commitall "Disabling dev-$DEPLOYMENT_NUMBER for PR ${{ github.event.number }}"
           git push origin ${{ env.GITOPS_REPO_BRANCH }}
 
