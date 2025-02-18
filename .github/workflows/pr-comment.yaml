@@ -6,7 +6,7 @@ on:
     types: [created, edited]
 
 env:
-    GITOPS_REPO_BRANCH: feat/new-pipeline # TODO: change back to main when ready
+    GITOPS_REPO_BRANCH: main
       
 jobs:
   gitops-sync:
