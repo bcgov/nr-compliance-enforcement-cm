@@ -736,14 +736,18 @@ export class CaseFileService {
                     conflict_history_code: updateAssessmentInput.assessmentDetails.conflictHistory.value,
                   },
                 }
-              : undefined,
+              : {
+                  disconnect: true,
+                },
             case_file__threat_level_code: updateAssessmentInput.assessmentDetails.categoryLevel
               ? {
                   connect: {
                     threat_level_code: updateAssessmentInput.assessmentDetails.categoryLevel.value,
                   },
                 }
-              : undefined,
+              : {
+                  disconnect: true,
+                },
             update_user_id: updateAssessmentInput.updateUserId,
             update_utc_timestamp: new Date(),
           },
@@ -2461,6 +2465,7 @@ export class CaseFileService {
                 remainingUse: drug_remaining_outcome_code,
                 additionalComments: additional_comments_text,
               }) => {
+                drug_remaining_outcome_code = drug_remaining_outcome_code === "" ? null : drug_remaining_outcome_code;
                 await db.drug_administered.update({
                   where: {
                     drug_administered_guid: id,
@@ -3067,6 +3072,15 @@ export class CaseFileService {
           where: { decision_guid: id },
           data,
         });
+
+        if (actionTaken === "") {
+          await db.action.deleteMany({
+            where: {
+              decision_guid: result.decision_guid,
+              case_guid: result.case_file_guid,
+            },
+          });
+        }
 
         return result;
       } catch (exception) {
