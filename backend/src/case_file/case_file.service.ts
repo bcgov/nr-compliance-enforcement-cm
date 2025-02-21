@@ -3064,7 +3064,7 @@ export class CaseFileService {
           discharge_code: discharge,
           rationale_text: rationale,
           non_compliance_decision_matrix_code: nonCompliance,
-          ipm_auth_category_code: ipmAuthCategory,
+          ipm_auth_category_code: ipmAuthCategory !== "" ? ipmAuthCategory : null,
           update_user_id: updateUserId,
           update_utc_timestamp: current,
         };

@@ -4214,7 +4214,7 @@ VALUES
 
 -- END IPM Sector Type
 ------------
--- CE-1065: Update Sector/Category Drop Down values
+-- CE-1065: Update Sector Drop Down values
 ------------
 -- WDR Schedule 2
 update case_management.sector_code
