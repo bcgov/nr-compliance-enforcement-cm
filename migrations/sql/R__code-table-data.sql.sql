@@ -5772,6 +5772,7 @@ INSERT INTO
     ipm_auth_category_code,
     short_description,
     long_description,
+    display_order,
     active_ind,
     create_user_id,
     create_utc_timestamp
@@ -5779,6 +5780,7 @@ INSERT INTO
     'PESVENLIC',
     'Pesticide vendor licence',
     'Pesticide vendor licence',
+    10,
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
@@ -5786,6 +5788,7 @@ INSERT INTO
     'PESUSLICE',
     'Pesticide user service licence',
     'Pesticide user service licence',
+    20,
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
@@ -5793,6 +5796,7 @@ INSERT INTO
     'PESUSNSLC',
     'Pesticide user non-service licence',
     'Pesticide user non-service licence',
+    30,
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
@@ -5800,6 +5804,7 @@ INSERT INTO
     'CONFHOLDR',
     'Confirmation holder',
     'Confirmation holder',
+    40,
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
@@ -5807,6 +5812,7 @@ INSERT INTO
     'PERMHOLDR',
     'Permit holder',
     'Permit holder',
+    50,
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
@@ -5814,6 +5820,7 @@ INSERT INTO
     'OTHERTYPE',
     'Other',
     'Other',
+    60,
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
