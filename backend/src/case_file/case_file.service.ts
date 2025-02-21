@@ -466,6 +466,12 @@ export class CaseFileService {
                   long_description: true,
                 },
               },
+            ipm_auth_category_code_decision_ipm_auth_category_codeToipm_auth_category_code: {
+              select: {
+                ipm_auth_category_code: true,
+                long_description: true,
+              },
+            },
             schedule_sector_xref: {
               select: {
                 schedule_code_schedule_sector_xref_schedule_codeToschedule_code: {
@@ -616,6 +622,11 @@ export class CaseFileService {
           decision[0]
             ?.non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code
             ?.long_description,
+        ipmAuthCategory:
+          decision[0]?.ipm_auth_category_code_decision_ipm_auth_category_codeToipm_auth_category_code
+            ?.ipm_auth_category_code,
+        ipmAuthCategoryLongDescription:
+          decision[0]?.ipm_auth_category_code_decision_ipm_auth_category_codeToipm_auth_category_code?.long_description,
         rationale: decision[0]?.rationale_text,
         assignedTo: action[0]?.actor,
         actionTaken: action[0]?.actionCode,
@@ -2842,7 +2853,7 @@ export class CaseFileService {
       userId: string,
     ): Promise<any> => {
       try {
-        let { discharge, nonCompliance, rationale } = decision;
+        let { discharge, nonCompliance, ipmAuthCategory, rationale } = decision;
 
         //don't try and insert empty into the code tables.
         if (rationale === "" || rationale === undefined) {
@@ -2853,6 +2864,10 @@ export class CaseFileService {
           nonCompliance = null;
         }
 
+        if (ipmAuthCategory === "" || ipmAuthCategory === undefined) {
+          ipmAuthCategory = null;
+        }
+
         let record: any = {
           decision_guid: randomUUID(),
           case_file_guid: caseId,
@@ -2860,6 +2875,7 @@ export class CaseFileService {
           discharge_code: discharge,
           rationale_text: rationale,
           non_compliance_decision_matrix_code: nonCompliance,
+          ipm_auth_category_code: ipmAuthCategory,
           active_ind: true,
           create_user_id: userId,
           update_user_id: userId,
@@ -3041,12 +3057,14 @@ export class CaseFileService {
       current: Date,
     ): Promise<any> => {
       try {
-        const { id, discharge, rationale, nonCompliance, leadAgency, inspectionNumber, actionTaken } = decision;
+        const { id, discharge, rationale, nonCompliance, ipmAuthCategory, leadAgency, inspectionNumber, actionTaken } =
+          decision;
 
         let data: any = {
           discharge_code: discharge,
           rationale_text: rationale,
           non_compliance_decision_matrix_code: nonCompliance,
+          ipm_auth_category_code: ipmAuthCategory !== "" ? ipmAuthCategory : null,
           update_user_id: updateUserId,
           update_utc_timestamp: current,
         };

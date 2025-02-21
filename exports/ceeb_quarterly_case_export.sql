@@ -5,7 +5,7 @@
 select 
 	le.lead_identifier as "Record ID",
 	--sc.long_description as "WDR Schedule/IPM Sector Type",
-	sec.long_description as "Sector/Category",
+	sec.long_description as "Sector",
 	dc.long_description as "Discharge Type",
 	ac.long_description  as "Action Taken",
 	TO_CHAR(((act.action_date at time zone 'UTC') at time zone 'PDT'), 'MM/DD/YYYY') as "Date Action Taken"

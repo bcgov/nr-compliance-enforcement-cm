@@ -108,6 +108,8 @@ type Decision {
   dischargeLongDescription: String
   nonCompliance: String
   nonComplianceLongDescription: String
+  ipmAuthCategory: String
+  ipmAuthCategoryLongDescription: String
   rationale: String
   inspectionNumber: String
   leadAgency: String

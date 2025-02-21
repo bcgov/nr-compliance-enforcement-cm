@@ -243,6 +243,7 @@ input DecisionInput {
   sector: String
   discharge: String
   nonCompliance: String
+  ipmAuthCategory: String
   rationale: String
   inspectionNumber: String
   leadAgency: String
