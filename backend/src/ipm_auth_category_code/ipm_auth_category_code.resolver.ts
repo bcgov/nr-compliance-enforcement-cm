@@ -1,7 +1,7 @@
 import { Query, Resolver } from "@nestjs/graphql";
 import { IpmAuthCategoryCodeService } from "./ipm_auth_category_code.service";
 import { Roles } from "../auth/decorators/roles.decorator";
-import { Role } from "../../src/enum/role.enum";
+import { Role } from "../enum/role.enum";
 
 @Resolver("IpmAuthCategoryCode")
 export class IpmAuthCategoryCodeResolver {
