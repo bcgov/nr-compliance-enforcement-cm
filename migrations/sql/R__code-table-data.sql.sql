@@ -5777,42 +5777,10 @@ INSERT INTO
     create_user_id,
     create_utc_timestamp
   ) VALUES (
-    'PESVENLIC',
-    'Pesticide vendor licence',
-    'Pesticide vendor licence',
-    10,
-    'Y',
-    CURRENT_USER,
-    CURRENT_TIMESTAMP
-  ), (
-    'PESUSLICE',
-    'Pesticide user service licence',
-    'Pesticide user service licence',
-    20,
-    'Y',
-    CURRENT_USER,
-    CURRENT_TIMESTAMP
-  ), (
-    'PESUSNSLC',
-    'Pesticide user non-service licence',
-    'Pesticide user non-service licence',
-    30,
-    'Y',
-    CURRENT_USER,
-    CURRENT_TIMESTAMP
-  ), (
     'CONFHOLDR',
     'Confirmation holder',
     'Confirmation holder',
-    40,
-    'Y',
-    CURRENT_USER,
-    CURRENT_TIMESTAMP
-  ), (
-    'PERMHOLDR',
-    'Permit holder',
-    'Permit holder',
-    50,
+    10,
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
@@ -5820,6 +5788,38 @@ INSERT INTO
     'OTHERTYPE',
     'Other',
     'Other',
+    20,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ), (
+    'PERMHOLDR',
+    'Permit holder',
+    'Permit holder',
+    30,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ), (
+    'PESUSNSLC',
+    'Pesticide user non-service licence',
+    'Pesticide user non-service licence',
+    40,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ), (
+    'PESUSLICE',
+    'Pesticide user service licence',
+    'Pesticide user service licence',
+    50,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ), (
+    'PESVENLIC',
+    'Pesticide vendor licence',
+    'Pesticide vendor licence',
     60,
     'Y',
     CURRENT_USER,
