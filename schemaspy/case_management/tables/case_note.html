@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>wildlife - default.case_management</title>
+        <title>case_note - default.case_management</title>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <link rel="icon" type="image/png" sizes="16x16" href="../favicon.png">
@@ -73,20 +73,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>wildlife</h1><p><span id="recordNumber">-1</span> rows</p><br />
-                    <div class="box box-primary">
-                        <div class="box-header with-border">
-                            <i class="fa fa-file-text-o"></i>
-                            <h3 id="Description" class="box-title">Description</h3>
-                            <div class="box-tools pull-right">
-                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                            </div>
-                        </div><!-- /.box-header -->
-                        <div class="box-body clearfix">
-                            <p>WILDLIFE can be a participant on a CASE_FILE, specifically for CASE_FILE with a CASE_CODE of &ldquo;HWCR&rdquo; (Human / Wildlife Conflict)</p>
-                        </div><!-- /.box-body -->
-                    </div>
+                    <h1>case_note</h1><p><span id="recordNumber">-1</span> rows</p><br />
                 </section>
                 <!-- Main content -->
                 <section class="content">
@@ -122,7 +109,7 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="wildlife_guid">wildlife_guid</span></td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="case_note_guid">case_note_guid</span></td>
                                     <td>uuid</td>
                                     <td>2147483647</td>
                                     <td title=''></td>
@@ -131,18 +118,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="action.wildlife_guid references wildlife.wildlife_guid via fk_action__wildlife_guid"><a href='action.html'>action</a><span class='relatedKey'>.wildlife_guid</span></td>
-                                                <td class="constraint detail">fk_action__wildlife_guid</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td title="drug_administered.wildlife_guid references wildlife.wildlife_guid via fk_drug_administered__wildlife_guid"><a href='drug_administered.html'>drug_administered</a><span class='relatedKey'>.wildlife_guid</span></td>
-                                                <td class="constraint detail">fk_drug_administered__wildlife_guid</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td title="ear_tag.wildlife_guid references wildlife.wildlife_guid via fk_ear_tag__wildlife_guid"><a href='ear_tag.html'>ear_tag</a><span class='relatedKey'>.wildlife_guid</span></td>
-                                                <td class="constraint detail">fk_ear_tag__wildlife_guid</td>
+                                                <td title="action.case_note_guid references case_note.case_note_guid via FK_action__case_note_guid"><a href='action.html'>action</a><span class='relatedKey'>.case_note_guid</span></td>
+                                                <td class="constraint detail">FK_action__case_note_guid</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -151,7 +128,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>System generated unique key for an animal.  This key should never be exposed to users via any system utilizing the tables.</p></td>
+                                    <td><p>System generated unique key for a case note.</p></td>
                                 </tr>
                                 <tr>
                                     <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="case_file_guid">case_file_guid</span></td>
@@ -167,8 +144,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="wildlife.case_file_guid references case_file.case_file_guid via fk_wildlife__case_file_guid"><a href='case_file.html'>case_file</a><span class='relatedKey'>.case_file_guid</span></td>
-                                                <td class="constraint detail">fk_wildlife__case_file_guid</td>
+                                                <td title="case_note.case_file_guid references case_file.case_file_guid via FK_case_note__case_file_guid"><a href='case_file.html'>case_file</a><span class='relatedKey'>.case_file_guid</span></td>
+                                                <td class="constraint detail">FK_case_note__case_file_guid</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
@@ -176,10 +153,10 @@
                                     <td><p>System generated unique key for a case.  This key should never be exposed to users via any system utilizing the tables.</p></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="threat_level_code">threat_level_code</span></td>
-                                    <td>varchar</td>
-                                    <td>10</td>
-                                    <td title='nullable'>√</td>
+                                    <td><span id="case_note">case_note</span></td>
+                                    <td>text</td>
+                                    <td>2147483647</td>
+                                    <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
                                     <td>
@@ -188,88 +165,17 @@
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="wildlife.threat_level_code references threat_level_code.threat_level_code via fk_wildlife__threat_level_code"><a href='threat_level_code.html'>threat_level_code</a><span class='relatedKey'>.threat_level_code</span></td>
-                                                <td class="constraint detail">fk_wildlife__threat_level_code</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
                                         </table>
                                     </td>
-                                    <td><p>A human readable code used to identify a threat level type.</p></td>
+                                    <td><p>The textual content or description of the note.</p></td>
                                 </tr>
                                 <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="sex_code">sex_code</span></td>
-                                    <td>varchar</td>
-                                    <td>10</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="wildlife.sex_code references sex_code.sex_code via fk_wildlife__sex_code"><a href='sex_code.html'>sex_code</a><span class='relatedKey'>.sex_code</span></td>
-                                                <td class="constraint detail">fk_wildlife__sex_code</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td><p>A human readable code used to identify a sex type.</p></td>
-                                </tr>
-                                <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="age_code">age_code</span></td>
-                                    <td>varchar</td>
-                                    <td>10</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="wildlife.age_code references age_code.age_code via fk_wildlife__age_code"><a href='age_code.html'>age_code</a><span class='relatedKey'>.age_code</span></td>
-                                                <td class="constraint detail">fk_wildlife__age_code</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td><p>A human readable code used to identify an age type.</p></td>
-                                </tr>
-                                <tr>
-                                    <td class='foreignKey' title='Foreign Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="hwcr_outcome_code">hwcr_outcome_code</span></td>
-                                    <td>varchar</td>
-                                    <td>10</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                            <tr>
-                                                <td title="wildlife.hwcr_outcome_code references hwcr_outcome_code.hwcr_outcome_code via fk_wildlife__hwcr_outcome_code"><a href='hwcr_outcome_code.html'>hwcr_outcome_code</a><span class='relatedKey'>.hwcr_outcome_code</span></td>
-                                                <td class="constraint detail">fk_wildlife__hwcr_outcome_code</td>
-                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td><p>A human readable code used to identify an HWCR outcome type.</p></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="species_code">species_code</span></td>
-                                    <td>varchar</td>
-                                    <td>10</td>
+                                    <td><span id="active_ind">active_ind</span></td>
+                                    <td>bool</td>
+                                    <td>1</td>
                                     <td title=''></td>
                                     <td title=''></td>
-                                    <td>null</td>
+                                    <td>true</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
@@ -278,7 +184,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>A human readable code used to identify a species.   The COS Complaint Management is the authorative source for the screen labels and descriptions of the codes.</p></td>
+                                    <td><p>Indicates whether the note is active (true) or inactive (false).</p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="create_user_id">create_user_id</span></td>
@@ -295,7 +201,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>The id of the user that created the wildlife record.</p></td>
+                                    <td><p>The identifier (e.g., username) of the user who created the entry.</p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="create_utc_timestamp">create_utc_timestamp</span></td>
@@ -312,13 +218,13 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>The timestamp when the wildlife record was created.  The timestamp is stored in UTC with no Offset.</p></td>
+                                    <td><p>The date and time (UTC) when the entry was created.</p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="update_user_id">update_user_id</span></td>
                                     <td>varchar</td>
                                     <td>32</td>
-                                    <td title=''></td>
+                                    <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
                                     <td>
@@ -329,29 +235,12 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>The id of the user that updated the wildlife record.</p></td>
+                                    <td><p>The identifier (e.g., username) of the user who last updated the entry.</p></td>
                                 </tr>
                                 <tr>
                                     <td><span id="update_utc_timestamp">update_utc_timestamp</span></td>
                                     <td>timestamp</td>
                                     <td>29,6</td>
-                                    <td title=''></td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td><p>The timestamp when the wildlife record was updated.  The timestamp is stored in UTC with no Offset.</p></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="active_ind">active_ind</span></td>
-                                    <td>bool</td>
-                                    <td>1</td>
                                     <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
@@ -363,24 +252,7 @@
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                         </table>
                                     </td>
-                                    <td><p>A boolean indicator to determine if the wildlife record is active.</p></td>
-                                </tr>
-                                <tr>
-                                    <td><span id="identifying_features">identifying_features</span></td>
-                                    <td>varchar</td>
-                                    <td>4000</td>
-                                    <td title='nullable'>√</td>
-                                    <td title=''></td>
-                                    <td>null</td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td>
-                                        <table border='0' cellspacing='0' cellpadding='0'>
-                                        </table>
-                                    </td>
-                                    <td></td>
+                                    <td><p>The date and time (UTC) when the entry was last updated.</p></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -413,10 +285,10 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> PK_wildlife_guid</td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> PK_case_note_guid</td>
                                     <td>Primary key</td>
                                     <td><span title='Ascending'>Asc</span></td>
-                                    <td>wildlife_guid</td>
+                                    <td>case_note_guid</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -441,47 +313,32 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="action.html" target="_top" title="action" alt="" coords="1013,5,1291,299">
-<area shape="rect" id="node2" href="case_file.html" target="_top" title="case_file" alt="" coords="281,48,549,341">
-<area shape="rect" id="node3" href="wildlife.html" target="_top" title="wildlife" alt="" coords="593,329,960,780">
-<area shape="rect" id="node4" href="threat_level_code.html" target="_top" title="threat_level_code" alt="" coords="5,272,237,389">
-<area shape="rect" id="node7" href="age_code.html" target="_top" title="age_code" alt="" coords="299,529,531,647">
-<area shape="rect" id="node8" href="hwcr_outcome_code.html" target="_top" title="hwcr_outcome_code" alt="" coords="295,664,535,781">
-<area shape="rect" id="node9" href="sex_code.html" target="_top" title="sex_code" alt="" coords="299,395,531,512">
-<area shape="rect" id="node5" href="drug_administered.html" target="_top" title="drug_administered" alt="" coords="1004,316,1300,551">
-<area shape="rect" id="node6" href="ear_tag.html" target="_top" title="ear_tag" alt="" coords="1036,568,1268,744">
+<area shape="rect" id="node1" href="action.html" target="_top" title="action" alt="" coords="728,5,1005,299">
+<area shape="rect" id="node2" href="case_file.html" target="_top" title="case_file" alt="" coords="5,123,273,416">
+<area shape="rect" id="node3" href="case_note.html" target="_top" title="case_note" alt="" coords="317,161,684,465">
 </map>
-                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/wildlife.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                        <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/case_note.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="action.html" target="_top" title="action" alt="" coords="1302,359,1431,447">
-<area shape="rect" id="node2" href="action_type_action_xref.html" target="_top" title="action_type_action_xref" alt="" coords="858,5,1125,93">
-<area shape="rect" id="node3" href="case_file.html" target="_top" title="case_file" alt="" coords="571,465,717,553">
-<area shape="rect" id="node4" href="case_note.html" target="_top" title="case_note" alt="" coords="912,673,1071,761">
-<area shape="rect" id="node5" href="decision.html" target="_top" title="decision" alt="" coords="919,111,1064,199">
-<area shape="rect" id="node6" href="equipment.html" target="_top" title="equipment" alt="" coords="908,321,1075,409">
-<area shape="rect" id="node7" href="wildlife.html" target="_top" title="wildlife" alt="" coords="808,779,1175,1229">
-<area shape="rect" id="node9" href="case_code.html" target="_top" title="case_code" alt="" coords="275,465,434,553">
-<area shape="rect" id="node10" href="conflict_history_code.html" target="_top" title="conflict_history_code" alt="" coords="231,219,478,307">
-<area shape="rect" id="node11" href="case_location_code.html" target="_top" title="case_location_code" alt="" coords="239,324,470,412">
-<area shape="rect" id="node12" href="threat_level_code.html" target="_top" title="threat_level_code" alt="" coords="245,679,464,767">
-<area shape="rect" id="node13" href="inaction_reason_code.html" target="_top" title="inaction_reason_code" alt="" coords="229,571,480,659">
-<area shape="rect" id="node14" href="agency_code.html" target="_top" title="agency_code" alt="" coords="5,392,185,480">
-<area shape="rect" id="node23" href="age_code.html" target="_top" title="age_code" alt="" coords="528,899,760,1016">
-<area shape="rect" id="node24" href="hwcr_outcome_code.html" target="_top" title="hwcr_outcome_code" alt="" coords="524,1033,764,1151">
-<area shape="rect" id="node25" href="sex_code.html" target="_top" title="sex_code" alt="" coords="528,764,760,881">
-<area shape="rect" id="node8" href="authorization_permit.html" target="_top" title="authorization_permit" alt="" coords="867,568,1116,656">
-<area shape="rect" id="node15" href="drug_administered.html" target="_top" title="drug_administered" alt="" coords="1219,1201,1515,1436">
-<area shape="rect" id="node16" href="drug_code.html" target="_top" title="drug_code" alt="" coords="911,1247,1071,1335">
-<area shape="rect" id="node17" href="drug_method_code.html" target="_top" title="drug_method_code" alt="" coords="877,1352,1106,1440">
-<area shape="rect" id="node18" href="drug_remaining_outcome_code.html" target="_top" title="drug_remaining_outcome_code" alt="" coords="828,1457,1155,1545">
-<area shape="rect" id="node19" href="ear_tag.html" target="_top" title="ear_tag" alt="" coords="1251,1485,1483,1661">
-<area shape="rect" id="node20" href="ear_code.html" target="_top" title="ear_code" alt="" coords="916,1563,1067,1651">
-<area shape="rect" id="node21" href="lead.html" target="_top" title="lead" alt="" coords="935,216,1048,304">
-<area shape="rect" id="node22" href="site.html" target="_top" title="site" alt="" coords="937,463,1045,551">
+<area shape="rect" id="node1" href="action.html" target="_top" title="action" alt="" coords="1125,485,1255,573">
+<area shape="rect" id="node2" href="action_type_action_xref.html" target="_top" title="action_type_action_xref" alt="" coords="765,321,1031,409">
+<area shape="rect" id="node3" href="case_file.html" target="_top" title="case_file" alt="" coords="524,535,671,623">
+<area shape="rect" id="node4" href="case_note.html" target="_top" title="case_note" alt="" coords="715,637,1081,941">
+<area shape="rect" id="node5" href="decision.html" target="_top" title="decision" alt="" coords="825,995,971,1083">
+<area shape="rect" id="node6" href="equipment.html" target="_top" title="equipment" alt="" coords="815,111,981,199">
+<area shape="rect" id="node7" href="wildlife.html" target="_top" title="wildlife" alt="" coords="829,5,967,93">
+<area shape="rect" id="node9" href="case_code.html" target="_top" title="case_code" alt="" coords="275,480,434,568">
+<area shape="rect" id="node10" href="conflict_history_code.html" target="_top" title="conflict_history_code" alt="" coords="231,585,478,673">
+<area shape="rect" id="node11" href="case_location_code.html" target="_top" title="case_location_code" alt="" coords="239,691,470,779">
+<area shape="rect" id="node12" href="threat_level_code.html" target="_top" title="threat_level_code" alt="" coords="245,147,464,235">
+<area shape="rect" id="node13" href="inaction_reason_code.html" target="_top" title="inaction_reason_code" alt="" coords="229,796,480,884">
+<area shape="rect" id="node14" href="agency_code.html" target="_top" title="agency_code" alt="" coords="5,796,185,884">
+<area shape="rect" id="node8" href="authorization_permit.html" target="_top" title="authorization_permit" alt="" coords="773,216,1023,304">
+<area shape="rect" id="node15" href="lead.html" target="_top" title="lead" alt="" coords="841,427,955,515">
+<area shape="rect" id="node16" href="site.html" target="_top" title="site" alt="" coords="844,532,952,620">
 </map>
-                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/wildlife.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                        <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/case_note.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                 </div>
                             </div>

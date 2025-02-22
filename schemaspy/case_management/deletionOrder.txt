@@ -19,6 +19,7 @@ authorization_permit
 decision
 action_type_action_xref
 equipment
+case_note
 wildlife
 case_file
 schedule_sector_xref

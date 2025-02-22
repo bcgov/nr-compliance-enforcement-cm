@@ -21,6 +21,7 @@ inaction_reason_code
 schedule_sector_xref
 case_file
 wildlife
+case_note
 equipment
 action_type_action_xref
 decision

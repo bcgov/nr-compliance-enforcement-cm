@@ -27,6 +27,9 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="decision_guid" nullable="true" remarks="" size="2147483647" type="uuid" typeCode="1111">
             <parent column="decision_guid" foreignKey="fk_action__decision_guid" implied="false" onDeleteCascade="false" schema="case_management" table="decision"/>
          </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="case_note_guid" nullable="true" remarks="Relates to case_note for note related actions such as UPDATENOTE." size="2147483647" type="uuid" typeCode="1111">
+            <parent column="case_note_guid" foreignKey="FK_action__case_note_guid" implied="false" onDeleteCascade="false" schema="case_management" table="case_note"/>
+         </column>
          <primaryKey column="action_guid" sequenceNumberInPK="1"/>
          <index name="PK_action_guid" unique="true">
             <column ascending="true" name="action_guid"/>
@@ -185,6 +188,7 @@
          <column autoUpdated="false" defaultValue="case_management.uuid_generate_v4()" digits="0" id="0" name="case_file_guid" nullable="false" remarks="System generated unique key for a case.  This key should never be exposed to users via any system utilizing the tables." size="2147483647" type="uuid" typeCode="1111">
             <child column="case_guid" foreignKey="FK_action__case_guid" implied="false" onDeleteCascade="false" schema="case_management" table="action"/>
             <child column="case_file_guid" foreignKey="fk_authorization_permit__case_file_guid" implied="false" onDeleteCascade="false" schema="case_management" table="authorization_permit"/>
+            <child column="case_file_guid" foreignKey="FK_case_note__case_file_guid" implied="false" onDeleteCascade="false" schema="case_management" table="case_note"/>
             <child column="case_file_guid" foreignKey="fk_decision__case_file_guid" implied="false" onDeleteCascade="false" schema="case_management" table="decision"/>
             <child column="case_identifier" foreignKey="FK_lead__case_identifier" implied="false" onDeleteCascade="false" schema="case_management" table="lead"/>
             <child column="case_file_guid" foreignKey="fk_site__case_file_guid" implied="false" onDeleteCascade="false" schema="case_management" table="site"/>
@@ -200,21 +204,20 @@
             <parent column="inaction_reason_code" foreignKey="FK_case_file__inaction_reason_code" implied="false" onDeleteCascade="false" schema="case_management" table="inaction_reason_code"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="action_not_required_ind" nullable="true" remarks="True only if no action required was explicitly indicated for the case.   It is assumed that action is required if not set." size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="note_text" nullable="true" remarks="A free-form note that can be edited by collaborators on the case." size="2147483647" type="text" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="review_required_ind" nullable="true" remarks="A flag to indicate that a further review of the file by a supervisor is required." size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="create_user_id" nullable="false" remarks="The id of the user that created the case." size="32" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="create_utc_timestamp" nullable="false" remarks="The timestamp when the case was created.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="update_user_id" nullable="true" remarks="The id of the user that updated the case." size="32" type="varchar" typeCode="12"/>
-         <column autoUpdated="false" defaultValue="null" digits="6" id="10" name="update_utc_timestamp" nullable="true" remarks="The timestamp when the case was updated.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="complainant_contacted_ind" nullable="true" remarks="A boolean indicator to determine if complainant is contacted." size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="attended_ind" nullable="true" remarks="A boolean indicator to determine if the COS officer attended the assessment." size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="case_location_code" nullable="true" remarks="A human readable code used to identify a location type." size="10" type="varchar" typeCode="12">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="review_required_ind" nullable="true" remarks="A flag to indicate that a further review of the file by a supervisor is required." size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="create_user_id" nullable="false" remarks="The id of the user that created the case." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="7" name="create_utc_timestamp" nullable="false" remarks="The timestamp when the case was created.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="update_user_id" nullable="true" remarks="The id of the user that updated the case." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="9" name="update_utc_timestamp" nullable="true" remarks="The timestamp when the case was updated.  The timestamp is stored in UTC with no Offset." size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="complainant_contacted_ind" nullable="true" remarks="A boolean indicator to determine if complainant is contacted." size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="attended_ind" nullable="true" remarks="A boolean indicator to determine if the COS officer attended the assessment." size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="case_location_code" nullable="true" remarks="A human readable code used to identify a location type." size="10" type="varchar" typeCode="12">
             <parent column="case_location_code" foreignKey="fk_case_file__case_location_code" implied="false" onDeleteCascade="false" schema="case_management" table="case_location_code"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="case_conflict_history_code" nullable="true" remarks="A human readable code used to identify a conflict history type." size="10" type="varchar" typeCode="12">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="case_conflict_history_code" nullable="true" remarks="A human readable code used to identify a conflict history type." size="10" type="varchar" typeCode="12">
             <parent column="conflict_history_code" foreignKey="fk_case_file__case_conflict_history_code" implied="false" onDeleteCascade="false" schema="case_management" table="conflict_history_code"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="case_threat_level_code" nullable="true" remarks="A human readable code used to identify a threat level type." size="10" type="varchar" typeCode="12">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="case_threat_level_code" nullable="true" remarks="A human readable code used to identify a threat level type." size="10" type="varchar" typeCode="12">
             <parent column="threat_level_code" foreignKey="fk_case_file__case_threat_level_code" implied="false" onDeleteCascade="false" schema="case_management" table="threat_level_code"/>
          </column>
          <primaryKey column="case_file_guid" sequenceNumberInPK="1"/>
@@ -249,6 +252,24 @@
          <primaryKey column="case_location_code" sequenceNumberInPK="1"/>
          <index name="PK_case_location_code" unique="true">
             <column ascending="true" name="case_location_code"/>
+         </index>
+      </table>
+      <table name="case_note" remarks="" schema="case_management" type="TABLE">
+         <column autoUpdated="false" defaultValue="case_management.uuid_generate_v4()" digits="0" id="0" name="case_note_guid" nullable="false" remarks="System generated unique key for a case note." size="2147483647" type="uuid" typeCode="1111">
+            <child column="case_note_guid" foreignKey="FK_action__case_note_guid" implied="false" onDeleteCascade="false" schema="case_management" table="action"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="case_file_guid" nullable="false" remarks="System generated unique key for a case.  This key should never be exposed to users via any system utilizing the tables." size="2147483647" type="uuid" typeCode="1111">
+            <parent column="case_file_guid" foreignKey="FK_case_note__case_file_guid" implied="false" onDeleteCascade="false" schema="case_management" table="case_file"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="case_note" nullable="false" remarks="The textual content or description of the note." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="true" digits="0" id="3" name="active_ind" nullable="false" remarks="Indicates whether the note is active (true) or inactive (false)." size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="create_user_id" nullable="false" remarks="The identifier (e.g., username) of the user who created the entry." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="5" name="create_utc_timestamp" nullable="false" remarks="The date and time (UTC) when the entry was created." size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="update_user_id" nullable="true" remarks="The identifier (e.g., username) of the user who last updated the entry." size="32" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="7" name="update_utc_timestamp" nullable="true" remarks="The date and time (UTC) when the entry was last updated." size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="case_note_guid" sequenceNumberInPK="1"/>
+         <index name="PK_case_note_guid" unique="true">
+            <column ascending="true" name="case_note_guid"/>
          </index>
       </table>
       <table name="configuration" remarks="The configuration table is used to store constants which are expected to change over the lifecycle of the application, or have different values in different environments.   By making changes to in the database the behaviour of the application can be altered without requiring a full deployment." schema="case_management" type="TABLE">
