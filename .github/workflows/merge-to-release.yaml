@@ -7,9 +7,7 @@ on:
       - "!main" # do not trigger on main branch
     paths-ignore:
       - "*.md"
-      - ".github/**"
       - ".graphics/**"
-      - "!.github/workflows/**"
 
 env:
     GITOPS_REPO_BRANCH: main
