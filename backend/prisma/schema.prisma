@@ -486,9 +486,11 @@ model decision {
   create_utc_timestamp                                                                                                  DateTime                             @db.Timestamp(6)
   update_user_id                                                                                                        String                               @db.VarChar(32)
   update_utc_timestamp                                                                                                  DateTime                             @db.Timestamp(6)
+  ipm_auth_category_code                                                                                                String?                              @db.VarChar(10)
   action                                                                                                                action[]
   case_file                                                                                                             case_file                            @relation(fields: [case_file_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__case_file_guid")
   discharge_code_decision_discharge_codeTodischarge_code                                                                discharge_code                       @relation("decision_discharge_codeTodischarge_code", fields: [discharge_code], references: [discharge_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__discharge_code")
+  ipm_auth_category_code_decision_ipm_auth_category_codeToipm_auth_category_code                                        ipm_auth_category_code?              @relation("decision_ipm_auth_category_codeToipm_auth_category_code", fields: [ipm_auth_category_code], references: [ipm_auth_category_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__ipm_auth_category_code")
   agency_code                                                                                                           agency_code?                         @relation(fields: [lead_agency_code], references: [agency_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__lead_agency_code")
   non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code non_compliance_decision_matrix_code? @relation("decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code", fields: [non_compliance_decision_matrix_code], references: [non_compliance_decision_matrix_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__ncdm_code")
   schedule_sector_xref                                                                                                  schedule_sector_xref                 @relation(fields: [schedule_sector_xref_guid], references: [schedule_sector_xref_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_decision__schedule_sector_xref_guid")
@@ -642,4 +644,18 @@ model case_note {
   update_utc_timestamp DateTime? @db.Timestamp(6)
   action               action[]
   case_file            case_file @relation(fields: [case_file_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "FK_case_note__case_file_guid")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model ipm_auth_category_code {
+  ipm_auth_category_code                                           String     @id(map: "PK_ipm_auth_category_code") @db.VarChar(10)
+  short_description                                                String?    @db.VarChar(50)
+  long_description                                                 String?    @db.VarChar(250)
+  display_order                                                    Int?
+  active_ind                                                       Boolean?   @default(true)
+  create_user_id                                                   String     @db.VarChar(32)
+  create_utc_timestamp                                             DateTime   @db.Timestamp(6)
+  update_user_id                                                   String?    @db.VarChar(32)
+  update_utc_timestamp                                             DateTime?  @db.Timestamp(6)
+  decision_decision_ipm_auth_category_codeToipm_auth_category_code decision[] @relation("decision_ipm_auth_category_codeToipm_auth_category_code")
 }

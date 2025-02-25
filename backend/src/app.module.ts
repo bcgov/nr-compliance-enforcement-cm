@@ -33,6 +33,7 @@ import { AgencyCodeModule } from "./agency_code/agency_code.module";
 import { ScheduleSectorXrefModule } from "./schedule_sector_xref/schedule_sector_xref.module";
 import { LeadModule } from "./lead/lead.module";
 import { CaseLocationCodeModule } from "./code-tables/case_location_code/case_location_code.module";
+import { IpmAuthCategoryCodeModule } from './ipm_auth_category_code/ipm_auth_category_code.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { CaseLocationCodeModule } from "./code-tables/case_location_code/case_lo
     ScheduleSectorXrefModule,
     LeadModule,
     CaseLocationCodeModule,
+    IpmAuthCategoryCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService, DateScalar],
