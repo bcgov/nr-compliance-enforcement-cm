@@ -4214,7 +4214,7 @@ VALUES
 
 -- END IPM Sector Type
 ------------
--- CE-1065: Update Sector/Category Drop Down values
+-- CE-1065: Update Sector Drop Down values
 ------------
 -- WDR Schedule 2
 update case_management.sector_code
@@ -5643,6 +5643,189 @@ set
 where
   action_code = 'DIRLOWLACT';
 
+------------------------
+-- Sector Code Updates
+------------------------
+update case_management.sector_code
+set
+  long_description = 'Aerial'
+where
+  sector_code = 'USRAERGEN';
+
+update case_management.sector_code
+set
+  long_description = 'Aerial - Drones'
+where
+  sector_code = 'USAERIALDR';
+
+update case_management.sector_code
+set
+  long_description = 'Agriculture'
+where
+  sector_code = 'USRAGRICU';
+
+update case_management.sector_code
+set
+  long_description = 'Agriculture - SGARs'
+where
+  sector_code = 'USAGRISGAR';
+
+update case_management.sector_code
+set
+  long_description = 'Aquaculture'
+where
+  sector_code = 'USAQUACULT';
+
+update case_management.sector_code
+set
+  long_description = 'Commercial beekeeping'
+where
+  sector_code = 'USRRESTBE';
+
+update case_management.sector_code
+set
+  long_description = 'Commercial pesticides',
+  display_order = 667
+where
+  sector_code = 'VENDGENCO';
+
+update case_management.sector_code
+set
+  long_description = 'Domestic and up to 100 kg commercial pesticides',
+  display_order = 668
+where
+  sector_code = 'VENDDOM100';
+
+update case_management.sector_code
+set
+  long_description = 'Domestic pesticides',
+  display_order = 669
+where
+  sector_code = 'VENDGENDOM';
+
+update case_management.sector_code
+set
+  long_description = 'Forestry'
+where
+  sector_code = 'USRFORMAG';
+
+update case_management.sector_code
+set
+  long_description = 'Fumigation'
+where
+  sector_code = 'USAFMGTION';
+
+update case_management.sector_code
+set
+  long_description = 'Industrial vegetation'
+where
+  sector_code = 'USINDSTVEG';
+
+update case_management.sector_code
+set
+  long_description = 'Industrial vegetation and noxious weeds'
+where
+  sector_code = 'USRINDGEN';
+
+update case_management.sector_code
+set
+  long_description = 'Landscape'
+where
+  sector_code = 'USRLANDGEN';
+
+update case_management.sector_code
+set
+  long_description = 'Mosquito'
+where
+  sector_code = 'USRMOSBIT';
+
+update case_management.sector_code
+set
+  long_description = 'Noxious weed'
+where
+  sector_code = 'USRNOXGEN';
+
+update case_management.sector_code
+set
+  long_description = 'Structural'
+where
+  sector_code = 'USRSTRGEN';
+
+update case_management.sector_code
+set
+  long_description = 'Structural – Industrial wood preservation'
+where
+  sector_code = 'USRSTRWOO';
+
+update case_management.sector_code
+set
+  long_description = 'Structural – SGARs'
+where
+  sector_code = 'USSTRCSGAR';
+
+-----------------------------
+-- IPM Authorization Categories
+-----------------------------
+
+INSERT INTO
+  case_management.ipm_auth_category_code (
+    ipm_auth_category_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  ) VALUES (
+    'CONFHOLDR',
+    'Confirmation holder',
+    'Confirmation holder',
+    10,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ), (
+    'OTHERTYPE',
+    'Other',
+    'Other',
+    20,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ), (
+    'PERMHOLDR',
+    'Permit holder',
+    'Permit holder',
+    30,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ), (
+    'PESUSNSLC',
+    'Pesticide user non-service licence',
+    'Pesticide user non-service licence',
+    40,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ), (
+    'PESUSLICE',
+    'Pesticide user service licence',
+    'Pesticide user service licence',
+    50,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ), (
+    'PESVENLIC',
+    'Pesticide vendor licence',
+    'Pesticide vendor licence',
+    60,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
+  
 --------------------------
 -- New Changes above this line
 -------------------------

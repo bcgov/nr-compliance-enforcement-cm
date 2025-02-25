@@ -8,6 +8,8 @@ export interface Decision {
   dischargeLongDescription?: string;
   nonCompliance?: string;
   nonComplianceLongDescription?: string;
+  ipmAuthCategory?: string;
+  ipmAuthCategoryLongDescription?: string;
   rationale?: string;
   inspectionNumber?: string;
   leadAgency?: string;
