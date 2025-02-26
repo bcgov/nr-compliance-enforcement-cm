@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { ThreatLevelCodeService } from "./threat_level_code.service";
 import { ThreatLevelCodeResolver } from "./threat_level_code.resolver";
-import { PrismaModule } from "nestjs-prisma";
+import { PrismaModuleCaseManagement } from "../prisma/cm/prisma.cm.module";
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModuleCaseManagement],
   providers: [ThreatLevelCodeResolver, ThreatLevelCodeService],
 })
 export class ThreatLevelCodeModule {}

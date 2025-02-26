@@ -1,14 +1,14 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { ThreatLevelCodeResolver } from "./threat_level_code.resolver";
 import { ThreatLevelCodeService } from "./threat_level_code.service";
-import { PrismaModule } from "nestjs-prisma";
+import { PrismaModuleCaseManagement } from "../prisma/cm/prisma.cm.module";
 
 describe("ThreatLevelCodeResolver", () => {
   let resolver: ThreatLevelCodeResolver;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PrismaModule],
+      imports: [PrismaModuleCaseManagement],
       providers: [ThreatLevelCodeResolver, ThreatLevelCodeService],
     }).compile();
 

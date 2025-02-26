@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "nestjs-prisma";
 import { ThreatLevelCode } from "./entities/threat_level_code.entity";
+import { CaseManagementPrismaService } from "../prisma/cm/prisma.cm.service";
 
 @Injectable()
 export class ThreatLevelCodeService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: CaseManagementPrismaService) {}
 
   async findAll() {
     const prismaThreatLevelCodes = await this.prisma.threat_level_code.findMany({

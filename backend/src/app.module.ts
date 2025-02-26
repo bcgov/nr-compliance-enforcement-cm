@@ -4,7 +4,7 @@ import { ConfigModule } from "@nestjs/config";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { HTTPLoggerMiddleware } from "./middleware/req.res.logger";
-import { PrismaModule } from "./prisma/prisma.module";
+import { PrismaModuleCaseManagement } from "./prisma/cm/prisma.cm.module";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { JwtAuthModule } from "./auth/jwtauth.module";
@@ -33,12 +33,12 @@ import { AgencyCodeModule } from "./agency_code/agency_code.module";
 import { ScheduleSectorXrefModule } from "./schedule_sector_xref/schedule_sector_xref.module";
 import { LeadModule } from "./lead/lead.module";
 import { CaseLocationCodeModule } from "./code-tables/case_location_code/case_location_code.module";
-import { IpmAuthCategoryCodeModule } from './ipm_auth_category_code/ipm_auth_category_code.module';
+import { IpmAuthCategoryCodeModule } from "./ipm_auth_category_code/ipm_auth_category_code.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    PrismaModule,
+    PrismaModuleCaseManagement,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ["./dist/**/*.graphql", "./src/**/*.graphql"],
