@@ -1,0 +1,17 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../../prisma/investigation/generated"
+  previewFeatures = ["prismaSchemaFolder"]
+  binaryTargets   = ["native", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("INV_POSTGRESQL_URL")
+}
+
+model temp_poc {
+  id         Decimal @id(map: "TEMP_POC_PK") @default(dbgenerated("nextval('\"TEMP_POC_SEQ\"'::regclass)")) @db.Decimal
+  first_name String  @db.VarChar(200)
+  last_name  String  @db.VarChar(200)
+}

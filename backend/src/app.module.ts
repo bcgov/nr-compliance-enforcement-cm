@@ -5,6 +5,7 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { HTTPLoggerMiddleware } from "./middleware/req.res.logger";
 import { PrismaModuleCaseManagement } from "./prisma/cm/prisma.cm.module";
+import { PrismaModuleInvestigation } from "./prisma/inv/prisma.inv.module";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { JwtAuthModule } from "./auth/jwtauth.module";
@@ -34,11 +35,13 @@ import { ScheduleSectorXrefModule } from "./schedule_sector_xref/schedule_sector
 import { LeadModule } from "./lead/lead.module";
 import { CaseLocationCodeModule } from "./code-tables/case_location_code/case_location_code.module";
 import { IpmAuthCategoryCodeModule } from "./ipm_auth_category_code/ipm_auth_category_code.module";
+import { TempPocModule } from "./temp_poc/temp_poc.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     PrismaModuleCaseManagement,
+    PrismaModuleInvestigation,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ["./dist/**/*.graphql", "./src/**/*.graphql"],
@@ -69,6 +72,7 @@ import { IpmAuthCategoryCodeModule } from "./ipm_auth_category_code/ipm_auth_cat
     LeadModule,
     CaseLocationCodeModule,
     IpmAuthCategoryCodeModule,
+    TempPocModule,
   ],
   controllers: [AppController],
   providers: [AppService, DateScalar],
