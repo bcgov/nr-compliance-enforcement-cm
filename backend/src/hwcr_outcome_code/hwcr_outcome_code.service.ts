@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "nestjs-prisma";
 import { HwcrOutcomeCode } from "./entities/hwcr_outcome_code.entity";
+import { CaseManagementPrismaService } from "../prisma/cm/prisma.cm.service";
 
 @Injectable()
 export class HwcrOutcomeCodeService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: CaseManagementPrismaService) {}
 
   async findAll() {
     const prismaHWCROutcomeCodes = await this.prisma.hwcr_outcome_code.findMany({

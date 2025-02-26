@@ -1,14 +1,14 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { HwcrOutcomeCodeResolver } from "./hwcr_outcome_code.resolver";
 import { HwcrOutcomeCodeService } from "./hwcr_outcome_code.service";
-import { PrismaModule } from "nestjs-prisma";
+import { PrismaModuleCaseManagement } from "../prisma/cm/prisma.cm.module";
 
 describe("HwcrOutcomeCodeResolver", () => {
   let resolver: HwcrOutcomeCodeResolver;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PrismaModule],
+      imports: [PrismaModuleCaseManagement],
       providers: [HwcrOutcomeCodeResolver, HwcrOutcomeCodeService],
     }).compile();
 

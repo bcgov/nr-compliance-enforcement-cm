@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { LeadService } from "./lead.service";
 import { LeadResolver } from "./lead.resolver";
-import { PrismaModule } from "nestjs-prisma";
+import { PrismaModuleCaseManagement } from "../prisma/cm/prisma.cm.module";
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModuleCaseManagement],
   providers: [LeadResolver, LeadService],
 })
 export class LeadModule {}

@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "nestjs-prisma";
+import { CaseManagementPrismaService } from "../prisma/cm/prisma.cm.service";
 import { IPMAuthCategoryCode } from "./entities/ipm_auth_category_code.entity";
 
 @Injectable()
 export class IpmAuthCategoryCodeService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: CaseManagementPrismaService) {}
 
   async findAll() {
     let queryResult = null;

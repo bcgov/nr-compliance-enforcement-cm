@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "nestjs-prisma";
+import { CaseManagementPrismaService } from "../prisma/cm/prisma.cm.service";
 
 @Injectable()
 export class ActionCodeService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: CaseManagementPrismaService) {}
 
   findAll() {
     return this.prisma.action_code.findMany();

@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { EarCodeService } from "./ear_code.service";
 import { EarCodeResolver } from "./ear_code.resolver";
-import { PrismaModule } from "nestjs-prisma";
+import { PrismaModuleCaseManagement } from "../prisma/cm/prisma.cm.module";
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModuleCaseManagement],
   providers: [EarCodeResolver, EarCodeService],
 })
 export class EarCodeModule {}

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CaseFileResolver } from "./case_file.resolver";
 import { CaseFileService } from "./case_file.service";
-import { PrismaModule } from "nestjs-prisma";
+import { PrismaModuleCaseManagement } from "../prisma/cm/prisma.cm.module";
 import { CaseFileActionService } from "../case_file_action/case_file_action.service";
 
 describe("CaseFileResolver", () => {
@@ -9,7 +9,7 @@ describe("CaseFileResolver", () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PrismaModule],
+      imports: [PrismaModuleCaseManagement],
       providers: [
         CaseFileResolver,
         CaseFileService,

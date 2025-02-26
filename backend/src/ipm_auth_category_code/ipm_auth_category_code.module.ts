@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { IpmAuthCategoryCodeService } from "./ipm_auth_category_code.service";
 import { IpmAuthCategoryCodeResolver } from "./ipm_auth_category_code.resolver";
-import { PrismaModule } from "nestjs-prisma";
+import { PrismaModuleCaseManagement } from "../prisma/cm/prisma.cm.module";
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModuleCaseManagement],
   providers: [IpmAuthCategoryCodeResolver, IpmAuthCategoryCodeService],
 })
 export class IpmAuthCategoryCodeModule {}

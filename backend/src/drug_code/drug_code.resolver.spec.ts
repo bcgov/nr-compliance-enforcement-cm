@@ -1,14 +1,14 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { DrugCodeResolver } from "./drug_code.resolver";
 import { DrugCodeService } from "./drug_code.service";
-import { PrismaModule } from "nestjs-prisma";
+import { PrismaModuleCaseManagement } from "../prisma/cm/prisma.cm.module";
 
 describe("DrugCodeResolver", () => {
   let resolver: DrugCodeResolver;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PrismaModule],
+      imports: [PrismaModuleCaseManagement],
       providers: [DrugCodeResolver, DrugCodeService],
     }).compile();
 

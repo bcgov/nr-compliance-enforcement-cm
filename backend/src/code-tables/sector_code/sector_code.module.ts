@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
-import { PrismaModule } from "nestjs-prisma";
+import { PrismaModuleCaseManagement } from "../../prisma/cm/prisma.cm.module";
 import { SectorCodeService } from "./sector_code.service";
 import { SectorCodeResolver } from "./sector_code.resolver";
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModuleCaseManagement],
   providers: [SectorCodeResolver, SectorCodeService],
 })
 export class SectorCodeModule {}

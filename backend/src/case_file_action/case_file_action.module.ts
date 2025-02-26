@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { CaseFileActionService } from "./case_file_action.service";
-import { PrismaModule } from "nestjs-prisma";
+import { PrismaModuleCaseManagement } from "../prisma/cm/prisma.cm.module";
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModuleCaseManagement],
   providers: [CaseFileActionService],
   exports: [CaseFileActionService],
 })

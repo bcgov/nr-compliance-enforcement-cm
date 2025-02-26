@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { DrugRemainingOutcomeCodeService } from "./drug_remaining_outcome_code.service";
 import { DrugRemainingOutcomeCodeResolver } from "./drug_remaining_outcome_code.resolver";
-import { PrismaModule } from "nestjs-prisma";
+import { PrismaModuleCaseManagement } from "../prisma/cm/prisma.cm.module";
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModuleCaseManagement],
   providers: [DrugRemainingOutcomeCodeResolver, DrugRemainingOutcomeCodeService],
 })
 export class DrugRemainingOutcomeCodeModule {}

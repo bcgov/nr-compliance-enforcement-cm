@@ -1,15 +1,14 @@
-
-import { Test, TestingModule } from '@nestjs/testing';
-import { HWCRAssessmentActionResolver } from './hwcr_assessment_action.resolver';
-import { ActionCodeService } from '../action_code/action_code.service';
-import { PrismaModule } from 'nestjs-prisma';
+import { Test, TestingModule } from "@nestjs/testing";
+import { HWCRAssessmentActionResolver } from "./hwcr_assessment_action.resolver";
+import { ActionCodeService } from "../action_code/action_code.service";
+import { PrismaModuleCaseManagement } from "../prisma/cm/prisma.cm.module";
 
 describe("ActionTypeActionXrefResolver", () => {
   let resolver: HWCRAssessmentActionResolver;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PrismaModule],
+      imports: [PrismaModuleCaseManagement],
       providers: [HWCRAssessmentActionResolver, ActionCodeService],
     }).compile();
 

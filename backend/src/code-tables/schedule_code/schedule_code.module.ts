@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
-import { PrismaModule } from "nestjs-prisma";
+import { PrismaModuleCaseManagement } from "../../prisma/cm/prisma.cm.module";
 import { ScheduleCodeResolver } from "./schedule_code.resolver";
 import { ScheduleCodeService } from "./schedule_code.service";
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModuleCaseManagement],
   providers: [ScheduleCodeResolver, ScheduleCodeService],
 })
 export class ScheduleCodeModule {}

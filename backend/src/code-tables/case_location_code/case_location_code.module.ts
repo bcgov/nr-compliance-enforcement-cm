@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
-import { PrismaModule } from "nestjs-prisma";
+import { PrismaModuleCaseManagement } from "../../prisma/cm/prisma.cm.module";
 import { CaseLocationCodeService } from "./case_location_code.service";
 import { CaseLocationCodeResolver } from "./case_location_code.resolver";
 
 @Module({
-  imports: [PrismaModule],
+  imports: [PrismaModuleCaseManagement],
   providers: [CaseLocationCodeResolver, CaseLocationCodeService],
 })
 export class CaseLocationCodeModule {}

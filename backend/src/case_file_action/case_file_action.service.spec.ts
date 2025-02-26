@@ -1,21 +1,20 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CaseFileActionService } from './case_file_action.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { CaseFileActionService } from "./case_file_action.service";
+import { PrismaModuleCaseManagement } from "../prisma/cm/prisma.cm.module";
 
-import { PrismaModule } from 'nestjs-prisma';
-
-describe('HWCRAssessmentActionService', () => {
+describe("HWCRAssessmentActionService", () => {
   let service: CaseFileActionService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PrismaModule],
+      imports: [PrismaModuleCaseManagement],
       providers: [CaseFileActionService],
     }).compile();
 
     service = module.get<CaseFileActionService>(CaseFileActionService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 });
