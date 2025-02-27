@@ -1,8 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CaseFileResolver } from "./case_file.resolver";
 import { CaseFileService } from "./case_file.service";
-import { PrismaModuleCaseManagement } from "../prisma/cm/prisma.cm.module";
-import { CaseFileActionService } from "../case_management/case_file_action/case_file_action.service";
+import { PrismaModuleCaseManagement } from "../../prisma/cm/prisma.cm.module";
+import { CaseFileActionService } from "../case_file_action/case_file_action.service";
 
 describe("CaseFileResolver", () => {
   let resolver: CaseFileResolver;

@@ -20,7 +20,7 @@ import { DrugMethodCodeModule } from "./case_management/drug_method_code/drug_me
 import { DrugRemainingOutcomeCodeModule } from "./case_management/drug_remaining_outcome_code/drug_remaining_outcome_code.module";
 import { HwcrOutcomeCodeModule } from "./case_management/hwcr_outcome_code/hwcr_outcome_code.module";
 import { ConfigurationModule } from "./case_management/configuration/configuration.module";
-import { CaseFileModule } from "./case_file/case_file.module";
+import { CaseFileModule } from "./case_management/case_file/case_file.module";
 import { InactionJustificationTypeModule } from "./case_management/inaction_justification_type/inaction_justification_type.module";
 import { DateScalar } from "./common/custom_scalars";
 import { HWCRPreventionActionModule } from "./case_management/hwcr_prevention_action/hwcr_prevention_action.module";
