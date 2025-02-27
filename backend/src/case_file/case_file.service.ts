@@ -10,7 +10,7 @@ import { UpdateNoteInput } from "./dto/note/update-note.input";
 import { DeleteNoteInput } from "./dto/note/delete-note.input";
 import { ACTION_TYPE_CODES } from "../common/action_type_codes";
 import { ReviewInput } from "./dto/review-input";
-import { CaseFileActionService } from "../case_file_action/case_file_action.service";
+import { CaseFileActionService } from "../case_management/case_file_action/case_file_action.service";
 import { Equipment } from "./entities/equipment.entity";
 import { DeleteEquipmentInput } from "./dto/equipment/delete-equipment.input";
 import { action, Prisma, PrismaClient } from "../../prisma/case_management/generated";

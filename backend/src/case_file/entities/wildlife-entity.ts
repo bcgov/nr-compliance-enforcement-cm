@@ -1,4 +1,4 @@
-import { CaseFileAction } from "../../case_file_action/entities/case_file_action.entity";
+import { CaseFileAction } from "../../case_management/case_file_action/entities/case_file_action.entity";
 
 export interface Wildlife {
   order: number;
