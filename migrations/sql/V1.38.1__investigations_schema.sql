@@ -1,5 +1,15 @@
 CREATE SCHEMA IF NOT EXISTS investigation;
 
+CREATE USER investigation WITH PASSWORD '${INV_PASSWORD}';
+ 
+-- Grant access to schema
+GRANT USAGE, CREATE ON SCHEMA investigation TO investigation;
+
+CREATE USER case_management WITH PASSWORD '${CM_PASSWORD}';
+ 
+-- Grant access to schema
+GRANT USAGE, CREATE ON SCHEMA case_management TO case_management;
+
 CREATE SEQUENCE IF NOT EXISTS investigation."TEMP_POC_SEQ"
     START WITH 1
     INCREMENT BY 1
