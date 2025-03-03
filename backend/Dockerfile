@@ -8,7 +8,8 @@ COPY *.json ./
 COPY ./src ./src
 COPY ./prisma ./prisma
 RUN npm ci --ignore-scripts --no-update-notifier
-RUN npm run prisma-generate
+RUN npm run prisma-generate-cm 
+RUN npm run prisma-generate-inv
 FROM node:20.11.0-bullseye-slim AS build
 
 # Install packages, build and keep only prod packages

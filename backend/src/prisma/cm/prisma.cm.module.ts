@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { CaseManagementPrismaService } from "./prisma.cm.service";
-import { PrismaClient } from "../../../prisma/case_management/generated";
+//Ignoring Sonar Warning on the line below since we control the prisma client.
+import { PrismaClient } from "../../../node_modules/.prisma/case_management"; // NOSONAR
 
 @Module({
   providers: [

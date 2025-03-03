@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { InvestigationPrismaService } from "./prisma.inv.service";
-import { PrismaClient } from "../../../prisma/investigation/generated";
+//Ignoring Sonar Warning on the line below since we control the prisma client.
+import { PrismaClient } from "../../../node_modules/.prisma/investigation"; // NOSONAR
 
 @Module({
   providers: [

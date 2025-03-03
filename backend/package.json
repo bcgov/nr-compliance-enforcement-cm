@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "prebuild": "rimraf dist",
-    "prisma-generate": "prisma generate",
+    "prisma-generate-cm": "prisma generate --schema=prisma/case_management/case_management.prisma",
+    "prisma-generate-inv": "prisma generate --schema=prisma/investigation/investigation.prisma",
     "build": "nest build && copyfiles -u 1 \"src/**/*.graphql\" dist",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

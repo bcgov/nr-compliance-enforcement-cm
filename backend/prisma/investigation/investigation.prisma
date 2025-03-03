@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  output          = "../../prisma/investigation/generated"
+  output          = "../../node_modules/.prisma/investigation"
   previewFeatures = ["prismaSchemaFolder"]
   binaryTargets   = ["native", "debian-openssl-1.1.x"]
 }

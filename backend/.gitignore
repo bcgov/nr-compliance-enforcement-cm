@@ -1,6 +1,4 @@
 node_modules
-prisma/case_management/generated
-prisma/investigation/generated
 # Keep environment variables out of version control
 .env
 
