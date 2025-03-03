@@ -191,4 +191,47 @@ export class CaseFileActionService {
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   }
+
+  async findActiveActionsByCaseIdAndType(caseId: string, actionTypeCode: string) {
+    try {
+      let actionResult = await this.prisma.action.findMany({
+        where: {
+          case_guid: caseId,
+          active_ind: true,
+          action_type_action_xref: {
+            action_type_code: actionTypeCode,
+          },
+        },
+        select: {
+          action_guid: true,
+          actor_guid: true,
+          active_ind: true,
+          action_type_action_xref: {
+            select: {
+              action_type_code: true,
+              display_order: true,
+              action_code_action_type_action_xref_action_codeToaction_code: {
+                select: {
+                  action_code: true,
+                  short_description: true,
+                  long_description: true,
+                  active_ind: true,
+                },
+              },
+            },
+          },
+          action_date: true,
+        },
+      });
+
+      let caseFileActions: CaseFileAction[] = new Array();
+      for (const actionItem of actionResult) {
+        caseFileActions.push(this.mapActionResult(actionItem));
+      }
+      console.log("caseFileActions", caseFileActions);
+      return caseFileActions;
+    } catch (exception) {
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  }
 }

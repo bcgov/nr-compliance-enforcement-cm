@@ -597,7 +597,7 @@ export class CaseFileService {
     if (queryResult.decision && queryResult.decision.length !== 0) {
       const { decision } = queryResult;
 
-      const action = await this.caseFileActionService.findActionsByCaseIdAndType(
+      const action = await this.caseFileActionService.findActiveActionsByCaseIdAndType(
         caseFileId,
         ACTION_TYPE_CODES.CEEBACTION,
       );
@@ -748,14 +748,18 @@ export class CaseFileService {
                     conflict_history_code: updateAssessmentInput.assessmentDetails.conflictHistory.value,
                   },
                 }
-              : undefined,
+              : {
+                  disconnect: true,
+                },
             case_file__threat_level_code: updateAssessmentInput.assessmentDetails.categoryLevel
               ? {
                   connect: {
                     threat_level_code: updateAssessmentInput.assessmentDetails.categoryLevel.value,
                   },
                 }
-              : undefined,
+              : {
+                  disconnect: true,
+                },
             update_user_id: updateAssessmentInput.updateUserId,
             update_utc_timestamp: new Date(),
           },
@@ -1517,7 +1521,7 @@ export class CaseFileService {
 
         // we can only create one equipment at a time, so just grab the first one.
         const equipmentDetailsInstance = createEquipmentInput.equipment[0];
-        const actions = equipmentDetailsInstance.actions;
+        const actions = equipmentDetailsInstance.actions.filter((action) => action.activeIndicator === true);
 
         // get the actions associated with the creation of the equipment.  We may be setting an equipment, or setting and removing an equipment
         for (const action of actions) {
@@ -1646,23 +1650,39 @@ export class CaseFileService {
 
             this.logger.debug(`Found action xref`);
             const caseFileGuid = caseFile.caseIdentifier;
-            // create the action records (this may either be setting an equipment or removing an equipment)
-            const data = {
-              case_guid: caseFileGuid,
-              action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
-              actor_guid: action.actor,
-              action_date: action.date,
-              active_ind: action.activeIndicator,
-              create_user_id: updateEquipmentInput.updateUserId,
-              create_utc_timestamp: new Date(),
-              equipment_guid: equipmentGuid,
-            };
+            if (action.actor && action.date) {
+              // create the action records (this may either be setting an equipment or removing an equipment)
+              const data = {
+                case_guid: caseFileGuid,
+                action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+                actor_guid: action.actor,
+                action_date: action.date,
+                active_ind: action.activeIndicator,
+                create_user_id: updateEquipmentInput.updateUserId,
+                create_utc_timestamp: new Date(),
+                equipment_guid: equipmentGuid,
+              };
 
-            this.logger.debug(`Adding new equipment action as part of an update: ${JSON.stringify(data)}`);
+              this.logger.debug(`Adding new equipment action as part of an update: ${JSON.stringify(data)}`);
 
-            await db.action.create({
-              data: data,
-            });
+              await db.action.create({
+                data: data,
+              });
+            } else if (action.actionCode == "REMEQUIPMT" && action.activeIndicator === false) {
+              // user tries to clear equipment removal info
+              this.logger.debug(`Inactivate equipment removal action for case_guid: ${caseFileGuid}`);
+              await db.action.updateMany({
+                where: {
+                  case_guid: caseFileGuid,
+                  action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
+                },
+                data: {
+                  active_ind: false,
+                  update_utc_timestamp: new Date(),
+                  update_user_id: updateEquipmentInput.updateUserId,
+                },
+              });
+            }
           }
         }
       });
@@ -1766,7 +1786,7 @@ export class CaseFileService {
     });
 
     // construct the equipmentDetails list
-    for (const action of actions) {
+    for (const action of actions.filter((record) => record.active_ind === true)) {
       const equipment = action.equipment;
 
       // get the action xref for the action
@@ -2110,7 +2130,7 @@ export class CaseFileService {
                 wildlife_guid: wildlifeId,
                 drug_code,
                 drug_method_code,
-                drug_remaining_outcome_code,
+                drug_remaining_outcome_code: drug_remaining_outcome_code === "" ? null : drug_remaining_outcome_code,
                 vial_number,
                 drug_used_amount,
                 additional_comments_text,
@@ -2473,6 +2493,7 @@ export class CaseFileService {
                 remainingUse: drug_remaining_outcome_code,
                 additionalComments: additional_comments_text,
               }) => {
+                drug_remaining_outcome_code = drug_remaining_outcome_code === "" ? null : drug_remaining_outcome_code;
                 await db.drug_administered.update({
                   where: {
                     drug_administered_guid: id,
@@ -3086,7 +3107,6 @@ export class CaseFileService {
           where: { decision_guid: id },
           data,
         });
-
         return result;
       } catch (exception) {
         this.logger.error(exception);
@@ -3156,33 +3176,47 @@ export class CaseFileService {
     ): Promise<any> => {
       try {
         const { actionTaken, actionTakenDate, assignedTo } = decision;
+        if (actionTaken === "") {
+          await db.action.updateMany({
+            where: {
+              decision_guid: decisionId,
+              case_guid: caseIdentifier,
+            },
+            data: {
+              active_ind: false,
+              update_user_id: updateUserId,
+              update_utc_timestamp: current,
+            },
+          });
+        } else {
+          //-- get the action_type_action xref
+          const xref = await this._getActionXref(db, actionTaken, ACTION_TYPE_CODES.CEEBACTION);
 
-        //-- get the action_type_action xref
-        const xref = await this._getActionXref(db, actionTaken, ACTION_TYPE_CODES.CEEBACTION);
+          const source = await db.action.findFirst({
+            where: {
+              case_guid: caseIdentifier,
+              decision_guid: decisionId,
+              active_ind: true,
+            },
+            select: {
+              action_guid: true,
+            },
+          });
 
-        const source = await db.action.findFirst({
-          where: {
-            case_guid: caseIdentifier,
-            decision_guid: decisionId,
-          },
-          select: {
-            action_guid: true,
-          },
-        });
+          let data: any = {
+            action_type_action_xref_guid: xref,
+            actor_guid: assignedTo,
+            update_user_id: updateUserId,
+            update_utc_timestamp: current,
+          };
 
-        let data: any = {
-          action_type_action_xref_guid: xref,
-          actor_guid: assignedTo,
-          update_user_id: updateUserId,
-          update_utc_timestamp: current,
-        };
+          const result = db.action.update({
+            where: { action_guid: source.action_guid },
+            data,
+          });
 
-        const result = db.action.update({
-          where: { action_guid: source.action_guid },
-          data,
-        });
-
-        return result;
+          return result;
+        }
       } catch (exception) {
         throw new GraphQLError("Exception occurred. See server log for details", exception);
       }
@@ -3212,7 +3246,7 @@ export class CaseFileService {
           //-- make sure that there is an action to update first
           //-- otherwise create a new action
           const currentAction = await db.action.findFirst({
-            where: { case_guid: caseIdentifier, decision_guid: decisonId },
+            where: { case_guid: caseIdentifier, decision_guid: decisonId, active_ind: true },
           });
 
           if (!currentAction && decision.actionTaken && decision.assignedTo && decision.actionTakenDate) {
@@ -3222,7 +3256,7 @@ export class CaseFileService {
               date: decision.actionTakenDate,
             };
             await this._addAction(db, caseIdentifier, decisonId, action, updateUserId);
-          } else if (currentAction && decision.actionTaken && decision.assignedTo && decision.actionTakenDate) {
+          } else if (currentAction && decision.assignedTo) {
             await _updateAction(db, caseIdentifier, decisonId, decision, updateUserId, current);
           }
         }
