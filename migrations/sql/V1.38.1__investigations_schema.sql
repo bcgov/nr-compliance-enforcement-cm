@@ -1,11 +1,21 @@
 CREATE SCHEMA IF NOT EXISTS investigation;
 
-CREATE USER investigation WITH PASSWORD '${INV_PASSWORD}';
+DO $$
+BEGIN
+IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_user WHERE usename = 'investigation') THEN
+    CREATE USER investigation WITH PASSWORD '${INV_PASSWORD}';
+END IF;
+END $$;
  
 -- Grant access to schema
 GRANT USAGE, CREATE ON SCHEMA investigation TO investigation;
 
-CREATE USER case_management WITH PASSWORD '${CM_PASSWORD}';
+DO $$
+BEGIN
+IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_user WHERE usename = 'case_management') THEN
+    CREATE USER case_management WITH PASSWORD '${CM_PASSWORD}';
+END IF;
+END $$;
  
 -- Grant access to schema
 GRANT USAGE, CREATE ON SCHEMA case_management TO case_management;
