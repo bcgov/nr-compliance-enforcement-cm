@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("INV_POSTGRESQL_URL")
+  url      = env("INV_POSTGRES_URL")
 }
 
 model temp_poc {

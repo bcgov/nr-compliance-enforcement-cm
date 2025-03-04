@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("CM_POSTGRESQL_URL")
+  provider = "postgresql"L
+  url = env("CM_POSTGRES_URL")
 }
 
 model age_code {
