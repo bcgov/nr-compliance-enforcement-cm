@@ -42,6 +42,8 @@ jobs:
         with:
           commands: |
             npm ci
+            npm run prisma-generate-cm
+            npm run prisma-generate-inv
             npm run test:cov
           dir: ${{ matrix.dir }}
           node_version: "20"
@@ -94,4 +96,3 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: "trivy-results.sarif"
-
