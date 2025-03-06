@@ -1,40 +1,57 @@
-# name: Release To Production
+name: Release To Production
 
-# on:
-#   workflow_dispatch:
-#     inputs:
-#       pr_number:
-#         description: "The PR # of the last PR into the release branch"
-#         type: number
-#         required: true
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "The PR # of the last PR into the release branch"
+        type: number
+        required: true
 
-# env:
-#     GITOPS_REPO_BRANCH: feat/new-pipeline # TODO: change back to main when ready
+env:
+    GITOPS_REPO_BRANCH: main
 
-# jobs:
-#   deploy-prod:
-#     name: Deploy (prod)
-#     environment: prod
-#     runs-on: ubuntu-22.04
-#     steps:
-#       - name: Checkout CD repo
-#         uses: actions/checkout@v4
-#         with:
-#           repository: bcgov-c/tenant-gitops-dc0a4a
-#           ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
-#           ref: ${{ env.GITOPS_REPO_BRANCH }}
-#       - name: Configure git
-#         # From https://github.com/orgs/community/discussions/26560#discussioncomment-3531273
-#         run: |
-#           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-#           git config --global user.name "github-actions[bot]"
-#           git config --global --add safe.directory "$GITHUB_WORKSPACE"
+jobs:
+  promote:
+    name: Promote Images
+    runs-on: ubuntu-22.04
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        package: [migrations, backend]
+    timeout-minutes: 1
+    steps:
+    - uses: shrink/actions-docker-registry-tag@v4
+      with:
+        registry: ghcr.io
+        repository: ${{ github.repository }}/${{ matrix.package }}
+        target: ${{ github.event.inputs.pr_number }}
+        tags: prod
 
-#       - name: Roll latest changes out to prod
-#         run: |
-#           ./.github/scripts/gitops.sh production
+  deploy-prod:
+    name: Deploy (prod)
+    environment: prod
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout CD repo
+        uses: actions/checkout@v4
+        with:
+          repository: bcgov-c/tenant-gitops-dc0a4a
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+          ref: ${{ env.GITOPS_REPO_BRANCH }}
+      - name: Configure git
+        # From https://github.com/orgs/community/discussions/26560#discussioncomment-3531273
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Roll latest changes out to prod
+        run: |
+          ./.github/scripts/gitops.sh production
   
-#       - name: Commit and push update
-#         run: |
-#           ./.github/scripts/gitops.sh commitall "Updating production for PR ${{ github.event.inputs.pr_number }}"
-#           git push origin ${{ env.GITOPS_REPO_BRANCH }}
+      - name: Commit and push update
+        run: |
+          ./.github/scripts/gitops.sh commitall "Promoting candidate PR ${{ github.event.inputs.pr_number }} to production"
+          git push origin ${{ env.GITOPS_REPO_BRANCH }}
