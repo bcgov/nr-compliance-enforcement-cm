@@ -1,63 +1,79 @@
-# name: Merge To Release
+name: Merge To Release
 
-# on:
-#   push:
-#     branches: 
-#       - "release/**"
-#       - "!main" # do not trigger on main branch
-#     paths-ignore:
-#       - "*.md"
-#       - ".github/**"
-#       - ".graphics/**"
-#       - "!.github/workflows/**"
+on:
+  push:
+    branches: 
+      - "release/**"
+      - "!main" # do not trigger on main branch
+    paths-ignore:
+      - "*.md"
+      - ".graphics/**"
 
-# env:
-#     GITOPS_REPO_BRANCH: feat/new-pipeline # TODO: change back to main when ready
+env:
+    GITOPS_REPO_BRANCH: main
 
-# jobs:
-#   vars:
-#     name: Set Variables
-#     outputs:
-#       pr: ${{ steps.pr.outputs.pr }}
-#     runs-on: ubuntu-22.04
-#     timeout-minutes: 1
-#     steps:
-#       # Get PR number for squash merges to release branch
-#       - name: PR Number
-#         id: pr
-#         uses: bcgov-nr/action-get-pr@v0.0.1
+jobs:
+  vars:
+    name: Set Variables
+    outputs:
+      pr: ${{ steps.pr.outputs.pr }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 1
+    steps:
+      # Get PR number for squash merges to release branch
+      - name: PR Number
+        id: pr
+        uses: bcgov-nr/action-get-pr@v0.0.1
 
-#   deploy-test:
-#     name: Deploy (test)
-#     needs: [vars]
-#     environment: test
-#     runs-on: ubuntu-22.04
-#     steps:
-#       - name: Checkout CD repo
-#         uses: actions/checkout@v4
-#         with:
-#           repository: bcgov-c/tenant-gitops-dc0a4a
-#           ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
-#           ref: ${{ env.GITOPS_REPO_BRANCH }}
-#       - name: Configure git
-#         # From https://github.com/orgs/community/discussions/26560#discussioncomment-3531273
-#         run: |
-#           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-#           git config --global user.name "github-actions[bot]"
-#           git config --global --add safe.directory "$GITHUB_WORKSPACE"
+  promote:
+    name: Promote Images
+    needs: [vars]
+    runs-on: ubuntu-22.04
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        package: [migrations, backend]
+    timeout-minutes: 1
+    steps:
+    - uses: shrink/actions-docker-registry-tag@v4
+      with:
+        registry: ghcr.io
+        repository: ${{ github.repository }}/${{ matrix.package }}
+        target: ${{ needs.vars.outputs.pr }}
+        tags: test
 
-#       - name: Roll latest changes out to test
-#         run: |
-#           ./.github/scripts/gitops.sh candidate
+  deploy-test:
+    name: Deploy (test)
+    needs: [vars, promote]
+    environment: test
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout CD repo
+        uses: actions/checkout@v4
+        with:
+          repository: bcgov-c/tenant-gitops-dc0a4a
+          ssh-key: ${{ secrets.MANIFEST_REPO_DEPLOY_KEY }}
+          ref: ${{ env.GITOPS_REPO_BRANCH }}
+      - name: Configure git
+        # From https://github.com/orgs/community/discussions/26560#discussioncomment-3531273
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-#       - name: Update static (shared) dev environment
-#         # TODO: deprecate this step
-#         run: |
-#           TEST_TAG=$(./.github/scripts/gitops.sh gettag test)
-#             ./.github/scripts/gitops.sh tag static $TEST_TAG
-#           ./.github/scripts/gitops.sh static
+      - name: Roll latest changes out to test
+        run: |
+          ./.github/scripts/gitops.sh candidate
 
-#       - name: Commit and push update
-#         run: |
-#           ./.github/scripts/gitops.sh commitall "Updating test for PR ${{ needs.vars.outputs.pr }}"
-#           git push origin ${{ env.GITOPS_REPO_BRANCH }}
+      - name: Update static (shared) dev environment
+        # TODO: deprecate this step and retire static environment
+        run: |
+          TEST_TAG=$(./.github/scripts/gitops.sh gettag base)
+          ./.github/scripts/gitops.sh tag static $TEST_TAG
+          ./.github/scripts/gitops.sh static
+
+      - name: Commit and push update
+        run: |
+          ./.github/scripts/gitops.sh commitall "Updating test for PR ${{ needs.vars.outputs.pr }}"
+          git push origin ${{ env.GITOPS_REPO_BRANCH }}
