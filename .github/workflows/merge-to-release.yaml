@@ -69,7 +69,7 @@ jobs:
       - name: Update static (shared) dev environment
         # TODO: deprecate this step and retire static environment
         run: |
-          TEST_TAG=$(./.github/scripts/gitops.sh gettag test)
+          TEST_TAG=$(./.github/scripts/gitops.sh gettag base)
           ./.github/scripts/gitops.sh tag static $TEST_TAG
           ./.github/scripts/gitops.sh static
 
