@@ -5870,6 +5870,9 @@ update case_management.action_code set
   long_description = 'Contacted/referred to the Livestock Protection Program ("LPP") (cattle and sheep only)' 
 where action_code = 'CONTACTLPP';
 
+update case_management.hwcr_outcome_code set short_description='Transferred to rehab', long_description='Transferred to rehab'
+where hwcr_outcome_code = 'TRANSREHB';
+
 --------------------------
 -- New Changes above this line
 -------------------------
