@@ -5825,7 +5825,51 @@ INSERT INTO
     CURRENT_USER,
     CURRENT_TIMESTAMP
   ) ON CONFLICT DO NOTHING;
-  
+ 
+ -- CE-1448 
+insert into	case_management.inaction_reason_code 
+  (inaction_reason_code, agency_code, short_description, long_description, active_ind, create_user_id, create_utc_timestamp)
+values 
+  ('OUTSDCOSMT', 'COS', 'Outside COS Mandate', 'Outside COS Mandate', 'Y', CURRENT_USER, CURRENT_TIMESTAMP)    
+on conflict do nothing;
+
+update case_management.action_code set 
+  short_description = 'Provided advice, attractant management and/or husbandry information to the public',  
+  long_description = 'Provided advice, attractant management and/or husbandry information to the public' 
+where action_code = 'PROVAMHSIN';
+
+insert into case_management.action_code 
+  (action_code, short_description, long_description, active_ind, create_user_id, create_utc_timestamp)
+values 
+  ('INJNOTPRES', 'Not present - Injured/distressed', 'Not present - Injured/distressed', 'Y', CURRENT_USER, CURRENT_TIMESTAMP )
+on conflict do nothing;
+
+insert into	case_management.action_type_action_xref 
+  (action_type_code, action_code, display_order, active_ind, create_user_id, create_utc_timestamp)
+values
+  ('COMPASSESS', 'INJNOTPRES', 45, 'Y', CURRENT_USER, CURRENT_TIMESTAMP)
+on conflict do nothing;
+
+update case_management.action_code set 
+  short_description = 'Contacted/referred to biologist and/or veterinarian',  
+  long_description = 'Contacted/referred to biologist and/or veterinarian' 
+where action_code = 'CNTCTBIOVT';
+
+update case_management.action_code set 
+  short_description = 'Contacted/referred to WildSafeBC or local interest group to deliver education to the public',  
+  long_description = 'Contacted/referred to WildSafeBC or local interest group to deliver education to the public' 
+where action_code = 'CNTCTGROUP';
+
+update case_management.action_code set 
+  short_description = 'Contacted/referred to bylaw to assist with managing attractants',  
+  long_description = 'Contacted/referred to bylaw to assist with managing attractants' 
+where action_code = 'CNTCTBYLAW';
+
+update case_management.action_code set 
+  short_description = 'Contacted/referred to the Livestock Protection Program ("LPP") (cattle and sheep only)',  
+  long_description = 'Contacted/referred to the Livestock Protection Program ("LPP") (cattle and sheep only)' 
+where action_code = 'CONTACTLPP';
+
 --------------------------
 -- New Changes above this line
 -------------------------
