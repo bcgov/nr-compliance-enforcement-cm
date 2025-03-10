@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Button } from 'react-bootstrap'
 
 export default function Dashboard() {
   const [counter, setCounter] = useState<any>(0)
@@ -13,6 +14,8 @@ export default function Dashboard() {
       }}
     >
       <h1>Hello World!</h1>
+      <p>Counter: {counter}</p>
+      <Button onClick={() => setCounter(counter + 1)}>Increment</Button>
     </div>
   )
 }

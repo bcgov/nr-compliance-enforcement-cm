@@ -72,3 +72,11 @@ rules:
   '@typescript-eslint/explicit-function-return-type': 'off'
   '@typescript-eslint/consistent-type-imports':
     ['error', { prefer: 'type-imports' }]
+
+  # Prettier rules
+  "prettier/prettier": [
+    "error",
+    {
+      "endOfLine": "auto"
+    },
+  ],

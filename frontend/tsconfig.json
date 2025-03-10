@@ -10,7 +10,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "strictNullChecks": true,
@@ -18,10 +18,7 @@
     "jsx": "react-jsx",
     "types": [
       "vitest/globals",
-      "cypress",
       "node",
-      "cypress-file-upload",
-      "@testing-library/cypress"
     ],
     "baseUrl": "./",
     "paths": {
