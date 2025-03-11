@@ -8,7 +8,7 @@ export const Route = createRootRoute({
   component: () => (
     <>
       <Container>
-        <Header title={'QuickStart OpenShift'}>
+        <Header title={'Nat Investigations'}>
           <Link to="/" className="[&.active]:font-bold">
             Home
           </Link>{' '}
