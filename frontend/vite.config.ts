@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
       proxy: {
         // Proxy API requests to the backend
         '/api': {
-          target: env.VITE_BASE_URL ?? 'http://localhost:3000',
+          target: env.VITE_BASE_URL ?? 'http://localhost:3003',
           changeOrigin: true,
         },
       },

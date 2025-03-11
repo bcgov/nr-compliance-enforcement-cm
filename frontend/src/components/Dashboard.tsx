@@ -1,3 +1,4 @@
+import UserList from '@/components/UserList'
 import { useState } from 'react'
 import { Button } from 'react-bootstrap'
 
@@ -16,6 +17,7 @@ export default function Dashboard() {
       <h1>Hello World!</h1>
       <p>Counter: {counter}</p>
       <Button onClick={() => setCounter(counter + 1)}>Increment</Button>
+      <UserList />
     </div>
   )
 }
