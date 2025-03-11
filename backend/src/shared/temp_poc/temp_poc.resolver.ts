@@ -17,7 +17,7 @@ export class TempPocResolver {
     try {
       return await this.tempPocService.findAll();
     } catch (error) {
-      throw new GraphQLError("Error fetching data from Investigation schema", {
+      throw new GraphQLError("Error fetching data from Shared schema", {
         extensions: {
           code: "INTERNAL_SERVER_ERROR",
         },

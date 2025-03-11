@@ -1,13 +1,13 @@
 generator client {
   provider        = "prisma-client-js"
-  output          = "../../node_modules/.prisma/investigation"
+  output          = "../../node_modules/.prisma/shared"
   previewFeatures = ["prismaSchemaFolder"]
   binaryTargets   = ["native", "debian-openssl-1.1.x"]
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("INV_POSTGRES_URL")
+  url      = env("SHARED_POSTGRES_URL")
 }
 
 model temp_poc {

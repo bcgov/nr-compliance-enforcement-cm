@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { TempPoc } from "./entities/temp_poc.entity";
-import { InvestigationPrismaService } from "../../prisma/inv/prisma.inv.service";
+import { SharedPrismaService } from "../../prisma/shared/prisma.shared.service";
 
 @Injectable()
 export class TempPocService {
-  constructor(private readonly prisma: InvestigationPrismaService) {}
+  constructor(private readonly prisma: SharedPrismaService) {}
 
   async findAll() {
     const prismaTempPoc = await this.prisma.temp_poc.findMany({

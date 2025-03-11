@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { TempPocService } from "./temp_poc.service";
 import { TempPocResolver } from "./temp_poc.resolver";
-import { PrismaModuleInvestigation } from "../../prisma/inv/prisma.inv.module";
+import { PrismaModuleShared } from "../../prisma/shared/prisma.shared.module";
 
 @Module({
-  imports: [PrismaModuleInvestigation],
+  imports: [PrismaModuleShared],
   providers: [TempPocResolver, TempPocService],
 })
 export class TempPocModule {}
