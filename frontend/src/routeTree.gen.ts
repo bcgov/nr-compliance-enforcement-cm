@@ -11,11 +11,25 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as UnauthorizedImport } from './routes/unauthorized'
+import { Route as ProtectedByRoleImport } from './routes/protectedByRole'
 import { Route as ProtectedImport } from './routes/protected'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const UnauthorizedRoute = UnauthorizedImport.update({
+  id: '/unauthorized',
+  path: '/unauthorized',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProtectedByRoleRoute = ProtectedByRoleImport.update({
+  id: '/protectedByRole',
+  path: '/protectedByRole',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const ProtectedRoute = ProtectedImport.update({
   id: '/protected',
@@ -60,6 +74,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedImport
       parentRoute: typeof rootRoute
     }
+    '/protectedByRole': {
+      id: '/protectedByRole'
+      path: '/protectedByRole'
+      fullPath: '/protectedByRole'
+      preLoaderRoute: typeof ProtectedByRoleImport
+      parentRoute: typeof rootRoute
+    }
+    '/unauthorized': {
+      id: '/unauthorized'
+      path: '/unauthorized'
+      fullPath: '/unauthorized'
+      preLoaderRoute: typeof UnauthorizedImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -69,12 +97,16 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/protected': typeof ProtectedRoute
+  '/protectedByRole': typeof ProtectedByRoleRoute
+  '/unauthorized': typeof UnauthorizedRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/protected': typeof ProtectedRoute
+  '/protectedByRole': typeof ProtectedByRoleRoute
+  '/unauthorized': typeof UnauthorizedRoute
 }
 
 export interface FileRoutesById {
@@ -82,14 +114,27 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/protected': typeof ProtectedRoute
+  '/protectedByRole': typeof ProtectedByRoleRoute
+  '/unauthorized': typeof UnauthorizedRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/protected'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/protected'
+    | '/protectedByRole'
+    | '/unauthorized'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/protected'
-  id: '__root__' | '/' | '/about' | '/protected'
+  to: '/' | '/about' | '/protected' | '/protectedByRole' | '/unauthorized'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/protected'
+    | '/protectedByRole'
+    | '/unauthorized'
   fileRoutesById: FileRoutesById
 }
 
@@ -97,12 +142,16 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ProtectedRoute: typeof ProtectedRoute
+  ProtectedByRoleRoute: typeof ProtectedByRoleRoute
+  UnauthorizedRoute: typeof UnauthorizedRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ProtectedRoute: ProtectedRoute,
+  ProtectedByRoleRoute: ProtectedByRoleRoute,
+  UnauthorizedRoute: UnauthorizedRoute,
 }
 
 export const routeTree = rootRoute
@@ -117,7 +166,9 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/protected"
+        "/protected",
+        "/protectedByRole",
+        "/unauthorized"
       ]
     },
     "/": {
@@ -128,6 +179,12 @@ export const routeTree = rootRoute
     },
     "/protected": {
       "filePath": "protected.tsx"
+    },
+    "/protectedByRole": {
+      "filePath": "protectedByRole.tsx"
+    },
+    "/unauthorized": {
+      "filePath": "unauthorized.tsx"
     }
   }
 }

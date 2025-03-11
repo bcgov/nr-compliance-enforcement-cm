@@ -1,6 +1,3 @@
-// NOTE: Absolute imports are possible due to the following configuration:
-// - tsconfig.json: "baseUrl": "./src"
-// - vite.config.ts: usage of the "vite-tsconfig-paths" plugin
 import { useOidc, enforceLogin } from '@/oidc'
 import { useMemo } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
@@ -51,6 +48,10 @@ function ProtectedPage() {
       <br />
       {decodedAccessToken !== undefined ? (
         <>
+          <p>Decoded ID Token:</p>
+          <pre style={{ textAlign: 'left' }}>
+            {JSON.stringify(decodedIdToken, null, 2)}
+          </pre>
           <p>Decoded Access Token:</p>
           <pre style={{ textAlign: 'left' }}>
             {JSON.stringify(decodedAccessToken, null, 2)}

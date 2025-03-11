@@ -1,4 +1,6 @@
 import { createReactOidc } from 'oidc-spa/react'
+import { decodeJwt } from 'oidc-spa/tools/decodeJwt'
+import { redirect } from '@tanstack/react-router'
 import { z } from 'zod'
 
 export const {
@@ -67,6 +69,8 @@ export const {
   decodedIdTokenSchema: z.object({
     sub: z.string(),
     name: z.string(),
+    client_roles: z.array(z.string()),
+    idir_username: z.string(),
   }),
   //autoLogoutParams: { redirectTo: "current page" } // Default
   //autoLogoutParams: { redirectTo: "home" }
@@ -89,7 +93,26 @@ export async function enforceLogin(): Promise<void | never> {
     await oidc.login({
       doesCurrentHrefRequiresAuth: true,
     })
-    // Never here
+  }
+}
+
+export async function enforceLoginRoles(
+  roles: string[],
+): Promise<void | never> {
+  const oidc = await getOidc()
+
+  if (!oidc.isUserLoggedIn) {
+    await oidc.login({
+      doesCurrentHrefRequiresAuth: true,
+    })
+  } else {
+    const { idToken } = oidc.getTokens()
+    const user = decodeJwt(idToken)
+    if (!user?.client_roles.some((role: string) => roles.includes(role))) {
+      throw redirect({
+        to: '/unauthorized',
+      })
+    }
   }
 }
 
