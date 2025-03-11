@@ -34,6 +34,9 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
         '~': fileURLToPath(new URL('./node_modules', import.meta.url)),
+        '~bootstrap': fileURLToPath(
+          new URL('./node_modules/bootstrap', import.meta.url),
+        ),
       },
       extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
     },
@@ -53,6 +56,20 @@ export default defineConfig(({ mode }) => {
             react: ['react', 'react-dom'],
             axios: ['axios'],
           },
+        },
+      },
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          // Silence deprecation warnings caused by Bootstrap SCSS
+          // which is out of our control.
+          silenceDeprecations: [
+            'mixed-decls',
+            'color-functions',
+            'global-builtin',
+            'import',
+          ],
         },
       },
     },

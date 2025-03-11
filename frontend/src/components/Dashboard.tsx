@@ -1,23 +1,33 @@
 import UserList from '@/components/UserList'
 import { useState } from 'react'
-import { Button } from 'react-bootstrap'
+import {
+  Button,
+  Card,
+  CardHeader,
+  CardBody,
+  Image,
+  Row,
+  Col,
+} from 'react-bootstrap'
+import natrix from '@/assets/natrix.png'
 
 export default function Dashboard() {
   const [counter, setCounter] = useState<any>(0)
 
   return (
-    <div
-      style={{
-        minHeight: '45em',
-        maxHeight: '45em',
-        width: '100%',
-        marginLeft: '4em',
-      }}
-    >
-      <h1>Hello World!</h1>
-      <p>Counter: {counter}</p>
-      <Button onClick={() => setCounter(counter + 1)}>Increment</Button>
-      <UserList />
-    </div>
+    <Row>
+      <Col>
+        <h1>Welcome to...</h1>
+        <p>Counter: {counter}</p>
+        <Button onClick={() => setCounter(counter + 1)}>Increment</Button>
+        <Card className="w-25 p-3">
+          <CardHeader>Welcome to...</CardHeader>
+          <CardBody>
+            <Image className="img-fluid" src={natrix} />
+          </CardBody>
+        </Card>
+        <UserList />
+      </Col>
+    </Row>
   )
 }

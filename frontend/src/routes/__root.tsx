@@ -22,11 +22,7 @@ export const Route = createRootRoute({
             Protected By Role
           </Link>
         </Header>
-        <Row>
-          <Col>
-            <Outlet />
-          </Col>
-        </Row>
+        <Outlet />
       </Container>
       <Footer />
       <TanStackRouterDevtools />

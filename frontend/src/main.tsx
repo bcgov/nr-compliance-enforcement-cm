@@ -5,6 +5,9 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { OidcProvider } from '@/oidc'
 
+// Import bootstrap styles
+import '@/scss/styles.scss'
+
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
@@ -41,5 +44,3 @@ if (!rootElement.innerHTML) {
     </StrictMode>,
   )
 }
-
-import 'bootstrap/dist/css/bootstrap.min.css'
