@@ -3,7 +3,7 @@ import { StrictMode } from 'react'
 import * as ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { OidcProvider } from '@/oidc'
+import { OidcProvider } from '@/auth/oidc'
 
 // Import bootstrap styles
 import '@/scss/styles.scss'

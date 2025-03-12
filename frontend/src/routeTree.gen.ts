@@ -12,16 +12,26 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as UnauthorizedImport } from './routes/unauthorized'
+import { Route as SearchImport } from './routes/search'
 import { Route as ProtectedByRoleImport } from './routes/protectedByRole'
 import { Route as ProtectedImport } from './routes/protected'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
+import { Route as InvestigationsIndexImport } from './routes/investigations.index'
+import { Route as InvestigationsIdImport } from './routes/investigations.$id'
+import { Route as InvestigationsIdEditImport } from './routes/investigations_.$id.edit'
 
 // Create/Update Routes
 
 const UnauthorizedRoute = UnauthorizedImport.update({
   id: '/unauthorized',
   path: '/unauthorized',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SearchRoute = SearchImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,6 +56,24 @@ const AboutRoute = AboutImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const InvestigationsIndexRoute = InvestigationsIndexImport.update({
+  id: '/investigations/',
+  path: '/investigations/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const InvestigationsIdRoute = InvestigationsIdImport.update({
+  id: '/investigations/$id',
+  path: '/investigations/$id',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const InvestigationsIdEditRoute = InvestigationsIdEditImport.update({
+  id: '/investigations_/$id/edit',
+  path: '/investigations/$id/edit',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -81,11 +109,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedByRoleImport
       parentRoute: typeof rootRoute
     }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchImport
+      parentRoute: typeof rootRoute
+    }
     '/unauthorized': {
       id: '/unauthorized'
       path: '/unauthorized'
       fullPath: '/unauthorized'
       preLoaderRoute: typeof UnauthorizedImport
+      parentRoute: typeof rootRoute
+    }
+    '/investigations/$id': {
+      id: '/investigations/$id'
+      path: '/investigations/$id'
+      fullPath: '/investigations/$id'
+      preLoaderRoute: typeof InvestigationsIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/investigations/': {
+      id: '/investigations/'
+      path: '/investigations'
+      fullPath: '/investigations'
+      preLoaderRoute: typeof InvestigationsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/investigations_/$id/edit': {
+      id: '/investigations_/$id/edit'
+      path: '/investigations/$id/edit'
+      fullPath: '/investigations/$id/edit'
+      preLoaderRoute: typeof InvestigationsIdEditImport
       parentRoute: typeof rootRoute
     }
   }
@@ -98,7 +154,11 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/protected': typeof ProtectedRoute
   '/protectedByRole': typeof ProtectedByRoleRoute
+  '/search': typeof SearchRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/investigations/$id': typeof InvestigationsIdRoute
+  '/investigations': typeof InvestigationsIndexRoute
+  '/investigations/$id/edit': typeof InvestigationsIdEditRoute
 }
 
 export interface FileRoutesByTo {
@@ -106,7 +166,11 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/protected': typeof ProtectedRoute
   '/protectedByRole': typeof ProtectedByRoleRoute
+  '/search': typeof SearchRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/investigations/$id': typeof InvestigationsIdRoute
+  '/investigations': typeof InvestigationsIndexRoute
+  '/investigations/$id/edit': typeof InvestigationsIdEditRoute
 }
 
 export interface FileRoutesById {
@@ -115,7 +179,11 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/protected': typeof ProtectedRoute
   '/protectedByRole': typeof ProtectedByRoleRoute
+  '/search': typeof SearchRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/investigations/$id': typeof InvestigationsIdRoute
+  '/investigations/': typeof InvestigationsIndexRoute
+  '/investigations_/$id/edit': typeof InvestigationsIdEditRoute
 }
 
 export interface FileRouteTypes {
@@ -125,16 +193,33 @@ export interface FileRouteTypes {
     | '/about'
     | '/protected'
     | '/protectedByRole'
+    | '/search'
     | '/unauthorized'
+    | '/investigations/$id'
+    | '/investigations'
+    | '/investigations/$id/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/protected' | '/protectedByRole' | '/unauthorized'
+  to:
+    | '/'
+    | '/about'
+    | '/protected'
+    | '/protectedByRole'
+    | '/search'
+    | '/unauthorized'
+    | '/investigations/$id'
+    | '/investigations'
+    | '/investigations/$id/edit'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/protected'
     | '/protectedByRole'
+    | '/search'
     | '/unauthorized'
+    | '/investigations/$id'
+    | '/investigations/'
+    | '/investigations_/$id/edit'
   fileRoutesById: FileRoutesById
 }
 
@@ -143,7 +228,11 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ProtectedRoute: typeof ProtectedRoute
   ProtectedByRoleRoute: typeof ProtectedByRoleRoute
+  SearchRoute: typeof SearchRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
+  InvestigationsIdRoute: typeof InvestigationsIdRoute
+  InvestigationsIndexRoute: typeof InvestigationsIndexRoute
+  InvestigationsIdEditRoute: typeof InvestigationsIdEditRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -151,7 +240,11 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ProtectedRoute: ProtectedRoute,
   ProtectedByRoleRoute: ProtectedByRoleRoute,
+  SearchRoute: SearchRoute,
   UnauthorizedRoute: UnauthorizedRoute,
+  InvestigationsIdRoute: InvestigationsIdRoute,
+  InvestigationsIndexRoute: InvestigationsIndexRoute,
+  InvestigationsIdEditRoute: InvestigationsIdEditRoute,
 }
 
 export const routeTree = rootRoute
@@ -168,7 +261,11 @@ export const routeTree = rootRoute
         "/about",
         "/protected",
         "/protectedByRole",
-        "/unauthorized"
+        "/search",
+        "/unauthorized",
+        "/investigations/$id",
+        "/investigations/",
+        "/investigations_/$id/edit"
       ]
     },
     "/": {
@@ -183,8 +280,20 @@ export const routeTree = rootRoute
     "/protectedByRole": {
       "filePath": "protectedByRole.tsx"
     },
+    "/search": {
+      "filePath": "search.tsx"
+    },
     "/unauthorized": {
       "filePath": "unauthorized.tsx"
+    },
+    "/investigations/$id": {
+      "filePath": "investigations.$id.tsx"
+    },
+    "/investigations/": {
+      "filePath": "investigations.index.tsx"
+    },
+    "/investigations_/$id/edit": {
+      "filePath": "investigations_.$id.edit.tsx"
     }
   }
 }

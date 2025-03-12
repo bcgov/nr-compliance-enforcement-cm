@@ -21,6 +21,12 @@ export const Route = createRootRoute({
           <Link to="/protectedByRole" className="[&.active]:font-bold">
             Protected By Role
           </Link>
+          <Link to="/investigations" className="[&.active]:font-bold">
+            Investigations
+          </Link>
+          <Link to="/search" className="[&.active]:font-bold">
+            Search
+          </Link>
         </Header>
         <Outlet />
       </Container>

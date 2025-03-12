@@ -1,12 +1,7 @@
-import { enforceLoginRoles } from '@/oidc'
-import { createFileRoute } from '@tanstack/react-router'
+import { createProtectedRoute } from '@/auth/auth'
 
-export const Route = createFileRoute('/protectedByRole')({
+export const Route = createProtectedRoute('/protectedByRole', ['COS'])({
   component: ProtectedByRolePage,
-  beforeLoad: async () => {
-    await enforceLoginRoles(['COS'])
-    // If this line is reached, the user is logged in.
-  },
 })
 
 function ProtectedByRolePage() {

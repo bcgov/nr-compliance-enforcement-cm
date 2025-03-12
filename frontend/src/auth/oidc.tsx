@@ -108,7 +108,10 @@ export async function enforceLoginRoles(
   } else {
     const { idToken } = oidc.getTokens()
     const user = decodeJwt(idToken)
-    if (!user?.client_roles.some((role: string) => roles.includes(role))) {
+    if (
+      roles?.length > 0 &&
+      !user?.client_roles.some((role: string) => roles.includes(role))
+    ) {
       throw redirect({
         to: '/unauthorized',
       })

@@ -1,15 +1,11 @@
-import { useOidc, enforceLogin } from '@/oidc'
+import { useOidc } from '@/auth/oidc'
+import { createProtectedRoute } from '@/auth/auth'
 import { useMemo } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
 import { decodeJwt } from 'oidc-spa/tools/decodeJwt'
 import { parseKeycloakIssuerUri } from 'oidc-spa/tools/parseKeycloakIssuerUri'
 
-export const Route = createFileRoute('/protected')({
+export const Route = createProtectedRoute('/protected')({
   component: ProtectedPage,
-  beforeLoad: async () => {
-    await enforceLogin()
-    // If this line is reached, the user is logged in.
-  },
 })
 
 function ProtectedPage() {

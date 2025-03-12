@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchUsers } from '../api/queries/users'
-import { useOidc } from '@/oidc'
+import { useOidc } from '@/auth/oidc'
 import { Link } from '@tanstack/react-router'
 
 export default function UserList() {
