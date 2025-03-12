@@ -1,0 +1,4 @@
+type Query {
+  people: [Person]
+  person(personGuid: String!): Person
+}

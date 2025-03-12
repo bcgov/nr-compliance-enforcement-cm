@@ -36,6 +36,7 @@ import { LeadModule } from "./case_management/lead/lead.module";
 import { CaseLocationCodeModule } from "./case_management/code-tables/case_location_code/case_location_code.module";
 import { IpmAuthCategoryCodeModule } from "./case_management/ipm_auth_category_code/ipm_auth_category_code.module";
 import { TempPocModule } from "./shared/temp_poc/temp_poc.module";
+import { PersonModule } from "./shared/person/person.module";
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { TempPocModule } from "./shared/temp_poc/temp_poc.module";
     CaseLocationCodeModule,
     IpmAuthCategoryCodeModule,
     TempPocModule,
+    PersonModule,
   ],
   controllers: [AppController],
   providers: [AppService, DateScalar],
