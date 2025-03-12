@@ -1,7 +1,7 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { Footer, Header } from '@bcgov/design-system-react-components'
-import { Container, Row, Col } from 'react-bootstrap'
+import { Container } from 'react-bootstrap'
 import NotFound from '@/components/NotFound'
 
 export const Route = createRootRoute({
@@ -17,16 +17,14 @@ export const Route = createRootRoute({
           </Link>{' '}
           <Link to="/protected" className="[&.active]:font-bold">
             Protected By Login
-          </Link>
+          </Link>{' '}
           <Link to="/protectedByRole" className="[&.active]:font-bold">
             Protected By Role
-          </Link>
+          </Link>{' '}
           <Link to="/investigations" className="[&.active]:font-bold">
             Investigations
-          </Link>
-          <Link to="/search" className="[&.active]:font-bold">
-            Search
-          </Link>
+          </Link>{' '}
+          <Link to="/search" className="[&.active]:font-bold"></Link>
         </Header>
         <Outlet />
       </Container>

@@ -8,7 +8,10 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
   return {
     plugins: [
-      TanStackRouterVite({ target: 'react', autoCodeSplitting: true }),
+      TanStackRouterVite({
+        target: 'react',
+        autoCodeSplitting: true,
+      }),
       react(),
     ],
     server: {
