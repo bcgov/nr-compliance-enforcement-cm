@@ -33,8 +33,8 @@ export default function UserList() {
       <h2>Users</h2>
       <ul>
         {data?.map((user) => (
-          <li key={user.id}>
-            {user.first_name} - {user.last_name}
+          <li key={user.personGuid}>
+            {user.firstName} - {user.lastName}
           </li>
         ))}
       </ul>
