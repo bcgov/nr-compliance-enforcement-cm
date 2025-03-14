@@ -1,19 +1,19 @@
 generator client {
-  provider        = "prisma-client-js"
-  output          = "../../node_modules/.prisma/shared"
-  previewFeatures = ["prismaSchemaFolder"]
-  binaryTargets   = ["native", "debian-openssl-1.1.x"]
+  provider      = "prisma-client-js"
+  output        = "../../node_modules/.prisma/shared"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+//See https://github.com/kimjbstar/prisma-class-generator for options to put here
+generator prismaClassGenerator {
+  provider = "prisma-class-generator"
+  output   = "./generated"
+  dryRun   = false
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("SHARED_POSTGRES_URL")
-}
-
-model temp_poc {
-  id         Decimal @id(map: "TEMP_POC_PK") @default(dbgenerated("nextval('\"TEMP_POC_SEQ\"'::regclass)")) @db.Decimal
-  first_name String  @db.VarChar(200)
-  last_name  String  @db.VarChar(200)
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
