@@ -3,7 +3,7 @@ import { fetchUsers } from '../api/queries/users'
 import { useOidc } from '@/auth/oidc'
 import { Link } from '@tanstack/react-router'
 
-export default function UserList() {
+const UserList = () => {
   const { tokens, isUserLoggedIn } = useOidc()
   const fetchWithToken = () => fetchUsers(tokens?.accessToken)
   const { data, isLoading, error } = useQuery({
@@ -41,3 +41,5 @@ export default function UserList() {
     </div>
   )
 }
+
+export default UserList

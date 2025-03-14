@@ -11,7 +11,7 @@ import {
 } from 'react-bootstrap'
 import natrix from '@/assets/natrix.png'
 
-export default function Dashboard() {
+export const Dashboard = () => {
   const [counter, setCounter] = useState<any>(0)
 
   return (
@@ -31,3 +31,5 @@ export default function Dashboard() {
     </Row>
   )
 }
+
+export default Dashboard
