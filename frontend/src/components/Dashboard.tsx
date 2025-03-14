@@ -1,4 +1,4 @@
-import UserList from '@/components/UserList'
+import UserList2 from '@/components/UserList'
 import { useState } from 'react'
 import {
   Button,
@@ -26,7 +26,7 @@ export default function Dashboard() {
             <Image className="img-fluid" src={natrix} />
           </CardBody>
         </Card>
-        <UserList />
+        <UserList2 />
       </Col>
     </Row>
   )
