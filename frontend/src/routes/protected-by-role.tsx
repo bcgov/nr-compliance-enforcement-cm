@@ -1,6 +1,6 @@
 import { createProtectedRoute } from '@/auth/auth'
 
-export const Route = createProtectedRoute('/protectedByRole', ['COS'])({
+export const Route = createProtectedRoute('/protected-by-role', ['COS'])({
   component: ProtectedByRolePage,
 })
 

@@ -1,3 +1,2 @@
-export default function NotFound() {
-  return <div>Wasn't found yo.</div>
-}
+const NotFound = () => <div>Wasn't found yo.</div>
+export default NotFound

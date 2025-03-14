@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query'
 import { useFetch } from '@/api/request'
 import { useOidc } from '@/auth/oidc'
 import { gql } from 'graphql-request'
-
 import { Link } from '@tanstack/react-router'
 
 const GET_USERS = gql`
@@ -21,7 +20,7 @@ interface User {
   lastName: string
 }
 
-export default function UserList2() {
+const UserList2 = () => {
   const { isUserLoggedIn } = useOidc()
 
   const { data, isLoading, error } = useQuery({
@@ -57,3 +56,5 @@ export default function UserList2() {
     </div>
   )
 }
+
+export default UserList2

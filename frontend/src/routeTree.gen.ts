@@ -13,8 +13,9 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as UnauthorizedImport } from './routes/unauthorized'
 import { Route as SearchImport } from './routes/search'
-import { Route as ProtectedByRoleImport } from './routes/protectedByRole'
+import { Route as ProtectedByRoleImport } from './routes/protected-by-role'
 import { Route as ProtectedImport } from './routes/protected'
+import { Route as AddPersonImport } from './routes/add-person'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as InvestigationsIndexImport } from './routes/investigations.index'
@@ -36,14 +37,20 @@ const SearchRoute = SearchImport.update({
 } as any)
 
 const ProtectedByRoleRoute = ProtectedByRoleImport.update({
-  id: '/protectedByRole',
-  path: '/protectedByRole',
+  id: '/protected-by-role',
+  path: '/protected-by-role',
   getParentRoute: () => rootRoute,
 } as any)
 
 const ProtectedRoute = ProtectedImport.update({
   id: '/protected',
   path: '/protected',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AddPersonRoute = AddPersonImport.update({
+  id: '/add-person',
+  path: '/add-person',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -95,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
+    '/add-person': {
+      id: '/add-person'
+      path: '/add-person'
+      fullPath: '/add-person'
+      preLoaderRoute: typeof AddPersonImport
+      parentRoute: typeof rootRoute
+    }
     '/protected': {
       id: '/protected'
       path: '/protected'
@@ -102,10 +116,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedImport
       parentRoute: typeof rootRoute
     }
-    '/protectedByRole': {
-      id: '/protectedByRole'
-      path: '/protectedByRole'
-      fullPath: '/protectedByRole'
+    '/protected-by-role': {
+      id: '/protected-by-role'
+      path: '/protected-by-role'
+      fullPath: '/protected-by-role'
       preLoaderRoute: typeof ProtectedByRoleImport
       parentRoute: typeof rootRoute
     }
@@ -152,8 +166,9 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/add-person': typeof AddPersonRoute
   '/protected': typeof ProtectedRoute
-  '/protectedByRole': typeof ProtectedByRoleRoute
+  '/protected-by-role': typeof ProtectedByRoleRoute
   '/search': typeof SearchRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/investigations/$id': typeof InvestigationsIdRoute
@@ -164,8 +179,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/add-person': typeof AddPersonRoute
   '/protected': typeof ProtectedRoute
-  '/protectedByRole': typeof ProtectedByRoleRoute
+  '/protected-by-role': typeof ProtectedByRoleRoute
   '/search': typeof SearchRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/investigations/$id': typeof InvestigationsIdRoute
@@ -177,8 +193,9 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/add-person': typeof AddPersonRoute
   '/protected': typeof ProtectedRoute
-  '/protectedByRole': typeof ProtectedByRoleRoute
+  '/protected-by-role': typeof ProtectedByRoleRoute
   '/search': typeof SearchRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/investigations/$id': typeof InvestigationsIdRoute
@@ -191,8 +208,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/add-person'
     | '/protected'
-    | '/protectedByRole'
+    | '/protected-by-role'
     | '/search'
     | '/unauthorized'
     | '/investigations/$id'
@@ -202,8 +220,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/add-person'
     | '/protected'
-    | '/protectedByRole'
+    | '/protected-by-role'
     | '/search'
     | '/unauthorized'
     | '/investigations/$id'
@@ -213,8 +232,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/add-person'
     | '/protected'
-    | '/protectedByRole'
+    | '/protected-by-role'
     | '/search'
     | '/unauthorized'
     | '/investigations/$id'
@@ -226,6 +246,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AddPersonRoute: typeof AddPersonRoute
   ProtectedRoute: typeof ProtectedRoute
   ProtectedByRoleRoute: typeof ProtectedByRoleRoute
   SearchRoute: typeof SearchRoute
@@ -238,6 +259,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AddPersonRoute: AddPersonRoute,
   ProtectedRoute: ProtectedRoute,
   ProtectedByRoleRoute: ProtectedByRoleRoute,
   SearchRoute: SearchRoute,
@@ -259,8 +281,9 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/add-person",
         "/protected",
-        "/protectedByRole",
+        "/protected-by-role",
         "/search",
         "/unauthorized",
         "/investigations/$id",
@@ -274,11 +297,14 @@ export const routeTree = rootRoute
     "/about": {
       "filePath": "about.tsx"
     },
+    "/add-person": {
+      "filePath": "add-person.tsx"
+    },
     "/protected": {
       "filePath": "protected.tsx"
     },
-    "/protectedByRole": {
-      "filePath": "protectedByRole.tsx"
+    "/protected-by-role": {
+      "filePath": "protected-by-role.tsx"
     },
     "/search": {
       "filePath": "search.tsx"
