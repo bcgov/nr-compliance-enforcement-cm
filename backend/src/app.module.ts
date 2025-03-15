@@ -35,8 +35,11 @@ import { ScheduleSectorXrefModule } from "./case_management/schedule_sector_xref
 import { LeadModule } from "./case_management/lead/lead.module";
 import { CaseLocationCodeModule } from "./case_management/code-tables/case_location_code/case_location_code.module";
 import { IpmAuthCategoryCodeModule } from "./case_management/ipm_auth_category_code/ipm_auth_category_code.module";
-import { TempPocModule } from "./shared/temp_poc/temp_poc.module";
 import { PersonModule } from "./shared/person/person.module";
+import { AutomapperModule, InjectMapper } from "@automapper/nestjs";
+import { pojos } from "@automapper/pojos";
+import { Mapper } from "@automapper/core";
+import { initializeMappings } from "./middleware/mapper";
 
 @Module({
   imports: [
@@ -46,6 +49,9 @@ import { PersonModule } from "./shared/person/person.module";
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ["./dist/**/*.graphql", "./src/**/*.graphql"],
+    }),
+    AutomapperModule.forRoot({
+      strategyInitializer: pojos(),
     }),
     JwtAuthModule,
     AgeCodeModule,
@@ -73,13 +79,18 @@ import { PersonModule } from "./shared/person/person.module";
     LeadModule,
     CaseLocationCodeModule,
     IpmAuthCategoryCodeModule,
-    TempPocModule,
     PersonModule,
   ],
   controllers: [AppController],
   providers: [AppService, DateScalar],
 })
 export class AppModule {
+  constructor(@InjectMapper() private readonly mapper: Mapper) {}
+
+  onModuleInit() {
+    initializeMappings(this.mapper); // ✅ Ensures mappings are registered after DI is ready
+  }
+
   // let's add a middleware on all routes
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(HTTPLoggerMiddleware).forRoutes("*");
