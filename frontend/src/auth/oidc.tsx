@@ -69,6 +69,8 @@ export const {
   decodedIdTokenSchema: z.object({
     sub: z.string(),
     name: z.string(),
+    given_name: z.string(),
+    family_name: z.string(),
     client_roles: z.array(z.string()),
     idir_username: z.string(),
   }),

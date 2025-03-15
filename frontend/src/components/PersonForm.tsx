@@ -1,5 +1,4 @@
 import { useForm } from '@tanstack/react-form'
-import { zodValidator } from '@tanstack/zod-form-adapter'
 import { Form, Button } from 'react-bootstrap'
 
 // We also support Valibot, ArkType, and any other standard schema library
