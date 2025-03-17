@@ -18,7 +18,7 @@ export default defineConfig(({ mode }) => {
               {
                 tag: 'script',
                 attrs: {
-                  src: '/env.js',
+                  src: '/config.js',
                 },
                 injectTo: 'head',
               },
