@@ -2,9 +2,9 @@ import { useOidc } from '@/auth/oidc'
 import { GraphQLClient, RequestDocument } from 'graphql-request'
 import { redirect } from '@tanstack/react-router'
 import { TypedDocumentNode } from '~/@graphql-typed-document-node/core/typings'
-import config from '@/config'
+import { config } from '@/config'
 
-const GRAPHQL_URL = config.GRAPHQL_URL || 'http://localhost:3003/graphql'
+const GRAPHQL_URL = config.VITE_GRAPHQL_URL || 'http://localhost:3003/graphql'
 
 const createGraphQLClient = () => {
   const { tokens } = useOidc()

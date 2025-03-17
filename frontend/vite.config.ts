@@ -8,6 +8,24 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
   return {
     plugins: [
+      {
+        name: 'build-html',
+        apply: 'build',
+        transformIndexHtml: (html) => {
+          return {
+            html,
+            tags: [
+              {
+                tag: 'script',
+                attrs: {
+                  src: '/env.js',
+                },
+                injectTo: 'head',
+              },
+            ],
+          }
+        },
+      },
       TanStackRouterVite({
         target: 'react',
         autoCodeSplitting: true,

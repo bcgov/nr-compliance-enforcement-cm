@@ -2,7 +2,7 @@ import { createReactOidc } from 'oidc-spa/react'
 import { decodeJwt } from 'oidc-spa/tools/decodeJwt'
 import { redirect } from '@tanstack/react-router'
 import { z } from 'zod'
-import config from '@/config'
+import { config } from '@/config'
 
 export const { OidcProvider, useOidc, getOidc } = createReactOidc({
   // If you don't have the parameters right away, it's the case for example
@@ -15,14 +15,14 @@ export const { OidcProvider, useOidc, getOidc } = createReactOidc({
   // NOTE: If you are using keycloak, the issuerUri should be formatted like this:
   // issuerUri: https://<YOUR_KEYCLOAK_DOMAIN><KC_RELATIVE_PATH>/realms/<REALM_NAME>
   // KC_RELATIVE_PATH is by default "" in modern keycloak, on older keycloak it used to be "/auth" by default.
-  issuerUri: config.OIDC_ISSUER_URI,
-  clientId: config.OIDC_CLIENT_ID,
+  issuerUri: config.VITE_OIDC_ISSUER_URI,
+  clientId: config.VITE_OIDC_CLIENT_ID,
   idleSessionLifetimeInSeconds: (() => {
-    const value_str = config.OIDC_SSO_SESSION_IDLE_SECONDS
+    const value_str = config.VITE_OIDC_SSO_SESSION_IDLE_SECONDS
     return value_str ? parseInt(value_str) : undefined
   })(),
-  scopes: (config.OIDC_SCOPE || undefined)?.split(' '),
-  homeUrl: config.BASE_URL,
+  scopes: (config.VITE_OIDC_SCOPE || undefined)?.split(' '),
+  homeUrl: config.VITE_BASE_URL,
   /**
    * This parameter is optional.
    *
@@ -52,11 +52,8 @@ export const { OidcProvider, useOidc, getOidc } = createReactOidc({
   // This parameter is optional.
   // It allows you to pass extra query params before redirecting to the OIDC server.
   extraQueryParams: ({ isSilent }) => ({
-    audience: import.meta.env.VITE_OIDC_AUDIENCE || undefined,
     ui_locales: isSilent ? undefined : 'en', // Here you would dynamically get the current language at the time of redirecting to the OIDC server
   }),
-  // Remove this in your repo
-  debugLogs: true,
 })
 
 export async function enforceLogin(): Promise<void | never> {
