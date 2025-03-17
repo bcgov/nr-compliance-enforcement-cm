@@ -11,7 +11,7 @@
 	}
 	handle /config.js {
 		header {
-			Content-Type application/javascript
+			Content-Type text/javascript
 		}
 		respond `window.config={"VITE_ENVIRONMENT_NAME":"{$VITE_ENVIRONMENT_NAME}", "VITE_PORT":"{$VITE_PORT}", "VITE_BASE_URL":"{$VITE_BASE_URL}", "VITE_GRAPHQL_URL":"{$VITE_GRAPHQL_URL}", "VITE_OIDC_ISSUER_URI":"{$VITE_OIDC_ISSUER_URI}", "VITE_OIDC_CLIENT_ID":"{$VITE_OIDC_CLIENT_ID}", "VITE_OIDC_SSO_SESSION_IDLE_SECONDS":"{$VITE_OIDC_SSO_SESSION_IDLE_SECONDS}", "VITE_OIDC_SCOPE":"{$VITE_OIDC_SCOPE}"};`
 	}
@@ -19,7 +19,7 @@
 	encode zstd gzip
 	file_server
 	@spa_router {
-		not path /api*
+		not path /api* /config.js
 		file {
 			try_files {path} /index.html
 		}
