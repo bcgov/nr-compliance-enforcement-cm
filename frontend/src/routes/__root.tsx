@@ -4,12 +4,9 @@ import NotFound from '@/components/NotFound'
 
 export const Route = createRootRoute({
   component: () => (
-    <>
-      <Layout>
-        <Outlet />
-      </Layout>
-      <TanStackRouterDevtools />
-    </>
+    <Layout>
+      <Outlet />
+    </Layout>
   ),
   notFoundComponent: () => <NotFound />,
 })
