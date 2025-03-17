@@ -6,6 +6,11 @@
 interface ImportMetaEnv {
   readonly VITE_OIDC_ISSUER: string
   readonly VITE_OIDC_CLIENT_ID: string
+  readonly VITE_OIDC_SSO_SESSION_IDLE_SECONDS: string
+  readonly VITE_OIDC_SCOPE: string
+  readonly VITE_BASE_URL: string
+  readonly VITE_OIDC_AUDIENCE: string
+  readonly VITE_GRAPHQL_URL: string
 }
 
 interface ImportMeta {

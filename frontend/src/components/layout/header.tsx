@@ -3,7 +3,7 @@ import logoSm from '@/assets/branding/BCgov-vert-sm.png'
 import logoLg from '@/assets/branding/BCgov-lg.png'
 import { Link } from '@tanstack/react-router'
 import EnvironmentBanner from './environmentBanner'
-import config from '@/config'
+import { config } from '@/config'
 import { useOidc } from '@/auth/oidc'
 import { Button } from 'react-bootstrap'
 
@@ -14,7 +14,7 @@ export const Header: FC = () => {
       decodedIdToken?.family_name?.charAt(0)
     : ''
 
-  const environmentName = config.ENVIRONMENT_NAME || 'production'
+  const environmentName = config.VITE_ENVIRONMENT_NAME || 'production'
 
   return (
     <div>

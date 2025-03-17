@@ -9,6 +9,22 @@
 		format console
 		level {$LOG_LEVEL}
 	}
+	handle /config.js {
+		header {
+			Content-Type text/javascript
+		}
+		respond `window.config=
+		{
+			"VITE_ENVIRONMENT_NAME":"{$VITE_ENVIRONMENT_NAME}", 
+			"VITE_PORT":"{$VITE_PORT}", 
+			"VITE_BASE_URL":"{$VITE_BASE_URL}", 
+			"VITE_GRAPHQL_URL":"{$VITE_GRAPHQL_URL}", 
+			"VITE_OIDC_ISSUER_URI":"{$VITE_OIDC_ISSUER_URI}", 
+			"VITE_OIDC_CLIENT_ID":"{$VITE_OIDC_CLIENT_ID}"
+			"VITE_OIDC_SSO_SESSION_IDLE_SECONDS":"{$VITE_OIDC_SSO_SESSION_IDLE_SECONDS}"
+			"VITE_OIDC_SCOPE":"{$VITE_OIDC_SCOPE}"
+		};`
+	}
 	root * /srv
 	encode zstd gzip
 	file_server
@@ -44,6 +60,9 @@
 		Permissions-Policy "fullscreen=(self), camera=(), microphone=()"
 		Cross-Origin-Resource-Policy "cross-origin"
 		Cross-Origin-Opener-Policy "same-origin"
+    # Without this the ZAP scan will raise (Insufficient Site Isolation Against Spectre Vulnerability) (Low).  
+    # With this we can't use Keycloak -at least not out of the box
+    #Cross-Origin-Embedder-Policy "require-corp" 
 	}
 }
 :3001 {
