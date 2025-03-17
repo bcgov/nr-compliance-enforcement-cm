@@ -43,7 +43,6 @@
     "@faker-js/faker": "^9.0.0",
     "@playwright/test": "^1.51.0",
     "@tanstack/react-router-devtools": "^1.114.13",
-    "@tanstack/router-plugin": "^1.114.12",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.4.3",
