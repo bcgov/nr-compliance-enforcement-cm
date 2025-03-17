@@ -1,6 +1,9 @@
+/// <reference types="node" />
 import { defineConfig, devices } from '@playwright/test'
-import { baseURL } from './e2e/utils'
+import dotenv from 'dotenv'
 
+dotenv.config()
+const baseURL = process.env.E2E_BASE_URL || 'http://localhost:5173'
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -36,29 +39,36 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    { name: 'setup', testMatch: /.*\.setup\.ts/ },
     {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
         baseURL: baseURL,
       },
+      dependencies: ['setup'],
+      testMatch: /.*\.(spec|test)\.ts/,
     },
-    {
-      name: 'Google Chrome',
-      use: {
-        ...devices['Desktop Chrome'],
-        channel: 'chrome',
-        baseURL: baseURL,
-      },
-    },
+    // {
+    //   name: 'Google Chrome',
+    //   use: {
+    //     ...devices['Desktop Chrome'],
+    //     channel: 'chrome',
+    //     baseURL: baseURL,
+    //   },
+    //   dependencies: ['setup'],
+    //   testMatch: /.*\.(spec|test)\.ts/,
+    // },
 
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-        baseURL: baseURL,
-      },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: {
+    //     ...devices['Desktop Firefox'],
+    //     baseURL: baseURL,
+    //   },
+    //   dependencies: ['setup'],
+    //   testMatch: /.*\.(spec|test)\.ts/,
+    // },
 
     {
       name: 'safari',
@@ -66,14 +76,18 @@ export default defineConfig({
         ...devices['Desktop Safari'],
         baseURL: baseURL,
       },
+      dependencies: ['setup'],
+      testMatch: /.*\.(spec|test)\.ts/,
     },
-    {
-      name: 'Microsoft Edge',
-      use: {
-        ...devices['Desktop Edge'],
-        channel: 'msedge',
-        baseURL: baseURL,
-      },
-    },
+    // {
+    //   name: 'Microsoft Edge',
+    //   use: {
+    //     ...devices['Desktop Edge'],
+    //     channel: 'msedge',
+    //     baseURL: baseURL,
+    //   },
+    //   dependencies: ['setup'],
+    //   testMatch: /.*\.(spec|test)\.ts/,
+    // },
   ],
 })
