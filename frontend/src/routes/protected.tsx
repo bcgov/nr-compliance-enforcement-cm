@@ -3,6 +3,7 @@ import { createProtectedRoute } from '@/auth/auth'
 import { useMemo } from 'react'
 import { decodeJwt } from 'oidc-spa/tools/decodeJwt'
 import { parseKeycloakIssuerUri } from 'oidc-spa/tools/parseKeycloakIssuerUri'
+import config from '@/config'
 
 export const Route = createProtectedRoute('/protected')({
   component: ProtectedPage,
@@ -93,7 +94,7 @@ function ProtectedPage() {
           <a
             href={parsedKeycloakIssuerUri.getAccountUrl({
               clientId,
-              backToAppFromAccountUrl: import.meta.env.BASE_URL,
+              backToAppFromAccountUrl: config.BASE_URL,
             })}
           >
             Go to Keycloak Account Management Console
