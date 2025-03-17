@@ -1,6 +1,7 @@
 import { FC } from 'react'
 import { Header } from './header'
 import { SideBar } from './sidebar'
+import './layout.scss'
 
 type Props = {
   children: React.ReactNode
