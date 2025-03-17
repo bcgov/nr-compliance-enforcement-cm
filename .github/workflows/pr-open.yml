@@ -25,7 +25,7 @@ jobs:
       sha: ${{ github.sha }}
     strategy:
       matrix:
-        package: [migrations, backend]
+        package: [migrations, backend, frontend]
     timeout-minutes: 10
     steps:
       - uses: bcgov-nr/action-builder-ghcr@v2.0.2
@@ -107,9 +107,17 @@ jobs:
           echo "https://www.conventionalcommits.org/en/v1.0.0/"
           exit 1
 
+      - name: Calculate Deployment Number
+        id: get-deployment-number
+        shell: bash
+        run: |
+          PR_NUMBER=$(echo ${{ github.event.number }})
+          PR_NUMBER_MOD_TEN=$(($PR_NUMBER % 10))
+          echo "DEPLOYMENT_NUMBER=$(($PR_NUMBER_MOD_TEN))" >> $GITHUB_OUTPUT
+
       - uses: bcgov-nr/action-pr-description-add@v1.1.1
         env:
-          DOMAIN: apps.silver.devops.gov.bc.ca
+          DOMAIN: apps.emerald.devops.gov.bc.ca
           PREFIX: ${{ github.event.repository.name }}
         with:
           add_markdown: |
@@ -118,7 +126,7 @@ jobs:
             Thanks for the PR!
 
             Deployments, as required, will be available below:
-            - [Backend](https://${{ env.PREFIX }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}/api)
+            - [Backend](https://${{ env.PREFIX }}-${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}-backend.${{ env.DOMAIN }}/api)
 
             Please create PRs in draft mode.  Mark as ready to enable:
             - [Analysis Workflow](https://github.com/${{ github.repository }}/actions/workflows/analysis.yml)
