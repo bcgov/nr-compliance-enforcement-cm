@@ -90,14 +90,18 @@ export async function enforceLoginRoles(
 }
 
 export async function getAccessToken(): Promise<string | undefined> {
+  console.log('getAccessToken')
   const oidc = await getOidc()
 
   if (!oidc.isUserLoggedIn) {
+    console.log('getAccessToken !oidc.isUserLoggedIn')
     await oidc.login({
       doesCurrentHrefRequiresAuth: true,
     })
   } else {
+    console.log('getAccessToken oidc.isUserLoggedIn')
     const { accessToken } = oidc.getTokens()
+    console.log('getAccessToken accessToken', accessToken)
     return accessToken
   }
 }

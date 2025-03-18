@@ -36,11 +36,11 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <OidcProvider>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <OidcProvider>
           <RouterProvider router={router} />
-        </QueryClientProvider>
-      </OidcProvider>
+        </OidcProvider>
+      </QueryClientProvider>
     </StrictMode>,
   )
 }

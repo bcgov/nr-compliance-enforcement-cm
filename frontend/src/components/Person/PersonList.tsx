@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { gql } from 'graphql-request'
 import { useRequest } from '@/graphql/client'
-import { Table, Container, Row, Col, Button } from 'react-bootstrap'
+import { Table, Row, Col, Button } from 'react-bootstrap'
 import { Link } from '@tanstack/react-router'
 
 const PersonList = () => {
@@ -41,7 +41,7 @@ const PersonList = () => {
         </Col>
         <Col md={2}>
           <Link to="/persons/create">
-            <Button variant="primary" className="float-end">
+            <Button variant="primary" size="sm" className="float-end">
               Add Person
             </Button>
           </Link>
