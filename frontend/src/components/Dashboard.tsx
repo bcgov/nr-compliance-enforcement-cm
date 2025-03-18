@@ -1,14 +1,28 @@
-import PersonList from '@/components/UserList'
-import { useState } from 'react'
-import { Button, Row, Col } from 'react-bootstrap'
+import { Button, Card } from 'react-bootstrap'
+import mountains from '@/assets/mountains.jpg'
+import { Link } from '@tanstack/react-router'
+import { useOidc } from '@/auth/oidc'
 
 export const Dashboard = () => {
+  const { isUserLoggedIn } = useOidc()
   return (
-    <Row>
-      <Col>
-        <PersonList />
-      </Col>
-    </Row>
+    <Card text="light">
+      <Card.Img src={mountains} />
+      <Card.ImgOverlay>
+        <Card.Body className="w-50">
+          <Card.Title className="fs-1">Welcome to NatInvestigations</Card.Title>
+          <Card.Text>
+            Investigations involving inquiries, inspections, interviews, and
+            intelligence interpretation.
+          </Card.Text>
+          {!isUserLoggedIn && (
+            <Link to="/investigations">
+              <Button variant="primary">Log in</Button>
+            </Link>
+          )}
+        </Card.Body>
+      </Card.ImgOverlay>
+    </Card>
   )
 }
 

@@ -42,7 +42,16 @@ export const Header: FC = () => {
                 <div data-initials={initials} className="profile-avatar"></div>
               </div>
             )}
-            {!isUserLoggedIn && <Button>Login</Button>}
+            {!isUserLoggedIn && (
+              <Link to="/investigations">
+                <Button>Login</Button>
+              </Link>
+            )}
+            {isUserLoggedIn && (
+              <Link to="/logout">
+                <Button>Logout</Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>
