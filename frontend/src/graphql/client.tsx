@@ -15,8 +15,7 @@ const getClient = async () => {
   })
 }
 
-export const useRequest = async (QUERY: any) => {
-  console.log('useRequest')
+export const useRequest = async (QUERY: any, input = {}) => {
   const client = await getClient()
-  return client.request<any>(QUERY)
+  return client.request<any>(QUERY, input)
 }
