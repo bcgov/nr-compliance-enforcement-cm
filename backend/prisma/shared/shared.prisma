@@ -18,7 +18,7 @@ datasource db {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model contact_method {
-  contact_method_guid                                                                        String                   @id @db.Uuid
+  contact_method_guid                                                                        String                   @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
   person_guid                                                                                String                   @db.Uuid
   contact_method_type_code                                                                   String                   @db.VarChar(10)
   contact_value                                                                              String?                  @db.VarChar(512)
@@ -56,7 +56,7 @@ model contact_method_type_code {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model person {
-  person_guid          String           @id @db.Uuid
+  person_guid          String           @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
   first_name           String           @db.VarChar(128)
   middle_name          String?          @db.VarChar(128)
   middle_name_2        String?          @db.VarChar(128)
