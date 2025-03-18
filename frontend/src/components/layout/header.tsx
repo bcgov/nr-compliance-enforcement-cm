@@ -38,21 +38,17 @@ export const Header: FC = () => {
           <div className="header-right">
             {/* User Profile Avatar and Menu */}
             {isUserLoggedIn && (
-              <div className="header-profile-menu">
-                <div data-initials={initials} className="profile-avatar"></div>
-              </div>
-            )}
-            {!isUserLoggedIn && (
-              <Link to="/investigations">
-                <Button>Login</Button>
-              </Link>
-            )}
-            {isUserLoggedIn && (
-              <Link to="/logout">
+              <>
+                <div className="header-profile-menu">
+                  <div
+                    data-initials={initials}
+                    className="profile-avatar"
+                  ></div>
+                </div>
                 <Button onClick={() => logout({ redirectTo: 'home' })}>
                   Logout
                 </Button>
-              </Link>
+              </>
             )}
           </div>
         </div>

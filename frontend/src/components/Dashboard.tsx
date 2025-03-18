@@ -9,15 +9,17 @@ export const Dashboard = () => {
     <Card text="light">
       <Card.Img src={mountains} />
       <Card.ImgOverlay>
-        <Card.Body className="w-50">
-          <Card.Title className="fs-1">Welcome to NatInvestigations</Card.Title>
+        <Card.Body className="w-50 ms-5 mt-5">
+          <Card.Title className="fs-2">Welcome to NatInvestigations</Card.Title>
           <Card.Text>
             Investigations involving inquiries, inspections, interviews, and
             intelligence interpretation.
           </Card.Text>
           {!isUserLoggedIn && (
             <Link to="/investigations">
-              <Button variant="primary">Log in</Button>
+              <Button size="lg" variant="primary">
+                Log in
+              </Button>
             </Link>
           )}
         </Card.Body>

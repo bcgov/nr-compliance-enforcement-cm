@@ -1,7 +1,7 @@
 import { createProtectedRoute } from '@/auth/auth'
-import PersonForm from '@/components/PersonForm'
+import PersonForm from '@/components/Person/PersonForm'
 
-export const Route = createProtectedRoute('/add-person')({
+export const Route = createProtectedRoute('/persons/create')({
   component: RouteComponent,
 })
 

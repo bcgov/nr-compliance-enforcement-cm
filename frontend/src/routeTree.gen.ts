@@ -15,11 +15,11 @@ import { Route as UnauthorizedImport } from './routes/unauthorized'
 import { Route as SearchImport } from './routes/search'
 import { Route as ProtectedByRoleImport } from './routes/protected-by-role'
 import { Route as ProtectedImport } from './routes/protected'
-import { Route as AddPersonImport } from './routes/add-person'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 import { Route as PersonsIndexImport } from './routes/persons.index'
 import { Route as InvestigationsIndexImport } from './routes/investigations.index'
+import { Route as PersonsCreateImport } from './routes/persons.create'
 import { Route as PersonsIdImport } from './routes/persons.$id'
 import { Route as InvestigationsIdImport } from './routes/investigations.$id'
 import { Route as PersonsIdEditImport } from './routes/persons_.$id.edit'
@@ -51,12 +51,6 @@ const ProtectedRoute = ProtectedImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AddPersonRoute = AddPersonImport.update({
-  id: '/add-person',
-  path: '/add-person',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const AboutRoute = AboutImport.update({
   id: '/about',
   path: '/about',
@@ -78,6 +72,12 @@ const PersonsIndexRoute = PersonsIndexImport.update({
 const InvestigationsIndexRoute = InvestigationsIndexImport.update({
   id: '/investigations/',
   path: '/investigations/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PersonsCreateRoute = PersonsCreateImport.update({
+  id: '/persons/create',
+  path: '/persons/create',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -123,13 +123,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/add-person': {
-      id: '/add-person'
-      path: '/add-person'
-      fullPath: '/add-person'
-      preLoaderRoute: typeof AddPersonImport
-      parentRoute: typeof rootRoute
-    }
     '/protected': {
       id: '/protected'
       path: '/protected'
@@ -172,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PersonsIdImport
       parentRoute: typeof rootRoute
     }
+    '/persons/create': {
+      id: '/persons/create'
+      path: '/persons/create'
+      fullPath: '/persons/create'
+      preLoaderRoute: typeof PersonsCreateImport
+      parentRoute: typeof rootRoute
+    }
     '/investigations/': {
       id: '/investigations/'
       path: '/investigations'
@@ -208,13 +208,13 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/add-person': typeof AddPersonRoute
   '/protected': typeof ProtectedRoute
   '/protected-by-role': typeof ProtectedByRoleRoute
   '/search': typeof SearchRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/investigations/$id': typeof InvestigationsIdRoute
   '/persons/$id': typeof PersonsIdRoute
+  '/persons/create': typeof PersonsCreateRoute
   '/investigations': typeof InvestigationsIndexRoute
   '/persons': typeof PersonsIndexRoute
   '/investigations/$id/edit': typeof InvestigationsIdEditRoute
@@ -224,13 +224,13 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/add-person': typeof AddPersonRoute
   '/protected': typeof ProtectedRoute
   '/protected-by-role': typeof ProtectedByRoleRoute
   '/search': typeof SearchRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/investigations/$id': typeof InvestigationsIdRoute
   '/persons/$id': typeof PersonsIdRoute
+  '/persons/create': typeof PersonsCreateRoute
   '/investigations': typeof InvestigationsIndexRoute
   '/persons': typeof PersonsIndexRoute
   '/investigations/$id/edit': typeof InvestigationsIdEditRoute
@@ -241,13 +241,13 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/add-person': typeof AddPersonRoute
   '/protected': typeof ProtectedRoute
   '/protected-by-role': typeof ProtectedByRoleRoute
   '/search': typeof SearchRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/investigations/$id': typeof InvestigationsIdRoute
   '/persons/$id': typeof PersonsIdRoute
+  '/persons/create': typeof PersonsCreateRoute
   '/investigations/': typeof InvestigationsIndexRoute
   '/persons/': typeof PersonsIndexRoute
   '/investigations_/$id/edit': typeof InvestigationsIdEditRoute
@@ -259,13 +259,13 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
-    | '/add-person'
     | '/protected'
     | '/protected-by-role'
     | '/search'
     | '/unauthorized'
     | '/investigations/$id'
     | '/persons/$id'
+    | '/persons/create'
     | '/investigations'
     | '/persons'
     | '/investigations/$id/edit'
@@ -274,13 +274,13 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/add-person'
     | '/protected'
     | '/protected-by-role'
     | '/search'
     | '/unauthorized'
     | '/investigations/$id'
     | '/persons/$id'
+    | '/persons/create'
     | '/investigations'
     | '/persons'
     | '/investigations/$id/edit'
@@ -289,13 +289,13 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
-    | '/add-person'
     | '/protected'
     | '/protected-by-role'
     | '/search'
     | '/unauthorized'
     | '/investigations/$id'
     | '/persons/$id'
+    | '/persons/create'
     | '/investigations/'
     | '/persons/'
     | '/investigations_/$id/edit'
@@ -306,13 +306,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AddPersonRoute: typeof AddPersonRoute
   ProtectedRoute: typeof ProtectedRoute
   ProtectedByRoleRoute: typeof ProtectedByRoleRoute
   SearchRoute: typeof SearchRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
   InvestigationsIdRoute: typeof InvestigationsIdRoute
   PersonsIdRoute: typeof PersonsIdRoute
+  PersonsCreateRoute: typeof PersonsCreateRoute
   InvestigationsIndexRoute: typeof InvestigationsIndexRoute
   PersonsIndexRoute: typeof PersonsIndexRoute
   InvestigationsIdEditRoute: typeof InvestigationsIdEditRoute
@@ -322,13 +322,13 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AddPersonRoute: AddPersonRoute,
   ProtectedRoute: ProtectedRoute,
   ProtectedByRoleRoute: ProtectedByRoleRoute,
   SearchRoute: SearchRoute,
   UnauthorizedRoute: UnauthorizedRoute,
   InvestigationsIdRoute: InvestigationsIdRoute,
   PersonsIdRoute: PersonsIdRoute,
+  PersonsCreateRoute: PersonsCreateRoute,
   InvestigationsIndexRoute: InvestigationsIndexRoute,
   PersonsIndexRoute: PersonsIndexRoute,
   InvestigationsIdEditRoute: InvestigationsIdEditRoute,
@@ -347,13 +347,13 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
-        "/add-person",
         "/protected",
         "/protected-by-role",
         "/search",
         "/unauthorized",
         "/investigations/$id",
         "/persons/$id",
+        "/persons/create",
         "/investigations/",
         "/persons/",
         "/investigations_/$id/edit",
@@ -365,9 +365,6 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
-    },
-    "/add-person": {
-      "filePath": "add-person.tsx"
     },
     "/protected": {
       "filePath": "protected.tsx"
@@ -386,6 +383,9 @@ export const routeTree = rootRoute
     },
     "/persons/$id": {
       "filePath": "persons.$id.tsx"
+    },
+    "/persons/create": {
+      "filePath": "persons.create.tsx"
     },
     "/investigations/": {
       "filePath": "investigations.index.tsx"

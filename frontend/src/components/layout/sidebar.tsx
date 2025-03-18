@@ -27,10 +27,10 @@ export const SideBar: FC = () => {
       route: '/investigations',
     },
     {
-      id: 'add-person-link',
-      name: 'Add Person',
-      icon: 'bi bi-plus-circle',
-      route: '/add-person',
+      id: 'persons-link',
+      name: 'Persons',
+      icon: 'bi bi-people-fill',
+      route: '/persons',
     },
     {
       id: 'about-link',
