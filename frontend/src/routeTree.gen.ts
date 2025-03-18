@@ -15,7 +15,6 @@ import { Route as UnauthorizedImport } from './routes/unauthorized'
 import { Route as SearchImport } from './routes/search'
 import { Route as ProtectedByRoleImport } from './routes/protected-by-role'
 import { Route as ProtectedImport } from './routes/protected'
-import { Route as LogoutImport } from './routes/logout'
 import { Route as AddPersonImport } from './routes/add-person'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
@@ -49,12 +48,6 @@ const ProtectedByRoleRoute = ProtectedByRoleImport.update({
 const ProtectedRoute = ProtectedImport.update({
   id: '/protected',
   path: '/protected',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const LogoutRoute = LogoutImport.update({
-  id: '/logout',
-  path: '/logout',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -137,13 +130,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AddPersonImport
       parentRoute: typeof rootRoute
     }
-    '/logout': {
-      id: '/logout'
-      path: '/logout'
-      fullPath: '/logout'
-      preLoaderRoute: typeof LogoutImport
-      parentRoute: typeof rootRoute
-    }
     '/protected': {
       id: '/protected'
       path: '/protected'
@@ -223,7 +209,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/add-person': typeof AddPersonRoute
-  '/logout': typeof LogoutRoute
   '/protected': typeof ProtectedRoute
   '/protected-by-role': typeof ProtectedByRoleRoute
   '/search': typeof SearchRoute
@@ -240,7 +225,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/add-person': typeof AddPersonRoute
-  '/logout': typeof LogoutRoute
   '/protected': typeof ProtectedRoute
   '/protected-by-role': typeof ProtectedByRoleRoute
   '/search': typeof SearchRoute
@@ -258,7 +242,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/add-person': typeof AddPersonRoute
-  '/logout': typeof LogoutRoute
   '/protected': typeof ProtectedRoute
   '/protected-by-role': typeof ProtectedByRoleRoute
   '/search': typeof SearchRoute
@@ -277,7 +260,6 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/add-person'
-    | '/logout'
     | '/protected'
     | '/protected-by-role'
     | '/search'
@@ -293,7 +275,6 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/add-person'
-    | '/logout'
     | '/protected'
     | '/protected-by-role'
     | '/search'
@@ -309,7 +290,6 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/add-person'
-    | '/logout'
     | '/protected'
     | '/protected-by-role'
     | '/search'
@@ -327,7 +307,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AddPersonRoute: typeof AddPersonRoute
-  LogoutRoute: typeof LogoutRoute
   ProtectedRoute: typeof ProtectedRoute
   ProtectedByRoleRoute: typeof ProtectedByRoleRoute
   SearchRoute: typeof SearchRoute
@@ -344,7 +323,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AddPersonRoute: AddPersonRoute,
-  LogoutRoute: LogoutRoute,
   ProtectedRoute: ProtectedRoute,
   ProtectedByRoleRoute: ProtectedByRoleRoute,
   SearchRoute: SearchRoute,
@@ -370,7 +348,6 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/add-person",
-        "/logout",
         "/protected",
         "/protected-by-role",
         "/search",
@@ -391,9 +368,6 @@ export const routeTree = rootRoute
     },
     "/add-person": {
       "filePath": "add-person.tsx"
-    },
-    "/logout": {
-      "filePath": "logout.tsx"
     },
     "/protected": {
       "filePath": "protected.tsx"

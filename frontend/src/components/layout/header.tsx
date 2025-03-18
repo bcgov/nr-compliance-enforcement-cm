@@ -8,7 +8,7 @@ import { useOidc } from '@/auth/oidc'
 import { Button } from 'react-bootstrap'
 
 export const Header: FC = () => {
-  const { decodedIdToken, isUserLoggedIn } = useOidc()
+  const { decodedIdToken, isUserLoggedIn, logout } = useOidc()
   const initials = isUserLoggedIn
     ? decodedIdToken?.given_name?.charAt(0) +
       decodedIdToken?.family_name?.charAt(0)
@@ -49,7 +49,9 @@ export const Header: FC = () => {
             )}
             {isUserLoggedIn && (
               <Link to="/logout">
-                <Button>Logout</Button>
+                <Button onClick={() => logout({ redirectTo: 'home' })}>
+                  Logout
+                </Button>
               </Link>
             )}
           </div>
