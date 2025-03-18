@@ -27,10 +27,10 @@ export const SideBar: FC = () => {
       route: '/investigations',
     },
     {
-      id: 'add-person-link',
-      name: 'Add Person',
-      icon: 'bi bi-plus-circle',
-      route: '/add-person',
+      id: 'persons-link',
+      name: 'Persons',
+      icon: 'bi bi-people-fill',
+      route: '/persons',
     },
     {
       id: 'about-link',
@@ -105,7 +105,9 @@ export const SideBar: FC = () => {
     )
   }
 
-  return (
+  return !isUserLoggedIn ? (
+    <></>
+  ) : (
     <div
       className={`d-flex flex-column flex-shrink-0 sidebar ${(!isOpen ? 'collapsed' : '').trim()}`}
     >
@@ -114,21 +116,20 @@ export const SideBar: FC = () => {
 
       {/* <!-- menu items for the organization --> */}
       <ul className="nav nav-pills flex-column mb-auto sidenav-list">
-        {isUserLoggedIn &&
-          menuItems.map((item, idx) => {
-            // Check if the user has an excluded role (e.g. hide ZAG)
-            if (item.excludedRoles?.some((role) => userRoles.includes(role))) {
-              return null // Exclude this item if the user has an excluded role
-            }
+        {menuItems.map((item, idx) => {
+          // Check if the user has an excluded role (e.g. hide ZAG)
+          if (item.excludedRoles?.some((role) => userRoles.includes(role))) {
+            return null // Exclude this item if the user has an excluded role
+          }
 
-            // Check if the item has required roles and if the user has the required role
-            if (item.requiredRoles?.some((role) => !userRoles.includes(role))) {
-              return null // Exclude this item if the user does not have the required role
-            }
+          // Check if the item has required roles and if the user has the required role
+          if (item.requiredRoles?.some((role) => !userRoles.includes(role))) {
+            return null // Exclude this item if the user does not have the required role
+          }
 
-            // If neither excludedRoles nor requiredRoles conditions apply, render the item
-            return sideBarMenuItem(idx, item)
-          })}
+          // If neither excludedRoles nor requiredRoles conditions apply, render the item
+          return sideBarMenuItem(idx, item)
+        })}
       </ul>
       <button
         className="sidebar-toggle"

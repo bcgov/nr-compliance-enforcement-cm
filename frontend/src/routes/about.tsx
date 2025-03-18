@@ -1,6 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createProtectedRoute } from '@/auth/auth'
 
-export const Route = createFileRoute('/about')({
+export const Route = createProtectedRoute('/about')({
   component: About,
 })
 

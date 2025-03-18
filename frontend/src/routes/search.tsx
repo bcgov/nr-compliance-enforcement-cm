@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
+import { createProtectedRoute } from '@/auth/auth'
 import { zodValidator } from '@tanstack/zod-adapter'
 import { z } from 'zod'
 import { Card, Form, Button } from 'react-bootstrap'
@@ -7,35 +8,14 @@ import { Card, Form, Button } from 'react-bootstrap'
 const SortOptions = ['newest', 'oldest'] as const
 type SortOptions = (typeof SortOptions)[number]
 
-// OPTION 1: Definte a type for the search params and write a validation function
-/* 
-
-type Search = {
-  page: number
-  filter: string
-  sort: SortOptions
-}
-
-export const Route = createFileRoute('/search')({
-  component: Search,
-  validateSearch: (search: Record<string, unknown>): Search => {
-    // validate and parse the search params into a typed state
-    return {
-      page: Number(search?.page ?? 1),
-      filter: (search.filter as string) || '',
-      sort: (search.sort as SortOptions) || 'newest',
-    }
-  },
-}) */
-
-// OPTION 2: Use zod (or other validation library) to define a schema for the search params
+// Use zod (or other validation library) to define a schema for the search params
 const searchSchema = z.object({
   page: z.number().default(1),
   filter: z.string().default(''),
   sort: z.enum(SortOptions).default('newest'),
 })
 
-export const Route = createFileRoute('/search')({
+export const Route = createProtectedRoute('/search')({
   component: Search,
   validateSearch: zodValidator(searchSchema),
 })

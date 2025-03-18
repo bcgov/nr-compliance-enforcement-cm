@@ -88,3 +88,16 @@ export async function enforceLoginRoles(
     }
   }
 }
+
+export async function getAccessToken(): Promise<string | undefined> {
+  const oidc = await getOidc()
+
+  if (!oidc.isUserLoggedIn) {
+    await oidc.login({
+      doesCurrentHrefRequiresAuth: true,
+    })
+  } else {
+    const { accessToken } = oidc.getTokens()
+    return accessToken
+  }
+}

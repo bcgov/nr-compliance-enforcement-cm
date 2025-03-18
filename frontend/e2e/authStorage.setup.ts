@@ -2,6 +2,10 @@
 import { test as setup, expect, Page } from '@playwright/test'
 import { STORAGE_STATE_BY_ROLE } from './utils/authConfig'
 
+/**
+ * To make a new user available for use in tests, replicate these `setup` blocks using the appropriate user,
+ * and be sure to add the appropriate path to the STORAGE_STATE_BY_ROLE in `utils/authConfig`
+ */
 setup('authenticate as COS', async ({ page }) => {
   await loginToKeycloak(page, 'COS')
   await expect(page.getByText('Conservation Officer Service')).toBeVisible()

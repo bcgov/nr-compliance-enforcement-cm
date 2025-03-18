@@ -1,6 +1,7 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
+import { createProtectedRoute } from '@/auth/auth'
 
-export const Route = createFileRoute('/investigations/$id')({
+export const Route = createProtectedRoute('/investigations/$id')({
   component: ViewInvestigation,
 })
 
