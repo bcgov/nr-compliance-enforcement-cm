@@ -1,10 +1,12 @@
-import { Resolver, Query, Args } from "@nestjs/graphql";
+import { Resolver, Query, Args, Mutation } from "@nestjs/graphql";
 import { PersonService } from "./person.service";
 import { JwtRoleGuard } from "../../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
 import { coreRoles } from "../../enum/role.enum";
 import { Roles } from "../../auth/decorators/roles.decorator";
 import { GraphQLError } from "graphql";
+import { Person } from "src/shared/person/dto/person";
+import { PersonInput } from "src/shared/person/dto/person.input";
 
 @UseGuards(JwtRoleGuard)
 @Resolver("Person")
@@ -35,6 +37,43 @@ export class PersonResolver {
         extensions: {
           code: "INTERNAL_SERVER_ERROR",
         },
+      });
+    }
+  }
+
+  @Mutation(() => Person, { name: "createPerson" })
+  @Roles(coreRoles)
+  async create(@Args("input") input: PersonInput) {
+    try {
+      return await this.personService.create(input);
+    } catch (error) {
+      console.error("Create person error:", error);
+      throw new GraphQLError("Error creating person", {
+        extensions: { code: "INTERNAL_SERVER_ERROR" },
+      });
+    }
+  }
+
+  @Mutation(() => Person, { name: "updatePerson" })
+  @Roles(coreRoles)
+  async update(@Args("personGuid") personGuid: string, @Args("input") input: PersonInput) {
+    try {
+      return await this.personService.update(personGuid, input);
+    } catch (error) {
+      throw new GraphQLError("Error updating person", {
+        extensions: { code: "INTERNAL_SERVER_ERROR" },
+      });
+    }
+  }
+
+  @Mutation(() => Person, { name: "deletePerson" })
+  @Roles(coreRoles)
+  async delete(@Args("personGuid") personGuid: string) {
+    try {
+      return await this.personService.delete(personGuid);
+    } catch (error) {
+      throw new GraphQLError("Error deleting person", {
+        extensions: { code: "INTERNAL_SERVER_ERROR" },
       });
     }
   }

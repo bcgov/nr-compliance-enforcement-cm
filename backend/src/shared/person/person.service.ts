@@ -4,6 +4,7 @@ import { SharedPrismaService } from "../../prisma/shared/prisma.shared.service";
 import { InjectMapper } from "@automapper/nestjs";
 import { Mapper } from "@automapper/core";
 import { person } from "prisma/shared/generated/person";
+import { PersonInput } from "src/shared/person/dto/person.input";
 
 @Injectable()
 export class PersonService {
@@ -57,5 +58,92 @@ export class PersonService {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async create(input: PersonInput): Promise<Person> {
+    const prismaPerson = await this.prisma.person.create({
+      data: {
+        first_name: input.firstName,
+        middle_name: input.middleName,
+        middle_name_2: input.middleName2,
+        last_name: input.lastName,
+        create_user_id: "system",
+        contact_method: input.contactMethods
+          ? {
+              create: input.contactMethods.map(
+                (cm) =>
+                  ({
+                    contact_value: cm.value,
+                    contact_method_type_code: cm.typeCode,
+                    create_user_id: "system",
+                  }) as any,
+              ),
+            }
+          : undefined,
+      },
+      include: {
+        contact_method: {
+          include: {
+            contact_method_type_code_contact_method_contact_method_type_codeTocontact_method_type_code: true,
+          },
+        },
+      },
+    });
+    return this.mapper.map<person, Person>(prismaPerson as person, "person", "Person");
+  }
+
+  async update(personGuid: string, input: PersonInput): Promise<Person> {
+    const existingPerson = await this.prisma.person.findUnique({
+      where: { person_guid: personGuid },
+    });
+    if (!existingPerson) throw new Error("Person not found");
+
+    const prismaPerson = await this.prisma.person.update({
+      where: { person_guid: personGuid },
+      data: {
+        first_name: input.firstName,
+        middle_name: input.middleName,
+        middle_name_2: input.middleName2,
+        last_name: input.lastName,
+        contact_method: input.contactMethods
+          ? ({
+              deleteMany: {}, // Remove old contacts
+              create: input.contactMethods.map((cm) => ({
+                contact_value: cm.value,
+                contact_method_type_code: cm.typeCode,
+                create_user_id: "system",
+              })),
+            } as any)
+          : undefined,
+      },
+      include: {
+        contact_method: {
+          include: {
+            contact_method_type_code_contact_method_contact_method_type_codeTocontact_method_type_code: true,
+          },
+        },
+      },
+    });
+    return this.mapper.map<person, Person>(prismaPerson as person, "person", "Person");
+  }
+
+  async delete(personGuid: string): Promise<Person> {
+    const existingPerson = await this.prisma.person.findUnique({
+      where: { person_guid: personGuid },
+      include: { contact_method: true },
+    });
+    if (!existingPerson) throw new Error("Person not found");
+
+    const prismaPerson = await this.prisma.person.delete({
+      where: { person_guid: personGuid },
+      include: {
+        contact_method: {
+          include: {
+            contact_method_type_code_contact_method_contact_method_type_codeTocontact_method_type_code: true,
+          },
+        },
+      },
+    });
+    return this.mapper.map<person, Person>(prismaPerson as person, "person", "Person");
   }
 }

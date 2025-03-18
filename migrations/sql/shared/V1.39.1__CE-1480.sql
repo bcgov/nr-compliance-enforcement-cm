@@ -14,7 +14,7 @@ GRANT USAGE, CREATE ON SCHEMA shared TO proxy_js_shared;
 
 -- Create PERSON table
 CREATE TABLE shared.person (
-    person_guid UUID PRIMARY KEY,
+    person_guid UUID NOT NULL DEFAULT uuid_generate_v4 () PRIMARY KEY,
     first_name VARCHAR(128) NOT NULL,
     middle_name VARCHAR(128),
     middle_name_2 VARCHAR(128),
@@ -40,7 +40,7 @@ CREATE TABLE shared.contact_method_type_code (
 
 -- Create CONTACT_METHOD table
 CREATE TABLE shared.contact_method (
-    contact_method_guid UUID PRIMARY KEY,
+    contact_method_guid UUID NOT NULL DEFAULT uuid_generate_v4 () PRIMARY KEY,
     person_guid UUID NOT NULL,
     contact_method_type_code VARCHAR(10) NOT NULL,
     contact_value VARCHAR(512),
@@ -189,3 +189,4 @@ COMMENT on column shared.contact_method_h.operation_type is 'The operation perfo
 COMMENT on column shared.contact_method_h.operation_user_id is 'The id of the user that created or modified the data in the contact method table.  Defaults to the logged in user if not passed in by the application.';
 COMMENT on column shared.contact_method_h.operation_executed_at is 'The timestamp when the data in the contact method table was created or modified.  The timestamp is stored in UTC with no Offset.';
 COMMENT on column shared.contact_method_h.data_after_executed_operation is 'A JSON representation of the row in the table after the operation was completed successfully.   This implies that the latest row in the audit table will always match with the current row in the live table.';
+

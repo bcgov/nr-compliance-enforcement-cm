@@ -1,30 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
-import { gql } from 'graphql-request'
-import { useRequest } from '@/graphql/client'
-import { Table, Container, Row, Col, Button } from 'react-bootstrap'
+import { Table, Row, Col, Button } from 'react-bootstrap'
 import { Link } from '@tanstack/react-router'
+import { Person, fetchPersons } from '@/graphql/queries/person'
 
 const PersonList = () => {
-  // GraphQL query
-  const GET_PERSONS = gql`
-    query GetPersons {
-      people {
-        personGuid
-        firstName
-        lastName
-      }
-    }
-  `
-
-  interface Person {
-    personGuid: string
-    firstName: string
-    lastName: string
-  }
-
   const { data, isLoading, error } = useQuery({
     queryKey: ['persons'],
-    queryFn: () => useRequest(GET_PERSONS),
+    queryFn: () => fetchPersons(),
   })
 
   if (isLoading) return <div>Loading users...</div>
@@ -41,7 +23,7 @@ const PersonList = () => {
         </Col>
         <Col md={2}>
           <Link to="/persons/create">
-            <Button variant="primary" className="float-end">
+            <Button variant="primary" size="sm" className="float-end">
               Add Person
             </Button>
           </Link>
@@ -55,7 +37,7 @@ const PersonList = () => {
             </tr>
           </thead>
           <tbody>
-            {data?.people.map((user: Person) => (
+            {data?.map((user: Person) => (
               <tr key={user.firstName + user.lastName}>
                 <td>
                   <Link
