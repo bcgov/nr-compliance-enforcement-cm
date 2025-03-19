@@ -1,7 +1,7 @@
 import { Resolver, Query, Args, Mutation } from "@nestjs/graphql";
 import { PersonService } from "./person.service";
 import { JwtRoleGuard } from "../../auth/jwtrole.guard";
-import { UseGuards } from "@nestjs/common";
+import { Logger, UseGuards } from "@nestjs/common";
 import { coreRoles } from "../../enum/role.enum";
 import { Roles } from "../../auth/decorators/roles.decorator";
 import { GraphQLError } from "graphql";
@@ -12,6 +12,7 @@ import { PersonInput } from "src/shared/person/dto/person.input";
 @Resolver("Person")
 export class PersonResolver {
   constructor(private readonly personService: PersonService) {}
+  private readonly logger = new Logger(PersonResolver.name);
 
   @Query("people")
   @Roles(coreRoles)
@@ -19,6 +20,7 @@ export class PersonResolver {
     try {
       return await this.personService.findAll();
     } catch (error) {
+      this.logger.error(error);
       throw new GraphQLError("Error fetching data from Shared schema", {
         extensions: {
           code: "INTERNAL_SERVER_ERROR",
@@ -33,6 +35,7 @@ export class PersonResolver {
     try {
       return await this.personService.findOne(id);
     } catch (error) {
+      this.logger.error(error);
       throw new GraphQLError("Error fetching data from Shared schema", {
         extensions: {
           code: "INTERNAL_SERVER_ERROR",
@@ -47,7 +50,7 @@ export class PersonResolver {
     try {
       return await this.personService.create(input);
     } catch (error) {
-      console.error("Create person error:", error);
+      this.logger.error("Create person error:", error);
       throw new GraphQLError("Error creating person", {
         extensions: { code: "INTERNAL_SERVER_ERROR" },
       });
@@ -60,6 +63,7 @@ export class PersonResolver {
     try {
       return await this.personService.update(personGuid, input);
     } catch (error) {
+      this.logger.error(error);
       throw new GraphQLError("Error updating person", {
         extensions: { code: "INTERNAL_SERVER_ERROR" },
       });
@@ -72,6 +76,7 @@ export class PersonResolver {
     try {
       return await this.personService.delete(personGuid);
     } catch (error) {
+      this.logger.error("Delete person error:", error);
       throw new GraphQLError("Error deleting person", {
         extensions: { code: "INTERNAL_SERVER_ERROR" },
       });
