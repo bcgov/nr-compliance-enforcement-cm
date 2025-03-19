@@ -4,7 +4,7 @@ import { redirect } from '@tanstack/react-router'
 import { z } from 'zod'
 import { config } from '@/config'
 
-export const { OidcProvider, useOidc, getOidc } = createReactOidc({
+export const { OidcProvider, useOidc, getOidc } = createReactOidc(async () => ({
   // If you don't have the parameters right away, it's the case for example
   // if you get the oidc parameters from an API you can pass a promise that
   // resolves to the parameters. `createReactOidc(prParams)`.
@@ -19,7 +19,7 @@ export const { OidcProvider, useOidc, getOidc } = createReactOidc({
   clientId: config.VITE_OIDC_CLIENT_ID,
   idleSessionLifetimeInSeconds: (() => {
     const value_str = config.VITE_OIDC_SSO_SESSION_IDLE_SECONDS
-    return value_str ? parseInt(value_str) : undefined
+    return value_str ? parseInt(value_str) : 36000
   })(),
   scopes: (config.VITE_OIDC_SCOPE || undefined)?.split(' '),
   homeUrl: config.VITE_BASE_URL,
@@ -51,29 +51,27 @@ export const { OidcProvider, useOidc, getOidc } = createReactOidc({
 
   // This parameter is optional.
   // It allows you to pass extra query params before redirecting to the OIDC server.
-  extraQueryParams: ({ isSilent }) => ({
-    ui_locales: isSilent ? undefined : 'en', // Here you would dynamically get the current language at the time of redirecting to the OIDC server
-  }),
-})
+  // extraQueryParams: ({ isSilent }) => ({
+  //   ui_locales: isSilent ? undefined : 'en', // Here you would dynamically get the current language at the time of redirecting to the OIDC server
+  // }),
+}))
 
-export async function enforceLogin(): Promise<void | never> {
+export const enforceLogin = async () => {
   const oidc = await getOidc()
 
   if (!oidc.isUserLoggedIn) {
     await oidc.login({
-      doesCurrentHrefRequiresAuth: true,
+      doesCurrentHrefRequiresAuth: false,
     })
   }
 }
 
-export async function enforceLoginRoles(
-  roles: string[],
-): Promise<void | never> {
+export const enforceLoginRoles = async (roles: string[]) => {
   const oidc = await getOidc()
 
   if (!oidc.isUserLoggedIn) {
     await oidc.login({
-      doesCurrentHrefRequiresAuth: true,
+      doesCurrentHrefRequiresAuth: false,
     })
   } else {
     const { idToken } = oidc.getTokens()
@@ -89,19 +87,16 @@ export async function enforceLoginRoles(
   }
 }
 
-export async function getAccessToken(): Promise<string | undefined> {
+export const getAccessToken = async () => {
   console.log('getAccessToken')
   const oidc = await getOidc()
 
-  if (!oidc.isUserLoggedIn) {
-    console.log('getAccessToken !oidc.isUserLoggedIn')
-    await oidc.login({
-      doesCurrentHrefRequiresAuth: true,
-    })
-  } else {
+  if (oidc.isUserLoggedIn) {
     console.log('getAccessToken oidc.isUserLoggedIn')
     const { accessToken } = oidc.getTokens()
     console.log('getAccessToken accessToken', accessToken)
     return accessToken
   }
+
+  return undefined
 }
