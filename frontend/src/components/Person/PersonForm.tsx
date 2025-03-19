@@ -1,10 +1,14 @@
+import { PersonInput, createPerson } from '@/graphql/queries/person'
 import { useForm } from '@tanstack/react-form'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Form, Button } from 'react-bootstrap'
 
 // We also support Valibot, ArkType, and any other standard schema library
 import { z } from 'zod'
 
 const PersonForm = () => {
+  const queryClient = useQueryClient()
+
   const form = useForm({
     defaultValues: {
       firstName: '',
@@ -25,6 +29,29 @@ const PersonForm = () => {
     onSubmit: ({ value }) => {
       // Do something with form data
       alert(JSON.stringify(value, null, 2))
+      createMutation.mutate(value as PersonInput)
+    },
+  })
+
+  // Mutation for creating a person
+  const createMutation = useMutation({
+    mutationFn: (input: PersonInput) => {
+      return createPerson(input)
+    },
+    onSuccess: (newPerson) => {
+      // Update 'persons' query cache
+      queryClient.setQueryData(['persons'], (old: any[] | undefined) =>
+        old ? [...old, newPerson] : [newPerson],
+      )
+      // Reset form on success
+      form.reset()
+      alert(
+        `Person ${newPerson.firstName} ${newPerson.lastName} created successfully!`,
+      )
+    },
+    onError: (error) => {
+      console.error('Create person error:', error)
+      alert(`Failed to create person: ${error.message}`)
     },
   })
 
@@ -48,7 +75,8 @@ const PersonForm = () => {
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
               />
-              {JSON.stringify(field.state.meta.errors)}
+              {field.state.meta.errors.length > 0 &&
+                JSON.stringify(field.state.meta.errors)}
             </>
           )}
         </form.Field>
@@ -63,7 +91,8 @@ const PersonForm = () => {
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
               />
-              {JSON.stringify(field.state.meta.errors)}
+              {field.state.meta.errors.length > 0 &&
+                JSON.stringify(field.state.meta.errors)}
             </>
           )}
         </form.Field>

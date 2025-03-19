@@ -143,12 +143,12 @@ $border-units: (
 /* typography */
 $font-family-sans-serif: 'BC Sans';
 
-$h1-font-size: 40px;
-$h2-font-size: 32px;
-$h3-font-size: 28px;
-$h4-font-size: 24px;
-$h5-font-size: 20px;
-$h6-font-size: 16px;
+$h1-font-size: 2rem;
+$h2-font-size: 1.5rem;
+$h3-font-size: 1.25rem;
+$h4-font-size: 1rem;
+$h5-font-size: 0.875rem;
+$h6-font-size: 0.75rem;
 
 $font-sizes: (
   1: $h1-font-size,
