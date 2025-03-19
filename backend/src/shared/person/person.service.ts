@@ -105,16 +105,16 @@ export class PersonService {
         middle_name: input.middleName,
         middle_name_2: input.middleName2,
         last_name: input.lastName,
-        contact_method: input.contactMethods
-          ? ({
-              deleteMany: {}, // Remove old contacts
-              create: input.contactMethods.map((cm) => ({
-                contact_value: cm.value,
-                contact_method_type_code: cm.typeCode,
-                create_user_id: "system",
-              })),
-            } as any)
-          : undefined,
+        // contact_method: input.contactMethods
+        //   ? ({
+        //       deleteMany: {}, // Remove old contacts
+        //       create: input.contactMethods.map((cm) => ({
+        //         contact_value: cm.value,
+        //         contact_method_type_code: cm.typeCode,
+        //         create_user_id: "system",
+        //       })),
+        //     } as any)
+        //   : undefined,
       },
       include: {
         contact_method: {
