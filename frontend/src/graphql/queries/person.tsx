@@ -13,6 +13,24 @@ const GET_USERS = gql`
     }
   }
 `
+
+export const GET_PERSON = gql`
+  query GetPerson($personGuid: String!) {
+    person(personGuid: $personGuid) {
+      personGuid
+      firstName
+      middleName
+      middleName2
+      lastName
+      contactMethods {
+        typeCode
+        typeDescription
+        value
+      }
+    }
+  }
+`
+
 // Mutations
 export const CREATE_PERSON = gql`
   mutation CreatePerson($input: PersonInput!) {
@@ -40,12 +58,12 @@ export const UPDATE_PERSON = gql`
       middleName
       middleName2
       lastName
-      contactMethods {
-        typeCode
-        typeShortDescription
-        typeDescription
-        value
-      }
+      # contactMethods {
+      #   typeCode
+      #   typeShortDescription
+      #   typeDescription
+      #   value
+      # }
     }
   }
 `
@@ -88,6 +106,11 @@ export interface PersonInput {
 export const fetchPersons = async (): Promise<Person[]> => {
   const data = await useRequest(GET_USERS)
   return data.people
+}
+
+export const fetchPerson = async (id: string): Promise<Person> => {
+  const data = await useRequest(GET_PERSON, { personGuid: id })
+  return data.person
 }
 
 export const createPerson = async (input: PersonInput) => {
