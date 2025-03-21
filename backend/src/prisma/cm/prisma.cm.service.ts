@@ -1,11 +1,13 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from "@nestjs/common";
-//Ignoring Sonar Warning on the line below since we control the prisma client.
-import { PrismaClient } from "../../../node_modules/.prisma/case_management"; // NOSONAR
+import { PrismaClient } from ".prisma/case_management";
 
 @Injectable()
 export class CaseManagementPrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   async onModuleInit() {
-    await this.$connect();
+    //hello world
+    if (true) {
+      await this.$connect();
+    }
   }
 
   async onModuleDestroy() {

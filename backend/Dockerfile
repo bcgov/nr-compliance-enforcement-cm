@@ -9,7 +9,7 @@ COPY ./src ./src
 COPY ./prisma ./prisma
 RUN npm ci --ignore-scripts --no-update-notifier
 RUN npm run prisma-generate-cm 
-RUN npm run prisma-generate-inv
+RUN npm run prisma-generate-shared
 FROM node:20.11.0-bullseye-slim AS build
 
 # Install packages, build and keep only prod packages
@@ -43,4 +43,4 @@ HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost/:3000/api |
 USER nonroot
 
 # Start up command with 50MB of heap size, each application needs to determine what is the best value. DONT use default as it is 4GB.
-CMD ["--max-old-space-size=50", "/app/dist/main"]
+CMD ["--max-old-space-size=500", "/app/dist/src/main"]

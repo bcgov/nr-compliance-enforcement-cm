@@ -13,8 +13,7 @@ import { ReviewInput } from "./dto/review-input";
 import { CaseFileActionService } from "../case_file_action/case_file_action.service";
 import { Equipment } from "./entities/equipment.entity";
 import { DeleteEquipmentInput } from "./dto/equipment/delete-equipment.input";
-//Ignoring Sonar Warning on the line below since we control the prisma client.
-import { action, Prisma, PrismaClient } from "../../../node_modules/.prisma/case_management"; // NOSONAR
+import { action, Prisma, PrismaClient } from ".prisma/case_management";
 import { DefaultArgs } from "@prisma/client/runtime/library";
 import { CreateWildlifeInput } from "./dto/wildlife/create-wildlife-input";
 import { WildlifeInput } from "./dto/wildlife/wildlife-input";
