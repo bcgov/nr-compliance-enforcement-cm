@@ -1,4 +1,73 @@
-## Tetsting
+## Vite
+
+Vite is used for fast development builds and hot module reloading. By splitting
+dependencies into separate modules and serving them efficiently, it reduces
+start-up times compared to traditional bundlers:
+
+- Run "npm run dev" to start a local dev server.
+
+## Components and Styles
+
+React and React-Bootstrap components are the foundation of our components:
+
+- Create new components in "src/components" and import them into pages.
+- Use React-Bootstrap components as described in its documentation
+  (https://react-bootstrap.netlify.app/docs/getting-started/introduction).
+
+## Styling with Bootstrap Utility API and SCSS
+
+Bootstrap’s utility classes let you quickly apply margins, padding, colors, or
+positioning. This approach reduces the need for custom styling classes and
+avoids inline styling.
+
+- Use Bootstrap's Utility API based classes for as much styling as possible
+  (https://getbootstrap.com/docs/5.0/utilities/api/).
+- If custom styles are needed, create a \_styles.scss file and import it in your
+  component
+- If shared custom styles are needed, place the in /scss/common
+
+## TanStack Router
+
+TanStack Router is used to handle route definitions within the app, supporting
+nested routes and code-splitting. It simplifies how views and paths are linked
+without complicating component logic:
+
+- Routes are inferred by the files in the /routes/ folder, see
+  (https://tanstack.com/router/latest/docs/framework/react/routing/file-based-routing).
+- Use /auth/createProtectedRoute to enforce authentication. A list of roles can
+  also be passed in to restrict access only to those roles.
+
+## TanStack Form
+
+TanStack Form offers a structured way to manage form state. It handles
+validation, submission, and other form events while minimizing boilerplate code:
+
+- (https://tanstack.com/form/latest/docs/overview)
+
+## TanStack Query and GraphQL
+
+TanStack Query manages server-state data. It handles caching, updates, and
+background refetching. Combined with GraphQL, it offers efficient queries and
+mutations, reducing the burden of manual data handling:
+
+- (https://tanstack.com/query/latest/docs/framework/react/overview)
+- For fetching data, import and use useRequest from /graphql/client to handle
+  authenticated API calls
+
+## Environment Variables
+
+Environment variables are defined in .env.sample:
+
+- Copy "sample.env" to ".env" and adjust values.
+
+## Building and Running
+
+1. Install dependencies:  
+   npm install
+2. Start the dev server:  
+   npm run dev
+
+## Testing
 
 ### End-to-end
 
