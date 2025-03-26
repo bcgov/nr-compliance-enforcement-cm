@@ -25,10 +25,4 @@ export class LeadResolver {
   ) {
     return this.leadService.getLeadsByOutcomeAnimal(outcomeAnimalCode, startDate, endDate);
   }
-
-  @Query("getLeadsByEquipment")
-  @Roles(Role.COS, Role.PARKS)
-  findLeadsByEquipment(@Args("equipmentCode") equipmentCode: string) {
-    return this.leadService.getLeadsByEquipment(equipmentCode);
-  }
 }

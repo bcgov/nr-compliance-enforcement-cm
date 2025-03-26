@@ -129,49 +129,4 @@ export class LeadService {
 
     return leadIdentifiers;
   }
-
-  async getLeadsByEquipment(equipmentCode: string): Promise<string[]> {
-    console.log(equipmentCode);
-    const equipmentResults = await this.prisma.equipment.findMany({
-      where: {
-        equipment_code: equipmentCode,
-      },
-      select: {
-        equipment_guid: true,
-      },
-    });
-    console.log(equipmentResults);
-
-    const caseGuids: string[] = [];
-    for (let equipment of equipmentResults) {
-      const actionResults = await this.prisma.action.findFirst({
-        where: {
-          equipment_guid: equipment.equipment_guid,
-        },
-        select: {
-          case_guid: true,
-        },
-      });
-      caseGuids.push(actionResults.case_guid);
-    }
-    console.log(caseGuids);
-    const leadResults = await this.prisma.lead.findMany({
-      where: {
-        case_identifier: {
-          in: caseGuids,
-        },
-      },
-      select: {
-        lead_identifier: true,
-      },
-    });
-    console.log(leadResults);
-
-    const leadIdentifiers: string[] = [];
-    for (let leadId of leadResults) {
-      leadIdentifiers.push(leadId.lead_identifier);
-    }
-
-    return leadIdentifiers;
-  }
 }

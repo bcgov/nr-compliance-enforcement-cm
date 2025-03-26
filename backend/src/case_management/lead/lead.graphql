@@ -5,7 +5,3 @@ type Query {
 type Query {
   getLeadsByOutcomeAnimal(outcomeAnimalCode: String!, startDate: String!, endDate: String!): [String]
 }
-
-type Query {
-  getLeadsByEquipment(equipmentCode: String!): [String]
-}
