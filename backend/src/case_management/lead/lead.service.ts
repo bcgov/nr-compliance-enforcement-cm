@@ -155,6 +155,7 @@ export class LeadService {
         equipment: {
           active_ind: true, //exclude deleted equipments (active_ind = false)
         },
+        active_ind: true,
       },
       select: {
         case_guid: true,
@@ -174,6 +175,7 @@ export class LeadService {
         equipment: {
           active_ind: true,
         },
+        active_ind: true,
       },
       select: {
         case_guid: true,
