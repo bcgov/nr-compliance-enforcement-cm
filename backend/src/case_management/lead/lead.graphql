@@ -7,5 +7,5 @@ type Query {
 }
 
 type Query {
-  getLeadsByEquipment(equipmentCode: String!): [String]
+  getLeadsByEquipment(equipmentStatus: String!, equipmentCodes: [String]): [String]
 }

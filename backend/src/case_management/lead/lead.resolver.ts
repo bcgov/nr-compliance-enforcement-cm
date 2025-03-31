@@ -28,7 +28,10 @@ export class LeadResolver {
 
   @Query("getLeadsByEquipment")
   @Roles(Role.COS, Role.PARKS)
-  findLeadsByEquipment(@Args("equipmentCode") equipmentCode: string) {
-    return this.leadService.getLeadsByEquipment(equipmentCode);
+  findLeadsByEquipment(
+    @Args("equipmentStatus") equipmentStatus: string,
+    @Args("equipmentCodes") equipmentCodes: string[] | undefined,
+  ) {
+    return this.leadService.getLeadsByEquipment(equipmentStatus, equipmentCodes);
   }
 }
