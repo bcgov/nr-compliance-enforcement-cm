@@ -87,7 +87,7 @@ jobs:
 
       # On a newly opened PR we drop the old database and crunchy will standup a fresh db
       - name: Refresh developer database for newly opened PR
-        if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' }}
+        if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened') }}
         run: |
           DEPLOYMENT_NUMBER=${{ steps.get-deployment-number.outputs.DEPLOYMENT_NUMBER }}
           ./.github/scripts/crunchy.sh s $DEPLOYMENT_NUMBER
