@@ -8,7 +8,7 @@ on:
       - "!main"
 
 env:
-  GITOPS_REPO_BRANCH: main
+  GITOPS_REPO_BRANCH: feat/crunchy # TEMP, CHANGE BACK
 
 concurrency:
   # PR open and close use the same group, allowing only one at a time
