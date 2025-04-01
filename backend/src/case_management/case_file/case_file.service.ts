@@ -49,7 +49,7 @@ export class CaseFileService {
 
   //--
   //-- creates an initial case_file and lead element for the
-  //-- selected complaint
+  //-- selected complaint.
   //--
   async createCase(
     db: Omit<
