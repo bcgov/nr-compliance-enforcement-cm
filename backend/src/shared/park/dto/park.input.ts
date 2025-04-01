@@ -18,15 +18,15 @@ export class ParkInput {
 
 @ArgsType()
 export class ParkArgs {
+  @Field(() => String, { nullable: true })
+  search?: string;
+
   @Field(() => Int)
   @Min(0)
-  skip = 0;
+  skip? = 0;
 
   @Field(() => Int)
   @Min(1)
   @Max(50)
-  take = 25;
-
-  @Field(() => String, { nullable: true })
-  name?: string;
+  take? = 25;
 }
