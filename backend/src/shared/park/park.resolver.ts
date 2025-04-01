@@ -6,7 +6,7 @@ import { coreRoles } from "../../enum/role.enum";
 import { Roles } from "../../auth/decorators/roles.decorator";
 import { GraphQLError } from "graphql";
 import { Park } from "src/shared/park/dto/park";
-import { ParkInput } from "src/shared/park/dto/park.input";
+import { ParkArgs, ParkInput } from "src/shared/park/dto/park.input";
 
 @UseGuards(JwtRoleGuard)
 @Resolver("Park")
@@ -16,9 +16,9 @@ export class ParkResolver {
 
   @Query("parks")
   @Roles(coreRoles)
-  async findAll() {
+  async findAll(@Args() args: ParkArgs) {
     try {
-      return await this.ParkService.findAll();
+      return await this.ParkService.findAll(args);
     } catch (error) {
       this.logger.error(error);
       throw new GraphQLError("Error fetching data from Shared schema", {

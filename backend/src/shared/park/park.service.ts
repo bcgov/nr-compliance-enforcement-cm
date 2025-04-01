@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Park } from "./dto/park";
-import { ParkInput } from "./dto/park.input";
+import { ParkArgs, ParkInput } from "./dto/park.input";
 import { SharedPrismaService } from "../../prisma/shared/prisma.shared.service";
 import { InjectMapper } from "@automapper/nestjs";
 import { Mapper } from "@automapper/core";
@@ -13,8 +13,10 @@ export class ParkService {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
-  async findAll() {
-    const prismaPark = await this.prisma.park.findMany({
+  async findAll(args: ParkArgs) {
+    console.log("args", args);
+
+    const query = {
       select: {
         park_guid: true,
         external_id: true,
@@ -22,7 +24,14 @@ export class ParkService {
         legal_name: true,
         geo_organization_unit_code: true,
       },
-    });
+      skip: args.skip,
+      take: args.take,
+      where: {},
+    };
+
+    args.name && (query.where = { name: { contains: args.name, mode: "insensitive" } });
+
+    const prismaPark = await this.prisma.park.findMany(query);
 
     return this.mapper.mapArray<park, Park>(prismaPark as Array<park>, "park", "Park");
   }

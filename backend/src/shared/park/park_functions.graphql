@@ -1,5 +1,5 @@
 type Query {
-  parks: [Park]
+  parks(take: Int, skip: Int, name: String): [Park]
   park(parkGuid: String!): Park
 }
 
