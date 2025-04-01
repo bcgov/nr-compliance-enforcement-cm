@@ -16,9 +16,9 @@ export class ParkResolver {
 
   @Query("parks")
   @Roles(coreRoles)
-  async findAll(@Args() args: ParkArgs) {
+  async find(@Args() args: ParkArgs) {
     try {
-      return await this.ParkService.findAll(args);
+      return await this.ParkService.find(args);
     } catch (error) {
       this.logger.error(error);
       throw new GraphQLError("Error fetching data from Shared schema", {

@@ -13,9 +13,7 @@ export class ParkService {
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
 
-  async findAll(args: ParkArgs) {
-    console.log("args", args);
-
+  async find(args: ParkArgs) {
     const query = {
       select: {
         park_guid: true,
@@ -29,7 +27,7 @@ export class ParkService {
       where: {},
     };
 
-    args.name && (query.where = { name: { contains: args.name, mode: "insensitive" } });
+    args.search && (query.where = { name: { contains: args.search, mode: "insensitive" } });
 
     const prismaPark = await this.prisma.park.findMany(query);
 
