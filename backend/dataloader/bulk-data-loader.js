@@ -1,5 +1,5 @@
 // Instruction for running: from backend directory: node dataloader/bulk-data-loader.js
-// Ensure that parameters in main method are updated as required
+// Ensure that parameters in main method are updated as required.
 require('dotenv').config();
 const { Client } = require('pg');
 const faker = require('faker');
