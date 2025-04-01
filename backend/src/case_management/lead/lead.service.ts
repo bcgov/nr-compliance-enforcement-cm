@@ -179,67 +179,88 @@ export class LeadService {
       },
       select: {
         case_guid: true,
+        equipment_guid: true,
       },
     });
 
     //Determine active and inactive cases
-    const setCaseGuids = new Set(setActions.map((action) => action.case_guid));
-    const removeCaseGuids = new Set(removeActions.map((action) => action.case_guid));
+    const equipmentStatusMap = new Map<string, Map<string, boolean>>();
 
-    const activeCaseGuids = new Set<string>();
-    const inactiveCaseGuids = new Set<string>();
-
+    // Process "set" actions
     setActions.forEach((action) => {
       const caseGuid = action.case_guid;
+      const equipmentGuid = action.equipment_guid;
       const equipmentCode = action.equipment?.equipment_code;
-      // Check if the equipment type is an exceptional inactive code
-      const isExceptionalInactive = equipmentCode && EXCEPTIONAL_INACTIVE_EQUIPMENT_CODES.includes(equipmentCode);
-      if (removeCaseGuids.has(caseGuid) || isExceptionalInactive) {
-        inactiveCaseGuids.add(caseGuid);
-      } else {
-        activeCaseGuids.add(caseGuid);
+
+      if (!equipmentGuid || !equipmentCode) return; // Skip if no equipment
+
+      if (!equipmentStatusMap.has(caseGuid)) {
+        equipmentStatusMap.set(caseGuid, new Map());
       }
+      const caseEquipment = equipmentStatusMap.get(caseGuid)!;
+      // Mark as active unless overridden by a remove action or exceptional type
+      caseEquipment.set(equipmentGuid, !EXCEPTIONAL_INACTIVE_EQUIPMENT_CODES.includes(equipmentCode));
     });
 
-    //Filter cases based on equipmentStatus
-    let targetCaseGuids: string[];
-    switch (equipmentStatus) {
-      case EQUIPMENT_STATUS_CODES.ALL_EQUIPMENT:
-        targetCaseGuids = Array.from(setCaseGuids);
-        break;
-      case EQUIPMENT_STATUS_CODES.ACTIVE_EQUIPMENT:
-        targetCaseGuids = Array.from(activeCaseGuids);
-        break;
-      case EQUIPMENT_STATUS_CODES.INACTIVE_EQUIPMENT:
-        targetCaseGuids = Array.from(inactiveCaseGuids);
-        break;
-      default:
-        throw new Error("Invalid equipment status");
-    }
+    // Process "remove" actions to mark equipment as inactive
+    removeActions.forEach((action) => {
+      const caseGuid = action.case_guid;
+      const equipmentGuid = action.equipment_guid;
 
-    if (Array.isArray(equipmentCodes) && equipmentCodes.length > 0) {
-      const filteredActions = await this.prisma.action.findMany({
-        where: {
-          case_guid: { in: targetCaseGuids },
-          action_type_action_xref_guid: setEquipmentActionGuid,
-          equipment: {
-            equipment_code: { in: equipmentCodes },
-            active_ind: true,
-          },
-        },
-        select: {
-          case_guid: true,
-        },
-      });
+      if (!equipmentGuid || !equipmentStatusMap.has(caseGuid)) return;
 
-      targetCaseGuids = filteredActions.map((action) => action.case_guid);
+      const caseEquipment = equipmentStatusMap.get(caseGuid)!;
+      caseEquipment.set(equipmentGuid, false); // Mark as inactive
+    });
+
+    const targetCaseGuids = new Set<string>();
+
+    if (!Array.isArray(equipmentCodes) || (Array.isArray(equipmentCodes) && equipmentCodes.length === 0)) {
+      // No type filter: return all cases matching the status
+      for (const [caseGuid, equipmentMap] of equipmentStatusMap) {
+        const hasActive = Array.from(equipmentMap.values()).some((isActive) => isActive);
+        const hasInactive = Array.from(equipmentMap.values()).some((isActive) => !isActive);
+
+        if (
+          (equipmentStatus === EQUIPMENT_STATUS_CODES.ALL_EQUIPMENT && (hasActive || hasInactive)) ||
+          (equipmentStatus === EQUIPMENT_STATUS_CODES.ACTIVE_EQUIPMENT && hasActive) ||
+          (equipmentStatus === EQUIPMENT_STATUS_CODES.INACTIVE_EQUIPMENT && hasInactive)
+        ) {
+          targetCaseGuids.add(caseGuid);
+        }
+      }
+    } else {
+      // Filter by specific equipment types and their status
+      for (const [caseGuid, equipmentMap] of equipmentStatusMap) {
+        let matchesCondition = false;
+
+        for (const [equipmentGuid, isActive] of equipmentMap) {
+          const equipmentCode = setActions.find((a) => a.case_guid === caseGuid && a.equipment_guid === equipmentGuid)
+            ?.equipment?.equipment_code;
+
+          if (!equipmentCode || !equipmentCodes.includes(equipmentCode)) continue;
+
+          if (
+            (equipmentStatus === EQUIPMENT_STATUS_CODES.ACTIVE_EQUIPMENT && isActive) ||
+            (equipmentStatus === EQUIPMENT_STATUS_CODES.INACTIVE_EQUIPMENT && !isActive) ||
+            equipmentStatus === EQUIPMENT_STATUS_CODES.ALL_EQUIPMENT
+          ) {
+            matchesCondition = true;
+            break;
+          }
+        }
+
+        if (matchesCondition) {
+          targetCaseGuids.add(caseGuid);
+        }
+      }
     }
 
     //Return lead id
     const leadResults = await this.prisma.lead.findMany({
       where: {
         case_identifier: {
-          in: targetCaseGuids,
+          in: [...targetCaseGuids],
         },
       },
       select: {
