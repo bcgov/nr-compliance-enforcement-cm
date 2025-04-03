@@ -121,3 +121,12 @@ test-report.xml
 # Mac
 .DS_Store
 backend/nr-compliance-enforcement-cm.code-workspace
+.scratch
+
+# Playwright
+node_modules/
+**/test-results/
+**/playwright-report/
+**/blob-report/
+**/playwright/.cache/
+**/.auth/*

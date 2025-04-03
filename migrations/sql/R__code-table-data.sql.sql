@@ -1902,7 +1902,7 @@ values
     CURRENT_TIMESTAMP,
     CURRENT_USER,
     CURRENT_TIMESTAMP
-   ) ON CONFLICT DO NOTHING;
+  ) ON CONFLICT DO NOTHING;
 
 --------------------
 -- CE-1054 Schedule Sector XREFs
@@ -5507,13 +5507,68 @@ set
 where
   equipment_code IN ('BRSNR', 'BRLTR', 'CRFTR', 'CRLTR');
 
-insert into equipment_code (equipment_code, short_description, long_description, display_order, active_ind, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp, is_trap_ind)
+insert into
+  equipment_code (
+    equipment_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp,
+    is_trap_ind
+  )
 values
-      ('FTRAP', 'Foothold trap', 'Foothold trap', 10, true, 'FLYWAY', now(), 'FLYWAY', now(), 'Y'),
-      ('LTRAP', 'Live trap', 'Live trap', 20, true, 'FLYWAY', now(), 'FLYWAY', now(), 'Y'), 
-      ('LLTHL', 'Less lethal', 'Less lethal', 60, true, 'FLYWAY', now(), 'FLYWAY', now(), 'N'),
-      ('K9UNT', 'K9 unit', 'K9 unit', 70, true, 'FLYWAY', now(), 'FLYWAY', now(), 'N')
-on conflict do nothing; 
+  (
+    'FTRAP',
+    'Foothold trap',
+    'Foothold trap',
+    10,
+    true,
+    'FLYWAY',
+    now (),
+    'FLYWAY',
+    now (),
+    'Y'
+  ),
+  (
+    'LTRAP',
+    'Live trap',
+    'Live trap',
+    20,
+    true,
+    'FLYWAY',
+    now (),
+    'FLYWAY',
+    now (),
+    'Y'
+  ),
+  (
+    'LLTHL',
+    'Less lethal',
+    'Less lethal',
+    60,
+    true,
+    'FLYWAY',
+    now (),
+    'FLYWAY',
+    now (),
+    'N'
+  ),
+  (
+    'K9UNT',
+    'K9 unit',
+    'K9 unit',
+    70,
+    true,
+    'FLYWAY',
+    now (),
+    'FLYWAY',
+    now (),
+    'N'
+  ) on conflict do nothing;
 
 update case_management.equipment_code
 set
@@ -5534,10 +5589,29 @@ where
   equipment_code = 'TRCAM';
 
 INSERT INTO
-  equipment_code (equipment_code, short_description, long_description, display_order, active_ind, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
+  equipment_code (
+    equipment_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
 VALUES
-  ('SNR', 'Snare', 'Snare', 5, true, 'FLYWAY', now(), 'FLYWAY', now())
-ON conflict do nothing;
+  (
+    'SNR',
+    'Snare',
+    'Snare',
+    5,
+    true,
+    'FLYWAY',
+    now (),
+    'FLYWAY',
+    now ()
+  ) ON conflict do nothing;
 
 UPDATE equipment
 SET
@@ -5545,49 +5619,46 @@ SET
 WHERE
   equipment_code = 'NKSNR';
 
-DELETE FROM
-  equipment_code
+DELETE FROM equipment_code
 WHERE
   equipment_code = 'NKSNR';
 
-update equipment_code 
-set 
-  has_quantity_ind = true 
-where 
-  active_ind = true 
-and 
-  equipment_code in ('FTRAP', 'SNR', 'SIGNG', 'TRCAM', 'LTRAP');
+update equipment_code
+set
+  has_quantity_ind = true
+where
+  active_ind = true
+  and equipment_code in ('FTRAP', 'SNR', 'SIGNG', 'TRCAM', 'LTRAP');
 
 --------------------------
 -- Outcome code updates
 -------------------------
-
-update case_management.hwcr_outcome_code 
+update case_management.hwcr_outcome_code
 set
   short_description = 'Relocated - within home range',
   long_description = 'Relocated - within home range'
-where 
+where
   hwcr_outcome_code = 'SHRTRELOC';
 
-update case_management.hwcr_outcome_code 
+update case_management.hwcr_outcome_code
 set
   short_description = 'Translocated - outside home range',
   long_description = 'Translocated - outside home range'
-where 
+where
   hwcr_outcome_code = 'TRANSLCTD';
 
-update case_management.hwcr_outcome_code 
+update case_management.hwcr_outcome_code
 set
   short_description = 'Euthanized by other',
   long_description = 'Euthanized by other'
-where 
+where
   hwcr_outcome_code = 'EUTHOTH';
 
-update case_management.hwcr_outcome_code 
+update case_management.hwcr_outcome_code
 set
   short_description = 'Dispatched by other',
   long_description = 'Dispatched by other'
-where 
+where
   hwcr_outcome_code = 'DESTRYOTH';
 
 insert into
@@ -5614,7 +5685,7 @@ values
     'FLYWAY',
     now ()
   ),
-    (
+  (
     'NOTRCVD',
     'Not recovered',
     'Not recovered',
@@ -5624,13 +5695,12 @@ values
     now (),
     'FLYWAY',
     now ()
-  ) 
-on conflict do nothing;
+  ) on conflict do nothing;
 
 update case_management.hwcr_outcome_code
 set
   active_ind = 'N'
-where 
+where
   hwcr_outcome_code = 'LESSLETHAL';
 
 -------------------------
@@ -5766,7 +5836,6 @@ where
 -----------------------------
 -- IPM Authorization Categories
 -----------------------------
-
 INSERT INTO
   case_management.ipm_auth_category_code (
     ipm_auth_category_code,
@@ -5776,7 +5845,9 @@ INSERT INTO
     active_ind,
     create_user_id,
     create_utc_timestamp
-  ) VALUES (
+  )
+VALUES
+  (
     'CONFHOLDR',
     'Confirmation holder',
     'Confirmation holder',
@@ -5784,7 +5855,8 @@ INSERT INTO
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ), (
+  ),
+  (
     'OTHERTYPE',
     'Other',
     'Other',
@@ -5792,7 +5864,8 @@ INSERT INTO
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ), (
+  ),
+  (
     'PERMHOLDR',
     'Permit holder',
     'Permit holder',
@@ -5800,7 +5873,8 @@ INSERT INTO
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ), (
+  ),
+  (
     'PESUSNSLC',
     'Pesticide user non-service licence',
     'Pesticide user non-service licence',
@@ -5808,7 +5882,8 @@ INSERT INTO
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ), (
+  ),
+  (
     'PESUSLICE',
     'Pesticide user service licence',
     'Pesticide user service licence',
@@ -5816,7 +5891,8 @@ INSERT INTO
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ), (
+  ),
+  (
     'PESVENLIC',
     'Pesticide vendor licence',
     'Pesticide vendor licence',
@@ -5825,53 +5901,108 @@ INSERT INTO
     CURRENT_USER,
     CURRENT_TIMESTAMP
   ) ON CONFLICT DO NOTHING;
- 
- -- CE-1448 
-insert into	case_management.inaction_reason_code 
-  (inaction_reason_code, agency_code, short_description, long_description, active_ind, create_user_id, create_utc_timestamp)
-values 
-  ('OUTSDCOSMT', 'COS', 'Outside COS Mandate', 'Outside COS Mandate', 'Y', CURRENT_USER, CURRENT_TIMESTAMP)    
-on conflict do nothing;
 
-update case_management.action_code set 
-  short_description = 'Provided advice, attractant management and/or husbandry information to the public',  
-  long_description = 'Provided advice, attractant management and/or husbandry information to the public' 
-where action_code = 'PROVAMHSIN';
-
-insert into case_management.action_code 
-  (action_code, short_description, long_description, active_ind, create_user_id, create_utc_timestamp)
-values 
-  ('INJNOTPRES', 'Not present - Injured/distressed', 'Not present - Injured/distressed', 'Y', CURRENT_USER, CURRENT_TIMESTAMP )
-on conflict do nothing;
-
-insert into	case_management.action_type_action_xref 
-  (action_type_code, action_code, display_order, active_ind, create_user_id, create_utc_timestamp)
+-- CE-1448 
+insert into
+  case_management.inaction_reason_code (
+    inaction_reason_code,
+    agency_code,
+    short_description,
+    long_description,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
 values
-  ('COMPASSESS', 'INJNOTPRES', 45, 'Y', CURRENT_USER, CURRENT_TIMESTAMP)
-on conflict do nothing;
+  (
+    'OUTSDCOSMT',
+    'COS',
+    'Outside COS Mandate',
+    'Outside COS Mandate',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
 
-update case_management.action_code set 
-  short_description = 'Contacted/referred to biologist and/or veterinarian',  
-  long_description = 'Contacted/referred to biologist and/or veterinarian' 
-where action_code = 'CNTCTBIOVT';
+update case_management.action_code
+set
+  short_description = 'Provided advice, attractant management and/or husbandry information to the public',
+  long_description = 'Provided advice, attractant management and/or husbandry information to the public'
+where
+  action_code = 'PROVAMHSIN';
 
-update case_management.action_code set 
-  short_description = 'Contacted/referred to WildSafeBC or local interest group to deliver education to the public',  
-  long_description = 'Contacted/referred to WildSafeBC or local interest group to deliver education to the public' 
-where action_code = 'CNTCTGROUP';
+insert into
+  case_management.action_code (
+    action_code,
+    short_description,
+    long_description,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'INJNOTPRES',
+    'Not present - Injured/distressed',
+    'Not present - Injured/distressed',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
 
-update case_management.action_code set 
-  short_description = 'Contacted/referred to bylaw to assist with managing attractants',  
-  long_description = 'Contacted/referred to bylaw to assist with managing attractants' 
-where action_code = 'CNTCTBYLAW';
+insert into
+  case_management.action_type_action_xref (
+    action_type_code,
+    action_code,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'COMPASSESS',
+    'INJNOTPRES',
+    45,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
 
-update case_management.action_code set 
-  short_description = 'Contacted/referred to the Livestock Protection Program ("LPP") (cattle and sheep only)',  
-  long_description = 'Contacted/referred to the Livestock Protection Program ("LPP") (cattle and sheep only)' 
-where action_code = 'CONTACTLPP';
+update case_management.action_code
+set
+  short_description = 'Contacted/referred to biologist and/or veterinarian',
+  long_description = 'Contacted/referred to biologist and/or veterinarian'
+where
+  action_code = 'CNTCTBIOVT';
 
-update case_management.hwcr_outcome_code set short_description='Transferred to rehab', long_description='Transferred to rehab'
-where hwcr_outcome_code = 'TRANSREHB';
+update case_management.action_code
+set
+  short_description = 'Contacted/referred to WildSafeBC or local interest group to deliver education to the public',
+  long_description = 'Contacted/referred to WildSafeBC or local interest group to deliver education to the public'
+where
+  action_code = 'CNTCTGROUP';
+
+update case_management.action_code
+set
+  short_description = 'Contacted/referred to bylaw to assist with managing attractants',
+  long_description = 'Contacted/referred to bylaw to assist with managing attractants'
+where
+  action_code = 'CNTCTBYLAW';
+
+update case_management.action_code
+set
+  short_description = 'Contacted/referred to the Livestock Protection Program ("LPP") (cattle and sheep only)',
+  long_description = 'Contacted/referred to the Livestock Protection Program ("LPP") (cattle and sheep only)'
+where
+  action_code = 'CONTACTLPP';
+
+update case_management.hwcr_outcome_code
+set
+  short_description = 'Transferred to rehab',
+  long_description = 'Transferred to rehab'
+where
+  hwcr_outcome_code = 'TRANSREHB';
 
 --------------------------
 -- New Changes above this line
@@ -5882,3 +6013,44 @@ SET
 WHERE
   configuration_code = 'CDTABLEVER';
 
+-----------------------------
+-- Equipment status code - CE-1362
+-----------------------------
+INSERT INTO
+  case_management.equipment_status_code (
+    equipment_status_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+VALUES
+  (
+    'ALLEQUIP',
+    'All equipment',
+    'All equipment',
+    10,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'ACTEQUIP',
+    'Active equipment',
+    'Active equipment',
+    20,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'INACTEQUIP',
+    'Inactive equipment',
+    'Inactive equipment',
+    30,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
