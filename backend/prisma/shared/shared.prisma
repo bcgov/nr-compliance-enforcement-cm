@@ -89,9 +89,3 @@ model park {
   update_user_id             String?   @db.VarChar(32)
   update_utc_timestamp       DateTime? @db.Timestamp(6)
 }
-
-model temp_poc {
-  id         Decimal @id(map: "TEMP_POC_PK") @default(dbgenerated("nextval('\"TEMP_POC_SEQ\"'::regclass)")) @db.Decimal
-  first_name String  @db.VarChar(200)
-  last_name  String  @db.VarChar(200)
-}
