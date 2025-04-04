@@ -41,6 +41,7 @@ import { AutomapperModule, InjectMapper } from "@automapper/nestjs";
 import { pojos } from "@automapper/pojos";
 import { Mapper } from "@automapper/core";
 import { initializeMappings } from "./middleware/mapper";
+import { EquipmentStatusCodeModule } from "src/case_management/equipment_status_code/equipment_status_code.module";
 
 @Module({
   imports: [
@@ -82,6 +83,7 @@ import { initializeMappings } from "./middleware/mapper";
     IpmAuthCategoryCodeModule,
     PersonModule,
     ParkModule,
+    EquipmentStatusCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService, DateScalar],

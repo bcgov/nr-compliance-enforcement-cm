@@ -228,7 +228,6 @@ export class CaseFileActionService {
       for (const actionItem of actionResult) {
         caseFileActions.push(this.mapActionResult(actionItem));
       }
-      console.log("caseFileActions", caseFileActions);
       return caseFileActions;
     } catch (exception) {
       throw new GraphQLError("Exception occurred. See server log for details", {});
