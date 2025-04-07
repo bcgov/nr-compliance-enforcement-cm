@@ -11,6 +11,9 @@ CREATE TABLE shared.park (
     update_utc_timestamp TIMESTAMP
 );
 
+ALTER TABLE shared.park
+    ADD CONSTRAINT "UK_park__external_id" UNIQUE (external_id);
+
 -- Table comments for PARK
 COMMENT ON TABLE shared.park IS 'Stores a set of BC Parks, Conservatories, and Protected Areas. Data is imported from the data.bcparks.ca API.';
 
