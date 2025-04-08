@@ -4,11 +4,10 @@ generator client {
   binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
-//See https://github.com/kimjbstar/prisma-class-generator for options to put here
 generator prismaClassGenerator {
   provider = "prisma-class-generator"
   output   = "./generated"
-  dryRun   = false
+  dryRun   = "false"
 }
 
 datasource db {
@@ -76,4 +75,17 @@ model person_h {
   operation_user_id             String   @default(dbgenerated("CURRENT_USER")) @db.VarChar(32)
   operation_executed_at         DateTime @default(now()) @db.Timestamp(6)
   data_after_executed_operation Json?
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model park {
+  park_guid                  String    @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
+  external_id                String    @db.VarChar(10)
+  name                       String    @db.VarChar(256)
+  legal_name                 String?   @db.VarChar(256)
+  geo_organization_unit_code String?   @db.VarChar(10)
+  create_user_id             String    @db.VarChar(32)
+  create_utc_timestamp       DateTime  @default(now()) @db.Timestamp(6)
+  update_user_id             String?   @db.VarChar(32)
+  update_utc_timestamp       DateTime? @db.Timestamp(6)
 }
