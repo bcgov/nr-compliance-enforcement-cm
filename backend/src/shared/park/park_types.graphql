@@ -1,0 +1,7 @@
+type Park {
+  parkGuid: String
+  externalId: String
+  name: String
+  legalName: String
+  geoOrganizationUnitCode: String
+}
