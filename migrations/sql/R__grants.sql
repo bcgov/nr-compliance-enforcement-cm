@@ -1,3 +1,12 @@
+---------------------
+-- Runs the grants on the case management and shared schemas with every migration
+--
+-- The last line of the comment is where the magic happens, it will refresh the date -
+-- even if no changes are made.
+--
+-- Last Run on: ${flyway:timestamp}
+----------------------
+
 -- Grant privileges to case management objects
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA case_management TO case_management;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA case_management TO case_management;
