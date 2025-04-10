@@ -22,7 +22,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage --detectOpenHandles --forceExit",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "import:parks": "nest start --entryFile=./src/cli.js -- import -j parks"
   },
   "dependencies": {
     "@apollo/server": "^4.10.0",
@@ -53,6 +54,7 @@
     "graphql-ws": "^5.14.3",
     "helmet": "^7.0.0",
     "jwks-rsa": "^3.1.0",
+    "nest-commander": "^3.17.0",
     "nest-winston": "^1.9.4",
     "nestjs-prisma": "^0.25.0",
     "passport-jwt": "^4.0.1",
