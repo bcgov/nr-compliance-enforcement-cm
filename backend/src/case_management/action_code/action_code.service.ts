@@ -18,15 +18,16 @@ export class ActionCodeService {
     });
   }
 
-  async findAllCodesByType(actionTypeCode?: string) {
+  async findAllCodesByType(actionTypeCodes?: string[]) {
     const xrefDataContext = this.prisma.action_type_action_xref;
     let queryResult = null;
     queryResult = await xrefDataContext.findMany({
       where: {
-        action_type_code: actionTypeCode,
+        action_type_code: actionTypeCodes && actionTypeCodes.length > 0 ? { in: actionTypeCodes } : undefined,
         active_ind: true,
       },
       select: {
+        action_type_code: true,
         action_code: true,
         display_order: true,
         active_ind: true,
@@ -41,7 +42,7 @@ export class ActionCodeService {
     });
 
     const actions = queryResult.map((record) => ({
-      actionTypeCode: actionTypeCode,
+      actionTypeCode: record.action_type_code,
       actionCode: record.action_code,
       displayOrder: record.display_order,
       activeIndicator: record.active_ind,
