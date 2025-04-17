@@ -36,6 +36,7 @@ import { LeadModule } from "./case_management/lead/lead.module";
 import { CaseLocationCodeModule } from "./case_management/code-tables/case_location_code/case_location_code.module";
 import { IpmAuthCategoryCodeModule } from "./case_management/ipm_auth_category_code/ipm_auth_category_code.module";
 import { PersonModule } from "./shared/person/person.module";
+import { ParkModule } from "./shared/park/park.module";
 import { AutomapperModule, InjectMapper } from "@automapper/nestjs";
 import { pojos } from "@automapper/pojos";
 import { Mapper } from "@automapper/core";
@@ -81,6 +82,7 @@ import { EquipmentStatusCodeModule } from "src/case_management/equipment_status_
     CaseLocationCodeModule,
     IpmAuthCategoryCodeModule,
     PersonModule,
+    ParkModule,
     EquipmentStatusCodeModule,
   ],
   controllers: [AppController],

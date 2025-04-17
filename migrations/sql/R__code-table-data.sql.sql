@@ -6004,15 +6004,6 @@ set
 where
   hwcr_outcome_code = 'TRANSREHB';
 
---------------------------
--- New Changes above this line
--------------------------
-UPDATE case_management.configuration
-SET
-  configuration_value = cast(configuration_value as INTEGER) + 1
-WHERE
-  configuration_code = 'CDTABLEVER';
-
 -----------------------------
 -- Equipment status code - CE-1362
 -----------------------------
@@ -6054,3 +6045,21 @@ VALUES
     CURRENT_USER,
     CURRENT_TIMESTAMP
   ) ON CONFLICT DO NOTHING;
+
+--------------------------
+-- CE-1579 Update Mandate Wording and alphabetize by adding display order
+-------------------------
+update case_management.inaction_reason_code 
+  SET short_description = 'Outside mandate',
+  long_description = 'Outside mandate',
+  display_order = '40'
+WHERE inaction_reason_code = 'OUTSDCOSMT';
+
+--------------------------
+-- New Changes above this line
+-------------------------
+UPDATE case_management.configuration
+SET
+  configuration_value = cast(configuration_value as INTEGER) + 1
+WHERE
+  configuration_code = 'CDTABLEVER';

@@ -6,20 +6,23 @@ select
 	le.lead_identifier as "Record ID",
 	--sc.long_description as "WDR Schedule/IPM Sector Type",
 	sec.long_description as "Sector",
+	icc.long_description as "IPM Auth. Category Code",
 	dc.long_description as "Discharge Type",
 	ac.long_description  as "Action Taken",
-	TO_CHAR(((act.action_date at time zone 'UTC') at time zone 'PDT'), 'MM/DD/YYYY') as "Date Action Taken"
-	--CASE 
-	--	WHEN s.site_id is not null THEN 'U' || s.site_id
-	--	when ap.authorization_permit_id is not null then ap.authorization_permit_id 
-	--	ELSE ''
-	--END as "Authorization Number"
+	TO_CHAR(((act.action_date at time zone 'UTC') at time zone 'PDT'), 'YYYY-MM-DD') as "Date Action Taken",
+	CASE 
+		WHEN s.site_id is not null THEN 'U' || s.site_id
+		when ap.authorization_permit_id is not null then ap.authorization_permit_id 
+		ELSE ''
+	END as "Authorization Number"
 from
 	case_management.lead le
 left join case_management.case_file cf on
 	cf.case_file_guid = le.case_identifier 
 left join case_management.decision d  on
 	d.case_file_guid = cf.case_file_guid and d.active_ind = 'Y'
+left join case_management.ipm_auth_category_code icc on
+  d.ipm_auth_category_code = icc.ipm_auth_category_code
 left join case_management.schedule_sector_xref ssx on
 	d.schedule_sector_xref_guid = ssx.schedule_sector_xref_guid and ssx.active_ind = 'Y'
 left join case_management.schedule_code sc on
@@ -39,6 +42,5 @@ left join case_management.action_type_action_xref atax on
 left join case_management.action_code ac on
     ac.action_code = atax.action_code 
   where cf.owned_by_agency_code  = 'EPO'
-  and 	act.action_date >= CURRENT_DATE - INTERVAL '1 year'
 	order by 
 	le.lead_identifier asc
