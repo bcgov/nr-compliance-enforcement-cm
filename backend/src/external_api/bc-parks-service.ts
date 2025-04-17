@@ -3,7 +3,7 @@ import { HttpsProxyAgent } from "https-proxy-agent";
 
 const URL = process.env.BC_PARKS_API_URL;
 const token = process.env.BC_PARKS_API_KEY;
-const httpsProxyAgent = new HttpsProxyAgent(process.env.https_proxy);
+const httpsProxyAgent = process.env.HTTPS_PROXY ? new HttpsProxyAgent(process.env.HTTPS_PROXY) : undefined;
 
 axios.interceptors.response.use(undefined, (error: AxiosError) => {
   console.error(error.response);
@@ -19,7 +19,7 @@ export const getAllParks = () => {
     },
   };
 
-  if (process.env.https_proxy) {
+  if (process.env.HTTPS_PROXY) {
     config = {
       ...config,
       httpsAgent: httpsProxyAgent,
