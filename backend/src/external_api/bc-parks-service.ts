@@ -23,6 +23,7 @@ export const getAllParks = () => {
   if (process.env.HTTPS_PROXY) {
     config = {
       ...config,
+      proxy: false,
       httpsAgent: httpsProxyAgent,
     };
   }
