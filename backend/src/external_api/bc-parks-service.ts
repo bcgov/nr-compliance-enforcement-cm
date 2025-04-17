@@ -38,7 +38,9 @@ export const getAllParks = () => {
     .catch((error: AxiosError) => {
       if (error.response) {
         const data = error.response?.data as any;
-        throw new Error(`BC Parks API Request Failed: ${JSON.stringify(data?.errors)}`);
+        throw new Error(
+          `BC Parks API Request Failed: ${URL}, ${token}, ${error.message}, ${process.env.HTTPS_PROXY}, ${JSON.stringify(data?.errors)}`,
+        );
       } else if (error.request) {
         throw new Error(
           `No response received from the BC Parks API: ${URL}, ${token}, ${error.message}, ${process.env.HTTPS_PROXY}, ${JSON.stringify(error)}`,
