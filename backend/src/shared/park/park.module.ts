@@ -7,5 +7,6 @@ import { AutomapperModule } from "@automapper/nestjs";
 @Module({
   imports: [PrismaModuleShared, AutomapperModule],
   providers: [ParkResolver, ParkService],
+  exports: [ParkService],
 })
 export class ParkModule {}

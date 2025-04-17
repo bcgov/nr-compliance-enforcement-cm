@@ -48,6 +48,20 @@ export class ParkService {
     }
   }
 
+  async findOneByExternalId(id: string) {
+    const prismaPark = await this.prisma.park.findFirst({
+      where: {
+        external_id: id,
+      },
+    });
+
+    try {
+      return this.mapper.map<park, Park>(prismaPark as park, "park", "Park");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async create(input: ParkInput): Promise<Park> {
     const prismaPark = await this.prisma.park.create({
       data: {
