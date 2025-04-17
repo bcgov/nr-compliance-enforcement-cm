@@ -28,7 +28,6 @@ COPY --from=buildwithdevdeps /app/node_modules/prisma ./node_modules/prisma
 RUN npm run build
 
 # Deploy container
-# Distroless has node, but not npm
 FROM node:20.19.0-bullseye-slim
 ENV NODE_ENV=production
 

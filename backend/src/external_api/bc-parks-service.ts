@@ -30,7 +30,7 @@ export const getAllParks = () => {
         const data = error.response?.data as any;
         throw new Error(`BC Parks API Request Failed: ${JSON.stringify(data?.errors)}`);
       } else if (error.request) {
-        throw new Error(`No response received from the BC Parks API: ${URL}`);
+        throw new Error(`No response received from the BC Parks API: ${URL}, ${token}, ${error.message}`);
       } else {
         throw new Error(`BC Parks API Error: ${error.message}`);
       }
