@@ -1,7 +1,9 @@
 import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from "axios";
+import { HttpsProxyAgent } from "https-proxy-agent";
 
 const URL = process.env.BC_PARKS_API_URL;
 const token = process.env.BC_PARKS_API_KEY;
+const httpsProxyAgent = new HttpsProxyAgent(process.env.https_proxy);
 
 axios.interceptors.response.use(undefined, (error: AxiosError) => {
   console.error(error.response);
@@ -16,6 +18,13 @@ export const getAllParks = () => {
       "x-api-key": `${token}`,
     },
   };
+
+  if (process.env.https_proxy) {
+    config = {
+      ...config,
+      httpsAgent: httpsProxyAgent,
+    };
+  }
 
   const getAllParksUrl = `${URL}/parks/names?status=established`;
 
