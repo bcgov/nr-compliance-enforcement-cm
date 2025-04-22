@@ -14,6 +14,6 @@ export class HWCRPreventionActionResolver {
   @Query("HWCRPreventionActions")
   @Roles(coreRoles)
   find() {
-    return this.actionCodeService.findAllCodesByType(ACTION_TYPE_CODES.COSPRVANDEDU);
+    return this.actionCodeService.findAllCodesByType([ACTION_TYPE_CODES.COSPRVANDEDU, ACTION_TYPE_CODES.PRKPRVANDEDU]);
   }
 }

@@ -6055,6 +6055,29 @@ update case_management.inaction_reason_code
   display_order = '40'
 WHERE inaction_reason_code = 'OUTSDCOSMT';
 
+------------------------
+-- CE-1574 Parks Specific Prevention and Education Options
+------------------------
+insert into	case_management.action_type_code 
+    (action_type_code, short_description, long_description, active_ind, create_user_id, create_utc_timestamp)
+values 
+    ('PRKPRV&EDU', 'Prevention and Education', 'Prevention and Education', 'Y', CURRENT_USER, CURRENT_TIMESTAMP) 
+on conflict do nothing;
+
+insert into	case_management.action_type_action_xref 
+    (action_type_code, action_code, display_order, active_ind, create_user_id, create_utc_timestamp)
+values 
+    ('PRKPRV&EDU', 'PROVSFTYIN', 10, 'Y', CURRENT_USER, CURRENT_TIMESTAMP), 
+    ('PRKPRV&EDU', 'PROVAMHSIN', 20, 'Y', CURRENT_USER, CURRENT_TIMESTAMP), 
+    ('PRKPRV&EDU', 'CNTCTBIOVT', 30, 'Y', CURRENT_USER, CURRENT_TIMESTAMP), 
+    ('PRKPRV&EDU', 'CNTCTGROUP', 40, 'Y', CURRENT_USER, CURRENT_TIMESTAMP)
+on conflict do nothing;
+
+update case_management.action_code
+set short_description = 'Provided advice, attractant management and/or husbandry information',
+    long_description = 'Provided advice, attractant management and/or husbandry information'
+where action_code = 'PROVAMHSIN';
+ 
 --------------------------
 -- New Changes above this line
 -------------------------

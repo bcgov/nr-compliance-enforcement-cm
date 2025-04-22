@@ -14,12 +14,12 @@ export class HWCRAssessmentActionResolver {
   @Query("HWCRAssessmentActions")
   @Roles(coreRoles)
   find() {
-    return this.actionCodeService.findAllCodesByType(ACTION_TYPE_CODES.COMPASSESS);
+    return this.actionCodeService.findAllCodesByType([ACTION_TYPE_CODES.COMPASSESS]);
   }
 
   @Query("HWCRAssessmentCat1Actions")
   @Roles(coreRoles)
   findCat1Actions() {
-    return this.actionCodeService.findAllCodesByType(ACTION_TYPE_CODES.CAT1ASSESS);
+    return this.actionCodeService.findAllCodesByType([ACTION_TYPE_CODES.CAT1ASSESS]);
   }
 }
