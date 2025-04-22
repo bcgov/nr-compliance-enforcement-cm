@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { Park } from "./dto/park";
 import { ParkArgs, ParkInput } from "./dto/park.input";
 import { SharedPrismaService } from "../../prisma/shared/prisma.shared.service";
@@ -12,6 +12,8 @@ export class ParkService {
     private readonly prisma: SharedPrismaService,
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
+
+  private readonly logger = new Logger(ParkService.name);
 
   async find(args: ParkArgs) {
     const query = {
@@ -44,7 +46,21 @@ export class ParkService {
     try {
       return this.mapper.map<park, Park>(prismaPark as park, "park", "Park");
     } catch (error) {
-      console.log(error);
+      this.logger.error("Error mapping park", error);
+    }
+  }
+
+  async findOneByExternalId(id: string) {
+    const prismaPark = await this.prisma.park.findFirst({
+      where: {
+        external_id: id,
+      },
+    });
+
+    try {
+      return this.mapper.map<park, Park>(prismaPark as park, "park", "Park");
+    } catch (error) {
+      this.logger.error("Error mapping park", error);
     }
   }
 
