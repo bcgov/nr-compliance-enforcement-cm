@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { Person } from "./dto/person";
 import { SharedPrismaService } from "../../prisma/shared/prisma.shared.service";
 import { InjectMapper } from "@automapper/nestjs";
@@ -12,6 +12,8 @@ export class PersonService {
     private readonly prisma: SharedPrismaService,
     @InjectMapper() private readonly mapper: Mapper,
   ) {}
+
+  private readonly logger = new Logger(PersonService.name);
 
   async findAll() {
     const prismaPeople = await this.prisma.person.findMany({
@@ -56,7 +58,7 @@ export class PersonService {
     try {
       return this.mapper.map<person, Person>(prismaPerson as person, "person", "Person");
     } catch (error) {
-      console.log(error);
+      this.logger.error("Error mapping person", error);
     }
   }
 
