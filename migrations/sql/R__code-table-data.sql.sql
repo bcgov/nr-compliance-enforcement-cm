@@ -6055,7 +6055,6 @@ update case_management.inaction_reason_code
   display_order = '40'
 WHERE inaction_reason_code = 'OUTSDCOSMT';
 
-
 ------------------------
 -- CE-1574 Parks Specific Prevention and Education Options
 ------------------------
@@ -6079,7 +6078,6 @@ set short_description = 'Provided advice, attractant management and/or husbandry
     long_description = 'Provided advice, attractant management and/or husbandry information'
 where action_code = 'PROVAMHSIN';
  
-
 --------------------------
 -- New Changes above this line
 -------------------------
