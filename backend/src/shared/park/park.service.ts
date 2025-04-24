@@ -101,6 +101,20 @@ export class ParkService {
     });
     if (!existingPark) throw new Error("Park not found");
 
+    const existingParkAreaXrefs = await this.prisma.park_area_xref.findMany({
+      where: { park_guid: parkGuid },
+    });
+    // Find park_area_xref records to delete if they are not in input.parkAreas
+    const parkAreaGuidsToDelete = existingParkAreaXrefs
+      .filter((xref) => !input.parkAreas?.some((area) => area.parkAreaGuid === xref.park_area_guid))
+      .map((xref) => xref.park_area_guid);
+    // Find park_area_xref records to create if they are in input.parkAreas
+    const parkAreaGuidsToCreate = input.parkAreas
+      ? input.parkAreas.filter(
+          (area) => !existingParkAreaXrefs.some((xref) => xref.park_area_guid === area.parkAreaGuid),
+        )
+      : [];
+
     const prismaPark = await this.prisma.park.update({
       where: { park_guid: parkGuid },
       data: {
@@ -108,13 +122,14 @@ export class ParkService {
         name: input.name,
         legal_name: input.legalName,
         park_area_xref: {
-          deleteMany: {}, // Delete all existing park area mappings
-          create: input.parkAreas
-            ? input.parkAreas.map((parkArea) => ({
-                park_area_guid: parkArea.parkAreaGuid,
-                create_user_id: "system",
-              }))
-            : [],
+          deleteMany: {
+            park_area_guid: { in: parkAreaGuidsToDelete },
+          },
+          create:
+            parkAreaGuidsToCreate.map((parkArea) => ({
+              park_area_guid: parkArea.parkAreaGuid,
+              create_user_id: "system",
+            })) ?? [],
         },
       },
     });
