@@ -1,12 +1,13 @@
-import { Mapper, createMap, forMember, mapFrom } from "@automapper/core";
+import { Mapper, createMap, forMember, mapFrom, mapWithArguments } from "@automapper/core";
 import { park } from "../../../../prisma/shared/generated/park";
+import { ParkArea } from "./park_area";
 
 export class Park {
   parkGuid: string;
   externalId: string;
   name: string;
   legalName?: string;
-  geoOrganizationUnitCode?: string;
+  parkAreas?: ParkArea[];
 }
 
 export const mapPrismaParkToPark = (mapper: Mapper) => {
@@ -31,8 +32,10 @@ export const mapPrismaParkToPark = (mapper: Mapper) => {
       mapFrom((src) => src.legal_name),
     ),
     forMember(
-      (dest) => dest.geoOrganizationUnitCode,
-      mapFrom((src) => src.geo_organization_unit_code),
+      (dest) => dest.parkAreas,
+      mapWithArguments((src) =>
+        mapper.mapArray(src.park_area_xref?.map((xref) => xref.park_area) ?? [], "park_area", "ParkArea"),
+      ),
     ),
   );
 };

@@ -5,6 +5,7 @@ import { SharedPrismaService } from "../../prisma/shared/prisma.shared.service";
 import { InjectMapper } from "@automapper/nestjs";
 import { Mapper } from "@automapper/core";
 import { park } from "prisma/shared/generated/park";
+import { park_area_xref } from "prisma/shared/generated/park_area_xref";
 
 @Injectable()
 export class ParkService {
@@ -22,7 +23,17 @@ export class ParkService {
         external_id: true,
         name: true,
         legal_name: true,
-        geo_organization_unit_code: true,
+        park_area_xref: {
+          select: {
+            park_area: {
+              select: {
+                park_area_guid: true,
+                name: true,
+                region_name: true,
+              },
+            },
+          },
+        },
       },
       skip: args.skip,
       take: args.take,
@@ -70,7 +81,14 @@ export class ParkService {
         external_id: input.externalId,
         name: input.name,
         legal_name: input.legalName,
-        geo_organization_unit_code: input.geoOrganizationUnitCode,
+        park_area_xref: {
+          create: input.parkAreas
+            ? input.parkAreas.map((parkArea) => ({
+                park_area_guid: parkArea.parkAreaGuid,
+                create_user_id: "system",
+              }))
+            : [],
+        },
         create_user_id: "system",
       },
     });
@@ -89,7 +107,15 @@ export class ParkService {
         external_id: input.externalId,
         name: input.name,
         legal_name: input.legalName,
-        geo_organization_unit_code: input.geoOrganizationUnitCode,
+        park_area_xref: {
+          deleteMany: {}, // Delete all existing park area mappings
+          create: input.parkAreas
+            ? input.parkAreas.map((parkArea) => ({
+                park_area_guid: parkArea.parkAreaGuid,
+                create_user_id: "system",
+              }))
+            : [],
+        },
       },
     });
     return this.mapper.map<park, Park>(prismaPark as park, "park", "Park");
