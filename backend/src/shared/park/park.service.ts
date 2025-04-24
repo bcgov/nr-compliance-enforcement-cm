@@ -5,7 +5,6 @@ import { SharedPrismaService } from "../../prisma/shared/prisma.shared.service";
 import { InjectMapper } from "@automapper/nestjs";
 import { Mapper } from "@automapper/core";
 import { park } from "prisma/shared/generated/park";
-import { park_area_xref } from "prisma/shared/generated/park_area_xref";
 
 @Injectable()
 export class ParkService {
@@ -38,6 +37,7 @@ export class ParkService {
       skip: args.skip,
       take: args.take,
       where: {},
+      orderBy: { name: "asc" } as any, // Workaround for Prisma type issue with orderBy
     };
 
     args.search && (query.where = { name: { contains: args.search, mode: "insensitive" } });
