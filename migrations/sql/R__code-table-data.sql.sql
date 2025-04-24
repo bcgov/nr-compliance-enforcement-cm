@@ -5498,6 +5498,73 @@ set
 where
   hwcr_outcome_code = 'DESTRYOTH';
 
+--
+-- INSERT INTO hwcr_outcome_actioned_by_code
+--
+insert into
+  hwcr_outcome_actioned_by_code (
+    hwcr_outcome_actioned_by_code,
+    agency_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+--     BC Parks, COS, First Nations, Other, Police, Public
+values
+  (
+    'COS',
+    'COS',
+    'COS',
+    'Conservation Officer Service',
+    1,
+    true,
+    'FLYWAY',
+    now (),
+    'FLYWAY',
+    now ()
+  ),
+  (
+    'PARKS',
+    'PARKS',
+    'BC Parks',
+    'BC Parks',
+    2,
+    true,
+    'FLYWAY',
+    now (),
+    'FLYWAY',
+    now ()
+  ),
+  (
+    'FRSTNTNS',
+    NULL,
+    'First Nations',
+    'First Nations',
+    3,
+    true,
+    'FLYWAY',
+    now (),
+    'FLYWAY',
+    now ()
+  ),
+  (
+    'OTHER',
+    NULL,
+    'Other',
+    'Other',
+    4,
+    true,
+    'FLYWAY',
+    now (),
+    'FLYWAY',
+    now ()
+  ) on conflict do nothing;
+
 --------------------------
 -- Equipment code updates
 -------------------------
@@ -6054,6 +6121,81 @@ update case_management.inaction_reason_code
   long_description = 'Outside mandate',
   display_order = '40'
 WHERE inaction_reason_code = 'OUTSDCOSMT';
+
+
+-------------------------
+-- CE-1573 Add actioned by for applicable HWC outcomes
+-- Add a new code for Euthenized and Dispatched
+-- Update existing euthenized by... and dispatched by... codes to use the new codes and specify who it was actioned by
+-- Set the affected HWCR outcome codes to inactive
+-------------------------
+
+insert into
+  hwcr_outcome_code (
+    hwcr_outcome_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+values
+  (
+    'EUTHNIZD',
+    'Euthanized',
+    'Euthanized',
+    15,
+    true,
+    'FLYWAY',
+    now (),
+    'FLYWAY',
+    now ()
+  ),
+  (
+    'DISPTCHD',
+    'Dispatched',
+    'Dispatched',
+    25,
+    true,
+    'FLYWAY',
+    now (),
+    'FLYWAY',
+    now ()
+  ) on conflict do nothing;
+
+-- Update the affected wildlife records to use the new codes and specify actioned by.
+update case_management.wildlife
+set
+  hwcr_outcome_code = 'EUTHNIZD',
+  hwcr_outcome_actioned_by_code = 'COS'
+where
+  hwcr_outcome_code = 'EUTHCOS';
+
+update case_management.wildlife
+set
+  hwcr_outcome_code = 'DISPTCHD',
+  hwcr_outcome_actioned_by_code = 'COS'
+where
+  hwcr_outcome_code = 'DESTRYCOS';
+
+update case_management.wildlife
+set
+  hwcr_outcome_code = 'DISPTCHD',
+  hwcr_outcome_actioned_by_code = 'OTHER'
+where
+  hwcr_outcome_code = 'DESTRYOTH';
+
+-- Set the affected HWCR outcome codes to inactive.
+update case_management.hwcr_outcome_code
+set
+  active_ind = 'N'
+where
+  hwcr_outcome_code in ('EUTHCOS', 'EUTHOTH', 'DESTRYCOS', 'DESTRYOTH');
+
+
 
 --------------------------
 -- New Changes above this line
