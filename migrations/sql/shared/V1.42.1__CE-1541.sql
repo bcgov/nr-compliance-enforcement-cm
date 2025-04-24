@@ -167,6474 +167,702 @@ ON CONFLICT DO NOTHING;
 
 -- Initial load of park area mappings
 
+-- Cariboo-Chilcotin Coast - BELLA COOLA
+WITH codes AS (
+    SELECT unnest(ARRAY['0006', '0019', '1067', '1124', '1027', '1030', '1032', '1044', '1108', '1074', '1040', '1046', '1054', '1033']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9554', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Cariboo-Chilcotin Coast'
+  AND  pa.name ILIKE 'BELLA COOLA'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9868', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9869', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0384', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0237', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0104', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0529', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0021', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0198', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0267', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9867', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0382', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0322', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0044', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0155', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3017', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3128', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3037', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3016', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3094', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3018', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3067', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3132', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0383', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0113', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6161', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0210', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9229', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9959', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9474', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0003', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0106', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0037', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9748', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0154', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0295', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0137', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3113', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4460', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3112', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3054', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'COWICHAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0096', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'JUAN de FUCA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9398', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'JUAN de FUCA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0240', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'JUAN de FUCA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0009', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'JUAN de FUCA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3097', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'JUAN de FUCA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4361', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'JUAN de FUCA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3083', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'JUAN de FUCA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3066', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC South Island'
-  AND  pa.name ILIKE 'JUAN de FUCA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0226', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0029', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0118', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0635', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0310', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0030', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0039', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0231', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0133', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0043', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0193', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0301', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0366', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3117', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9743', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4455', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4471', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'ARROWSMITH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9507', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9500', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9499', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9497', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0269', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0196', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9493', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9494', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9504', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9503', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0050', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0182', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0031', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9540', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9495', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9501', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0296', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9498', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5042', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0517', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3024', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3001', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3105', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3090', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'CLAYOQUOT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0321', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0562', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0569', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0559', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0563', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0564', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0566', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0567', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0570', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0571', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0572', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0560', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3052', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3093', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3010', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3009', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3045', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'HAIDA GWAII'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0633', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'VON DONOP'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0048', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'VON DONOP'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0187', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'VON DONOP'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9870', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'VON DONOP'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0292', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'VON DONOP'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0632', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'VON DONOP'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0634', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
-  AND  pa.name ILIKE 'VON DONOP'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0220', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'STRATHCONA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0087', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'STRATHCONA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0313', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'STRATHCONA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0001', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'STRATHCONA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0348', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'STRATHCONA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0188', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'STRATHCONA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0036', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'STRATHCONA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0180', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'STRATHCONA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4337', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'STRATHCONA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6081', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'STRATHCONA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9745', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8779', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9209', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0339', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8778', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9147', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0028', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9746', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0189', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0190', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9749', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0374', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6111', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9459', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9752', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8782', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9753', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0631', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0511', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3109', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3075', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3129', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3014', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3119', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'NOOTKA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0250', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9469', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8774', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0450', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9747', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9466', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0472', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9465', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9532', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9464', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0377', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0283', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '2115', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3013', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3012', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3126', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9744', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3123', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3125', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3118', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3011', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3122', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3124', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'CAPE SCOTT'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0520', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0391', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0390', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0223', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0215', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1086', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1024', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1025', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1026', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1023', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1028', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
 
+-- Cariboo-Chilcotin Coast - BOWRON
+WITH codes AS (
+    SELECT unnest(ARRAY['0582', '0129', '9622', '0170', '9679', '0060', '0587', '4275', '7458', '0211', '0302', '0136', '0592', '0032', '3070']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1031', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Cariboo-Chilcotin Coast'
+  AND  pa.name ILIKE 'BOWRON'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1065', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1008', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
 
+-- Cariboo-Chilcotin Coast - CENTRAL COAST
+WITH codes AS (
+    SELECT unnest(ARRAY['0396', '0394', '0344', '0393', '0395', '0389', '1005', '1029', '1034', '1073', '1035', '1036', '1037', '0343', '1042', '1043', '0547', '1045', '1013', '1016', '1020', '1050', '1051', '1056', '1052', '1053', '0549', '1055', '1057', '1071', '1019', '1060', '1061', '1063', '1048', '1066', '3103', '3023']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1049', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Cariboo-Chilcotin Coast'
+  AND  pa.name ILIKE 'CENTRAL COAST'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1068', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
 
+-- Cariboo-Chilcotin Coast - NORTH CHILCOTIN
+WITH codes AS (
+    SELECT unnest(ARRAY['0398', '0585', '0588', '9456', '9489', '7668', '1084', '0590', '1087', '0409', '224', '9481', '3055', '3101', '3064', '3053', '3035']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1038', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Cariboo-Chilcotin Coast'
+  AND  pa.name ILIKE 'NORTH CHILCOTIN'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1039', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
 
+-- Cariboo-Chilcotin Coast - NORTHERN FORESTS
+WITH codes AS (
+    SELECT unnest(ARRAY['9713', '9714', '9716', '6818', '9722', '9728', '9729', '9732', '9731', '0195', '9733', '9735', '9698', '0024', '9740']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1041', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Cariboo-Chilcotin Coast'
+  AND  pa.name ILIKE 'NORTHERN FORESTS'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1000', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
 
+-- Cariboo-Chilcotin Coast - SOUTH CHILCOTIN
+WITH codes AS (
+    SELECT unnest(ARRAY['0583', '0213', '9563', '0057', '0059', '0135', '0026', '0628', '0629', '0586', '0217', '9557', '9682', '0625', '0273', '0268', '9482', '0068', '0589', '9485', '9480', '0591', '0584', '0111', '9483', '9590', '3127', '3065']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1075', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Cariboo-Chilcotin Coast'
+  AND  pa.name ILIKE 'SOUTH CHILCOTIN'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1058', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
 
+-- Kootenay Region - ARROW
+WITH codes AS (
+    SELECT unnest(ARRAY['0308', '0323', '0051', '9553', '0010', '0017', '0404', '0324', '0232', '0110', '0156', '0202', '0327', '9960', '3032', '3031']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1059', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Kootenay Region'
+  AND  pa.name ILIKE 'ARROW'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1062', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
 
+-- Kootenay Region - EAST KOOTENAY NORTH
+WITH codes AS (
+    SELECT unnest(ARRAY['0206', '0172', '0362', '9681', '0061', '0034', '0293', '0130', '0005', '0098', '0025', '0114', '0247', '0053', '0287', '7211', '4984', '3020', '3056', '3019', '3026']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1021', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Kootenay Region'
+  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1064', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
 
+-- Kootenay Region - EAST KOOTENAY SOUTH
+WITH codes AS (
+    SELECT unnest(ARRAY['0338', '0120', '0102', '0253', '0121', '9680', '9185', '0065', '0235', '0144', '0105', '0108', '9434', '0112', '0256', '0282', '0079', '9773', '3104']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1069', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Kootenay Region'
+  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1070', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
 
+-- Kootenay Region - KOOTENAY LAKE
+WITH codes AS (
+    SELECT unnest(ARRAY['0169', '0185', '0216', '0174', '0311', '9551', '0052', '0004', '0357', '0012', '9550', '0163', '9435', '0164', '9552']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1072', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Kootenay Region'
+  AND  pa.name ILIKE 'KOOTENAY LAKE'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3120', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
 
+-- Okanagan - EAST OKANAGAN
+WITH codes AS (
+    SELECT unnest(ARRAY['0527', '0056', '0456', '0225', '0244', '0528', '9549', '9548', '0442', '0319', '0066', '0236', '0446', '0259', '0153', '9711', '0440', '5024', '0471', '3034', '3051', '3006', '3005']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3040', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Okanagan'
+  AND  pa.name ILIKE 'EAST OKANAGAN'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3111', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
-ON CONFLICT DO NOTHING;
 
+-- Okanagan - NORTH OKANAGAN
+WITH codes AS (
+    SELECT unnest(ARRAY['4104', '0086', '0139', '8697', '0277', '0378', '0453', '0241', '0020', '0468', '0143', '0445', '9335', '0027', '0463', '0467', '6610', '9518', '3077', '3108', '3049', '3042', '3043', '3061', '3030']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0411', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Okanagan'
+  AND  pa.name ILIKE 'NORTH OKANAGAN'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9512', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
-ON CONFLICT DO NOTHING;
 
+-- Okanagan - SOUTH OKANAGAN
+WITH codes AS (
+    SELECT unnest(ARRAY['0307', '0035', '0201', '9213', '0142', '0064', '0218', '0073', '0054', '0474', '0272', '0462', '0204', '6547', '0077', '9587', '5018', '0464', '6624', '3033', '3100', '3130', '3007']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6093', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Okanagan'
+  AND  pa.name ILIKE 'SOUTH OKANAGAN'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0264', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
-ON CONFLICT DO NOTHING;
 
+-- Okanagan - WEST OKANAGAN
+WITH codes AS (
+    SELECT unnest(ARRAY['0119', '0058', '0199', '0033', '0011', '0022', '0146', '0076', '4982', '0598', '0448', '3027']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0045', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Okanagan'
+  AND  pa.name ILIKE 'WEST OKANAGAN'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0131', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
-ON CONFLICT DO NOTHING;
 
+-- Omineca - OMINECA
+WITH codes AS (
+    SELECT unnest(ARRAY['0055', '0251', '0435', '0177', '9597', '0436', '0437', '9808', '9809', '9810', '9864', '0518', '9812', '0234', '9793', '0370', '9658', '0230', '0406', '9118', '0317', '0078', '9796', '5027', '3071', '3087', '3036', '3085', '3091', '3041', '3038']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0265', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Omineca'
+  AND  pa.name ILIKE 'OMINECA'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9750', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
-ON CONFLICT DO NOTHING;
 
+-- Omineca - ROBSON
+WITH codes AS (
+    SELECT unnest(ARRAY['0415', '0416', '9802', '0002', '0325', '9034', '0385', '0425', '4214', '0422', '9461', '4983', '9794', '9801', '9805', '0509', '5043', '5029', '9821', '5037', '3084', '3082', '3039']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0109', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Omineca'
+  AND  pa.name ILIKE 'ROBSON'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9767', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
-ON CONFLICT DO NOTHING;
 
+-- Omineca - UPPER FRASER
+WITH codes AS (
+    SELECT unnest(ARRAY['9453', '3931', '0115', '9855', '0318', '0355', '9792', '9780', '8053', '9795', '8796', '0345', '0229', '9815', '0305', '9953', '9779', '5044', '5031', '3086', '3079', '3060', '3134', '3078', '3072']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9476', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Omineca'
+  AND  pa.name ILIKE 'UPPER FRASER'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9506', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
-ON CONFLICT DO NOTHING;
 
+-- Peace - LIARD
+WITH codes AS (
+    SELECT unnest(ARRAY['9828', '8297', '0426', '9797', '9829', '9820', '254', '8969', '0092', '5034', '0328', '0093', '0341', '8288', '0280', '8299', '9830', '9843', '8277', '0094', '8284', '4985', '5015', '9790', '4041', '9799', '9803', '8330', '5022', '5023', '5026', '5028', '9819', '5035', '3062', '8325', '8312', '8291', '3047', '4232', '3046', '3080']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0412', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Peace'
+  AND  pa.name ILIKE 'LIARD'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9754', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
-ON CONFLICT DO NOTHING;
 
+-- Peace - PEACE
+WITH codes AS (
+    SELECT unnest(ARRAY['9783', '0014', '8094', '9785', '0214', '9786', '0161', '0326', '0222', '9800', '0140', '8097', '0421', '9806', '0181', '0315', '0289', '9633', '9510', '4351', '9813', '9842', '0316', '0016', '0286', '8109', '4981', '9958', '521', '8306', '3050', '3107', '3008', '8123', '9955']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0243', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Peace'
+  AND  pa.name ILIKE 'PEACE'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0367', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
-ON CONFLICT DO NOTHING;
 
+-- SC Lower Mainland - HOWE SOUND AREA
+WITH codes AS (
+    SELECT unnest(ARRAY['0049', '0278', '0365', '0116', '9508', '0314', '3048']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9751', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
+CROSS JOIN codes
+WHERE  pa.region_name = 'SC Lower Mainland'
+  AND  pa.name ILIKE 'HOWE SOUND AREA'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3004', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'WC North Island-SCC Area'
-  AND  pa.name ILIKE 'MIRACLE BEACH'
-ON CONFLICT DO NOTHING;
 
+-- SC Lower Mainland - NORTH FRASER AREA
+WITH codes AS (
+    SELECT unnest(ARRAY['0330', '0150', '0081', '0008', '0245', '9824', '6998', '0122', '0200', '5025', '0555', '3076', '3131']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0330', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
+CROSS JOIN codes
 WHERE  pa.region_name = 'SC Lower Mainland'
   AND  pa.name ILIKE 'NORTH FRASER AREA'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0150', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'NORTH FRASER AREA'
-ON CONFLICT DO NOTHING;
 
+-- SC Lower Mainland - SOUTH FRASER AREA
+WITH codes AS (
+    SELECT unnest(ARRAY['0166', '0258', '0124', '0335', '0336', '0351', '0041', '0151', '0290', '0072', '0158', '0261', '3098', '3116', '9841', '3089']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0081', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'NORTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0008', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'NORTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0245', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'NORTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9824', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'NORTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6998', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'NORTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0122', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'NORTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0200', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'NORTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5025', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'NORTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0555', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'NORTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3076', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'NORTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3131', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'NORTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0166', user, now(), user, now()
-FROM   shared.park_area pa
+CROSS JOIN codes
 WHERE  pa.region_name = 'SC Lower Mainland'
   AND  pa.name ILIKE 'SOUTH FRASER AREA'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0258', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'SOUTH FRASER AREA'
-ON CONFLICT DO NOTHING;
 
+-- SC Lower Mainland - VANCOUVER AREA
+WITH codes AS (
+    SELECT unnest(ARRAY['9509', '0015', '0023', '9508']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0124', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'SOUTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0335', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'SOUTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0336', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'SOUTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0351', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'SOUTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0041', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'SOUTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0151', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'SOUTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0290', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'SOUTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0072', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'SOUTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0158', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'SOUTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0261', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'SOUTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3098', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'SOUTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3116', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'SOUTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9841', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'SOUTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3089', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'SOUTH FRASER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9509', user, now(), user, now()
-FROM   shared.park_area pa
+CROSS JOIN codes
 WHERE  pa.region_name = 'SC Lower Mainland'
   AND  pa.name ILIKE 'VANCOUVER AREA'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0015', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'VANCOUVER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0023', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'VANCOUVER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9508', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'VANCOUVER AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0049', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'HOWE SOUND AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0278', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'HOWE SOUND AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0365', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'HOWE SOUND AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0116', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'HOWE SOUND AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9508', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'HOWE SOUND AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0314', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'HOWE SOUND AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3048', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Lower Mainland'
-  AND  pa.name ILIKE 'HOWE SOUND AREA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6301', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0372', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0228', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0252', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0469', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0203', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0388', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0392', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9825', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6197', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6268', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9761', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9765', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0294', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0221', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0173', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0040', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0373', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0145', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0379', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0303', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9763', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9544', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0375', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9460', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0376', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9762', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3028', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3002', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0475', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SUNSHINE COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0152', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'PEMBERTON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9565', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'PEMBERTON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0381', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'PEMBERTON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0402', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'PEMBERTON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0007', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'PEMBERTON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0363', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'PEMBERTON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0179', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'PEMBERTON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9556', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'PEMBERTON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0561', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'PEMBERTON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0552', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'PEMBERTON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0557', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'PEMBERTON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0546', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'PEMBERTON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0553', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'PEMBERTON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0558', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'PEMBERTON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0414', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SQUAMISH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0242', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SQUAMISH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9451', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SQUAMISH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9768', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SQUAMISH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0141', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SQUAMISH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0331', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SQUAMISH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6328', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SQUAMISH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9764', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SQUAMISH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0616', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SQUAMISH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0545', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SQUAMISH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0554', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SQUAMISH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0556', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SQUAMISH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3069', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'SQUAMISH'
-ON CONFLICT DO NOTHING;
 
+-- SC Sea to Sky - GARIBALDI SOUTH
+WITH codes AS (
+    SELECT unnest(ARRAY['0007', '0090']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0007', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
+CROSS JOIN codes
 WHERE  pa.region_name = 'SC Sea to Sky'
   AND  pa.name ILIKE 'GARIBALDI SOUTH'
 ON CONFLICT DO NOTHING;
 
+
+-- SC Sea to Sky - PEMBERTON
+WITH codes AS (
+    SELECT unnest(ARRAY['0152', '9565', '0381', '0402', '0007', '0363', '0179', '9556', '0561', '0552', '0557', '0546', '0553', '0558']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0090', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
+CROSS JOIN codes
 WHERE  pa.region_name = 'SC Sea to Sky'
-  AND  pa.name ILIKE 'GARIBALDI SOUTH'
+  AND  pa.name ILIKE 'PEMBERTON'
 ON CONFLICT DO NOTHING;
 
+
+-- SC Sea to Sky - SQUAMISH
+WITH codes AS (
+    SELECT unnest(ARRAY['0414', '0242', '9451', '9768', '0141', '0331', '6328', '9764', '0616', '0545', '0554', '556', '3069']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9712', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
+CROSS JOIN codes
+WHERE  pa.region_name = 'SC Sea to Sky'
+  AND  pa.name ILIKE 'SQUAMISH'
 ON CONFLICT DO NOTHING;
 
+
+-- SC Sea to Sky - SUNSHINE COAST
+WITH codes AS (
+    SELECT unnest(ARRAY['6301', '0372', '0228', '0252', '0469', '0203', '0388', '0392', '9825', '6197', '6268', '9761', '9765', '0294', '0221', '0173', '0040', '0373', '0145', '0379', '0303', '9763', '9544', '0375', '9460', '0376', '9762', '3028', '3002', '0475']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6900', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
+CROSS JOIN codes
+WHERE  pa.region_name = 'SC Sea to Sky'
+  AND  pa.name ILIKE 'SUNSHINE COAST'
 ON CONFLICT DO NOTHING;
 
+
+-- Skeena East - ATLIN/TATSHENSHINI
+WITH codes AS (
+    SELECT unnest(ARRAY['0246', '0178', '0159', '0266', '0410', '1081', '1083', '1077', '525', '523', '593', '9522', '1080', '9123', '1079', '568', '3058', '3102']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0334', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Skeena East'
+  AND  pa.name ILIKE 'ATLIN/TATSHENSHINI'
 ON CONFLICT DO NOTHING;
 
+
+-- Skeena East - BABINE
+WITH codes AS (
+    SELECT unnest(ARRAY['0530', '0400', '0329', '5038', '9584', '9851', '9571', '0532', '9847', '0192', '9848', '8509', '9849', '0263', '0074', '9822', '0084', '0533', '9604', '5032', '9846', '4448', '0477', '3073']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9688', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Skeena East'
+  AND  pa.name ILIKE 'BABINE'
 ON CONFLICT DO NOTHING;
 
+
+-- Skeena East - STIKINE
+WITH codes AS (
+    SELECT unnest(ARRAY['0427', '0428', '0431', '0432', '0356', '8642', '0238', '0433', '0470', '0279', '0347', '0257', '0434', '0438', '0429', '0430', '8645', '9957', '3057', '3068', '3059']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6987', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Skeena East'
+  AND  pa.name ILIKE 'STIKINE'
 ON CONFLICT DO NOTHING;
 
+
+-- Skeena East - TWEEDSMUIR NORTH
+WITH codes AS (
+    SELECT unnest(ARRAY['0531', '0400', '8555', '0013', '9781', '0047', '9778', '0380', '0535', '0536', '0534', '0537', '0288', '9777', '0160', '0019', '9866', '0320', '5020', '5033', '5036', '0543', '0541', '0544', '0539', '0542', '0538', '0540', '3081']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0063', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Skeena East'
+  AND  pa.name ILIKE 'TWEEDSMUIR NORTH'
 ON CONFLICT DO NOTHING;
 
+
+-- Skeena West - LAKELSE-DOUGLAS CHANNEL
+WITH codes AS (
+    SELECT unnest(ARRAY['0482', '0483', '0484', '0485', '8350', '4382', '0067', '0070', '8966', '0405', '0488', '0489', '9601', '0407', '8379', '0481', '5040', '8345', '0492', '1094', '1003', '1125', '1007', '1092', '1091', '9457', '1118', '1014', '1017', '1001', '1012', '1105', '1123', '1006', '1009', '1116', '1010', '1018', '1015', '1110', '1111', '1113', '3025', '3114']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9723', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Skeena West'
+  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
 ON CONFLICT DO NOTHING;
 
+
+-- Skeena West - NORTH COAST
+WITH codes AS (
+    SELECT unnest(ARRAY['0299', '0397', '0401', '0403', '0162', '1002', '1122', '1095', '1089', '1011', '1096', '1097', '1100', '1078', '1093', '1099', '1114', '1101', '1022', '1102', '1103', '1004', '1090', '1104', '1106', '1109', '1112', '1115', '1119', '1120', '1117', '1121', '3133']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0306', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Skeena West'
+  AND  pa.name ILIKE 'NORTH COAST'
 ON CONFLICT DO NOTHING;
 
+
+-- Skeena West - SKEENA-NASS
+WITH codes AS (
+    SELECT unnest(ARRAY['386', '8814', '0062', '0340', '0038', '9782', '0486', '0358', '8741', '9077', '0490', '5039', '5041', '0491', '0487', '1088', '0577', '3932', '5030', '0596', '1098', '3115', '3063']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0069', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
+CROSS JOIN codes
+WHERE  pa.region_name = 'Skeena West'
+  AND  pa.name ILIKE 'SKEENA-NASS'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6865', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
-ON CONFLICT DO NOTHING;
 
+-- Thompson - EASTERN LAKES
+WITH codes AS (
+    SELECT unnest(ARRAY['0361', '6648', '9582', '0085', '0551', '0457', '0276', '9693', '0447', '0281', '0089', '0300', '0212', '0449', '0123', '0167', '0080']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0046', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9694', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0075', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6878', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0353', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3092', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3088', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3003', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9458', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'SOUTHERN RIVERS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9755', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6860', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9719', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9720', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9691', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9687', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9726', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0071', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0275', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9731', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0127', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9710', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9383', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9695', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9218', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6892', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9696', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9715', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9596', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4433', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3110', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3029', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'GRASSLANDS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9689', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9567', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0623', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9717', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9690', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0624', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9721', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0626', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0369', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0082', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0183', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9727', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9734', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0233', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9066', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0408', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9738', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9739', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0627', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9736', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0500', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0361', user, now(), user, now()
-FROM   shared.park_area pa
+CROSS JOIN codes
 WHERE  pa.region_name = 'Thompson'
   AND  pa.name ILIKE 'EASTERN LAKES'
 ON CONFLICT DO NOTHING;
 
+
+-- Thompson - GRASSLANDS
+WITH codes AS (
+    SELECT unnest(ARRAY['9755', '6860', '9719', '9720', '9691', '9687', '9726', '0071', '0275', '9731', '0127', '9710', '9383', '9695', '9218', '6892', '9696', '9715', '9596', '4433', '3110', '3029']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6648', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
+CROSS JOIN codes
 WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
+  AND  pa.name ILIKE 'GRASSLANDS'
 ON CONFLICT DO NOTHING;
 
+
+-- Thompson - SOUTHERN RIVERS
+WITH codes AS (
+    SELECT unnest(ARRAY['9712', '6900', '0334', '9688', '6987', '0063', '9723', '0306', '0069', '6865', '0046', '9694', '0075', '6878', '0353', '3092', '3088', '3003', '9458']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9582', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
+CROSS JOIN codes
 WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
+  AND  pa.name ILIKE 'SOUTHERN RIVERS'
 ON CONFLICT DO NOTHING;
 
+
+-- Thompson - WESTERN MOUNTAINS
+WITH codes AS (
+    SELECT unnest(ARRAY['9689', '9567', '0623', '9717', '9690', '0624', '9721', '0626', '0369', '0082', '0183', '9727', '9734', '0233', '9066', '0408', '9738', '9739', '0627', '9736', '0500']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0085', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
+CROSS JOIN codes
 WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
+  AND  pa.name ILIKE 'WESTERN MOUNTAINS'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0551', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0457', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0276', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9693', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0447', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0281', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0089', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0300', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0212', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0449', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0123', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0167', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0080', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Thompson'
-  AND  pa.name ILIKE 'EASTERN LAKES'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0308', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0323', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0051', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9553', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0010', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0017', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0404', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0324', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0232', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0110', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0156', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0202', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0327', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9960', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3032', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3031', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'ARROW'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0338', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0120', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0102', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0253', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0121', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9680', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9185', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0065', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0235', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0144', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0105', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0108', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9434', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0112', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0256', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0282', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0079', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9773', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3104', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY SOUTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0169', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'KOOTENAY LAKE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0185', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'KOOTENAY LAKE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0216', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'KOOTENAY LAKE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0174', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'KOOTENAY LAKE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0311', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'KOOTENAY LAKE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9551', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'KOOTENAY LAKE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0052', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'KOOTENAY LAKE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0004', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'KOOTENAY LAKE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0357', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'KOOTENAY LAKE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0012', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'KOOTENAY LAKE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9550', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'KOOTENAY LAKE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0163', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'KOOTENAY LAKE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9435', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'KOOTENAY LAKE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0164', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'KOOTENAY LAKE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9552', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'KOOTENAY LAKE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0206', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0172', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0362', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9681', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0061', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0034', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0293', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0130', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0005', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0098', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0025', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0114', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0247', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0053', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0287', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '7211', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4984', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3020', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3056', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3019', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3026', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Kootenay Region'
-  AND  pa.name ILIKE 'EAST KOOTENAY NORTH'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0527', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0056', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0456', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0225', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0244', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0528', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9549', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9548', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0442', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0319', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0066', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0236', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0446', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0259', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0153', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9711', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0440', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5024', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0471', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3034', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3051', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3006', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3005', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'EAST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4104', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0086', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0139', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8697', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0277', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0378', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0453', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0241', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0020', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0468', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0143', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0445', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9335', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0027', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0463', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0467', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6610', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9518', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3077', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3108', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3049', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3042', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3043', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3061', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3030', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'NORTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0307', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0035', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0201', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9213', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0142', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0064', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0218', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0073', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0054', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0474', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0272', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0462', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0204', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6547', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0077', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9587', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5018', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0464', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '6624', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3033', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3100', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3130', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3007', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'SOUTH OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0119', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'WEST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0058', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'WEST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0199', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'WEST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0033', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'WEST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0011', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'WEST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0022', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'WEST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0146', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'WEST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0076', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'WEST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4982', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'WEST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0598', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'WEST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0448', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'WEST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3027', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Okanagan'
-  AND  pa.name ILIKE 'WEST OKANAGAN'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0482', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0483', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0484', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0485', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8350', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4382', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0067', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0070', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8966', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0405', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0488', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0489', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9601', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0407', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8379', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0481', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5040', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8345', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0492', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1094', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1003', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1125', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1007', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1092', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1091', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9457', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1118', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1014', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1017', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1001', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1012', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1105', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1123', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1006', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1009', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1116', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1010', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1018', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1015', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1110', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1111', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1113', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3025', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3114', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'LAKELSE-DOUGLAS CHANNEL'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0386', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8814', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0062', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0340', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0038', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9782', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0486', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0358', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8741', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9077', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0490', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5039', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5041', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0491', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0487', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1088', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0577', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3932', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5030', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0596', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1098', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3115', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3063', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'SKEENA-NASS'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0299', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0397', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0401', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0403', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0162', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1002', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1122', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1095', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1089', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1011', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1096', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1097', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1100', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1078', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1093', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1099', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1114', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1101', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1022', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1102', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1103', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1004', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1090', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1104', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1106', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1109', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1112', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1115', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1119', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1120', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1117', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '1121', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3133', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Skeena West'
-  AND  pa.name ILIKE 'NORTH COAST'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0055', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0251', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0435', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0177', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9597', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0436', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0437', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9808', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9809', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9810', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9864', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0518', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9812', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0234', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9793', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0370', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9658', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0230', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0406', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9118', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0317', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0078', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9796', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5027', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3071', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3087', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3036', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3085', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3091', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3041', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3038', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'OMINECA'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0415', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0416', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9802', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0002', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0325', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9034', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0385', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0425', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4214', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0422', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9461', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4983', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9794', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9801', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9805', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0509', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5043', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5029', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9821', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5037', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3084', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3082', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3039', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'ROBSON'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9453', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3931', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0115', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9855', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0318', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0355', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9792', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9780', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8053', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9795', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8796', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0345', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0229', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9815', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0305', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9953', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9779', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5044', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5031', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3086', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3079', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3060', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3134', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3078', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3072', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Omineca'
-  AND  pa.name ILIKE 'UPPER FRASER'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9828', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8297', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0426', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9797', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9829', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9820', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0254', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8969', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0092', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5034', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0328', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0093', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0341', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8288', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0280', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8299', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9830', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9843', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8277', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0094', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8284', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4985', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5015', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9790', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4041', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9799', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9803', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8330', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5022', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5023', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5026', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5028', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9819', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '5035', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3062', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8325', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8312', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8291', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3047', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4232', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3046', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3080', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'LIARD'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9783', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0014', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8094', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9785', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0214', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9786', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0161', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0326', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0222', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9800', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
-
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0140', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
 
+-- WC Mid Vancouver Island-HG Area - ARROWSMITH
+WITH codes AS (
+    SELECT unnest(ARRAY['0186', '0226', '0029', '0118', '0635', '0310', '0030', '0039', '0231', '0133', '0043', '0193', '0301', '0366', '3117', '9743', '4455', '4471']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8097', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
+CROSS JOIN codes
+WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
+  AND  pa.name ILIKE 'ARROWSMITH'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0421', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
 
+-- WC Mid Vancouver Island-HG Area - CLAYOQUOT
+WITH codes AS (
+    SELECT unnest(ARRAY['9502', '9507', '9500', '9499', '9497', '0269', '0196', '9493', '9494', '9504', '9503', '0050', '0182', '0031', '9540', '9495', '9501', '0296', '9498', '5042', '0517', '3024', '3001', '3105', '3090']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9806', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
+CROSS JOIN codes
+WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
+  AND  pa.name ILIKE 'CLAYOQUOT'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0181', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
 
+-- WC Mid Vancouver Island-HG Area - HAIDA GWAII
+WITH codes AS (
+    SELECT unnest(ARRAY['0255', '0321', '0562', '0569', '0559', '0563', '0564', '0566', '0567', '0570', '0571', '0572', '0560', '3052', '3093', '3010', '3009', '3045']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0315', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
+CROSS JOIN codes
+WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
+  AND  pa.name ILIKE 'HAIDA GWAII'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0289', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
 
+-- WC Mid Vancouver Island-HG Area - VON DONOP
+WITH codes AS (
+    SELECT unnest(ARRAY['0371', '0633', '0048', '0187', '0292', '0632', '0634', '9870']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9633', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
+CROSS JOIN codes
+WHERE  pa.region_name = 'WC Mid Vancouver Island-HG Area'
+  AND  pa.name ILIKE 'VON DONOP'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9510', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
 
+-- WC North Island-SCC Area - CAPE SCOTT
+WITH codes AS (
+    SELECT unnest(ARRAY['0250', '9469', '8774', '0450', '9747', '9466', '0472', '9465', '9532', '9464', '0377', '0283', '2115', '3013', '3012', '3126', '9744', '3123', '3125', '3118', '3011', '3122', '3124']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4351', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
+CROSS JOIN codes
+WHERE  pa.region_name = 'WC North Island-SCC Area'
+  AND  pa.name ILIKE 'CAPE SCOTT'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9813', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
 
+-- WC North Island-SCC Area - MIRACLE BEACH
+WITH codes AS (
+    SELECT unnest(ARRAY['0411', '9512', '6093', '0264', '0045', '0131', '0265', '9750', '0109', '9767', '9476', '9506', '0412', '9754', '0243', '0367', '9751', '3004']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9842', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
+CROSS JOIN codes
+WHERE  pa.region_name = 'WC North Island-SCC Area'
+  AND  pa.name ILIKE 'MIRACLE BEACH'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0316', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
 
+-- WC North Island-SCC Area - NOOTKA
+WITH codes AS (
+    SELECT unnest(ARRAY['9745', '8779', '9209', '0339', '8778', '9147', '0028', '9746', '0189', '0190', '9749', '0374', '6111', '9459', '9752', '8782', '9753', '0631', '0511', '3109', '3075', '3129', '3014', '3119']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0016', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
+CROSS JOIN codes
+WHERE  pa.region_name = 'WC North Island-SCC Area'
+  AND  pa.name ILIKE 'NOOTKA'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0286', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
 
+-- WC North Island-SCC Area - SOUTH CENTRAL COAST
+WITH codes AS (
+    SELECT unnest(ARRAY['0520', '0391', '0390', '0223', '0215', '1086', '1024', '1025', '1026', '1023', '1028', '1031', '1065', '1008', '1049', '1068', '1038', '1039', '1041', '1000', '1075', '1058', '1059', '1062', '1021', '1064', '1069', '1070', '1072', '3120', '3040', '3111']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8109', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
+CROSS JOIN codes
+WHERE  pa.region_name = 'WC North Island-SCC Area'
+  AND  pa.name ILIKE 'SOUTH CENTRAL COAST'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '4981', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
 
+-- WC North Island-SCC Area - STRATHCONA
+WITH codes AS (
+    SELECT unnest(ARRAY['0220', '0087', '0313', '0001', '0348', '0188', '0036', '0180', '4337', '6081']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9958', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
+CROSS JOIN codes
+WHERE  pa.region_name = 'WC North Island-SCC Area'
+  AND  pa.name ILIKE 'STRATHCONA'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '0521', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
 
+-- WC South Island - COWICHAN
+WITH codes AS (
+    SELECT unnest(ARRAY['0117', '0383', '0113', '6161', '0210', '9229', '9959', '9474', '0003', '0106', '0037', '9748', '0154', '0295', '0137', '3113', '4460', '3112', '3054']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8306', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
+CROSS JOIN codes
+WHERE  pa.region_name = 'WC South Island'
+  AND  pa.name ILIKE 'COWICHAN'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3050', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
 
+-- WC South Island - JUAN de FUCA
+WITH codes AS (
+    SELECT unnest(ARRAY['0262', '0096', '9398', '0240', '0009', '3097', '4361', '3083', '3066']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3107', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
+CROSS JOIN codes
+WHERE  pa.region_name = 'WC South Island'
+  AND  pa.name ILIKE 'JUAN de FUCA'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '3008', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
 
+-- WC South Island - SOUTH GULF ISLANDS
+WITH codes AS (
+    SELECT unnest(ARRAY['0165', '9554', '9868', '9869', '0384', '0237', '0104', '0529', '0021', '0198', '0267', '9867', '0382', '0322', '0044', '0155', '3017', '3128', '3037', '3016', '3094', '3018', '3067', '3132']) AS external_id
+)
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '8123', user, now(), user, now()
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
 FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
+CROSS JOIN codes
+WHERE  pa.region_name = 'WC South Island'
+  AND  pa.name ILIKE 'SOUTH GULF ISLANDS'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO shared.park_area_mapping
-        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
-SELECT pa.park_area_guid, '9955', user, now(), user, now()
-FROM   shared.park_area pa
-WHERE  pa.region_name = 'Peace'
-  AND  pa.name ILIKE 'PEACE'
-ON CONFLICT DO NOTHING;
