@@ -125,9 +125,3 @@ model park_area_xref {
   park_area            park_area @relation(fields: [park_area_guid], references: [park_area_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_park_area_xref_park")
   park                 park      @relation(fields: [park_guid], references: [park_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_park_area_xref_park_area")
 }
-
-model temp_poc {
-  id         Decimal @id(map: "TEMP_POC_PK") @default(dbgenerated("nextval('\"TEMP_POC_SEQ\"'::regclass)")) @db.Decimal
-  first_name String  @db.VarChar(200)
-  last_name  String  @db.VarChar(200)
-}

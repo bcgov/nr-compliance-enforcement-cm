@@ -7,7 +7,6 @@ import { park as _park } from "./park";
 import { park_area as _park_area } from "./park_area";
 import { park_area_mapping as _park_area_mapping } from "./park_area_mapping";
 import { park_area_xref as _park_area_xref } from "./park_area_xref";
-import { temp_poc as _temp_poc } from "./temp_poc";
 
 export namespace PrismaModel {
   export class contact_method extends _contact_method {}
@@ -19,7 +18,6 @@ export namespace PrismaModel {
   export class park_area extends _park_area {}
   export class park_area_mapping extends _park_area_mapping {}
   export class park_area_xref extends _park_area_xref {}
-  export class temp_poc extends _temp_poc {}
 
   export const extraModels = [
     contact_method,
@@ -31,6 +29,5 @@ export namespace PrismaModel {
     park_area,
     park_area_mapping,
     park_area_xref,
-    temp_poc,
   ];
 }
