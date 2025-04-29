@@ -22,11 +22,22 @@ export class ParkService {
         external_id: true,
         name: true,
         legal_name: true,
-        geo_organization_unit_code: true,
+        park_area_xref: {
+          select: {
+            park_area: {
+              select: {
+                park_area_guid: true,
+                name: true,
+                region_name: true,
+              },
+            },
+          },
+        },
       },
       skip: args.skip,
       take: args.take,
       where: {},
+      orderBy: { name: "asc" } as any, // Workaround for Prisma type issue with orderBy
     };
 
     args.search && (query.where = { name: { contains: args.search, mode: "insensitive" } });
@@ -70,7 +81,14 @@ export class ParkService {
         external_id: input.externalId,
         name: input.name,
         legal_name: input.legalName,
-        geo_organization_unit_code: input.geoOrganizationUnitCode,
+        park_area_xref: {
+          create: input.parkAreas
+            ? input.parkAreas.map((parkArea) => ({
+                park_area_guid: parkArea.parkAreaGuid,
+                create_user_id: "system",
+              }))
+            : [],
+        },
         create_user_id: "system",
       },
     });
@@ -83,13 +101,36 @@ export class ParkService {
     });
     if (!existingPark) throw new Error("Park not found");
 
+    const existingParkAreaXrefs = await this.prisma.park_area_xref.findMany({
+      where: { park_guid: parkGuid },
+    });
+    // Find park_area_xref records to delete if they are not in input.parkAreas
+    const parkAreaGuidsToDelete = existingParkAreaXrefs
+      .filter((xref) => !input.parkAreas?.some((area) => area.parkAreaGuid === xref.park_area_guid))
+      .map((xref) => xref.park_area_guid);
+    // Find park_area_xref records to create if they are in input.parkAreas
+    const parkAreaGuidsToCreate = input.parkAreas
+      ? input.parkAreas.filter(
+          (area) => !existingParkAreaXrefs.some((xref) => xref.park_area_guid === area.parkAreaGuid),
+        )
+      : [];
+
     const prismaPark = await this.prisma.park.update({
       where: { park_guid: parkGuid },
       data: {
         external_id: input.externalId,
         name: input.name,
         legal_name: input.legalName,
-        geo_organization_unit_code: input.geoOrganizationUnitCode,
+        park_area_xref: {
+          deleteMany: {
+            park_area_guid: { in: parkAreaGuidsToDelete },
+          },
+          create:
+            parkAreaGuidsToCreate.map((parkArea) => ({
+              park_area_guid: parkArea.parkAreaGuid,
+              create_user_id: "system",
+            })) ?? [],
+        },
       },
     });
     return this.mapper.map<park, Park>(prismaPark as park, "park", "Park");

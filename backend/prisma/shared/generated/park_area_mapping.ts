@@ -1,18 +1,14 @@
-import { park_area_xref } from "./park_area_xref";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-export class park {
+export class park_area_mapping {
   @ApiProperty({ type: String })
-  park_guid: string;
+  park_area_mapping_guid: string;
+
+  @ApiProperty({ type: String })
+  park_area_guid: string;
 
   @ApiProperty({ type: String })
   external_id: string;
-
-  @ApiProperty({ type: String })
-  name: string;
-
-  @ApiPropertyOptional({ type: String })
-  legal_name?: string;
 
   @ApiProperty({ type: String })
   create_user_id: string;
@@ -25,7 +21,4 @@ export class park {
 
   @ApiPropertyOptional({ type: Date })
   update_utc_timestamp?: Date;
-
-  @ApiProperty({ isArray: true, type: () => park_area_xref })
-  park_area_xref: park_area_xref[];
 }

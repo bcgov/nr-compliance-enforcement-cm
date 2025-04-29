@@ -79,13 +79,49 @@ model person_h {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model park {
-  park_guid                  String    @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
-  external_id                String    @db.VarChar(10)
-  name                       String    @db.VarChar(256)
-  legal_name                 String?   @db.VarChar(256)
-  geo_organization_unit_code String?   @db.VarChar(10)
-  create_user_id             String    @db.VarChar(32)
-  create_utc_timestamp       DateTime  @default(now()) @db.Timestamp(6)
-  update_user_id             String?   @db.VarChar(32)
-  update_utc_timestamp       DateTime? @db.Timestamp(6)
+  park_guid            String           @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
+  external_id          String           @unique(map: "UK_park__external_id") @db.VarChar(32)
+  name                 String           @db.VarChar(256)
+  legal_name           String?          @db.VarChar(256)
+  create_user_id       String           @db.VarChar(32)
+  create_utc_timestamp DateTime         @default(now()) @db.Timestamp(6)
+  update_user_id       String?          @db.VarChar(32)
+  update_utc_timestamp DateTime?        @db.Timestamp(6)
+  park_area_xref       park_area_xref[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model park_area {
+  park_area_guid       String           @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
+  name                 String           @db.VarChar(256)
+  region_name          String?          @db.VarChar(256)
+  create_user_id       String           @db.VarChar(32)
+  create_utc_timestamp DateTime         @default(now()) @db.Timestamp(6)
+  update_user_id       String?          @db.VarChar(32)
+  update_utc_timestamp DateTime?        @db.Timestamp(6)
+  park_area_xref       park_area_xref[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model park_area_mapping {
+  park_area_mapping_guid String    @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
+  park_area_guid         String    @db.Uuid
+  external_id            String    @db.VarChar(32)
+  create_user_id         String    @db.VarChar(32)
+  create_utc_timestamp   DateTime  @default(now()) @db.Timestamp(6)
+  update_user_id         String?   @db.VarChar(32)
+  update_utc_timestamp   DateTime? @db.Timestamp(6)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model park_area_xref {
+  park_area_guid_xref  String    @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
+  park_area_guid       String    @db.Uuid
+  park_guid            String    @db.Uuid
+  create_user_id       String    @db.VarChar(32)
+  create_utc_timestamp DateTime  @default(now()) @db.Timestamp(6)
+  update_user_id       String?   @db.VarChar(32)
+  update_utc_timestamp DateTime? @db.Timestamp(6)
+  park_area            park_area @relation(fields: [park_area_guid], references: [park_area_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_park_area_xref_park")
+  park                 park      @relation(fields: [park_guid], references: [park_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_park_area_xref_park_area")
 }
