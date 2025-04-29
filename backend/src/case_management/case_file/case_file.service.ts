@@ -93,84 +93,98 @@ export class CaseFileService {
   //------------------
   //-- assessments
   //------------------
-  async createAssessment(createAssessmentInput: CreateAssessmentInput): Promise<CaseFile> {
+  async createAssessment(model: CreateAssessmentInput): Promise<CaseFile> {
     const _createAssessmentCase = async (
       db: Omit<
         PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
         "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
       >,
-      createAssessmentInput: CreateAssessmentInput,
+      model: CreateAssessmentInput,
     ): Promise<string> => {
       let caseFileGuid: string;
 
       try {
-        let assessment = await db.assessment.create({
+        let case_file = await db.case_file.create({
+          data: {
+            agency_code: {
+              connect: {
+                agency_code: model.agencyCode,
+              },
+            },
+            create_user_id: model.createUserId,
+            create_utc_timestamp: new Date(),
+            case_code_case_file_case_codeTocase_code: {
+              connect: {
+                case_code: model.caseCode,
+              },
+            },
+          },
+        });
+
+        caseFileGuid = case_file.case_file_guid;
+
+        await db.assessment.create({
           data: {
             case_file: {
               connect: {
-                case_file_guid: createAssessmentInput.caseCode,
+                case_file_guid: caseFileGuid,
               },
             },
             agency_code: {
               connect: {
-                agency_code: createAssessmentInput.agencyCode,
+                agency_code: model.agencyCode,
               },
             },
-            inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: createAssessmentInput.assessment
+            inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: model.assessment
               .actionJustificationCode
               ? {
                   connect: {
-                    inaction_reason_code: createAssessmentInput.assessment.actionJustificationCode,
+                    inaction_reason_code: model.assessment.actionJustificationCode,
                   },
                 }
               : undefined,
-            create_user_id: createAssessmentInput.createUserId,
+            create_user_id: model.createUserId,
             create_utc_timestamp: new Date(),
-            action_not_required_ind: createAssessmentInput.assessment.actionNotRequired,
-            // case_code_case_file_case_codeTocase_code: {
-            //   connect: {
-            //     case_code: createAssessmentInput.caseCode,
-            //   },
-            // },
-            complainant_contacted_ind: createAssessmentInput.assessment.contactedComplainant,
-            attended_ind: createAssessmentInput.assessment.attended,
-            case_location_code_assessment_case_location_codeTocase_location_code: createAssessmentInput.assessment
-              .locationType
+            action_not_required_ind: model.assessment.actionNotRequired,
+            complainant_contacted_ind: model.assessment.contactedComplainant,
+            attended_ind: model.assessment.attended,
+            case_location_code_assessment_case_location_codeTocase_location_code: model.assessment.locationType
               ? {
                   connect: {
-                    case_location_code: createAssessmentInput.assessment.locationType.value,
+                    case_location_code: model.assessment.locationType.value,
                   },
                 }
               : undefined,
-            conflict_history_code: createAssessmentInput.assessment.conflictHistory
+            conflict_history_code: model.assessment.conflictHistory
               ? {
                   connect: {
-                    conflict_history_code: createAssessmentInput.assessment.conflictHistory.value,
+                    conflict_history_code: model.assessment.conflictHistory.value,
                   },
                 }
               : undefined,
-            threat_level_code: createAssessmentInput.assessment.categoryLevel
+            threat_level_code: model.assessment.categoryLevel
               ? {
                   connect: {
-                    threat_level_code: createAssessmentInput.assessment.categoryLevel.value,
+                    threat_level_code: model.assessment.categoryLevel.value,
                   },
                 }
               : undefined,
           },
         });
 
-        caseFileGuid = assessment.case_file_guid;
-
         await db.lead.create({
           data: {
-            lead_identifier: createAssessmentInput.leadIdentifier,
+            lead_identifier: model.leadIdentifier,
             case_identifier: caseFileGuid,
-            create_user_id: createAssessmentInput.createUserId,
+            create_user_id: model.createUserId,
             create_utc_timestamp: new Date(),
           },
         });
       } catch (exception) {
-        throw new GraphQLError("Exception occurred. See server log for details", {});
+        throw new GraphQLError(
+          `Exception occurred. See server log for details: ${exception.message}, ${JSON.stringify(exception)}`,
+          {},
+        );
       }
       return caseFileGuid;
     };
@@ -181,7 +195,7 @@ export class CaseFileService {
       let caseFileGuid: string = "";
 
       await this.prisma.$transaction(async (db) => {
-        caseFileGuid = await _createAssessmentCase(db, createAssessmentInput);
+        caseFileGuid = await _createAssessmentCase(db, model);
 
         let action_codes_objects = await db.action_type_action_xref.findMany({
           where: { action_type_code: ACTION_TYPE_CODES.COMPASSESS },
@@ -191,13 +205,13 @@ export class CaseFileService {
         for (const action_code_object of action_codes_objects) {
           action_codes.push(action_code_object.action_code);
         }
-        for (const action of createAssessmentInput.assessment.actions) {
+        for (const action of model.assessment.actions) {
           if (action_codes.indexOf(action.actionCode) === -1) {
             throw "Some action code values where not passed from the client";
           }
         }
 
-        for (const action of createAssessmentInput.assessment.actions) {
+        for (const action of model.assessment.actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
               action_type_code: ACTION_TYPE_CODES.COMPASSESS,
@@ -214,7 +228,7 @@ export class CaseFileService {
               actor_guid: action.actor,
               action_date: action.date,
               active_ind: action.activeIndicator,
-              create_user_id: createAssessmentInput.createUserId,
+              create_user_id: model.createUserId,
               create_utc_timestamp: new Date(),
             },
           });
@@ -231,12 +245,12 @@ export class CaseFileService {
           cat1Action_codes.push(action_code_object.action_code);
         }
 
-        for (const cat1Action of createAssessmentInput.assessment.actions) {
+        for (const cat1Action of model.assessment.actions) {
           if (action_codes.indexOf(cat1Action.actionCode) === -1) {
             throw "Some action code values where not passed from the client";
           }
         }
-        for (const action of createAssessmentInput.assessment.cat1Actions) {
+        for (const action of model.assessment.cat1Actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
               action_type_code: ACTION_TYPE_CODES.CAT1ASSESS,
@@ -253,7 +267,7 @@ export class CaseFileService {
               actor_guid: action.actor,
               action_date: action.date,
               active_ind: action.activeIndicator,
-              create_user_id: createAssessmentInput.createUserId,
+              create_user_id: model.createUserId,
               create_utc_timestamp: new Date(),
             },
           });
@@ -261,7 +275,10 @@ export class CaseFileService {
       });
       caseFileOutput = await this.findOne(caseFileGuid);
     } catch (exception) {
-      throw new GraphQLError("Exception occurred. See server log for details", {});
+      throw new GraphQLError(
+        `Exception occurred. See server log for details: ${exception.message}, ${JSON.stringify(exception)}`,
+        {},
+      );
     }
     return caseFileOutput;
   }
@@ -771,66 +788,65 @@ export class CaseFileService {
     return caseFileOutput;
   }
 
-  async updateAssessment(assessmentId: string, updateAssessmentInput: UpdateAssessmentInput) {
+  async updateAssessment(model: UpdateAssessmentInput) {
     let caseFileOutput: CaseFile;
 
     try {
       await this.prisma.$transaction(async (db) => {
         await db.assessment.update({
-          where: { assessment_guid: assessmentId },
+          where: { assessment_guid: model.assessmentId },
           data: {
-            inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: updateAssessmentInput.assessment
+            inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: model.assessment
               .actionJustificationCode
               ? {
                   connect: {
-                    inaction_reason_code: updateAssessmentInput.assessment.actionJustificationCode,
+                    inaction_reason_code: model.assessment.actionJustificationCode,
                   },
                 }
               : undefined,
-            action_not_required_ind: updateAssessmentInput.assessment.actionNotRequired,
-            complainant_contacted_ind: updateAssessmentInput.assessment.contactedComplainant,
-            attended_ind: updateAssessmentInput.assessment.attended,
-            case_location_code_assessment_case_location_codeTocase_location_code: updateAssessmentInput.assessment
-              .locationType
+            action_not_required_ind: model.assessment.actionNotRequired,
+            complainant_contacted_ind: model.assessment.contactedComplainant,
+            attended_ind: model.assessment.attended,
+            case_location_code_assessment_case_location_codeTocase_location_code: model.assessment.locationType
               ? {
                   connect: {
-                    case_location_code: updateAssessmentInput.assessment.locationType.value,
+                    case_location_code: model.assessment.locationType.value,
                   },
                 }
               : undefined,
-            conflict_history_code: updateAssessmentInput.assessment.conflictHistory
+            conflict_history_code: model.assessment.conflictHistory
               ? {
                   connect: {
-                    conflict_history_code: updateAssessmentInput.assessment.conflictHistory.value,
+                    conflict_history_code: model.assessment.conflictHistory.value,
                   },
                 }
               : {
                   disconnect: true,
                 },
-            threat_level_code: updateAssessmentInput.assessment.categoryLevel
+            threat_level_code: model.assessment.categoryLevel
               ? {
                   connect: {
-                    threat_level_code: updateAssessmentInput.assessment.categoryLevel.value,
+                    threat_level_code: model.assessment.categoryLevel.value,
                   },
                 }
               : {
                   disconnect: true,
                 },
-            update_user_id: updateAssessmentInput.updateUserId,
+            update_user_id: model.updateUserId,
             update_utc_timestamp: new Date(),
           },
         });
 
         await db.lead.updateMany({
-          where: { case_identifier: updateAssessmentInput.caseIdentifier },
+          where: { case_identifier: model.caseIdentifier },
           data: {
-            lead_identifier: updateAssessmentInput.leadIdentifier,
-            update_user_id: updateAssessmentInput.updateUserId,
+            lead_identifier: model.leadIdentifier,
+            update_user_id: model.updateUserId,
             update_utc_timestamp: new Date(),
           },
         });
 
-        for (const action of updateAssessmentInput.assessment.actions) {
+        for (const action of model.assessment.actions) {
           let actionTypeActionXref = await this.prisma.action_type_action_xref.findFirstOrThrow({
             where: {
               action_type_code: ACTION_TYPE_CODES.COMPASSESS,
@@ -846,7 +862,7 @@ export class CaseFileService {
           let actionXref = await this.prisma.action.findFirst({
             where: {
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
-              assessment_guid: assessmentId,
+              assessment_guid: model.assessmentId,
             },
             select: {
               action_type_action_xref_guid: true,
@@ -856,26 +872,26 @@ export class CaseFileService {
           if (actionXref) {
             await db.action.updateMany({
               where: {
-                assessment_guid: assessmentId,
+                assessment_guid: model.assessmentId,
                 action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
               },
               data: {
                 actor_guid: action.actor,
                 action_date: action.date,
                 active_ind: action.activeIndicator,
-                update_user_id: updateAssessmentInput.updateUserId,
+                update_user_id: model.updateUserId,
                 update_utc_timestamp: new Date(),
               },
             });
           } else {
             await db.action.create({
               data: {
-                case_guid: updateAssessmentInput.caseIdentifier,
+                case_guid: model.caseIdentifier,
                 action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
                 actor_guid: action.actor,
                 action_date: action.date,
                 active_ind: action.activeIndicator,
-                create_user_id: updateAssessmentInput.updateUserId,
+                create_user_id: model.updateUserId,
                 create_utc_timestamp: new Date(),
               },
             });
@@ -883,7 +899,7 @@ export class CaseFileService {
         }
 
         //Handle cat1actions
-        for (const action of updateAssessmentInput.assessment.cat1Actions) {
+        for (const action of model.assessment.cat1Actions) {
           let actionTypeActionXref = await this.prisma.action_type_action_xref.findFirstOrThrow({
             where: {
               action_type_code: ACTION_TYPE_CODES.CAT1ASSESS,
@@ -898,21 +914,21 @@ export class CaseFileService {
 
           await db.action.updateMany({
             where: {
-              assessment_guid: assessmentId,
+              assessment_guid: model.assessmentId,
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
             },
             data: {
               actor_guid: action.actor,
               action_date: action.date,
               active_ind: action.activeIndicator,
-              update_user_id: updateAssessmentInput.updateUserId,
+              update_user_id: model.updateUserId,
               update_utc_timestamp: new Date(),
             },
           });
         }
       });
 
-      caseFileOutput = await this.findOne(updateAssessmentInput.caseIdentifier);
+      caseFileOutput = await this.findOne(model.caseIdentifier);
     } catch (exception) {
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
