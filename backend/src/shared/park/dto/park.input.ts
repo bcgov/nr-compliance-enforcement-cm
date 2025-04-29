@@ -1,5 +1,7 @@
 import { InputType, Field, Int, ArgsType } from "@nestjs/graphql";
 import { Max, Min } from "class-validator";
+import { ParkArea } from "./park_area";
+import { ParkAreaInput } from "./park_area.input";
 
 @InputType()
 export class ParkInput {
@@ -12,8 +14,8 @@ export class ParkInput {
   @Field(() => String, { nullable: true })
   legalName?: string;
 
-  @Field(() => String, { nullable: true })
-  geoOrganizationUnitCode?: string;
+  @Field(() => [ParkAreaInput], { nullable: true })
+  parkAreas?: ParkArea[];
 }
 
 @ArgsType()
