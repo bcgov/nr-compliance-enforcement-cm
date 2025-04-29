@@ -94,16 +94,15 @@ export class CaseFileService {
   //-- assessments
   //------------------
   async createAssessment(model: CreateAssessmentInput): Promise<CaseFile> {
-    const _createAssessmentCase = async (
-      db: Omit<
-        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
-      >,
-      model: CreateAssessmentInput,
-    ): Promise<string> => {
-      let caseFileGuid: string;
+    let caseFileGuid: string;
+    let caseFileOutput: CaseFile;
 
-      try {
+    try {
+      let assessmentId: string = "";
+
+      await this.prisma.$transaction(async (db) => {
+        let assessmentId: string;
+
         let case_file = await db.case_file.create({
           data: {
             agency_code: {
@@ -123,7 +122,9 @@ export class CaseFileService {
 
         caseFileGuid = case_file.case_file_guid;
 
-        await db.assessment.create({
+        this.logger.log(`Case file created with guid: ${caseFileGuid}`);
+
+        const assessment = await db.assessment.create({
           data: {
             case_file: {
               connect: {
@@ -172,6 +173,9 @@ export class CaseFileService {
           },
         });
 
+        assessmentId = assessment.assessment_guid;
+        this.logger.log(`Assessment created with guid: ${assessmentId}`);
+
         await db.lead.create({
           data: {
             lead_identifier: model.leadIdentifier,
@@ -180,22 +184,8 @@ export class CaseFileService {
             create_utc_timestamp: new Date(),
           },
         });
-      } catch (exception) {
-        throw new GraphQLError(
-          `Exception occurred. See server log for details: ${exception.message}, ${JSON.stringify(exception)}`,
-          {},
-        );
-      }
-      return caseFileGuid;
-    };
 
-    let caseFileOutput: CaseFile;
-
-    try {
-      let caseFileGuid: string = "";
-
-      await this.prisma.$transaction(async (db) => {
-        caseFileGuid = await _createAssessmentCase(db, model);
+        this.logger.log(`Lead created`);
 
         let action_codes_objects = await db.action_type_action_xref.findMany({
           where: { action_type_code: ACTION_TYPE_CODES.COMPASSESS },
@@ -224,6 +214,7 @@ export class CaseFileService {
           await db.action.create({
             data: {
               case_guid: caseFileGuid,
+              assessment_guid: assessmentId,
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
               actor_guid: action.actor,
               action_date: action.date,
@@ -263,6 +254,7 @@ export class CaseFileService {
           await db.action.create({
             data: {
               case_guid: caseFileGuid,
+              assessment_guid: assessmentId,
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
               actor_guid: action.actor,
               action_date: action.date,

@@ -93,7 +93,7 @@ model park {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model park_area {
   park_area_guid       String           @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
-  name                 String           @db.VarChar(256)
+  name                 String           @unique(map: "uk_park_area__name") @db.VarChar(256)
   region_name          String?          @db.VarChar(256)
   create_user_id       String           @db.VarChar(32)
   create_utc_timestamp DateTime         @default(now()) @db.Timestamp(6)
@@ -111,6 +111,8 @@ model park_area_mapping {
   create_utc_timestamp   DateTime  @default(now()) @db.Timestamp(6)
   update_user_id         String?   @db.VarChar(32)
   update_utc_timestamp   DateTime? @db.Timestamp(6)
+
+  @@unique([park_area_guid, external_id], map: "uk_park_area_mapping__park_area_guid__external_id")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -124,4 +126,6 @@ model park_area_xref {
   update_utc_timestamp DateTime? @db.Timestamp(6)
   park_area            park_area @relation(fields: [park_area_guid], references: [park_area_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_park_area_xref_park")
   park                 park      @relation(fields: [park_guid], references: [park_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_park_area_xref_park_area")
+
+  @@unique([park_area_guid, park_guid], map: "uk_park_area_xref__park_guid__park_area_guid")
 }
