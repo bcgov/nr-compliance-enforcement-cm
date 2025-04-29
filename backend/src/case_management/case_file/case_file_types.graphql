@@ -8,7 +8,7 @@ type KeyValuePair {
 type CaseFile {
   caseIdentifier: String
   leadIdentifier: String
-  assessmentDetails: Assessment
+  assessment: [Assessment]
   preventionDetails: Prevention
   notes: [Note]
   equipment: [EquipmentDetails]
@@ -20,6 +20,8 @@ type CaseFile {
 }
 
 type Assessment {
+  id: String
+  agencyCode: String
   actionNotRequired: Boolean
   actionJustificationCode: String
   actionJustificationShortDescription: String

@@ -82,6 +82,45 @@ export class CaseFileActionService {
     }
   }
 
+  //helper method that is used to find the details of all the details of an action given an assessment and actionType/actionCode pair.
+  //This could potentially be refactored by combining it with findActionsByCaseIdAndType
+  private async findActionByXrefIdAndAssessmentId(assessmentId: string, actionXrefGuid: string) {
+    const actionContext = this.prisma.action;
+
+    try {
+      let actionResult = await actionContext.findFirst({
+        where: {
+          assessment_guid: assessmentId,
+          action_type_action_xref_guid: actionXrefGuid,
+        },
+        select: {
+          action_guid: true,
+          actor_guid: true,
+          active_ind: true,
+          action_type_action_xref: {
+            select: {
+              action_type_code: true,
+              display_order: true,
+              action_code_action_type_action_xref_action_codeToaction_code: {
+                select: {
+                  action_code: true,
+                  short_description: true,
+                  long_description: true,
+                  active_ind: true,
+                },
+              },
+            },
+          },
+          action_date: true,
+        },
+      });
+
+      return this.mapActionResult(actionResult);
+    } catch (exception) {
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  }
+
   //Used to find the action for a note based on case_note_guid
   async findActionsByNoteId(id: string) {
     const actionContext = this.prisma.action;
@@ -143,6 +182,43 @@ export class CaseFileActionService {
 
       for await (const xrefResult of xrefResults) {
         const caseFileAction = await this.findActionByXrefIdAndCaseId(caseId, xrefResult.action_type_action_xref_guid);
+        if (caseFileAction) {
+          caseFileActions.push(caseFileAction);
+        }
+      }
+
+      return caseFileActions;
+    } catch (exception) {
+      throw new GraphQLError("Exception occurred. See server log for details", {});
+    }
+  }
+
+  //Used to return the all the actions of a given type for a specific case
+  async findActionsByAssessmentIdAndType(assessmentId: string, actionTypeCodes: string | string[]) {
+    const actionCodeXrefContext = this.prisma.action_type_action_xref;
+
+    try {
+      const codes = Array.isArray(actionTypeCodes) ? actionTypeCodes : [actionTypeCodes];
+
+      let xrefResults = await actionCodeXrefContext.findMany({
+        where: {
+          action_type_code: {
+            in: codes,
+          },
+        },
+        select: {
+          action_type_action_xref_guid: true,
+        },
+        orderBy: [{ display_order: "asc" }],
+      });
+
+      let caseFileActions: CaseFileAction[] = new Array();
+
+      for await (const xrefResult of xrefResults) {
+        const caseFileAction = await this.findActionByXrefIdAndAssessmentId(
+          assessmentId,
+          xrefResult.action_type_action_xref_guid,
+        );
         if (caseFileAction) {
           caseFileActions.push(caseFileAction);
         }

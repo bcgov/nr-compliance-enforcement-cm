@@ -7,13 +7,13 @@ input KeyValuePairInput {
 
 input CreateAssessmentInput {
   leadIdentifier: String
-  assessmentDetails: AssessmentDetailsInput!
+  assessment: AssessmentInput!
   agencyCode: String!
   caseCode: String!
   createUserId: String!
 }
 
-input AssessmentDetailsInput {
+input AssessmentInput {
   actionNotRequired: Boolean!
   actionJustificationCode: String
   actions: [AssessmentActionInput]!
@@ -38,7 +38,7 @@ input AssessmentActionInput {
 input UpdateAssessmentInput {
   caseIdentifier: String!
   leadIdentifier: String
-  assessmentDetails: AssessmentDetailsInput!
+  assessment: AssessmentInput!
   agencyCode: String!
   caseCode: String!
   updateUserId: String!
