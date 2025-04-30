@@ -32,6 +32,10 @@ export interface SubjectQueryResult {
       hwcr_outcome_code: string;
       short_description: string;
     };
+    hwcr_outcome_actioned_by_code_wildlife_hwcr_outcome_actioned_by_codeTohwcr_outcome_actioned_by_code: {
+      hwcr_outcome_actioned_by_code: string;
+      short_description: string;
+    };
     species_code: string;
     create_utc_timestamp: Date;
     drug_administered: {

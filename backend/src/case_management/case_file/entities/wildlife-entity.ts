@@ -13,6 +13,8 @@ export interface Wildlife {
   identifyingFeatures?: string;
   outcome?: string;
   outcomeDescription?: string;
+  outcomeActionedBy?: string;
+  outcomeActionedByDescription?: string;
   tags?: Array<EarTag>;
   drugs?: Array<DrugUsed>;
   actions?: Array<CaseFileAction>;
