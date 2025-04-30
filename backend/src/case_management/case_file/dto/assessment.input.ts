@@ -1,6 +1,7 @@
 import { AssessmentActionInput } from "./assessment-action.input";
 import { KeyValuePairInput } from "./key-value-pair.input";
 export class AssessmentInput {
+  id?: string;
   actionNotRequired: boolean;
   actionJustificationCode: string;
   actions: [AssessmentActionInput];

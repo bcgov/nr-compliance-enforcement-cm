@@ -102,27 +102,45 @@ export class CaseFileService {
 
       await this.prisma.$transaction(async (db) => {
         let assessmentId: string;
+        let case_file: any;
 
-        let case_file = await db.case_file.create({
-          data: {
-            agency_code: {
-              connect: {
-                agency_code: model.agencyCode,
+        if (!model.caseIdentifier) {
+          case_file = await db.case_file.create({
+            data: {
+              agency_code: {
+                connect: {
+                  agency_code: model.agencyCode,
+                },
+              },
+              create_user_id: model.createUserId,
+              create_utc_timestamp: new Date(),
+              case_code_case_file_case_codeTocase_code: {
+                connect: {
+                  case_code: model.caseCode,
+                },
               },
             },
-            create_user_id: model.createUserId,
-            create_utc_timestamp: new Date(),
-            case_code_case_file_case_codeTocase_code: {
-              connect: {
-                case_code: model.caseCode,
-              },
+          });
+
+          caseFileGuid = case_file.case_file_guid;
+
+          this.logger.log(`Case file created with case_file_guid: ${caseFileGuid}`);
+
+          const lead = await db.lead.create({
+            data: {
+              lead_identifier: model.leadIdentifier,
+              case_identifier: caseFileGuid,
+              create_user_id: model.createUserId,
+              create_utc_timestamp: new Date(),
             },
-          },
-        });
+          });
 
-        caseFileGuid = case_file.case_file_guid;
+          this.logger.log(`Lead created with lead_identifier: ${lead.lead_identifier}`);
+        } else {
+          caseFileGuid = model.caseIdentifier;
+        }
 
-        this.logger.log(`Case file created with guid: ${caseFileGuid}`);
+        this.logger.log(`Creating assessment for case file: ${caseFileGuid}`);
 
         const assessment = await db.assessment.create({
           data: {
@@ -174,18 +192,8 @@ export class CaseFileService {
         });
 
         assessmentId = assessment.assessment_guid;
-        this.logger.log(`Assessment created with guid: ${assessmentId}`);
 
-        await db.lead.create({
-          data: {
-            lead_identifier: model.leadIdentifier,
-            case_identifier: caseFileGuid,
-            create_user_id: model.createUserId,
-            create_utc_timestamp: new Date(),
-          },
-        });
-
-        this.logger.log(`Lead created`);
+        this.logger.log(`Assessment created with assessment_guid: ${assessmentId}`);
 
         let action_codes_objects = await db.action_type_action_xref.findMany({
           where: { action_type_code: ACTION_TYPE_CODES.COMPASSESS },
@@ -264,7 +272,10 @@ export class CaseFileService {
             },
           });
         }
+
+        this.logger.log(`Actions created for assessment: ${assessmentId}`);
       });
+      this.logger.log(`Transaction completed successfully, returning updated case file`);
       caseFileOutput = await this.findOne(caseFileGuid);
     } catch (exception) {
       throw new GraphQLError(
@@ -786,7 +797,7 @@ export class CaseFileService {
     try {
       await this.prisma.$transaction(async (db) => {
         await db.assessment.update({
-          where: { assessment_guid: model.assessmentId },
+          where: { assessment_guid: model.assessment.id },
           data: {
             inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: model.assessment
               .actionJustificationCode
@@ -854,7 +865,7 @@ export class CaseFileService {
           let actionXref = await this.prisma.action.findFirst({
             where: {
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
-              assessment_guid: model.assessmentId,
+              assessment_guid: model.assessment.id,
             },
             select: {
               action_type_action_xref_guid: true,
@@ -864,7 +875,7 @@ export class CaseFileService {
           if (actionXref) {
             await db.action.updateMany({
               where: {
-                assessment_guid: model.assessmentId,
+                assessment_guid: model.assessment.id,
                 action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
               },
               data: {
@@ -906,7 +917,7 @@ export class CaseFileService {
 
           await db.action.updateMany({
             where: {
-              assessment_guid: model.assessmentId,
+              assessment_guid: model.assessment.id,
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
             },
             data: {

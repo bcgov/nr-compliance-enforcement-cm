@@ -11,6 +11,7 @@ export class CreateCaseInput {
 }
 export class CreateAssessmentInput {
   leadIdentifier: string;
+  caseIdentifier: string;
   assessment: AssessmentInput;
   agencyCode: string;
   caseCode: string;

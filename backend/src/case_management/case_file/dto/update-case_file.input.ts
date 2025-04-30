@@ -5,7 +5,6 @@ import { PreventionDetailsInput } from "./prevention-details.input";
 export class UpdateAssessmentInput {
   caseIdentifier: string;
   leadIdentifier: string;
-  assessmentId: string;
   assessment: AssessmentInput;
   agencyCode: string;
   caseCode: string;
