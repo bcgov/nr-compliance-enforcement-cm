@@ -49,6 +49,13 @@ export class ParkService {
 
   async findOne(id: string) {
     const prismaPark = await this.prisma.park.findUnique({
+      include: {
+        park_area_xref: {
+          include: {
+            park_area: true,
+          },
+        },
+      },
       where: {
         park_guid: id,
       },
