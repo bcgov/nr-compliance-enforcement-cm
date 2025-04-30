@@ -546,10 +546,10 @@ export class CaseFileService {
       ACTION_TYPE_CODES.CAT1ASSESS,
     );
 
-    const preventionActions = await this.caseFileActionService.findActionsByCaseIdAndType(
-      caseFileId,
+    const preventionActions = await this.caseFileActionService.findActionsByCaseIdAndType(caseFileId, [
       ACTION_TYPE_CODES.COSPRVANDEDU,
-    );
+      ACTION_TYPE_CODES.PRKPRVANDEDU,
+    ]);
 
     let caseFile: CaseFile = {
       caseIdentifier: caseFileId,
@@ -922,8 +922,13 @@ export class CaseFileService {
       await this.prisma.$transaction(async (db) => {
         caseFileGuid = await _createPreventionCase(db, createPreventionInput);
 
+        //Validate that the actions passed in are all valid
         let action_codes_objects = await this.prisma.action_type_action_xref.findMany({
-          where: { action_type_code: ACTION_TYPE_CODES.COSPRVANDEDU },
+          where: {
+            action_type_code: {
+              in: [ACTION_TYPE_CODES.COSPRVANDEDU, ACTION_TYPE_CODES.PRKPRVANDEDU],
+            },
+          },
           select: { action_code: true },
         });
         let action_codes: Array<string> = [];
@@ -939,8 +944,11 @@ export class CaseFileService {
         for (const action of createPreventionInput.preventionDetails.actions) {
           let actionTypeActionXref = await this.prisma.action_type_action_xref.findFirstOrThrow({
             where: {
-              action_type_code: ACTION_TYPE_CODES.COSPRVANDEDU,
               action_code: action.actionCode,
+              action_type_code:
+                createPreventionInput.agencyCode === "COS"
+                  ? ACTION_TYPE_CODES.COSPRVANDEDU
+                  : ACTION_TYPE_CODES.PRKPRVANDEDU,
             },
             select: {
               action_type_action_xref_guid: true,
@@ -974,8 +982,11 @@ export class CaseFileService {
         for (const action of updatePreventionInput.preventionDetails.actions) {
           let actionTypeActionXref = await this.prisma.action_type_action_xref.findFirstOrThrow({
             where: {
-              action_type_code: ACTION_TYPE_CODES.COSPRVANDEDU,
               action_code: action.actionCode,
+              action_type_code:
+                updatePreventionInput.agencyCode === "COS"
+                  ? ACTION_TYPE_CODES.COSPRVANDEDU
+                  : ACTION_TYPE_CODES.PRKPRVANDEDU,
             },
             select: {
               action_type_action_xref_guid: true,

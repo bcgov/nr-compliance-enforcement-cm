@@ -43,6 +43,7 @@ import { pojos } from "@automapper/pojos";
 import { Mapper } from "@automapper/core";
 import { initializeMappings } from "./middleware/mapper";
 import { EquipmentStatusCodeModule } from "src/case_management/equipment_status_code/equipment_status_code.module";
+import { ImportCommand } from "./app.commands";
 
 @Module({
   imports: [
@@ -88,7 +89,7 @@ import { EquipmentStatusCodeModule } from "src/case_management/equipment_status_
     EquipmentStatusCodeModule,
   ],
   controllers: [AppController],
-  providers: [AppService, DateScalar],
+  providers: [AppService, ImportCommand, DateScalar],
 })
 export class AppModule {
   constructor(@InjectMapper() private readonly mapper: Mapper) {}

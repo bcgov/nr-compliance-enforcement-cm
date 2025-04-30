@@ -1,4 +1,4 @@
-import { Resolver, Query, Args } from "@nestjs/graphql";
+import { Resolver, Query } from "@nestjs/graphql";
 import { JwtRoleGuard } from "../../auth/jwtrole.guard";
 import { UseGuards } from "@nestjs/common";
 import { coreRoles } from "../../enum/role.enum";
@@ -14,6 +14,6 @@ export class CEEBDecisionActionResolver {
   @Query("CEEBDecisionActions")
   @Roles(coreRoles)
   find() {
-    return this.actionCodeService.findAllCodesByType(ACTION_TYPE_CODES.CEEBACTION);
+    return this.actionCodeService.findAllCodesByType([ACTION_TYPE_CODES.CEEBACTION]);
   }
 }

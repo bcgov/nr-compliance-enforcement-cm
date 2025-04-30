@@ -121,13 +121,17 @@ export class CaseFileActionService {
   }
 
   //Used to return the all the actions of a given type for a specific case
-  async findActionsByCaseIdAndType(caseId: string, actionTypeCode: string) {
+  async findActionsByCaseIdAndType(caseId: string, actionTypeCodes: string | string[]) {
     const actionCodeXrefContext = this.prisma.action_type_action_xref;
 
     try {
+      const codes = Array.isArray(actionTypeCodes) ? actionTypeCodes : [actionTypeCodes];
+
       let xrefResults = await actionCodeXrefContext.findMany({
         where: {
-          action_type_code: actionTypeCode,
+          action_type_code: {
+            in: codes,
+          },
         },
         select: {
           action_type_action_xref_guid: true,

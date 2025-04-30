@@ -1,18 +1,15 @@
 import { park_area_xref } from "./park_area_xref";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-export class park {
+export class park_area {
   @ApiProperty({ type: String })
-  park_guid: string;
-
-  @ApiProperty({ type: String })
-  external_id: string;
+  park_area_guid: string;
 
   @ApiProperty({ type: String })
   name: string;
 
   @ApiPropertyOptional({ type: String })
-  legal_name?: string;
+  region_name?: string;
 
   @ApiProperty({ type: String })
   create_user_id: string;
