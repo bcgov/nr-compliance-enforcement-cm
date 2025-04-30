@@ -5563,6 +5563,30 @@ values
     now (),
     'FLYWAY',
     now ()
+  ),
+  (
+    'POLICE',
+    NULL,
+    'Police',
+    'Police',
+    5,
+    true,
+    'FLYWAY',
+    now (),
+    'FLYWAY',
+    now ()
+  ),
+  (
+    'PUBLIC',
+    NULL,
+    'Public',
+    'Public',
+    6,
+    true,
+    'FLYWAY',
+    now (),
+    'FLYWAY',
+    now ()
   ) on conflict do nothing;
 
 --------------------------
