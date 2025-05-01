@@ -249,18 +249,19 @@ model action_type_code {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model agency_code {
-  agency_code                                                        String                 @id(map: "PK_agency_code") @db.VarChar(10)
-  short_description                                                  String?                @db.VarChar(50)
-  long_description                                                   String?                @db.VarChar(250)
-  active_ind                                                         Boolean?
-  create_user_id                                                     String                 @db.VarChar(32)
-  create_utc_timestamp                                               DateTime               @db.Timestamp(6)
-  update_user_id                                                     String?                @db.VarChar(32)
-  update_utc_timestamp                                               DateTime?              @db.Timestamp(6)
-  display_order                                                      Int?
-  case_file                                                          case_file[]
-  decision                                                           decision[]
-  inaction_reason_code_inaction_reason_code_agency_codeToagency_code inaction_reason_code[] @relation("inaction_reason_code_agency_codeToagency_code")
+  agency_code                                                                          String                          @id(map: "PK_agency_code") @db.VarChar(10)
+  short_description                                                                    String?                         @db.VarChar(50)
+  long_description                                                                     String?                         @db.VarChar(250)
+  active_ind                                                                           Boolean?
+  create_user_id                                                                       String                          @db.VarChar(32)
+  create_utc_timestamp                                                                 DateTime                        @db.Timestamp(6)
+  update_user_id                                                                       String?                         @db.VarChar(32)
+  update_utc_timestamp                                                                 DateTime?                       @db.Timestamp(6)
+  display_order                                                                        Int?
+  case_file                                                                            case_file[]
+  decision                                                                             decision[]
+  hwcr_outcome_actioned_by_code_hwcr_outcome_actioned_by_code_agency_codeToagency_code hwcr_outcome_actioned_by_code[] @relation("hwcr_outcome_actioned_by_code_agency_codeToagency_code")
+  inaction_reason_code_inaction_reason_code_agency_codeToagency_code                   inaction_reason_code[]          @relation("inaction_reason_code_agency_codeToagency_code")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -440,27 +441,29 @@ model ear_tag_h {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model wildlife {
-  wildlife_guid                                                   String              @id(map: "PK_wildlife_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  case_file_guid                                                  String              @db.Uuid
-  threat_level_code                                               String?             @db.VarChar(10)
-  sex_code                                                        String?             @db.VarChar(10)
-  age_code                                                        String?             @db.VarChar(10)
-  hwcr_outcome_code                                               String?             @db.VarChar(10)
-  species_code                                                    String              @db.VarChar(10)
-  create_user_id                                                  String              @db.VarChar(32)
-  create_utc_timestamp                                            DateTime            @db.Timestamp(6)
-  update_user_id                                                  String              @db.VarChar(32)
-  update_utc_timestamp                                            DateTime            @db.Timestamp(6)
-  active_ind                                                      Boolean?
-  identifying_features                                            String?             @db.VarChar(4000)
-  action                                                          action[]
-  drug_administered                                               drug_administered[]
-  ear_tag                                                         ear_tag[]
-  age_code_wildlife_age_codeToage_code                            age_code?           @relation("wildlife_age_codeToage_code", fields: [age_code], references: [age_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_wildlife__age_code")
-  case_file                                                       case_file           @relation(fields: [case_file_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_wildlife__case_file_guid")
-  hwcr_outcome_code_wildlife_hwcr_outcome_codeTohwcr_outcome_code hwcr_outcome_code?  @relation("wildlife_hwcr_outcome_codeTohwcr_outcome_code", fields: [hwcr_outcome_code], references: [hwcr_outcome_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_wildlife__hwcr_outcome_code")
-  sex_code_wildlife_sex_codeTosex_code                            sex_code?           @relation("wildlife_sex_codeTosex_code", fields: [sex_code], references: [sex_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_wildlife__sex_code")
-  threat_level_code_wildlife_threat_level_codeTothreat_level_code threat_level_code?  @relation("wildlife_threat_level_codeTothreat_level_code", fields: [threat_level_code], references: [threat_level_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_wildlife__threat_level_code")
+  wildlife_guid                                                                                       String                         @id(map: "PK_wildlife_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  case_file_guid                                                                                      String                         @db.Uuid
+  threat_level_code                                                                                   String?                        @db.VarChar(10)
+  sex_code                                                                                            String?                        @db.VarChar(10)
+  age_code                                                                                            String?                        @db.VarChar(10)
+  hwcr_outcome_code                                                                                   String?                        @db.VarChar(10)
+  species_code                                                                                        String                         @db.VarChar(10)
+  create_user_id                                                                                      String                         @db.VarChar(32)
+  create_utc_timestamp                                                                                DateTime                       @db.Timestamp(6)
+  update_user_id                                                                                      String                         @db.VarChar(32)
+  update_utc_timestamp                                                                                DateTime                       @db.Timestamp(6)
+  active_ind                                                                                          Boolean?
+  identifying_features                                                                                String?                        @db.VarChar(4000)
+  hwcr_outcome_actioned_by_code                                                                       String?                        @db.VarChar(10)
+  action                                                                                              action[]
+  drug_administered                                                                                   drug_administered[]
+  ear_tag                                                                                             ear_tag[]
+  age_code_wildlife_age_codeToage_code                                                                age_code?                      @relation("wildlife_age_codeToage_code", fields: [age_code], references: [age_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_wildlife__age_code")
+  case_file                                                                                           case_file                      @relation(fields: [case_file_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_wildlife__case_file_guid")
+  hwcr_outcome_actioned_by_code_wildlife_hwcr_outcome_actioned_by_codeTohwcr_outcome_actioned_by_code hwcr_outcome_actioned_by_code? @relation("wildlife_hwcr_outcome_actioned_by_codeTohwcr_outcome_actioned_by_code", fields: [hwcr_outcome_actioned_by_code], references: [hwcr_outcome_actioned_by_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_wildlife__hwcr_outcome_actioned_by_code")
+  hwcr_outcome_code_wildlife_hwcr_outcome_codeTohwcr_outcome_code                                     hwcr_outcome_code?             @relation("wildlife_hwcr_outcome_codeTohwcr_outcome_code", fields: [hwcr_outcome_code], references: [hwcr_outcome_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_wildlife__hwcr_outcome_code")
+  sex_code_wildlife_sex_codeTosex_code                                                                sex_code?                      @relation("wildlife_sex_codeTosex_code", fields: [sex_code], references: [sex_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_wildlife__sex_code")
+  threat_level_code_wildlife_threat_level_codeTothreat_level_code                                     threat_level_code?             @relation("wildlife_threat_level_codeTothreat_level_code", fields: [threat_level_code], references: [threat_level_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_wildlife__threat_level_code")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -672,4 +675,20 @@ model equipment_status_code {
   create_utc_timestamp  DateTime  @db.Timestamp(6)
   update_user_id        String?   @db.VarChar(32)
   update_utc_timestamp  DateTime? @db.Timestamp(6)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model hwcr_outcome_actioned_by_code {
+  hwcr_outcome_actioned_by_code                                                  String       @id(map: "PK_hwc_outcome_actioned_by_code") @db.VarChar(10)
+  agency_code                                                                    String?      @db.VarChar(10)
+  short_description                                                              String       @db.VarChar(50)
+  long_description                                                               String?      @db.VarChar(250)
+  display_order                                                                  Int
+  active_ind                                                                     Boolean
+  create_user_id                                                                 String       @db.VarChar(32)
+  create_utc_timestamp                                                           DateTime     @db.Timestamp(6)
+  update_user_id                                                                 String       @db.VarChar(32)
+  update_utc_timestamp                                                           DateTime     @db.Timestamp(6)
+  agency_code_hwcr_outcome_actioned_by_code_agency_codeToagency_code             agency_code? @relation("hwcr_outcome_actioned_by_code_agency_codeToagency_code", fields: [agency_code], references: [agency_code], onDelete: NoAction, onUpdate: NoAction, map: "FK_hwc_outcome_actioned_by__agency_code")
+  wildlife_wildlife_hwcr_outcome_actioned_by_codeTohwcr_outcome_actioned_by_code wildlife[]   @relation("wildlife_hwcr_outcome_actioned_by_codeTohwcr_outcome_actioned_by_code")
 }
