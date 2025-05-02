@@ -57,21 +57,33 @@ export class LeadService {
     return leadIdentifiers;
   }
 
-  async getLeadsByOutcomeAnimal(outcomeAnimalCode, startDate, endDate): Promise<string[]> {
+  async getLeadsByOutcomeAnimal(outcomeAnimalCode, outcomeActionedByCode, startDate, endDate): Promise<string[]> {
     let outcomeResultByCode;
     let outcomeResultByDate;
     let caseGuids: string[] = [];
 
     //Check if filter Outcome Animal by code is on
     if (outcomeAnimalCode !== "undefined") {
-      outcomeResultByCode = await this.prisma.wildlife.findMany({
-        where: {
-          hwcr_outcome_code: outcomeAnimalCode,
-        },
-        select: {
-          case_file_guid: true,
-        },
-      });
+      if (outcomeActionedByCode === "undefined") {
+        outcomeResultByCode = await this.prisma.wildlife.findMany({
+          where: {
+            hwcr_outcome_code: outcomeAnimalCode,
+          },
+          select: {
+            case_file_guid: true,
+          },
+        });
+      } else {
+        outcomeResultByCode = await this.prisma.wildlife.findMany({
+          where: {
+            hwcr_outcome_code: outcomeAnimalCode,
+            hwcr_outcome_actioned_by_code: outcomeActionedByCode,
+          },
+          select: {
+            case_file_guid: true,
+          },
+        });
+      }
       for (let outcome of outcomeResultByCode) {
         caseGuids.push(outcome.case_file_guid);
       }

@@ -3,7 +3,12 @@ type Query {
 }
 
 type Query {
-  getLeadsByOutcomeAnimal(outcomeAnimalCode: String!, startDate: String!, endDate: String!): [String]
+  getLeadsByOutcomeAnimal(
+    outcomeAnimalCode: String!
+    startDate: String!
+    endDate: String!
+    outcomeActionedByCode: String!
+  ): [String]
 }
 
 type Query {

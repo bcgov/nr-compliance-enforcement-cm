@@ -19,6 +19,7 @@ import { DrugCodeModule } from "./case_management/drug_code/drug_code.module";
 import { DrugMethodCodeModule } from "./case_management/drug_method_code/drug_method_code.module";
 import { DrugRemainingOutcomeCodeModule } from "./case_management/drug_remaining_outcome_code/drug_remaining_outcome_code.module";
 import { HwcrOutcomeCodeModule } from "./case_management/hwcr_outcome_code/hwcr_outcome_code.module";
+import { HwcrOutcomeActionedByCodeModule } from "./case_management/hwcr_outcome_actioned_by_code/hwcr_outcome_actioned_by_code.module";
 import { ConfigurationModule } from "./case_management/configuration/configuration.module";
 import { CaseFileModule } from "./case_management/case_file/case_file.module";
 import { InactionJustificationTypeModule } from "./case_management/inaction_justification_type/inaction_justification_type.module";
@@ -42,6 +43,7 @@ import { pojos } from "@automapper/pojos";
 import { Mapper } from "@automapper/core";
 import { initializeMappings } from "./middleware/mapper";
 import { EquipmentStatusCodeModule } from "src/case_management/equipment_status_code/equipment_status_code.module";
+import { ImportCommand } from "./app.commands";
 
 @Module({
   imports: [
@@ -67,6 +69,7 @@ import { EquipmentStatusCodeModule } from "src/case_management/equipment_status_
     DrugMethodCodeModule,
     DrugRemainingOutcomeCodeModule,
     HwcrOutcomeCodeModule,
+    HwcrOutcomeActionedByCodeModule,
     ConfigurationModule,
     HWCRAssessmentActionModule,
     HWCRPreventionActionModule,
@@ -86,7 +89,7 @@ import { EquipmentStatusCodeModule } from "src/case_management/equipment_status_
     EquipmentStatusCodeModule,
   ],
   controllers: [AppController],
-  providers: [AppService, DateScalar],
+  providers: [AppService, ImportCommand, DateScalar],
 })
 export class AppModule {
   constructor(@InjectMapper() private readonly mapper: Mapper) {}

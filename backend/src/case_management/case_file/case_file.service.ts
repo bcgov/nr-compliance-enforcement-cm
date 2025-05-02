@@ -364,6 +364,12 @@ export class CaseFileService {
                 short_description: true,
               },
             },
+            hwcr_outcome_actioned_by_code_wildlife_hwcr_outcome_actioned_by_codeTohwcr_outcome_actioned_by_code: {
+              select: {
+                hwcr_outcome_actioned_by_code: true,
+                short_description: true,
+              },
+            },
             create_utc_timestamp: true,
             drug_administered: {
               select: {
@@ -540,10 +546,10 @@ export class CaseFileService {
       ACTION_TYPE_CODES.CAT1ASSESS,
     );
 
-    const preventionActions = await this.caseFileActionService.findActionsByCaseIdAndType(
-      caseFileId,
+    const preventionActions = await this.caseFileActionService.findActionsByCaseIdAndType(caseFileId, [
       ACTION_TYPE_CODES.COSPRVANDEDU,
-    );
+      ACTION_TYPE_CODES.PRKPRVANDEDU,
+    ]);
 
     let caseFile: CaseFile = {
       caseIdentifier: caseFileId,
@@ -916,8 +922,13 @@ export class CaseFileService {
       await this.prisma.$transaction(async (db) => {
         caseFileGuid = await _createPreventionCase(db, createPreventionInput);
 
+        //Validate that the actions passed in are all valid
         let action_codes_objects = await this.prisma.action_type_action_xref.findMany({
-          where: { action_type_code: ACTION_TYPE_CODES.COSPRVANDEDU },
+          where: {
+            action_type_code: {
+              in: [ACTION_TYPE_CODES.COSPRVANDEDU, ACTION_TYPE_CODES.PRKPRVANDEDU],
+            },
+          },
           select: { action_code: true },
         });
         let action_codes: Array<string> = [];
@@ -933,8 +944,11 @@ export class CaseFileService {
         for (const action of createPreventionInput.preventionDetails.actions) {
           let actionTypeActionXref = await this.prisma.action_type_action_xref.findFirstOrThrow({
             where: {
-              action_type_code: ACTION_TYPE_CODES.COSPRVANDEDU,
               action_code: action.actionCode,
+              action_type_code:
+                createPreventionInput.agencyCode === "COS"
+                  ? ACTION_TYPE_CODES.COSPRVANDEDU
+                  : ACTION_TYPE_CODES.PRKPRVANDEDU,
             },
             select: {
               action_type_action_xref_guid: true,
@@ -968,8 +982,11 @@ export class CaseFileService {
         for (const action of updatePreventionInput.preventionDetails.actions) {
           let actionTypeActionXref = await this.prisma.action_type_action_xref.findFirstOrThrow({
             where: {
-              action_type_code: ACTION_TYPE_CODES.COSPRVANDEDU,
               action_code: action.actionCode,
+              action_type_code:
+                updatePreventionInput.agencyCode === "COS"
+                  ? ACTION_TYPE_CODES.COSPRVANDEDU
+                  : ACTION_TYPE_CODES.PRKPRVANDEDU,
             },
             select: {
               action_type_action_xref_guid: true,
@@ -1874,6 +1891,8 @@ export class CaseFileService {
             threat_level_code_wildlife_threat_level_codeTothreat_level_code: categoryLevelObject,
             identifying_features: identifyingFeatures,
             hwcr_outcome_code_wildlife_hwcr_outcome_codeTohwcr_outcome_code: outcomeObject,
+            hwcr_outcome_actioned_by_code_wildlife_hwcr_outcome_actioned_by_codeTohwcr_outcome_actioned_by_code:
+              actionedByObject,
             ear_tag,
             drug_administered,
             action,
@@ -1890,6 +1909,9 @@ export class CaseFileService {
 
           const outcome = outcomeObject?.hwcr_outcome_code;
           const outcomeDescription = outcomeObject?.short_description;
+
+          const outcomeActionedBy = actionedByObject?.hwcr_outcome_actioned_by_code;
+          const outcomeActionedByDescription = actionedByObject?.short_description;
 
           const tags = ear_tag
             .sort((a, b) => a.create_utc_timestamp.getTime() - b.create_utc_timestamp.getTime())
@@ -1983,6 +2005,8 @@ export class CaseFileService {
             identifyingFeatures,
             outcome,
             outcomeDescription,
+            outcomeActionedBy,
+            outcomeActionedByDescription,
             order: idx + 1,
           };
 
@@ -2054,6 +2078,9 @@ export class CaseFileService {
 
         if (wildlife.outcome) {
           record = { ...record, hwcr_outcome_code: wildlife.outcome };
+        }
+        if (wildlife.outcomeActionedBy) {
+          record = { ...record, hwcr_outcome_actioned_by_code: wildlife.outcomeActionedBy };
         }
 
         const result = await db.wildlife.create({
@@ -2257,7 +2284,7 @@ export class CaseFileService {
       date: Date,
     ) => {
       try {
-        const { id, species, sex, age, categoryLevel, identifyingFeatures, outcome } = input;
+        const { id, species, sex, age, categoryLevel, identifyingFeatures, outcome, outcomeActionedBy } = input;
 
         //-- create a new data record to update based on the input provided
         let data = {
@@ -2267,6 +2294,7 @@ export class CaseFileService {
           threat_level_code: categoryLevel || null,
           identifying_features: identifyingFeatures || null,
           hwcr_outcome_code: outcome || null,
+          hwcr_outcome_actioned_by_code: outcomeActionedBy || null,
           update_user_id: userId,
           update_utc_timestamp: date,
         };
