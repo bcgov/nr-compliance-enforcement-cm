@@ -70,6 +70,8 @@ type Wildlife {
   identifyingFeatures: String
   outcome: String
   outcomeDescription: String
+  outcomeActionedBy: String
+  outcomeActionedByDescription: String
   tags: [EarTag]
   drugs: [Drug]
   actions: [CaseFileAction]

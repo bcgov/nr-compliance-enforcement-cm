@@ -364,6 +364,12 @@ export class CaseFileService {
                 short_description: true,
               },
             },
+            hwcr_outcome_actioned_by_code_wildlife_hwcr_outcome_actioned_by_codeTohwcr_outcome_actioned_by_code: {
+              select: {
+                hwcr_outcome_actioned_by_code: true,
+                short_description: true,
+              },
+            },
             create_utc_timestamp: true,
             drug_administered: {
               select: {
@@ -1885,6 +1891,8 @@ export class CaseFileService {
             threat_level_code_wildlife_threat_level_codeTothreat_level_code: categoryLevelObject,
             identifying_features: identifyingFeatures,
             hwcr_outcome_code_wildlife_hwcr_outcome_codeTohwcr_outcome_code: outcomeObject,
+            hwcr_outcome_actioned_by_code_wildlife_hwcr_outcome_actioned_by_codeTohwcr_outcome_actioned_by_code:
+              actionedByObject,
             ear_tag,
             drug_administered,
             action,
@@ -1901,6 +1909,9 @@ export class CaseFileService {
 
           const outcome = outcomeObject?.hwcr_outcome_code;
           const outcomeDescription = outcomeObject?.short_description;
+
+          const outcomeActionedBy = actionedByObject?.hwcr_outcome_actioned_by_code;
+          const outcomeActionedByDescription = actionedByObject?.short_description;
 
           const tags = ear_tag
             .sort((a, b) => a.create_utc_timestamp.getTime() - b.create_utc_timestamp.getTime())
@@ -1994,6 +2005,8 @@ export class CaseFileService {
             identifyingFeatures,
             outcome,
             outcomeDescription,
+            outcomeActionedBy,
+            outcomeActionedByDescription,
             order: idx + 1,
           };
 
@@ -2065,6 +2078,9 @@ export class CaseFileService {
 
         if (wildlife.outcome) {
           record = { ...record, hwcr_outcome_code: wildlife.outcome };
+        }
+        if (wildlife.outcomeActionedBy) {
+          record = { ...record, hwcr_outcome_actioned_by_code: wildlife.outcomeActionedBy };
         }
 
         const result = await db.wildlife.create({
@@ -2268,7 +2284,7 @@ export class CaseFileService {
       date: Date,
     ) => {
       try {
-        const { id, species, sex, age, categoryLevel, identifyingFeatures, outcome } = input;
+        const { id, species, sex, age, categoryLevel, identifyingFeatures, outcome, outcomeActionedBy } = input;
 
         //-- create a new data record to update based on the input provided
         let data = {
@@ -2278,6 +2294,7 @@ export class CaseFileService {
           threat_level_code: categoryLevel || null,
           identifying_features: identifyingFeatures || null,
           hwcr_outcome_code: outcome || null,
+          hwcr_outcome_actioned_by_code: outcomeActionedBy || null,
           update_user_id: userId,
           update_utc_timestamp: date,
         };
