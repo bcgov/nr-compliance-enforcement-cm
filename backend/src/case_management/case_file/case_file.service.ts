@@ -335,6 +335,10 @@ export class CaseFileService {
               },
             },
           },
+
+          orderBy: {
+            create_utc_timestamp: "asc",
+          },
         },
         action: {
           select: {
