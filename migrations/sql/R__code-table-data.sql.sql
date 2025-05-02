@@ -6200,6 +6200,13 @@ where
 
 update case_management.wildlife
 set
+  hwcr_outcome_code = 'EUTHNIZD',
+  hwcr_outcome_actioned_by_code = 'OTHER'
+where
+  hwcr_outcome_code = 'EUTHOTH';
+
+update case_management.wildlife
+set
   hwcr_outcome_code = 'DISPTCHD',
   hwcr_outcome_actioned_by_code = 'COS'
 where
