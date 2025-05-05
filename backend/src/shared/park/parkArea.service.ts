@@ -29,6 +29,20 @@ export class ParkAreaService {
     }
   }
 
+  async findAll() {
+    const prismaParkAreas = await this.prisma.park_area.findMany({
+      orderBy: {
+        name: "asc",
+      },
+    });
+
+    try {
+      return this.mapper.mapArray<park_area, ParkArea>(prismaParkAreas as Array<park_area>, "park_area", "ParkArea");
+    } catch (error) {
+      this.logger.error("Error mapping all park_area", error);
+    }
+  }
+
   async create(input: ParkAreaInput): Promise<ParkArea> {
     const prismaParkArea = await this.prisma.park_area.create({
       data: {
