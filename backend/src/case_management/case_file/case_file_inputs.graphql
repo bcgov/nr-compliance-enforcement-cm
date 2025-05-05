@@ -185,6 +185,7 @@ input WildlifeInput {
   age: String
   categoryLevel: String
   outcome: String
+  outcomeActionedBy: String
   tags: [EarTagInput]
   drugs: [DrugInput]
   actions: [WildlifeActionInput]

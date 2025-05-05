@@ -19,6 +19,7 @@ import { DrugCodeModule } from "./case_management/drug_code/drug_code.module";
 import { DrugMethodCodeModule } from "./case_management/drug_method_code/drug_method_code.module";
 import { DrugRemainingOutcomeCodeModule } from "./case_management/drug_remaining_outcome_code/drug_remaining_outcome_code.module";
 import { HwcrOutcomeCodeModule } from "./case_management/hwcr_outcome_code/hwcr_outcome_code.module";
+import { HwcrOutcomeActionedByCodeModule } from "./case_management/hwcr_outcome_actioned_by_code/hwcr_outcome_actioned_by_code.module";
 import { ConfigurationModule } from "./case_management/configuration/configuration.module";
 import { CaseFileModule } from "./case_management/case_file/case_file.module";
 import { InactionJustificationTypeModule } from "./case_management/inaction_justification_type/inaction_justification_type.module";
@@ -68,6 +69,7 @@ import { ImportCommand } from "./app.commands";
     DrugMethodCodeModule,
     DrugRemainingOutcomeCodeModule,
     HwcrOutcomeCodeModule,
+    HwcrOutcomeActionedByCodeModule,
     ConfigurationModule,
     HWCRAssessmentActionModule,
     HWCRPreventionActionModule,

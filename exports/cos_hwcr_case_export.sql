@@ -29,6 +29,7 @@ select distinct
 		prv_hoc.short_description
     else ''
     END AS "Original Outcome",
+	abc.short_description as "Outcome actioned by",
 	case 
         	when eat.was_animal_captured = 'N' then 'Yes'
 	        else 'No'
@@ -69,6 +70,8 @@ left join case_management.hwcr_outcome_code hoc on
 	hoc.hwcr_outcome_code = wl.hwcr_outcome_code
 left join case_management.hwcr_outcome_code prv_hoc on
 	prv_hoc.hwcr_outcome_code = wlh.data_after_executed_operation ->> 'hwcr_outcome_code' 
+left join case_management.hwcr_outcome_actioned_by_code abc on
+	abc.hwcr_outcome_actioned_by_code = wl.hwcr_outcome_actioned_by_code
 left join ( -- wildlife actions
 	select 
 		action_date, 
