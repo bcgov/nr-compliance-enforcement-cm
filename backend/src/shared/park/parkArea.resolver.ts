@@ -29,6 +29,21 @@ export class ParkAreaResolver {
     }
   }
 
+  @Query("parkAreas")
+  @Roles(coreRoles)
+  async findAll() {
+    try {
+      return await this.ParkAreaService.findAll();
+    } catch (error) {
+      this.logger.error(error);
+      throw new GraphQLError("Error fetching data from Shared schema", {
+        extensions: {
+          code: "INTERNAL_SERVER_ERROR",
+        },
+      });
+    }
+  }
+
   @Mutation(() => ParkArea, { name: "createParkArea" })
   @Roles(coreRoles)
   async create(@Args("input") input: ParkAreaInput) {

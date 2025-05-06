@@ -2,6 +2,7 @@ type Query {
   parks(take: Int, skip: Int, search: String): [Park]
   park(parkGuid: String!): Park
   parkArea(parkAreaGuid: String!): ParkArea
+  parkAreas: [ParkArea]!
 }
 
 type Mutation {
