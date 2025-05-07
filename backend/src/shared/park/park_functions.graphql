@@ -3,6 +3,7 @@ type Query {
   park(parkGuid: String!): Park
   parkArea(parkAreaGuid: String!): ParkArea
   parkAreas: [ParkArea]!
+  getParksByArea(parkAreaGuid: String!): [Park]
 }
 
 type Mutation {
