@@ -93,89 +93,107 @@ export class CaseFileService {
   //------------------
   //-- assessments
   //------------------
-  async createAssessment(createAssessmentInput: CreateAssessmentInput): Promise<CaseFile> {
-    const _createAssessmentCase = async (
-      db: Omit<
-        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
-      >,
-      createAssessmentInput: CreateAssessmentInput,
-    ): Promise<string> => {
-      let caseFileGuid: string;
-
-      try {
-        let case_file = await db.case_file.create({
-          data: {
-            agency_code: {
-              connect: {
-                agency_code: createAssessmentInput.agencyCode,
-              },
-            },
-            inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: createAssessmentInput
-              .assessmentDetails.actionJustificationCode
-              ? {
-                  connect: {
-                    inaction_reason_code: createAssessmentInput.assessmentDetails.actionJustificationCode,
-                  },
-                }
-              : undefined,
-            create_user_id: createAssessmentInput.createUserId,
-            create_utc_timestamp: new Date(),
-            action_not_required_ind: createAssessmentInput.assessmentDetails.actionNotRequired,
-            case_code_case_file_case_codeTocase_code: {
-              connect: {
-                case_code: createAssessmentInput.caseCode,
-              },
-            },
-            complainant_contacted_ind: createAssessmentInput.assessmentDetails.contactedComplainant,
-            attended_ind: createAssessmentInput.assessmentDetails.attended,
-            case_file__case_location_code: createAssessmentInput.assessmentDetails.locationType
-              ? {
-                  connect: {
-                    case_location_code: createAssessmentInput.assessmentDetails.locationType.value,
-                  },
-                }
-              : undefined,
-            case_file__conflict_history_code: createAssessmentInput.assessmentDetails.conflictHistory
-              ? {
-                  connect: {
-                    conflict_history_code: createAssessmentInput.assessmentDetails.conflictHistory.value,
-                  },
-                }
-              : undefined,
-            case_file__threat_level_code: createAssessmentInput.assessmentDetails.categoryLevel
-              ? {
-                  connect: {
-                    threat_level_code: createAssessmentInput.assessmentDetails.categoryLevel.value,
-                  },
-                }
-              : undefined,
-          },
-        });
-
-        caseFileGuid = case_file.case_file_guid;
-
-        await db.lead.create({
-          data: {
-            lead_identifier: createAssessmentInput.leadIdentifier,
-            case_identifier: caseFileGuid,
-            create_user_id: createAssessmentInput.createUserId,
-            create_utc_timestamp: new Date(),
-          },
-        });
-      } catch (exception) {
-        throw new GraphQLError("Exception occurred. See server log for details", {});
-      }
-      return caseFileGuid;
-    };
-
+  async createAssessment(model: CreateAssessmentInput): Promise<CaseFile> {
+    let caseFileGuid: string;
     let caseFileOutput: CaseFile;
 
     try {
-      let caseFileGuid: string = "";
+      let assessmentId: string = "";
 
       await this.prisma.$transaction(async (db) => {
-        caseFileGuid = await _createAssessmentCase(db, createAssessmentInput);
+        let assessmentId: string;
+        let case_file: any;
+
+        if (!model.caseIdentifier) {
+          case_file = await db.case_file.create({
+            data: {
+              agency_code: {
+                connect: {
+                  agency_code: model.agencyCode,
+                },
+              },
+              create_user_id: model.createUserId,
+              create_utc_timestamp: new Date(),
+              case_code_case_file_case_codeTocase_code: {
+                connect: {
+                  case_code: model.caseCode,
+                },
+              },
+            },
+          });
+
+          caseFileGuid = case_file.case_file_guid;
+
+          this.logger.log(`Case file created with case_file_guid: ${caseFileGuid}`);
+
+          const lead = await db.lead.create({
+            data: {
+              lead_identifier: model.leadIdentifier,
+              case_identifier: caseFileGuid,
+              create_user_id: model.createUserId,
+              create_utc_timestamp: new Date(),
+            },
+          });
+
+          this.logger.log(`Lead created with lead_identifier: ${lead.lead_identifier}`);
+        } else {
+          caseFileGuid = model.caseIdentifier;
+        }
+
+        this.logger.log(`Creating assessment for case file: ${caseFileGuid}`);
+
+        const assessment = await db.assessment.create({
+          data: {
+            case_file: {
+              connect: {
+                case_file_guid: caseFileGuid,
+              },
+            },
+            agency_code: {
+              connect: {
+                agency_code: model.agencyCode,
+              },
+            },
+            inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: model.assessment
+              .actionJustificationCode
+              ? {
+                  connect: {
+                    inaction_reason_code: model.assessment.actionJustificationCode,
+                  },
+                }
+              : undefined,
+            create_user_id: model.createUserId,
+            create_utc_timestamp: new Date(),
+            action_not_required_ind: model.assessment.actionNotRequired,
+            complainant_contacted_ind: model.assessment.contactedComplainant,
+            attended_ind: model.assessment.attended,
+            case_location_code_assessment_case_location_codeTocase_location_code: model.assessment.locationType
+              ? {
+                  connect: {
+                    case_location_code: model.assessment.locationType.value,
+                  },
+                }
+              : undefined,
+            conflict_history_code: model.assessment.conflictHistory
+              ? {
+                  connect: {
+                    conflict_history_code: model.assessment.conflictHistory.value,
+                  },
+                }
+              : undefined,
+            threat_level_code: model.assessment.categoryLevel
+              ? {
+                  connect: {
+                    threat_level_code: model.assessment.categoryLevel.value,
+                  },
+                }
+              : undefined,
+          },
+        });
+
+        assessmentId = assessment.assessment_guid;
+
+        this.logger.log(`Assessment created with assessment_guid: ${assessmentId}`);
 
         let action_codes_objects = await db.action_type_action_xref.findMany({
           where: { action_type_code: ACTION_TYPE_CODES.COMPASSESS },
@@ -185,13 +203,13 @@ export class CaseFileService {
         for (const action_code_object of action_codes_objects) {
           action_codes.push(action_code_object.action_code);
         }
-        for (const action of createAssessmentInput.assessmentDetails.actions) {
+        for (const action of model.assessment.actions) {
           if (action_codes.indexOf(action.actionCode) === -1) {
             throw "Some action code values where not passed from the client";
           }
         }
 
-        for (const action of createAssessmentInput.assessmentDetails.actions) {
+        for (const action of model.assessment.actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
               action_type_code: ACTION_TYPE_CODES.COMPASSESS,
@@ -204,11 +222,12 @@ export class CaseFileService {
           await db.action.create({
             data: {
               case_guid: caseFileGuid,
+              assessment_guid: assessmentId,
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
               actor_guid: action.actor,
               action_date: action.date,
               active_ind: action.activeIndicator,
-              create_user_id: createAssessmentInput.createUserId,
+              create_user_id: model.createUserId,
               create_utc_timestamp: new Date(),
             },
           });
@@ -225,12 +244,12 @@ export class CaseFileService {
           cat1Action_codes.push(action_code_object.action_code);
         }
 
-        for (const cat1Action of createAssessmentInput.assessmentDetails.actions) {
+        for (const cat1Action of model.assessment.actions) {
           if (action_codes.indexOf(cat1Action.actionCode) === -1) {
             throw "Some action code values where not passed from the client";
           }
         }
-        for (const action of createAssessmentInput.assessmentDetails.cat1Actions) {
+        for (const action of model.assessment.cat1Actions) {
           let actionTypeActionXref = await db.action_type_action_xref.findFirstOrThrow({
             where: {
               action_type_code: ACTION_TYPE_CODES.CAT1ASSESS,
@@ -243,19 +262,26 @@ export class CaseFileService {
           await db.action.create({
             data: {
               case_guid: caseFileGuid,
+              assessment_guid: assessmentId,
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
               actor_guid: action.actor,
               action_date: action.date,
               active_ind: action.activeIndicator,
-              create_user_id: createAssessmentInput.createUserId,
+              create_user_id: model.createUserId,
               create_utc_timestamp: new Date(),
             },
           });
         }
+
+        this.logger.log(`Actions created for assessment: ${assessmentId}`);
       });
+      this.logger.log(`Transaction completed successfully, returning updated case file`);
       caseFileOutput = await this.findOne(caseFileGuid);
     } catch (exception) {
-      throw new GraphQLError("Exception occurred. See server log for details", {});
+      throw new GraphQLError(
+        `Exception occurred. See server log for details: ${exception.message}, ${JSON.stringify(exception)}`,
+        {},
+      );
     }
     return caseFileOutput;
   }
@@ -270,38 +296,48 @@ export class CaseFileService {
       select: {
         case_file_guid: true,
         review_required_ind: true,
-        action_not_required_ind: true,
-        inaction_reason_code: true,
-        complainant_contacted_ind: true,
-        attended_ind: true,
-        case_file__case_location_code: {
-          select: {
-            case_location_code: true,
-            short_description: true,
-          },
-        },
-        case_file__conflict_history_code: {
-          select: {
-            conflict_history_code: true,
-            short_description: true,
-          },
-        },
-        case_file__threat_level_code: {
-          select: {
-            threat_level_code: true,
-            short_description: true,
-          },
-        },
-        inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: {
-          select: {
-            short_description: true,
-            long_description: true,
-            active_ind: true,
-          },
-        },
         lead: {
           select: {
             lead_identifier: true,
+          },
+        },
+        assessment: {
+          select: {
+            assessment_guid: true,
+            assessed_by_agency_code: true,
+            inaction_reason_code: true,
+            inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: {
+              select: {
+                short_description: true,
+                long_description: true,
+                active_ind: true,
+              },
+            },
+            action_not_required_ind: true,
+            complainant_contacted_ind: true,
+            attended_ind: true,
+            case_location_code_assessment_case_location_codeTocase_location_code: {
+              select: {
+                case_location_code: true,
+                short_description: true,
+              },
+            },
+            conflict_history_code: {
+              select: {
+                conflict_history_code: true,
+                short_description: true,
+              },
+            },
+            threat_level_code: {
+              select: {
+                threat_level_code: true,
+                short_description: true,
+              },
+            },
+          },
+
+          orderBy: {
+            create_utc_timestamp: "asc",
           },
         },
         action: {
@@ -517,33 +553,11 @@ export class CaseFileService {
       },
     });
 
-    const {
-      case_file_guid: caseFileId,
-      lead,
-      action_not_required_ind: actionNotRequired,
-      inaction_reason_code: inactionReasonCode,
-      inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: reason,
-      review_required_ind: isReviewRequired,
-      complainant_contacted_ind: contactedComplainant,
-      attended_ind: attended,
-      case_file__case_location_code: locationType,
-      case_file__conflict_history_code: conflictHistory,
-      case_file__threat_level_code: categoryLevel,
-    } = queryResult;
+    const { case_file_guid: caseFileId, lead, review_required_ind: isReviewRequired } = queryResult;
 
     const reviewCompleteAction = await this.caseFileActionService.findActionByCaseIdAndCaseCode(
       caseFileId,
       ACTION_CODES.COMPLTREVW,
-    );
-
-    const assessmentActions = await this.caseFileActionService.findActionsByCaseIdAndType(
-      caseFileId,
-      ACTION_TYPE_CODES.COMPASSESS,
-    );
-
-    const assessmentCat1Actions = await this.caseFileActionService.findActionsByCaseIdAndType(
-      caseFileId,
-      ACTION_TYPE_CODES.CAT1ASSESS,
     );
 
     const preventionActions = await this.caseFileActionService.findActionsByCaseIdAndType(caseFileId, [
@@ -554,31 +568,6 @@ export class CaseFileService {
     let caseFile: CaseFile = {
       caseIdentifier: caseFileId,
       leadIdentifier: lead[0].lead_identifier, //this is okay because there will only be one lead for a case... for now.
-      assessmentDetails: assessmentActions
-        ? {
-            actionNotRequired: actionNotRequired,
-            actionJustificationCode: inactionReasonCode,
-            actionJustificationShortDescription: !reason ? "" : reason.short_description,
-            actionJustificationLongDescription: !reason ? "" : reason.long_description,
-            actionJustificationActiveIndicator: !reason ? false : reason.active_ind,
-            actions: assessmentActions,
-            contactedComplainant,
-            attended,
-            conflictHistory: {
-              key: conflictHistory ? conflictHistory.short_description : "",
-              value: conflictHistory ? conflictHistory.conflict_history_code : "",
-            },
-            locationType: {
-              key: locationType ? locationType.short_description : "",
-              value: locationType ? locationType.case_location_code : "",
-            },
-            categoryLevel: {
-              key: categoryLevel ? categoryLevel.short_description : "",
-              value: categoryLevel ? categoryLevel.threat_level_code : "",
-            },
-            cat1Actions: assessmentCat1Actions,
-          }
-        : null,
       preventionDetails: preventionActions
         ? {
             actions: preventionActions,
@@ -597,6 +586,97 @@ export class CaseFileService {
     if (queryResult.wildlife) {
       caseFile.subject = await this._getCaseFileSubjects(queryResult);
     }
+
+    //-- add the assessments if returned in the query result
+    if (queryResult.assessment && queryResult.assessment.length !== 0) {
+      const assessments = await Promise.all(
+        queryResult.assessment.map(async (assessment) => {
+          const {
+            assessment_guid: id,
+            assessed_by_agency_code: agencyCode,
+            inaction_reason_code: actionJustificationCode,
+            inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: reason,
+            action_not_required_ind: actionNotRequired,
+            complainant_contacted_ind: contactedComplainant,
+            attended_ind: attended,
+            case_location_code_assessment_case_location_codeTocase_location_code: locationType,
+            conflict_history_code: conflictHistory,
+            threat_level_code: categoryLevel,
+          } = assessment;
+
+          const actions = await this.caseFileActionService.findActionsByAssessmentIdAndType(
+            id,
+            ACTION_TYPE_CODES.COMPASSESS,
+          );
+
+          const cat1Actions = await this.caseFileActionService.findActionsByAssessmentIdAndType(
+            id,
+            ACTION_TYPE_CODES.CAT1ASSESS,
+          );
+
+          return {
+            id,
+            caseIdentifier: caseFileId,
+            agencyCode,
+            actionNotRequired,
+            actionJustificationCode,
+            actionJustificationShortDescription: reason ? reason.short_description : null,
+            actionJustificationLongDescription: reason ? reason.long_description : null,
+            actionJustificationActiveIndicator: reason ? reason.active_ind : null,
+            actions,
+            cat1Actions,
+            contactedComplainant,
+            attended,
+            conflictHistory: {
+              key: conflictHistory ? conflictHistory.short_description : "",
+              value: conflictHistory ? conflictHistory.conflict_history_code : "",
+            },
+            locationType: {
+              key: locationType ? locationType.short_description : "",
+              value: locationType ? locationType.case_location_code : "",
+            },
+            categoryLevel: {
+              key: categoryLevel ? categoryLevel.short_description : "",
+              value: categoryLevel ? categoryLevel.threat_level_code : "",
+            },
+          };
+        }),
+      );
+      caseFile.assessment = assessments;
+    }
+    // action_not_required_ind: actionNotRequired,
+    // inaction_reason_code: inactionReasonCode,
+    // inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: reason,
+    // complainant_contacted_ind: contactedComplainant,
+    // attended_ind: attended,
+    // case_file__case_location_code: locationType,
+    // case_file__conflict_history_code: conflictHistory,
+    // case_file__threat_level_code: categoryLevel,
+    // assessment: assessmentActions
+    // ? {
+    //     actionNotRequired: actionNotRequired,
+    //     actionJustificationCode: inactionReasonCode,
+    //     actionJustificationShortDescription: !reason ? "" : reason.short_description,
+    //     actionJustificationLongDescription: !reason ? "" : reason.long_description,
+    //     actionJustificationActiveIndicator: !reason ? false : reason.active_ind,
+    //     actions: assessmentActions,
+    //     contactedComplainant,
+    //     attended,
+    //     conflictHistory: {
+    //       key: conflictHistory ? conflictHistory.short_description : "",
+    //       value: conflictHistory ? conflictHistory.conflict_history_code : "",
+    //     },
+    //     locationType: {
+    //       key: locationType ? locationType.short_description : "",
+    //       value: locationType ? locationType.case_location_code : "",
+    //     },
+    //     categoryLevel: {
+    //       key: categoryLevel ? categoryLevel.short_description : "",
+    //       value: categoryLevel ? categoryLevel.threat_level_code : "",
+    //     },
+    //     cat1Actions: assessmentCat1Actions,
+    //   }
+    // : null,
 
     //-- add the decision if its returned in the query result
     if (queryResult.decision && queryResult.decision.length !== 0) {
@@ -721,65 +801,65 @@ export class CaseFileService {
     return caseFileOutput;
   }
 
-  async updateAssessment(caseIdentifier: string, updateAssessmentInput: UpdateAssessmentInput) {
+  async updateAssessment(model: UpdateAssessmentInput) {
     let caseFileOutput: CaseFile;
 
     try {
       await this.prisma.$transaction(async (db) => {
-        await db.case_file.update({
-          where: { case_file_guid: caseIdentifier },
+        await db.assessment.update({
+          where: { assessment_guid: model.assessment.id },
           data: {
-            inaction_reason_code_case_file_inaction_reason_codeToinaction_reason_code: updateAssessmentInput
-              .assessmentDetails.actionJustificationCode
+            inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: model.assessment
+              .actionJustificationCode
               ? {
                   connect: {
-                    inaction_reason_code: updateAssessmentInput.assessmentDetails.actionJustificationCode,
+                    inaction_reason_code: model.assessment.actionJustificationCode,
                   },
                 }
               : undefined,
-            action_not_required_ind: updateAssessmentInput.assessmentDetails.actionNotRequired,
-            complainant_contacted_ind: updateAssessmentInput.assessmentDetails.contactedComplainant,
-            attended_ind: updateAssessmentInput.assessmentDetails.attended,
-            case_file__case_location_code: updateAssessmentInput.assessmentDetails.locationType
+            action_not_required_ind: model.assessment.actionNotRequired,
+            complainant_contacted_ind: model.assessment.contactedComplainant,
+            attended_ind: model.assessment.attended,
+            case_location_code_assessment_case_location_codeTocase_location_code: model.assessment.locationType
               ? {
                   connect: {
-                    case_location_code: updateAssessmentInput.assessmentDetails.locationType.value,
+                    case_location_code: model.assessment.locationType.value,
                   },
                 }
               : undefined,
-            case_file__conflict_history_code: updateAssessmentInput.assessmentDetails.conflictHistory
+            conflict_history_code: model.assessment.conflictHistory
               ? {
                   connect: {
-                    conflict_history_code: updateAssessmentInput.assessmentDetails.conflictHistory.value,
+                    conflict_history_code: model.assessment.conflictHistory.value,
                   },
                 }
               : {
                   disconnect: true,
                 },
-            case_file__threat_level_code: updateAssessmentInput.assessmentDetails.categoryLevel
+            threat_level_code: model.assessment.categoryLevel
               ? {
                   connect: {
-                    threat_level_code: updateAssessmentInput.assessmentDetails.categoryLevel.value,
+                    threat_level_code: model.assessment.categoryLevel.value,
                   },
                 }
               : {
                   disconnect: true,
                 },
-            update_user_id: updateAssessmentInput.updateUserId,
+            update_user_id: model.updateUserId,
             update_utc_timestamp: new Date(),
           },
         });
 
         await db.lead.updateMany({
-          where: { case_identifier: caseIdentifier },
+          where: { case_identifier: model.caseIdentifier },
           data: {
-            lead_identifier: updateAssessmentInput.leadIdentifier,
-            update_user_id: updateAssessmentInput.updateUserId,
+            lead_identifier: model.leadIdentifier,
+            update_user_id: model.updateUserId,
             update_utc_timestamp: new Date(),
           },
         });
 
-        for (const action of updateAssessmentInput.assessmentDetails.actions) {
+        for (const action of model.assessment.actions) {
           let actionTypeActionXref = await this.prisma.action_type_action_xref.findFirstOrThrow({
             where: {
               action_type_code: ACTION_TYPE_CODES.COMPASSESS,
@@ -795,7 +875,7 @@ export class CaseFileService {
           let actionXref = await this.prisma.action.findFirst({
             where: {
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
-              case_guid: caseIdentifier,
+              assessment_guid: model.assessment.id,
             },
             select: {
               action_type_action_xref_guid: true,
@@ -805,26 +885,26 @@ export class CaseFileService {
           if (actionXref) {
             await db.action.updateMany({
               where: {
-                case_guid: caseIdentifier,
+                assessment_guid: model.assessment.id,
                 action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
               },
               data: {
                 actor_guid: action.actor,
                 action_date: action.date,
                 active_ind: action.activeIndicator,
-                update_user_id: updateAssessmentInput.updateUserId,
+                update_user_id: model.updateUserId,
                 update_utc_timestamp: new Date(),
               },
             });
           } else {
             await db.action.create({
               data: {
-                case_guid: caseIdentifier,
+                case_guid: model.caseIdentifier,
                 action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
                 actor_guid: action.actor,
                 action_date: action.date,
                 active_ind: action.activeIndicator,
-                create_user_id: updateAssessmentInput.updateUserId,
+                create_user_id: model.updateUserId,
                 create_utc_timestamp: new Date(),
               },
             });
@@ -832,7 +912,7 @@ export class CaseFileService {
         }
 
         //Handle cat1actions
-        for (const action of updateAssessmentInput.assessmentDetails.cat1Actions) {
+        for (const action of model.assessment.cat1Actions) {
           let actionTypeActionXref = await this.prisma.action_type_action_xref.findFirstOrThrow({
             where: {
               action_type_code: ACTION_TYPE_CODES.CAT1ASSESS,
@@ -847,21 +927,21 @@ export class CaseFileService {
 
           await db.action.updateMany({
             where: {
-              case_guid: caseIdentifier,
+              assessment_guid: model.assessment.id,
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
             },
             data: {
               actor_guid: action.actor,
               action_date: action.date,
               active_ind: action.activeIndicator,
-              update_user_id: updateAssessmentInput.updateUserId,
+              update_user_id: model.updateUserId,
               update_utc_timestamp: new Date(),
             },
           });
         }
       });
 
-      caseFileOutput = await this.findOne(caseIdentifier);
+      caseFileOutput = await this.findOne(model.caseIdentifier);
     } catch (exception) {
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }

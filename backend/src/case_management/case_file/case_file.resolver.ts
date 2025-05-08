@@ -27,8 +27,8 @@ export class CaseFileResolver {
 
   @Mutation("createAssessment")
   @Roles(Role.COS, Role.PARKS)
-  createAssessment(@Args("createAssessmentInput") createAssessmentInput: CreateAssessmentInput) {
-    return this.caseFileService.createAssessment(createAssessmentInput);
+  createAssessment(@Args("input") input: CreateAssessmentInput) {
+    return this.caseFileService.createAssessment(input);
   }
 
   @Mutation("createPrevention")
@@ -63,8 +63,8 @@ export class CaseFileResolver {
 
   @Mutation("updateAssessment")
   @Roles(Role.COS, Role.PARKS)
-  updateAssessment(@Args("updateAssessmentInput") updateAssessmentInput: UpdateAssessmentInput) {
-    return this.caseFileService.updateAssessment(updateAssessmentInput.caseIdentifier, updateAssessmentInput);
+  updateAssessment(@Args("input") input: UpdateAssessmentInput) {
+    return this.caseFileService.updateAssessment(input);
   }
 
   @Mutation("updatePrevention")
