@@ -11,6 +11,16 @@ CREATE TABLE case_management.prevention_education (
 );
 
 ALTER TABLE case_management.prevention_education ADD CONSTRAINT "FK_prevention_education__case_file_guid" FOREIGN KEY (case_file_guid) REFERENCES case_management.case_file(case_file_guid);
+ALTER TABLE case_management.prevention_education ADD CONSTRAINT "FK_prevention_education__agency_code" FOREIGN KEY (agency_code) REFERENCES case_management.agency_code(agency_code);
+
+COMMENT ON COLUMN case_management.prevention_education.prevention_education_guid IS 'System generated unique key prevention education record.';
+COMMENT ON COLUMN case_management.prevention_education.case_file_guid IS 'Foreign key to the case that these actions are for.';
+COMMENT ON COLUMN case_management.prevention_education.agency_code IS 'The agency that recorded these actions.';
+COMMENT ON COLUMN case_management.prevention_education.active_ind IS 'Indicates whether the note is active (true) or inactive (false).';
+COMMENT ON COLUMN case_management.prevention_education.create_user_id IS 'The identifier (e.g., username) of the user who created the entry.';
+COMMENT ON COLUMN case_management.prevention_education.create_utc_timestamp IS 'The date and time (UTC) when the entry was created.';
+COMMENT ON COLUMN case_management.prevention_education.update_user_id IS 'The identifier (e.g., username) of the user who last updated the entry.';
+COMMENT ON COLUMN case_management.prevention_education.update_utc_timestamp IS 'The date and time (UTC) when the entry was last updated.';
 
 -- Create a single prevention_education record for each case file that has COSPRV&EDU or PRKPRV&EDU action types.
 INSERT INTO case_management.prevention_education
