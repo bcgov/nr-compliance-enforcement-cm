@@ -47,14 +47,16 @@ input UpdateAssessmentInput {
 }
 
 input CreatePreventionInput {
+  caseIdentifier: String
   leadIdentifier: String
-  preventionDetails: PreventionDetailsInput!
+  prevention: PreventionInput!
   agencyCode: String!
   caseCode: String!
   createUserId: String!
 }
 
-input PreventionDetailsInput {
+input PreventionInput {
+  id: String
   actions: [PreventionActionInput]!
 }
 
@@ -68,9 +70,15 @@ input PreventionActionInput {
 input UpdatePreventionInput {
   caseIdentifier: String!
   leadIdentifier: String
-  preventionDetails: PreventionDetailsInput!
+  prevention: PreventionInput!
   agencyCode: String!
   caseCode: String!
+  updateUserId: String!
+}
+
+input DeletePreventionInput {
+  leadIdentifier: String!
+  id: String!
   updateUserId: String!
 }
 

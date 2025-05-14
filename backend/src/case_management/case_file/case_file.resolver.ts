@@ -19,6 +19,7 @@ import { UpdateDecisionInput } from "./dto/ceeb/decision/update-decsion-input";
 import { CreateAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/create-authorization-outcome-input";
 import { UpdateAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/update-authorization-outcome-input";
 import { DeleteAuthorizationOutcomeInput } from "./dto/ceeb/authorization-outcome/delete-authorization-outcome-input";
+import { DeletePreventionInput } from "./dto/delete-prevention.input";
 
 @UseGuards(JwtRoleGuard)
 @Resolver("CaseFile")
@@ -33,7 +34,7 @@ export class CaseFileResolver {
 
   @Mutation("createPrevention")
   @Roles(Role.COS, Role.PARKS)
-  createPrevention(@Args("createPreventionInput") createPreventionInput: CreatePreventionInput) {
+  createPrevention(@Args("input") createPreventionInput: CreatePreventionInput) {
     return this.caseFileService.createPrevention(createPreventionInput);
   }
 
@@ -69,8 +70,14 @@ export class CaseFileResolver {
 
   @Mutation("updatePrevention")
   @Roles(Role.COS, Role.PARKS)
-  updatePrevention(@Args("updatePreventionInput") updatePreventionInput: UpdatePreventionInput) {
-    return this.caseFileService.updatePrevention(updatePreventionInput.caseIdentifier, updatePreventionInput);
+  updatePrevention(@Args("input") updatePreventionInput: UpdatePreventionInput) {
+    return this.caseFileService.updatePrevention(updatePreventionInput);
+  }
+
+  @Mutation("deletePrevention")
+  @Roles(Role.COS, Role.PARKS)
+  deletePrevention(@Args("input") deletePreventionInput: DeletePreventionInput) {
+    return this.caseFileService.deletePrevention(deletePreventionInput);
   }
 
   @Mutation("createEquipment")

@@ -27,10 +27,12 @@ model action {
   decision_guid                String?                 @db.Uuid
   case_note_guid               String?                 @db.Uuid
   assessment_guid              String?                 @db.Uuid
+  prevention_education_guid    String?                 @db.Uuid
   case_file                    case_file               @relation(fields: [case_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "FK_action__case_guid")
   case_note                    case_note?              @relation(fields: [case_note_guid], references: [case_note_guid], onDelete: NoAction, onUpdate: NoAction, map: "FK_action__case_note_guid")
   action_type_action_xref      action_type_action_xref @relation(fields: [action_type_action_xref_guid], references: [action_type_action_xref_guid], onDelete: NoAction, onUpdate: NoAction, map: "FK_action_action_type_action_xref")
   assessment                   assessment?             @relation(fields: [assessment_guid], references: [assessment_guid], onDelete: NoAction, onUpdate: NoAction)
+  prevention_education         prevention_education?   @relation(fields: [prevention_education_guid], references: [prevention_education_guid], onDelete: NoAction, onUpdate: NoAction)
   decision                     decision?               @relation(fields: [decision_guid], references: [decision_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_action__decision_guid")
   equipment                    equipment?              @relation(fields: [equipment_guid], references: [equipment_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_action__equipment_guid")
   wildlife                     wildlife?               @relation(fields: [wildlife_guid], references: [wildlife_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_action__wildlife_guid")
@@ -209,6 +211,7 @@ model case_file {
   case_note                                case_note[]
   decision                                 decision[]
   lead                                     lead[]
+  prevention_education                     prevention_education[]
   site                                     site[]
   wildlife                                 wildlife[]
 }
@@ -744,4 +747,17 @@ model wildlife_h {
   operation_user_id             String   @default(dbgenerated("CURRENT_USER")) @db.VarChar(32)
   operation_executed_at         DateTime @default(now()) @db.Timestamp(6)
   data_after_executed_operation Json?
+}
+
+model prevention_education {
+  prevention_education_guid String    @id(map: "PK_prevention_education_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  case_file_guid            String    @db.Uuid
+  agency_code               String    @db.VarChar(10)
+  active_ind                Boolean   @default(true)
+  create_user_id            String    @db.VarChar(32)
+  create_utc_timestamp      DateTime  @db.Timestamp(6)
+  update_user_id            String?   @db.VarChar(32)
+  update_utc_timestamp      DateTime? @db.Timestamp(6)
+  action                    action[]
+  case_file                 case_file @relation(fields: [case_file_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "FK_prevention_education__case_file_guid")
 }
