@@ -11,7 +11,7 @@ export class CaseFile {
   caseIdentifier?: string;
   leadIdentifier: string;
   assessment?: Assessment[];
-  preventionDetails?: Prevention;
+  prevention?: Prevention[];
   equipment?: Equipment[];
   notes?: Note[];
   isReviewRequired?: boolean;

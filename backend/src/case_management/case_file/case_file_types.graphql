@@ -9,7 +9,7 @@ type CaseFile {
   caseIdentifier: String
   leadIdentifier: String
   assessment: [Assessment]
-  preventionDetails: Prevention
+  prevention: [Prevention]
   notes: [Note]
   equipment: [EquipmentDetails]
   isReviewRequired: Boolean
@@ -37,6 +37,8 @@ type Assessment {
 }
 
 type Prevention {
+  id: String
+  agencyCode: String
   actions: [CaseFileAction]
 }
 

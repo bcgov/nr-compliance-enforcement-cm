@@ -8,8 +8,9 @@ type Mutation {
   createAssessment(input: CreateAssessmentInput!): CaseFile!
   updateAssessment(input: UpdateAssessmentInput!): CaseFile!
 
-  createPrevention(createPreventionInput: CreatePreventionInput!): CaseFile!
-  updatePrevention(updatePreventionInput: UpdatePreventionInput!): CaseFile!
+  createPrevention(input: CreatePreventionInput!): CaseFile!
+  updatePrevention(input: UpdatePreventionInput!): CaseFile!
+  deletePrevention(input: DeletePreventionInput!): CaseFile!
 
   createReview(reviewInput: ReviewInput!): CaseFile!
   updateReview(reviewInput: ReviewInput!): CaseFile!
