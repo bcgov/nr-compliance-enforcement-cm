@@ -78,6 +78,7 @@ export class CaseFileActionService {
 
       return this.mapActionResult(actionResult);
     } catch (exception) {
+      this.logger.error(exception);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   }
@@ -117,6 +118,7 @@ export class CaseFileActionService {
 
       return this.mapActionResult(actionResult);
     } catch (exception) {
+      this.logger.error(exception);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   }
@@ -155,6 +157,7 @@ export class CaseFileActionService {
 
       return this.mapActionResult(actionResult);
     } catch (exception) {
+      this.logger.error(exception);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   }
@@ -189,6 +192,7 @@ export class CaseFileActionService {
 
       return caseFileActions;
     } catch (exception) {
+      this.logger.error(exception);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   }
@@ -226,6 +230,7 @@ export class CaseFileActionService {
 
       return caseFileActions;
     } catch (exception) {
+      this.logger.error(exception);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   }
@@ -268,6 +273,7 @@ export class CaseFileActionService {
 
       return this.mapActionResult(actionResult);
     } catch (exception) {
+      this.logger.error(exception);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   }
@@ -310,6 +316,7 @@ export class CaseFileActionService {
       }
       return caseFileActions;
     } catch (exception) {
+      this.logger.error(exception);
       throw new GraphQLError("Exception occurred. See server log for details", {});
     }
   }
