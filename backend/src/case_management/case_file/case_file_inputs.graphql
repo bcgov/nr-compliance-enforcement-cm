@@ -6,14 +6,16 @@ input KeyValuePairInput {
 }
 
 input CreateAssessmentInput {
+  caseIdentifier: String
   leadIdentifier: String
-  assessmentDetails: AssessmentDetailsInput!
+  assessment: AssessmentInput!
   agencyCode: String!
   caseCode: String!
   createUserId: String!
 }
 
-input AssessmentDetailsInput {
+input AssessmentInput {
+  id: String
   actionNotRequired: Boolean!
   actionJustificationCode: String
   actions: [AssessmentActionInput]!
@@ -38,21 +40,23 @@ input AssessmentActionInput {
 input UpdateAssessmentInput {
   caseIdentifier: String!
   leadIdentifier: String
-  assessmentDetails: AssessmentDetailsInput!
+  assessment: AssessmentInput!
   agencyCode: String!
   caseCode: String!
   updateUserId: String!
 }
 
 input CreatePreventionInput {
+  caseIdentifier: String
   leadIdentifier: String
-  preventionDetails: PreventionDetailsInput!
+  prevention: PreventionInput!
   agencyCode: String!
   caseCode: String!
   createUserId: String!
 }
 
-input PreventionDetailsInput {
+input PreventionInput {
+  id: String
   actions: [PreventionActionInput]!
 }
 
@@ -66,9 +70,15 @@ input PreventionActionInput {
 input UpdatePreventionInput {
   caseIdentifier: String!
   leadIdentifier: String
-  preventionDetails: PreventionDetailsInput!
+  prevention: PreventionInput!
   agencyCode: String!
   caseCode: String!
+  updateUserId: String!
+}
+
+input DeletePreventionInput {
+  leadIdentifier: String!
+  id: String!
   updateUserId: String!
 }
 

@@ -10,8 +10,8 @@ import { Wildlife } from "./wildlife-entity";
 export class CaseFile {
   caseIdentifier?: string;
   leadIdentifier: string;
-  assessmentDetails?: Assessment;
-  preventionDetails?: Prevention;
+  assessment?: Assessment[];
+  prevention?: Prevention[];
   equipment?: Equipment[];
   notes?: Note[];
   isReviewRequired?: boolean;

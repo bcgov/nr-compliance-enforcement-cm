@@ -2,6 +2,9 @@ import { CaseFileAction } from "../../case_file_action/entities/case_file_action
 import { KeyValuePair } from "./key-value-pair";
 
 export class Assessment {
+  id: string;
+  caseIdentifier: string;
+  agencyCode: string;
   actionNotRequired: boolean;
   actionJustificationCode: string;
   actionJustificationShortDescription: string;

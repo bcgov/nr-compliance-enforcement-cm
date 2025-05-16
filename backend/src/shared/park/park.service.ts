@@ -15,6 +15,27 @@ export class ParkService {
 
   private readonly logger = new Logger(ParkService.name);
 
+  async findByArea(id: String) {
+    const prismaPark = await this.prisma.park.findMany({
+      where: {
+        park_area_xref: {
+          some: {
+            park_area_guid: id as any,
+          },
+        },
+      },
+      select: {
+        park_guid: true,
+        external_id: true,
+        name: true,
+        legal_name: true,
+      },
+      orderBy: { name: "asc" } as any,
+    });
+
+    return this.mapper.mapArray<park, Park>(prismaPark as Array<park>, "park", "Park");
+  }
+
   async find(args: ParkArgs) {
     const query = {
       select: {

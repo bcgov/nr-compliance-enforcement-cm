@@ -1,11 +1,11 @@
-import { AssessmentDetailsInput } from "./assessment-details.input";
+import { AssessmentInput } from "./assessment.input";
 import { UpdateEquipmentDetailsInput } from "./equipment/update-equipment-details.input";
-import { PreventionDetailsInput } from "./prevention-details.input";
+import { PreventionInput } from "./prevention.input";
 
 export class UpdateAssessmentInput {
   caseIdentifier: string;
   leadIdentifier: string;
-  assessmentDetails: AssessmentDetailsInput;
+  assessment: AssessmentInput;
   agencyCode: string;
   caseCode: string;
   updateUserId: string;
@@ -14,7 +14,7 @@ export class UpdateAssessmentInput {
 export class UpdatePreventionInput {
   caseIdentifier: string;
   leadIdentifier: string;
-  preventionDetails: PreventionDetailsInput;
+  prevention: PreventionInput;
   agencyCode: string;
   caseCode: string;
   updateUserId: string;

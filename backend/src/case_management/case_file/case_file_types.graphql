@@ -8,8 +8,8 @@ type KeyValuePair {
 type CaseFile {
   caseIdentifier: String
   leadIdentifier: String
-  assessmentDetails: Assessment
-  preventionDetails: Prevention
+  assessment: [Assessment]
+  prevention: [Prevention]
   notes: [Note]
   equipment: [EquipmentDetails]
   isReviewRequired: Boolean
@@ -20,6 +20,8 @@ type CaseFile {
 }
 
 type Assessment {
+  id: String
+  agencyCode: String
   actionNotRequired: Boolean
   actionJustificationCode: String
   actionJustificationShortDescription: String
@@ -35,6 +37,8 @@ type Assessment {
 }
 
 type Prevention {
+  id: String
+  agencyCode: String
   actions: [CaseFileAction]
 }
 

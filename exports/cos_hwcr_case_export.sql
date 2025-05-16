@@ -5,15 +5,16 @@
 select distinct
 	le.lead_identifier as "Complaint Identifer",
 	case 
-        	when cf.attended_ind is true then 'Yes'
-        	when cf.attended_ind  is false then 'No'
+        	when asm.attended_ind is true then 'Yes'
+        	when asm.attended_ind  is false then 'No'
        		else 'Unknown' 
 	end as "Attended",
 	case 
-        	when cf.action_not_required_ind  is true then 'No'
-        	when cf.action_not_required_ind  is false then 'Yes'
+        	when asm.action_not_required_ind  is true then 'No'
+        	when asm.action_not_required_ind  is false then 'Yes'
        		else 'Unknown' 
 	end as "Action Required",
+	to_char(asd.action_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Vancouver', 'YYYY-MM-DD HH24:MI') as "Assessment Date",
 	wl.species_code as "Outcome Species",
 	case
         when wlh.data_after_executed_operation ->> 'species_code' != wl.species_code THEN 
@@ -22,7 +23,7 @@ select distinct
     END AS "Original Outcome Species",
 	ac.short_description as "Age",
 	hoc.short_description as "Outcome",
-	oat.action_date as "Outcome Date",
+	to_char(oat.action_date AT TIME ZONE 'UTC' AT TIME ZONE 'America/Vancouver', 'YYYY-MM-DD') as "Outcome Date",
 	case
     when wlh.data_after_executed_operation ->> 'hwcr_outcome_code' != wl.hwcr_outcome_code THEN 
 		prv_hoc.short_description
@@ -41,7 +42,23 @@ select distinct
 from
 	case_management.lead le
 left join case_management.case_file cf on
-	cf.case_file_guid = le.case_identifier 
+	cf.case_file_guid = le.case_identifier
+left join case_management.assessment asm on
+    asm.case_file_guid = cf.case_file_guid 
+left join ( -- assessment actions
+	select 
+		action_date, 
+		assessment_guid
+    	from 
+		case_management.action axn
+    	join 
+		case_management.action_type_action_xref atax on atax.action_type_action_xref_guid = axn.action_type_action_xref_guid 
+    	join 
+		case_management.action_code ac2 on ac2.action_code = atax.action_code 
+    	where 
+		ac2.action_code = 'SGHTNGS'  -- Can be anything here since we are just using it as a hook in to get the assessment date
+) asd on
+	asd.assessment_guid = asm.assessment_guid 
 left join case_management.wildlife wl on
 	wl.case_file_guid = cf.case_file_guid and wl.active_ind = true
 left join 
