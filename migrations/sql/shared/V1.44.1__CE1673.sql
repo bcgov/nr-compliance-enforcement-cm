@@ -299,7 +299,19 @@ ON CONFLICT DO NOTHING;
 
 -- Skeena-Nass
 WITH codes AS (
-    SELECT unnest(ARRAY['0386','486-1','486-2','9601-1','9601-2']) AS external_id
+    SELECT unnest(ARRAY['486-1','486-2','9601-1','9601-2']) AS external_id
+)
+INSERT INTO shared.park_area_mapping
+        (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
+SELECT pa.park_area_guid, codes.external_id, user, now(), user, now()
+FROM   shared.park_area pa
+CROSS JOIN codes
+WHERE  pa.name ILIKE 'North Coast'
+ON CONFLICT DO NOTHING;
+
+-- North Coast
+WITH codes AS (
+    SELECT unnest(ARRAY['0386']) AS external_id
 )
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
