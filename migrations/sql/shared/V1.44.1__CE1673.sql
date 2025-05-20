@@ -1,6 +1,6 @@
 -- Arrow
 WITH codes AS (
-    SELECT unnest(ARRAY['10']) AS external_id
+    SELECT unnest(ARRAY['0010']) AS external_id
 )
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
@@ -13,7 +13,7 @@ ON CONFLICT DO NOTHING;
 
 -- Atlin/Tatshenshini
 WITH codes AS (
-    SELECT unnest(ARRAY['523', '525', '568', '593']) AS external_id
+    SELECT unnest(ARRAY['0523', '0525', '0568', '0593']) AS external_id
 )
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
@@ -117,7 +117,7 @@ ON CONFLICT DO NOTHING;
 
 -- Liard
 WITH codes AS (
-    SELECT unnest(ARRAY['254']) AS external_id
+    SELECT unnest(ARRAY['0254']) AS external_id
 )
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
@@ -130,7 +130,7 @@ ON CONFLICT DO NOTHING;
 
 -- Miracle Beach
 WITH codes AS (
-    SELECT unnest(ARRAY['597']) AS external_id
+    SELECT unnest(ARRAY['0597']) AS external_id
 )
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
@@ -143,7 +143,7 @@ ON CONFLICT DO NOTHING;
 
 -- North Chilcotin
 WITH codes AS (
-    SELECT unnest(ARRAY['224', '524']) AS external_id
+    SELECT unnest(ARRAY['0224', '0524']) AS external_id
 )
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
@@ -195,7 +195,7 @@ ON CONFLICT DO NOTHING;
 
 -- Peace
 WITH codes AS (
-    SELECT unnest(ARRAY['521', '9956']) AS external_id
+    SELECT unnest(ARRAY['0521', '9956']) AS external_id
 )
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
@@ -234,7 +234,7 @@ ON CONFLICT DO NOTHING;
 
 -- South Okanagan
 WITH codes AS (
-    SELECT unnest(ARRAY['73', '5019']) AS external_id
+    SELECT unnest(ARRAY['0073', '5019']) AS external_id
 )
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
@@ -247,7 +247,7 @@ ON CONFLICT DO NOTHING;
 
 -- Squamish
 WITH codes AS (
-    SELECT unnest(ARRAY['556']) AS external_id
+    SELECT unnest(ARRAY['0556']) AS external_id
 )
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
@@ -260,7 +260,7 @@ ON CONFLICT DO NOTHING;
 
 -- Strathcona
 WITH codes AS (
-    SELECT unnest(ARRAY['1']) AS external_id
+    SELECT unnest(ARRAY['0001']) AS external_id
 )
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
@@ -273,7 +273,7 @@ ON CONFLICT DO NOTHING;
 
 -- Sunshine Coast
 WITH codes AS (
-    SELECT unnest(ARRAY['227', '303-1', '303-2', '303-4', '303-5', '303-6', '303-8', '333', '95']) AS external_id
+    SELECT unnest(ARRAY['0227', '303-1', '303-2', '303-4', '303-5', '303-6', '303-8', '0333', '0095']) AS external_id
 )
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
@@ -286,7 +286,7 @@ ON CONFLICT DO NOTHING;
 
 -- Tweedsmuir North
 WITH codes AS (
-    SELECT unnest(ARRAY['18']) AS external_id
+    SELECT unnest(ARRAY['0018']) AS external_id
 )
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
@@ -298,7 +298,7 @@ ON CONFLICT DO NOTHING;
 
 -- Skeena West - North Coast
 WITH codes AS (
-    SELECT unnest(ARRAY['386','486-1','486-2','2812735','2812766']) AS external_id
+    SELECT unnest(ARRAY['0386','486-1','486-2','2812735','2812766']) AS external_id
 )
 INSERT INTO shared.park_area_mapping
         (park_area_guid, external_id, create_user_id, create_utc_timestamp, update_user_id, update_utc_timestamp)
