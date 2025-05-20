@@ -297,7 +297,7 @@ WHERE  pa.name ILIKE 'Tweedsmuir North'
 ON CONFLICT DO NOTHING;
 
 
--- Skeena-Nass
+-- North Coast
 WITH codes AS (
     SELECT unnest(ARRAY['486-1','486-2','9601-1','9601-2']) AS external_id
 )
@@ -309,7 +309,8 @@ CROSS JOIN codes
 WHERE  pa.name ILIKE 'North Coast'
 ON CONFLICT DO NOTHING;
 
--- North Coast
+
+-- Skeena-Nass
 WITH codes AS (
     SELECT unnest(ARRAY['0386']) AS external_id
 )
