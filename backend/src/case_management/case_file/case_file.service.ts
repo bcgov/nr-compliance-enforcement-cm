@@ -776,7 +776,9 @@ export class CaseFileService {
                     agency_code: model.agencyCode,
                   },
                 }
-              : undefined,
+              : {
+                  disconnect: true,
+                },
             inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: model.assessment
               .actionJustificationCode
               ? {
