@@ -770,6 +770,13 @@ export class CaseFileService {
         await db.assessment.update({
           where: { assessment_guid: model.assessment.id },
           data: {
+            agency_code: model.agencyCode
+              ? {
+                  connect: {
+                    agency_code: model.agencyCode,
+                  },
+                }
+              : undefined,
             inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: model.assessment
               .actionJustificationCode
               ? {
