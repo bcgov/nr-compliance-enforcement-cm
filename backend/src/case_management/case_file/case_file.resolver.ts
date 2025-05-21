@@ -56,6 +56,12 @@ export class CaseFileResolver {
     return this.caseFileService.findOneByLeadId(leadIdentifier);
   }
 
+  @Query("getCaseFilesByLeadId")
+  @Roles(coreRoles)
+  findManyByLeadId(@Args("leadIdentifiers") leadIdentifiers: string[]) {
+    return this.caseFileService.findManyByLeadId(leadIdentifiers);
+  }
+
   @Query("getCasesFilesBySearchString")
   @Roles(coreRoles)
   findManyBySearchString(@Args("searchString") searchString: string) {
