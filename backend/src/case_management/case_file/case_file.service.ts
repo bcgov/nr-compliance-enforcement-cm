@@ -289,13 +289,16 @@ export class CaseFileService {
   }
 
   findOne = async (id: string): Promise<CaseFile> => {
-    const equipmentDetails = await this.findEquipmentDetails(id);
-    const caseNotes = await this.findCaseNotes(id);
-    const preventions = await this.findPreventions(id);
-    const queryResult = await this.prisma.case_file.findUnique({
-      where: {
-        case_file_guid: id,
-      },
+    const result = await this.find([id]);
+    if (result.length === 0) {
+      throw new GraphQLError("Case file not found", {});
+    }
+    return result[0];
+  };
+
+  find = async (ids: string[]): Promise<CaseFile[]> => {
+    const queryResults = await this.prisma.case_file.findMany({
+      where: { case_file_guid: { in: ids } },
       select: {
         case_file_guid: true,
         review_required_ind: true,
@@ -338,7 +341,6 @@ export class CaseFileService {
               },
             },
           },
-
           orderBy: {
             create_utc_timestamp: "asc",
           },
@@ -371,9 +373,7 @@ export class CaseFileService {
           },
         },
         wildlife: {
-          where: {
-            active_ind: true,
-          },
+          where: { active_ind: true },
           select: {
             wildlife_guid: true,
             species_code: true,
@@ -485,9 +485,7 @@ export class CaseFileService {
           },
         },
         decision: {
-          where: {
-            active_ind: true,
-          },
+          where: { active_ind: true },
           select: {
             decision_guid: true,
             discharge_code_decision_discharge_codeTodischarge_code: {
@@ -556,147 +554,144 @@ export class CaseFileService {
       },
     });
 
-    const { case_file_guid: caseFileId, lead, review_required_ind: isReviewRequired } = queryResult;
+    const results: CaseFile[] = [];
+    for (const queryResult of queryResults) {
+      const { case_file_guid: caseFileId, lead, review_required_ind: isReviewRequired } = queryResult;
 
-    const reviewCompleteAction = await this.caseFileActionService.findActionByCaseIdAndCaseCode(
-      caseFileId,
-      ACTION_CODES.COMPLTREVW,
-    );
-
-    let caseFile: CaseFile = {
-      caseIdentifier: caseFileId,
-      leadIdentifier: lead[0].lead_identifier, //this is okay because there will only be one lead for a case... for now.
-      prevention: preventions,
-      isReviewRequired: isReviewRequired,
-      reviewComplete: reviewCompleteAction ?? null,
-      notes: caseNotes,
-      equipment: equipmentDetails,
-      //-- for now wildlife will populate the subject property
-      //-- though this may not be the case at a later date
-    };
-
-    //-- add the wildlife items to the subject if there
-    //-- are results to add to the casefile
-    if (queryResult.wildlife) {
-      caseFile.subject = await this._getCaseFileSubjects(queryResult);
-    }
-
-    //-- add the assessments if returned in the query result
-    if (queryResult.assessment && queryResult.assessment.length !== 0) {
-      const assessments = await Promise.all(
-        queryResult.assessment.map(async (assessment) => {
-          const {
-            assessment_guid: id,
-            assessed_by_agency_code: agencyCode,
-            inaction_reason_code: actionJustificationCode,
-            inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: reason,
-            action_not_required_ind: actionNotRequired,
-            complainant_contacted_ind: contactedComplainant,
-            attended_ind: attended,
-            case_location_code_assessment_case_location_codeTocase_location_code: locationType,
-            conflict_history_code: conflictHistory,
-            threat_level_code: categoryLevel,
-          } = assessment;
-
-          const actions = await this.caseFileActionService.findActionsByAssessmentIdAndType(
-            id,
-            ACTION_TYPE_CODES.COMPASSESS,
-          );
-
-          const cat1Actions = await this.caseFileActionService.findActionsByAssessmentIdAndType(
-            id,
-            ACTION_TYPE_CODES.CAT1ASSESS,
-          );
-
-          return {
-            id,
-            caseIdentifier: caseFileId,
-            agencyCode,
-            actionNotRequired,
-            actionJustificationCode,
-            actionJustificationShortDescription: reason ? reason.short_description : null,
-            actionJustificationLongDescription: reason ? reason.long_description : null,
-            actionJustificationActiveIndicator: reason ? reason.active_ind : null,
-            actions,
-            cat1Actions,
-            contactedComplainant,
-            attended,
-            conflictHistory: {
-              key: conflictHistory ? conflictHistory.short_description : "",
-              value: conflictHistory ? conflictHistory.conflict_history_code : "",
-            },
-            locationType: {
-              key: locationType ? locationType.short_description : "",
-              value: locationType ? locationType.case_location_code : "",
-            },
-            categoryLevel: {
-              key: categoryLevel ? categoryLevel.short_description : "",
-              value: categoryLevel ? categoryLevel.threat_level_code : "",
-            },
-          };
-        }),
-      );
-      caseFile.assessment = assessments;
-    }
-
-    //-- add the decision if its returned in the query result
-    if (queryResult.decision && queryResult.decision.length !== 0) {
-      const { decision } = queryResult;
-
-      const action = await this.caseFileActionService.findActiveActionsByCaseIdAndType(
+      const equipmentDetails = await this.findEquipmentDetails(caseFileId);
+      const caseNotes = await this.findCaseNotes(caseFileId);
+      const preventions = await this.findPreventions(caseFileId);
+      const reviewCompleteAction = await this.caseFileActionService.findActionByCaseIdAndCaseCode(
         caseFileId,
-        ACTION_TYPE_CODES.CEEBACTION,
+        ACTION_CODES.COMPLTREVW,
       );
 
-      let record: Decision = {
-        id: decision[0].decision_guid,
-        schedule:
-          decision[0].schedule_sector_xref.schedule_code_schedule_sector_xref_schedule_codeToschedule_code
-            .schedule_code,
-        scheduleLongDescription:
-          decision[0].schedule_sector_xref.schedule_code_schedule_sector_xref_schedule_codeToschedule_code
-            .long_description,
-        sector: decision[0].schedule_sector_xref.sector_code_schedule_sector_xref_sector_codeTosector_code.sector_code,
-        sectorLongDescription:
-          decision[0].schedule_sector_xref.sector_code_schedule_sector_xref_sector_codeTosector_code.long_description,
-        discharge: decision[0].discharge_code_decision_discharge_codeTodischarge_code.discharge_code,
-        dischargeLongDescription: decision[0].discharge_code_decision_discharge_codeTodischarge_code.long_description,
-        nonCompliance:
-          decision[0]
-            ?.non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code
-            ?.non_compliance_decision_matrix_code,
-        nonComplianceLongDescription:
-          decision[0]
-            ?.non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code
-            ?.long_description,
-        ipmAuthCategory:
-          decision[0]?.ipm_auth_category_code_decision_ipm_auth_category_codeToipm_auth_category_code
-            ?.ipm_auth_category_code,
-        ipmAuthCategoryLongDescription:
-          decision[0]?.ipm_auth_category_code_decision_ipm_auth_category_codeToipm_auth_category_code?.long_description,
-        rationale: decision[0]?.rationale_text,
-        assignedTo: action[0]?.actor,
-        actionTaken: action[0]?.actionCode,
-        actionTakenLongDescription: action[0]?.longDescription,
-        actionTakenDate: action[0]?.date,
+      let caseFile: CaseFile = {
+        caseIdentifier: caseFileId,
+        leadIdentifier: lead[0]?.lead_identifier ?? "",
+        prevention: preventions,
+        isReviewRequired: isReviewRequired,
+        reviewComplete: reviewCompleteAction ?? null,
+        notes: caseNotes,
+        equipment: equipmentDetails,
       };
 
-      if (decision[0].inspection_number) {
-        record = { ...record, inspectionNumber: decision[0].inspection_number.toString() };
-      }
-      if (decision[0].agency_code) {
-        record = { ...record, leadAgency: decision[0].agency_code.agency_code };
-        record = { ...record, leadAgencyLongDescription: decision[0].agency_code.long_description };
+      if (queryResult.wildlife) {
+        caseFile.subject = await this._getCaseFileSubjects(queryResult);
       }
 
-      caseFile.decision = record;
+      if (queryResult.assessment && queryResult.assessment.length !== 0) {
+        const assessments = await Promise.all(
+          queryResult.assessment.map(async (assessment) => {
+            const {
+              assessment_guid: id,
+              assessed_by_agency_code: agencyCode,
+              inaction_reason_code: actionJustificationCode,
+              inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: reason,
+              action_not_required_ind: actionNotRequired,
+              complainant_contacted_ind: contactedComplainant,
+              attended_ind: attended,
+              case_location_code_assessment_case_location_codeTocase_location_code: locationType,
+              conflict_history_code: conflictHistory,
+              threat_level_code: categoryLevel,
+            } = assessment;
+
+            const actions = await this.caseFileActionService.findActionsByAssessmentIdAndType(
+              id,
+              ACTION_TYPE_CODES.COMPASSESS,
+            );
+            const cat1Actions = await this.caseFileActionService.findActionsByAssessmentIdAndType(
+              id,
+              ACTION_TYPE_CODES.CAT1ASSESS,
+            );
+
+            return {
+              id,
+              caseIdentifier: caseFileId,
+              agencyCode,
+              actionNotRequired,
+              actionJustificationCode,
+              actionJustificationShortDescription: reason?.short_description ?? null,
+              actionJustificationLongDescription: reason?.long_description ?? null,
+              actionJustificationActiveIndicator: reason?.active_ind ?? null,
+              actions,
+              cat1Actions,
+              contactedComplainant,
+              attended,
+              conflictHistory: {
+                key: conflictHistory?.short_description ?? "",
+                value: conflictHistory?.conflict_history_code ?? "",
+              },
+              locationType: {
+                key: locationType?.short_description ?? "",
+                value: locationType?.case_location_code ?? "",
+              },
+              categoryLevel: {
+                key: categoryLevel?.short_description ?? "",
+                value: categoryLevel?.threat_level_code ?? "",
+              },
+            };
+          }),
+        );
+        caseFile.assessment = assessments;
+      }
+
+      if (queryResult.decision && queryResult.decision.length !== 0) {
+        const { decision } = queryResult;
+        const action = await this.caseFileActionService.findActiveActionsByCaseIdAndType(
+          caseFileId,
+          ACTION_TYPE_CODES.CEEBACTION,
+        );
+
+        let record: Decision = {
+          id: decision[0].decision_guid,
+          schedule:
+            decision[0].schedule_sector_xref.schedule_code_schedule_sector_xref_schedule_codeToschedule_code
+              .schedule_code,
+          scheduleLongDescription:
+            decision[0].schedule_sector_xref.schedule_code_schedule_sector_xref_schedule_codeToschedule_code
+              .long_description,
+          sector:
+            decision[0].schedule_sector_xref.sector_code_schedule_sector_xref_sector_codeTosector_code.sector_code,
+          sectorLongDescription:
+            decision[0].schedule_sector_xref.sector_code_schedule_sector_xref_sector_codeTosector_code.long_description,
+          discharge: decision[0].discharge_code_decision_discharge_codeTodischarge_code.discharge_code,
+          dischargeLongDescription: decision[0].discharge_code_decision_discharge_codeTodischarge_code.long_description,
+          nonCompliance:
+            decision[0]
+              ?.non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code
+              ?.non_compliance_decision_matrix_code,
+          nonComplianceLongDescription:
+            decision[0]
+              ?.non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code
+              ?.long_description,
+          ipmAuthCategory:
+            decision[0]?.ipm_auth_category_code_decision_ipm_auth_category_codeToipm_auth_category_code
+              ?.ipm_auth_category_code,
+          ipmAuthCategoryLongDescription:
+            decision[0]?.ipm_auth_category_code_decision_ipm_auth_category_codeToipm_auth_category_code
+              ?.long_description,
+          rationale: decision[0]?.rationale_text,
+          assignedTo: action[0]?.actor,
+          actionTaken: action[0]?.actionCode,
+          actionTakenLongDescription: action[0]?.longDescription,
+          actionTakenDate: action[0]?.date,
+        };
+
+        if (decision[0].inspection_number) {
+          record = { ...record, inspectionNumber: decision[0].inspection_number.toString() };
+        }
+        if (decision[0].agency_code) {
+          record = { ...record, leadAgency: decision[0].agency_code.agency_code };
+          record = { ...record, leadAgencyLongDescription: decision[0].agency_code.long_description };
+        }
+        caseFile.decision = record;
+      }
+
+      caseFile.authorization = this._getAuthorizationOutcome(queryResult as AuthorizationOutcomeSearchResults);
+      results.push(caseFile);
     }
-
-    //-- add the authorization if there's either authorized_permit or site
-    //-- but there can be only one
-    caseFile.authorization = this._getAuthorizationOutcome(queryResult as AuthorizationOutcomeSearchResults);
-
-    return caseFile;
+    return results;
   };
 
   async findOneByLeadId(leadIdentifier: string) {
@@ -714,6 +709,25 @@ export class CaseFileService {
     }
 
     return caseFileOutput;
+  }
+
+  async findManyByLeadId(leadIdentifier: string[]) {
+    let caseFileOutput: CaseFile[];
+    const caseIdRecords = await this.prisma.lead.findMany({
+      where: {
+        lead_identifier: {
+          in: leadIdentifier,
+        },
+      },
+      select: {
+        case_identifier: true,
+      },
+    });
+    const caseFileIds = caseIdRecords.map((caseIdRecord) => caseIdRecord.case_identifier);
+    if (caseFileIds.length > 0) {
+      caseFileOutput = await this.find(caseFileIds);
+    }
+    return caseFileOutput ?? [];
   }
 
   async findManyBySearchString(searchString: string) {
