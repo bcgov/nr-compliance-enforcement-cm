@@ -784,6 +784,13 @@ export class CaseFileService {
         await db.assessment.update({
           where: { assessment_guid: model.assessment.id },
           data: {
+            ...(model.agencyCode && {
+              agency_code: {
+                connect: {
+                  agency_code: model.agencyCode,
+                },
+              },
+            }),
             inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: model.assessment
               .actionJustificationCode
               ? {
@@ -791,7 +798,9 @@ export class CaseFileService {
                     inaction_reason_code: model.assessment.actionJustificationCode,
                   },
                 }
-              : undefined,
+              : {
+                  disconnect: true,
+                },
             action_not_required_ind: model.assessment.actionNotRequired,
             complainant_contacted_ind: model.assessment.contactedComplainant,
             attended_ind: model.assessment.attended,
@@ -801,7 +810,9 @@ export class CaseFileService {
                     case_location_code: model.assessment.locationType.value,
                   },
                 }
-              : undefined,
+              : {
+                  disconnect: true,
+                },
             conflict_history_code: model.assessment.conflictHistory
               ? {
                   connect: {
