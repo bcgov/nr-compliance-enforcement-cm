@@ -4,4 +4,5 @@ export class DeleteNoteInput {
   updateUserId: string;
   actor: string;
   actionId: string;
+  agencyCode: string;
 }
