@@ -45,6 +45,7 @@ type Prevention {
 type Note {
   id: String
   note: String
+  agencyCode: String
   actions: [CaseFileAction]
 }
 

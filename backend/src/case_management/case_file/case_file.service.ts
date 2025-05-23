@@ -1385,6 +1385,7 @@ export class CaseFileService {
         case_note: true,
         update_user_id: true,
         update_utc_timestamp: true,
+        agency_code: true,
         action: {
           select: {
             action_guid: true,
@@ -1419,6 +1420,7 @@ export class CaseFileService {
       return {
         id: note.case_note_guid,
         note: note.case_note,
+        agencyCode: note.agency_code,
         actions: note.action.map((action) => {
           return {
             actionId: action.action_guid,
@@ -1447,7 +1449,7 @@ export class CaseFileService {
       let result: CaseFile;
 
       await this.prisma.$transaction(async (db) => {
-        const { leadIdentifier, note, createUserId, actor } = model;
+        const { leadIdentifier, note, createUserId, actor, agencyCode } = model;
         const caseFile = await this.findOneByLeadId(leadIdentifier);
 
         if (caseFile && caseFile?.caseIdentifier) {
@@ -1457,7 +1459,7 @@ export class CaseFileService {
           caseIdentifier = await this.createCase(db, caseInput);
         }
 
-        await this._upsertNote(db, caseIdentifier, note, actor, createUserId);
+        await this._upsertNote(db, caseIdentifier, note, actor, createUserId, agencyCode);
       });
 
       result = await this.findOne(caseIdentifier);
@@ -1476,7 +1478,7 @@ export class CaseFileService {
       let result: CaseFile;
 
       await this.prisma.$transaction(async (db) => {
-        await this._upsertNote(db, caseIdentifier, note, actor, updateUserId, id);
+        await this._upsertNote(db, caseIdentifier, note, actor, updateUserId, null, id);
 
         // Return updated case, not just the note
         result = await this.findOne(caseIdentifier);
@@ -1498,6 +1500,7 @@ export class CaseFileService {
     note: string,
     actor: string,
     userId: string,
+    agencyCode: string,
     id: string = "",
   ): Promise<string> => {
     const _getNoteActionXref = async (): Promise<string> => {
@@ -1528,6 +1531,7 @@ export class CaseFileService {
             create_utc_timestamp: current,
             update_user_id: userId,
             update_utc_timestamp: current,
+            agency_code: agencyCode,
           },
         });
         id = case_note.case_note_guid;
