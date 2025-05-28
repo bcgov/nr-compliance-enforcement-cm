@@ -2,8 +2,7 @@
 -- Monthly HWCR Case Export query to be run for COS statistics
 -- see https://github.com/bcgov/nr-compliance-enforcement-cm/wiki/Data-Exports for more information
 -----------------------------------------------------
-select distinct
-	le.lead_identifier as "Complaint Identifer",
+select le.lead_identifier as "Complaint Identifer",
 	case 
         	when asm.attended_ind is true then 'Yes'
         	when asm.attended_ind  is false then 'No'
@@ -37,8 +36,7 @@ select distinct
 	case 
 		when pat.prev_count >= 1 then 'Yes'
 		else 'No' 
-	end as "Advice Provided",
-	cn.case_note 
+	end as "Advice Provided"
 from
 	case_management.lead le
 left join case_management.case_file cf on
@@ -121,7 +119,6 @@ left join ( -- Advide Provided
 		case_guid
 ) pat on 
 	pat.case_guid = cf.case_file_guid
-left join case_management.case_note cn on cn.case_file_guid = cf.case_file_guid and cn.active_ind = true
   where cf.owned_by_agency_code  = 'COS' and cf.case_code in ('HWCR', 'ERS')
 	order by 
 	le.lead_identifier asc
