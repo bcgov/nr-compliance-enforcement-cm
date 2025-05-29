@@ -4,4 +4,5 @@ export class Note {
   id: string;
   note: string;
   actions: CaseFileAction[];
+  agencyCode: string;
 }

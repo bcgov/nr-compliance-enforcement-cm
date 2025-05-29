@@ -5,4 +5,5 @@ export class UpdateNoteInput {
   actor: string;
   note: string;
   actionId: string;
+  agencyCode: string;
 }
