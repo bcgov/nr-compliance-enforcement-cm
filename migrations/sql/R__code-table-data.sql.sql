@@ -6326,6 +6326,7 @@ VALUES
     CURRENT_TIMESTAMP
   ) ON CONFLICT DO NOTHING;
 
+-- Update display order to alphabetical order in schedule_code
 UPDATE case_management.schedule_code
 SET
   display_order = 10
@@ -6355,6 +6356,91 @@ SET
   display_order = 50
 WHERE
   schedule_code = 'WDR2';
+
+INSERT INTO
+  case_management.schedule_sector_xref (
+    schedule_sector_xref_guid,
+    schedule_code,
+    sector_code,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+VALUES
+  (
+    uuid_generate_v4 (),
+    'RECYCLING',
+    'NONE',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
+
+INSERT INTO
+  case_management.discharge_code (
+    discharge_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+VALUES
+  (
+    'NONE',
+    'NONE',
+    'None',
+    90,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
+
+-- Update display order to alphabetical order in discharge_code
+UPDATE case_management.discharge_code
+SET
+  display_order = 20
+WHERE
+  discharge_code = 'AIR_DST';
+
+UPDATE case_management.discharge_code
+SET
+  display_order = 40
+WHERE
+  discharge_code = 'AIR_ODOUR';
+
+UPDATE case_management.discharge_code
+SET
+  display_order = 60
+WHERE
+  discharge_code = 'NONE';
+
+UPDATE case_management.discharge_code
+SET
+  display_order = 70
+WHERE
+  discharge_code = 'PSTCD';
+
+UPDATE case_management.discharge_code
+SET
+  display_order = 80
+WHERE
+  discharge_code = 'RFS_DMP';
+
+UPDATE case_management.discharge_code
+SET
+  display_order = 90
+WHERE
+  discharge_code = 'RFS_OTHR';
 
 --------------------------
 -- New Changes above this line
