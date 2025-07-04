@@ -6405,7 +6405,13 @@ VALUES
     CURRENT_TIMESTAMP
   ) ON CONFLICT DO NOTHING;
 
--- Update display order to alphabetical order in discharge_code
+-- Update display order to alphabetical order in discharge_code with the exception of None being at the top
+UPDATE case_management.discharge_code
+SET
+  display_order = 5
+WHERE
+  discharge_code = 'NONE';
+
 UPDATE case_management.discharge_code
 SET
   display_order = 20
@@ -6417,12 +6423,6 @@ SET
   display_order = 40
 WHERE
   discharge_code = 'AIR_ODOUR';
-
-UPDATE case_management.discharge_code
-SET
-  display_order = 60
-WHERE
-  discharge_code = 'NONE';
 
 UPDATE case_management.discharge_code
 SET
