@@ -957,6 +957,7 @@ export class CaseFileService {
             active_ind: true,
             action_type_action_xref: {
               select: {
+                display_order: true,
                 action_code_action_type_action_xref_action_codeToaction_code: {
                   select: {
                     action_code: true,
@@ -983,22 +984,26 @@ export class CaseFileService {
       return {
         id: prevention.prevention_education_guid,
         agencyCode: prevention.agency_code,
-        actions: prevention.action.map((action) => {
-          return {
-            actionId: action.action_guid,
-            actor: action.actor_guid,
-            date: action.action_date,
-            activeIndicator: action.active_ind,
-            actionCode:
-              action.action_type_action_xref.action_code_action_type_action_xref_action_codeToaction_code.action_code,
-            shortDescription:
-              action.action_type_action_xref.action_code_action_type_action_xref_action_codeToaction_code
-                .short_description,
-            longDescription:
-              action.action_type_action_xref.action_code_action_type_action_xref_action_codeToaction_code
-                .long_description,
-          };
-        }),
+        actions: prevention.action
+          .sort(
+            (left, right) => left.action_type_action_xref.display_order - right.action_type_action_xref.display_order,
+          )
+          .map((action) => {
+            return {
+              actionId: action.action_guid,
+              actor: action.actor_guid,
+              date: action.action_date,
+              activeIndicator: action.active_ind,
+              actionCode:
+                action.action_type_action_xref.action_code_action_type_action_xref_action_codeToaction_code.action_code,
+              shortDescription:
+                action.action_type_action_xref.action_code_action_type_action_xref_action_codeToaction_code
+                  .short_description,
+              longDescription:
+                action.action_type_action_xref.action_code_action_type_action_xref_action_codeToaction_code
+                  .long_description,
+            };
+          }),
       };
     });
     return preventions;
