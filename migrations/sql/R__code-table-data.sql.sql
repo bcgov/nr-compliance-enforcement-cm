@@ -5514,7 +5514,7 @@ insert into
     update_user_id,
     update_utc_timestamp
   )
---     BC Parks, COS, First Nations, Other, Police, Public
+  --     BC Parks, COS, First Nations, Other, Police, Public
 values
   (
     'COS',
@@ -6140,12 +6140,13 @@ VALUES
 --------------------------
 -- CE-1579 Update Mandate Wording and alphabetize by adding display order
 -------------------------
-update case_management.inaction_reason_code 
-  SET short_description = 'Outside mandate',
+update case_management.inaction_reason_code
+SET
+  short_description = 'Outside mandate',
   long_description = 'Outside mandate',
   display_order = '40'
-WHERE inaction_reason_code = 'OUTSDCOSMT';
-
+WHERE
+  inaction_reason_code = 'OUTSDCOSMT';
 
 -------------------------
 -- CE-1573 Add actioned by for applicable HWC outcomes
@@ -6153,7 +6154,6 @@ WHERE inaction_reason_code = 'OUTSDCOSMT';
 -- Update existing euthenized by... and dispatched by... codes to use the new codes and specify who it was actioned by
 -- Set the affected HWCR outcome codes to inactive
 -------------------------
-
 insert into
   hwcr_outcome_code (
     hwcr_outcome_code,
@@ -6226,30 +6226,221 @@ set
 where
   hwcr_outcome_code in ('EUTHCOS', 'EUTHOTH', 'DESTRYCOS', 'DESTRYOTH');
 
-
-
 ------------------------
 -- CE-1574 Parks Specific Prevention and Education Options
 ------------------------
-insert into	case_management.action_type_code 
-    (action_type_code, short_description, long_description, active_ind, create_user_id, create_utc_timestamp)
-values 
-    ('PRKPRV&EDU', 'Prevention and Education', 'Prevention and Education', 'Y', CURRENT_USER, CURRENT_TIMESTAMP) 
-on conflict do nothing;
+insert into
+  case_management.action_type_code (
+    action_type_code,
+    short_description,
+    long_description,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'PRKPRV&EDU',
+    'Prevention and Education',
+    'Prevention and Education',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
 
-insert into	case_management.action_type_action_xref 
-    (action_type_code, action_code, display_order, active_ind, create_user_id, create_utc_timestamp)
-values 
-    ('PRKPRV&EDU', 'PROVSFTYIN', 10, 'Y', CURRENT_USER, CURRENT_TIMESTAMP), 
-    ('PRKPRV&EDU', 'PROVAMHSIN', 20, 'Y', CURRENT_USER, CURRENT_TIMESTAMP), 
-    ('PRKPRV&EDU', 'CNTCTBIOVT', 30, 'Y', CURRENT_USER, CURRENT_TIMESTAMP), 
-    ('PRKPRV&EDU', 'CNTCTGROUP', 40, 'Y', CURRENT_USER, CURRENT_TIMESTAMP)
-on conflict do nothing;
+insert into
+  case_management.action_type_action_xref (
+    action_type_code,
+    action_code,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+values
+  (
+    'PRKPRV&EDU',
+    'PROVSFTYIN',
+    10,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'PRKPRV&EDU',
+    'PROVAMHSIN',
+    20,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'PRKPRV&EDU',
+    'CNTCTBIOVT',
+    30,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'PRKPRV&EDU',
+    'CNTCTGROUP',
+    40,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) on conflict do nothing;
 
 update case_management.action_code
-set short_description = 'Provided advice, attractant management and/or husbandry information',
-    long_description = 'Provided advice, attractant management and/or husbandry information'
-where action_code = 'PROVAMHSIN';
+set
+  short_description = 'Provided advice, attractant management and/or husbandry information',
+  long_description = 'Provided advice, attractant management and/or husbandry information'
+where
+  action_code = 'PROVAMHSIN';
+
+------------------------
+-- CE-1742 Add Recycling option in CEEB schedule_code and update display order
+------------------------
+INSERT INTO
+  case_management.schedule_code (
+    schedule_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+VALUES
+  (
+    'RECYCLING',
+    'Recycling',
+    'Recycling',
+    50,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
+
+-- Update display order to alphabetical order in schedule_code
+UPDATE case_management.schedule_code
+SET
+  display_order = 10
+WHERE
+  schedule_code = 'IPM';
+
+UPDATE case_management.schedule_code
+SET
+  display_order = 20
+WHERE
+  schedule_code = 'OTHER';
+
+UPDATE case_management.schedule_code
+SET
+  display_order = 30
+WHERE
+  schedule_code = 'RECYCLING';
+
+UPDATE case_management.schedule_code
+SET
+  display_order = 40
+WHERE
+  schedule_code = 'WDR1';
+
+UPDATE case_management.schedule_code
+SET
+  display_order = 50
+WHERE
+  schedule_code = 'WDR2';
+
+INSERT INTO
+  case_management.schedule_sector_xref (
+    schedule_sector_xref_guid,
+    schedule_code,
+    sector_code,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+VALUES
+  (
+    uuid_generate_v4 (),
+    'RECYCLING',
+    'NONE',
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
+
+INSERT INTO
+  case_management.discharge_code (
+    discharge_code,
+    short_description,
+    long_description,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp,
+    update_user_id,
+    update_utc_timestamp
+  )
+VALUES
+  (
+    'NONE',
+    'NONE',
+    'None',
+    90,
+    'Y',
+    CURRENT_USER,
+    CURRENT_TIMESTAMP,
+    CURRENT_USER,
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
+
+-- Update display order to alphabetical order in discharge_code with the exception of None being at the top
+UPDATE case_management.discharge_code
+SET
+  display_order = 5
+WHERE
+  discharge_code = 'NONE';
+
+UPDATE case_management.discharge_code
+SET
+  display_order = 20
+WHERE
+  discharge_code = 'AIR_DST';
+
+UPDATE case_management.discharge_code
+SET
+  display_order = 40
+WHERE
+  discharge_code = 'AIR_ODOUR';
+
+UPDATE case_management.discharge_code
+SET
+  display_order = 70
+WHERE
+  discharge_code = 'PSTCD';
+
+UPDATE case_management.discharge_code
+SET
+  display_order = 80
+WHERE
+  discharge_code = 'RFS_DMP';
+
+UPDATE case_management.discharge_code
+SET
+  display_order = 90
+WHERE
+  discharge_code = 'RFS_OTHR';
 
 
 ------------------------
