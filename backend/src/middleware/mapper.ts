@@ -4,6 +4,7 @@ import { mapPrismaPersonToPerson } from "../shared/person/dto/person";
 import { mapPrismaParkToPark } from "../shared/park/dto/park";
 import { mapPrismaParkAreaToParkArea } from "../shared/park/dto/park_area";
 import { mapPrismaParkAreaMappingToParkAreaMapping } from "../shared/park/dto/park_area_mapping";
+import { mapPrismaAgencyCodeToAgencyCode } from "../shared/agency_code/dto/agency_code";
 
 export const initializeMappings = (mapper: Mapper) => {
   mapPrismaContactMethodToContactMethod(mapper);
@@ -11,4 +12,5 @@ export const initializeMappings = (mapper: Mapper) => {
   mapPrismaParkToPark(mapper);
   mapPrismaParkAreaToParkArea(mapper);
   mapPrismaParkAreaMappingToParkAreaMapping(mapper);
+  mapPrismaAgencyCodeToAgencyCode(mapper);
 };

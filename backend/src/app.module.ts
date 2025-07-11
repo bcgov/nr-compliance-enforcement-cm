@@ -38,6 +38,7 @@ import { CaseLocationCodeModule } from "./case_management/code-tables/case_locat
 import { IpmAuthCategoryCodeModule } from "./case_management/ipm_auth_category_code/ipm_auth_category_code.module";
 import { PersonModule } from "./shared/person/person.module";
 import { ParkModule } from "./shared/park/park.module";
+import { AgencyMomsSpaghettiCodeModule } from "./shared/agency_code/agency_code.module";
 import { AutomapperModule, InjectMapper } from "@automapper/nestjs";
 import { pojos } from "@automapper/pojos";
 import { Mapper } from "@automapper/core";
@@ -87,6 +88,7 @@ import { ImportCommand } from "./app.commands";
     PersonModule,
     ParkModule,
     EquipmentStatusCodeModule,
+    AgencyMomsSpaghettiCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService, ImportCommand, DateScalar],
