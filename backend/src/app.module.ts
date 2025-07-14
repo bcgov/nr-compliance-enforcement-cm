@@ -45,6 +45,7 @@ import { Mapper } from "@automapper/core";
 import { initializeMappings } from "./middleware/mapper";
 import { EquipmentStatusCodeModule } from "src/case_management/equipment_status_code/equipment_status_code.module";
 import { ImportCommand } from "./app.commands";
+import { CaseMomsSpaghettiFileModule } from "./shared/case_file/case_file.module";
 
 @Module({
   imports: [
@@ -89,6 +90,7 @@ import { ImportCommand } from "./app.commands";
     ParkModule,
     EquipmentStatusCodeModule,
     AgencyMomsSpaghettiCodeModule,
+    CaseMomsSpaghettiFileModule,
   ],
   controllers: [AppController],
   providers: [AppService, ImportCommand, DateScalar],
