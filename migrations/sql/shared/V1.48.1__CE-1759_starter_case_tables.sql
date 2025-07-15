@@ -75,7 +75,6 @@ COMMENT ON COLUMN shared.case_activity_type_code.create_utc_timestamp IS 'The ti
 COMMENT ON COLUMN shared.case_activity_type_code.update_user_id IS 'The id of the user that updated the case activity.';
 COMMENT ON COLUMN shared.case_activity_type_code.update_utc_timestamp IS 'The timestamp when the case activity was updated. The timestamp is stored in UTC with no offset.';
 
-
 -- Create CASE_FILE table
 CREATE TABLE shared.case_file (
     case_file_guid UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -100,6 +99,31 @@ COMMENT ON COLUMN shared.case_file.create_user_id IS 'The id of the user that cr
 COMMENT ON COLUMN shared.case_file.create_utc_timestamp IS 'The timestamp when the case file was created. The timestamp is stored in UTC with no offset.';
 COMMENT ON COLUMN shared.case_file.update_user_id IS 'The id of the user that updated the case file.';
 COMMENT ON COLUMN shared.case_file.update_utc_timestamp IS 'The timestamp when the case file was updated. The timestamp is stored in UTC with no offset.';
+
+-- CASE_FILE HISTORY
+CREATE TABLE
+  shared.case_file_h (
+    h_case_file_guid uuid NOT NULL DEFAULT uuid_generate_v4 () PRIMARY KEY,
+    target_row_id uuid NOT NULL,
+    operation_type char(1) NOT NULL,
+    operation_user_id varchar(32) NOT NULL DEFAULT current_user,
+    operation_executed_at timestamp NOT NULL DEFAULT now (),
+    data_after_executed_operation jsonb
+  );
+
+CREATE
+or REPLACE TRIGGER case_file_h_trigger BEFORE INSERT
+OR DELETE
+OR
+UPDATE ON shared.case_file FOR EACH ROW EXECUTE PROCEDURE shared.audit_history ('case_file_h', 'case_file_guid');
+
+COMMENT on table shared.case_file_h is 'History table for case file table';
+COMMENT on column shared.case_file_h.h_case_file_guid is 'System generated unique key for case file history. This key should never be exposed to users via any system utilizing the tables.';
+COMMENT on column shared.case_file_h.target_row_id is 'The unique key for the case file that has been created or modified.';
+COMMENT on column shared.case_file_h.operation_type is 'The operation performed: I = Insert, U = Update, D = Delete';
+COMMENT on column shared.case_file_h.operation_user_id is 'The id of the user that created or modified the data in the case file table.  Defaults to the logged in user if not passed in by the application.';
+COMMENT on column shared.case_file_h.operation_executed_at is 'The timestamp when the data in the case file table was created or modified.  The timestamp is stored in UTC with no Offset.';
+COMMENT on column shared.case_file_h.data_after_executed_operation is 'A JSON representation of the row in the table after the operation was completed successfully.   This implies that the latest row in the audit table will always match with the current row in the live table.';
 
 
 -- Create CASE_ACTIVITY table
@@ -130,6 +154,31 @@ COMMENT ON COLUMN shared.case_activity.create_user_id IS 'The id of the user tha
 COMMENT ON COLUMN shared.case_activity.create_utc_timestamp IS 'The timestamp when the case activity record was created. The timestamp is stored in UTC with no offset.';
 COMMENT ON COLUMN shared.case_activity.update_user_id IS 'The id of the user that updated the case activity record.';
 COMMENT ON COLUMN shared.case_activity.update_utc_timestamp IS 'The timestamp when the case activity record was updated. The timestamp is stored in UTC with no offset.';
+
+-- CASE_ACTIVITY HISTORY
+CREATE TABLE
+  shared.case_activity_h (
+    h_case_activity_guid uuid NOT NULL DEFAULT uuid_generate_v4 () PRIMARY KEY,
+    target_row_id uuid NOT NULL,
+    operation_type char(1) NOT NULL,
+    operation_user_id varchar(32) NOT NULL DEFAULT current_user,
+    operation_executed_at timestamp NOT NULL DEFAULT now (),
+    data_after_executed_operation jsonb
+  );
+
+CREATE
+or REPLACE TRIGGER case_activity_h_trigger BEFORE INSERT
+OR DELETE
+OR
+UPDATE ON shared.case_activity FOR EACH ROW EXECUTE PROCEDURE shared.audit_history ('case_activity_h', 'case_activity_guid');
+
+COMMENT on table shared.case_activity_h is 'History table for case activity table';
+COMMENT on column shared.case_activity_h.h_case_activity_guid is 'System generated unique key for case activity history. This key should never be exposed to users via any system utilizing the tables.';
+COMMENT on column shared.case_activity_h.target_row_id is 'The unique key for the case activity that has been created or modified.';
+COMMENT on column shared.case_activity_h.operation_type is 'The operation performed: I = Insert, U = Update, D = Delete';
+COMMENT on column shared.case_activity_h.operation_user_id is 'The id of the user that created or modified the data in the case activity table.  Defaults to the logged in user if not passed in by the application.';
+COMMENT on column shared.case_activity_h.operation_executed_at is 'The timestamp when the data in the case activity table was created or modified.  The timestamp is stored in UTC with no Offset.';
+COMMENT on column shared.case_activity_h.data_after_executed_operation is 'A JSON representation of the row in the table after the operation was completed successfully.   This implies that the latest row in the audit table will always match with the current row in the live table.';
 
 -- Clean up old objects
 DROP TABLE IF EXISTS shared.temp_poc;
