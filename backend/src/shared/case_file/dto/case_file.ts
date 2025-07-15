@@ -31,13 +31,7 @@ export const mapPrismaCaseFileToCaseFile = (mapper: Mapper) => {
     ),
     forMember(
       (dest) => dest.caseStatus,
-      mapFrom((src) =>
-        mapper.map(
-          src.case_status_code_case_file_case_status_codeTocase_status_code,
-          "case_status_code",
-          "CaseStatusCode",
-        ),
-      ),
+      mapFrom((src) => mapper.map(src.case_status_code, "case_status_code", "CaseStatusCode")),
     ),
     forMember(
       (dest) => dest.caseActivities,

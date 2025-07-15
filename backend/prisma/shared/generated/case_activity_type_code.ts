@@ -30,5 +30,5 @@ export class case_activity_type_code {
   update_utc_timestamp?: Date;
 
   @ApiProperty({ isArray: true, type: () => case_activity })
-  case_activity_case_activity_case_activity_type_codeTocase_activity_type_code: case_activity[];
+  case_activity: case_activity[];
 }

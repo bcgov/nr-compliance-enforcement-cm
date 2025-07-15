@@ -26,7 +26,7 @@ export const mapPrismaCaseActivityToCaseActivity = (mapper: Mapper) => {
     ),
     forMember(
       (dest) => dest.caseActivityIdentifier,
-      mapFrom((src) => src.case_activity_identifier),
+      mapFrom((src) => src.case_activity_identifier_ref),
     ),
     forMember(
       (dest) => dest.effectiveDate,
@@ -38,13 +38,7 @@ export const mapPrismaCaseActivityToCaseActivity = (mapper: Mapper) => {
     ),
     forMember(
       (dest) => dest.caseActivityType,
-      mapFrom((src) =>
-        mapper.map(
-          src.case_activity_type_code_case_activity_case_activity_type_codeTocase_activity_type_code,
-          "case_activity_type_code",
-          "CaseActivityTypeCode",
-        ),
-      ),
+      mapFrom((src) => mapper.map(src.case_activity_type_code, "case_activity_type_code", "CaseActivityTypeCode")),
     ),
   );
 };

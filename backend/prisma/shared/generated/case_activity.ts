@@ -10,10 +10,10 @@ export class case_activity {
   case_file_guid: string;
 
   @ApiProperty({ type: String })
-  case_activity_type_code: string;
+  case_activity_type: string;
 
   @ApiProperty({ type: String })
-  case_activity_identifier: string;
+  case_activity_identifier_ref: string;
 
   @ApiProperty({ type: Date })
   effective_utc_timestamp: Date;
@@ -34,7 +34,7 @@ export class case_activity {
   update_utc_timestamp?: Date;
 
   @ApiProperty({ type: () => case_activity_type_code })
-  case_activity_type_code_case_activity_case_activity_type_codeTocase_activity_type_code: case_activity_type_code;
+  case_activity_type_code: case_activity_type_code;
 
   @ApiProperty({ type: () => case_file })
   case_file: case_file;

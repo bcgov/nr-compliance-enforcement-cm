@@ -21,10 +21,10 @@ export class CaseFileService {
       },
       include: {
         agency_code: true,
-        case_status_code_case_file_case_status_codeTocase_status_code: true,
+        case_status_code: true,
         case_activity: {
           include: {
-            case_activity_type_code_case_activity_case_activity_type_codeTocase_activity_type_code: true,
+            case_activity_type_code: true,
           },
         },
       },

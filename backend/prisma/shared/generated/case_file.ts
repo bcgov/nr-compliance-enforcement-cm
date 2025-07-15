@@ -8,10 +8,10 @@ export class case_file {
   case_file_guid: string;
 
   @ApiProperty({ type: String })
-  owned_by_agency_code: string;
+  owned_by_agency: string;
 
   @ApiProperty({ type: String })
-  case_status_code: string;
+  case_status: string;
 
   @ApiProperty({ type: Date })
   case_opened_utc_timestamp: Date;
@@ -35,5 +35,5 @@ export class case_file {
   agency_code: agency_code;
 
   @ApiProperty({ type: () => case_status_code })
-  case_status_code_case_file_case_status_codeTocase_status_code: case_status_code;
+  case_status_code: case_status_code;
 }
