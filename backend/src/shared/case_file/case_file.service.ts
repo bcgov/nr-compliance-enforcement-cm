@@ -30,12 +30,8 @@ export class CaseFileService {
       },
     });
 
-    console.log(prismaCaseFile.case_activity);
-
     try {
-      const result = this.mapper.map<case_file, CaseFile>(prismaCaseFile as case_file, "case_file", "CaseFile");
-      console.log(result);
-      return result;
+      return this.mapper.map<case_file, CaseFile>(prismaCaseFile as case_file, "case_file", "CaseFile");
     } catch (error) {
       this.logger.error("Error mapping case file:", error);
     }
