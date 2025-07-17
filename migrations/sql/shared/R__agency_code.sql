@@ -11,7 +11,7 @@ INSERT INTO shared.agency_code (
     ('ECCC', 'Environment and Climate Change Canada', 'Environment and Climate Change Canada', 40, TRUE, 'FLYWAY', NOW(), true),
     ('DFO', 'Fisheries and Oceans Canada', 'Fisheries and Oceans Canada', 50, TRUE, 'FLYWAY', NOW(), true),
     ('NROS', 'Natural Resource Officer Service', 'Natural Resource Officer Service', 60, TRUE, 'FLYWAY', NOW(), true),
-    ('NRS', 'Natural Resource Sector', 'Natural Resource Sector', 70, TRUE, 'FLYWAY', NOW(), true),
+    ('NRS', 'Natural Resource Sector', 'Natural Resource Sector', 70, TRUE, 'FLYWAY', NOW(), false),
     ('OTH', 'Other', 'Other', 80, TRUE, 'FLYWAY', NOW(), true),
     ('POL', 'Police', 'Police', 90, TRUE, 'FLYWAY', NOW(), true)
 ON CONFLICT (agency_code) DO UPDATE SET
@@ -19,5 +19,6 @@ ON CONFLICT (agency_code) DO UPDATE SET
     long_description = EXCLUDED.long_description,
     display_order = EXCLUDED.display_order,
     active_ind = EXCLUDED.active_ind,
+    external_agency_ind = EXCLUDED.external_agency_ind,
     update_user_id = 'FLYWAY',
     update_utc_timestamp = NOW();
