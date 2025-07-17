@@ -4,7 +4,7 @@ export enum Role {
   CEEB = "CEEB",
   READ_ONLY = "READ ONLY",
   PARKS = "PARKS",
-  SECTOR = "NRS",
+  SECTOR = "SECTOR",
 }
 
 export const coreRoles: Role[] = [Role.COS, Role.CEEB, Role.PARKS, Role.SECTOR];
