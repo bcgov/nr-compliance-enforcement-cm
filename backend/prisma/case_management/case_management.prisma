@@ -183,39 +183,24 @@ model authorization_permit_h {
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model case_code {
-  case_code                                String      @id(map: "PK_case_code") @db.VarChar(10)
-  short_description                        String?     @db.VarChar(50)
-  long_description                         String?     @db.VarChar(250)
-  active_ind                               Boolean?
-  create_user_id                           String      @db.VarChar(32)
-  create_utc_timestamp                     DateTime    @db.Timestamp(6)
-  update_user_id                           String?     @db.VarChar(32)
-  update_utc_timestamp                     DateTime?   @db.Timestamp(6)
-  case_file_case_file_case_codeTocase_code case_file[] @relation("case_file_case_codeTocase_code")
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model case_file {
-  case_file_guid                           String                 @id(map: "PK_case_file_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  case_code                                String                 @db.VarChar(10)
-  owned_by_agency_code                     String                 @db.VarChar(10)
-  review_required_ind                      Boolean?
-  create_user_id                           String                 @db.VarChar(32)
-  create_utc_timestamp                     DateTime               @db.Timestamp(6)
-  update_user_id                           String?                @db.VarChar(32)
-  update_utc_timestamp                     DateTime?              @db.Timestamp(6)
-  action                                   action[]
-  assessment                               assessment[]
-  authorization_permit                     authorization_permit[]
-  case_code_case_file_case_codeTocase_code case_code              @relation("case_file_case_codeTocase_code", fields: [case_code], references: [case_code], onDelete: NoAction, onUpdate: NoAction, map: "FK_case_file__case_code")
-  agency_code                              agency_code            @relation(fields: [owned_by_agency_code], references: [agency_code], onDelete: NoAction, onUpdate: NoAction, map: "FK_case_file__owned_by_agency_code")
-  case_note                                case_note[]
-  decision                                 decision[]
-  lead                                     lead[]
-  prevention_education                     prevention_education[]
-  site                                     site[]
-  wildlife                                 wildlife[]
+  case_file_guid       String                 @id(map: "PK_case_file_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  owned_by_agency_code String                 @db.VarChar(10)
+  review_required_ind  Boolean?
+  create_user_id       String                 @db.VarChar(32)
+  create_utc_timestamp DateTime               @db.Timestamp(6)
+  update_user_id       String?                @db.VarChar(32)
+  update_utc_timestamp DateTime?              @db.Timestamp(6)
+  action               action[]
+  assessment           assessment[]
+  authorization_permit authorization_permit[]
+  agency_code          agency_code            @relation(fields: [owned_by_agency_code], references: [agency_code], onDelete: NoAction, onUpdate: NoAction, map: "FK_case_file__owned_by_agency_code")
+  case_note            case_note[]
+  decision             decision[]
+  lead                 lead[]
+  prevention_education prevention_education[]
+  site                 site[]
+  wildlife             wildlife[]
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments

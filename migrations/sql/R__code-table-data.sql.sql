@@ -1868,42 +1868,6 @@ set
 where
   agency_code = 'EPO';
 
---
--- add new ERS and GIR case_code
---
-insert into
-  case_management.case_code (
-    case_code,
-    short_description,
-    long_description,
-    active_ind,
-    create_user_id,
-    create_utc_timestamp,
-    update_user_id,
-    update_utc_timestamp
-  )
-values
-  (
-    'ERS',
-    'Enforcement Complaint',
-    'Enforcement Complaint',
-    true,
-    CURRENT_USER,
-    CURRENT_TIMESTAMP,
-    CURRENT_USER,
-    CURRENT_TIMESTAMP
-  ),
-  (
-    'GIR',
-    'General Incident Report',
-    'General Incident Report',
-    true,
-    CURRENT_USER,
-    CURRENT_TIMESTAMP,
-    CURRENT_USER,
-    CURRENT_TIMESTAMP
-  ) ON CONFLICT DO NOTHING;
-
 --------------------
 -- CE-1054 Schedule Sector XREFs
 --------------------
@@ -6442,111 +6406,312 @@ SET
 WHERE
   discharge_code = 'RFS_OTHR';
 
-
 ------------------------
 -- CE-1708 Changes to Prevention and Education and Outcomes based on user feedback
 ------------------------
+INSERT INTO
+  case_management.action_code (
+    action_code,
+    short_description,
+    long_description,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+VALUES
+  (
+    'CNTCTPOLIC',
+    'Contacted/referred to Police',
+    'Contacted/referred to Police',
+    true,
+    'postgres',
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
 
-INSERT INTO case_management.action_code (action_code, short_description, long_description, active_ind, create_user_id, create_utc_timestamp) 
-VALUES('CNTCTPOLIC', 'Contacted/referred to Police', 'Contacted/referred to Police', true, 'postgres', CURRENT_TIMESTAMP)
-ON CONFLICT DO NOTHING;
+INSERT INTO
+  case_management.action_code (
+    action_code,
+    short_description,
+    long_description,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+VALUES
+  (
+    'CNTCTREHFT',
+    'Contacted/referred to rehabilitation facility',
+    'Contacted/referred to rehabilitation facility',
+    true,
+    'postgres',
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
 
-INSERT INTO case_management.action_code (action_code, short_description, long_description, active_ind, create_user_id, create_utc_timestamp)
-VALUES('CNTCTREHFT', 'Contacted/referred to rehabilitation facility', 'Contacted/referred to rehabilitation facility', true, 'postgres', CURRENT_TIMESTAMP)
-ON CONFLICT DO NOTHING;
+INSERT INTO
+  case_management.action_type_action_xref (
+    action_type_code,
+    action_code,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+VALUES
+  (
+    'COSPRV&EDU',
+    'CNTCTPOLIC',
+    60,
+    true,
+    'postgres',
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
 
-INSERT INTO case_management.action_type_action_xref (action_type_code, action_code, display_order, active_ind, create_user_id, create_utc_timestamp)
-VALUES('COSPRV&EDU', 'CNTCTPOLIC', 60, true, 'postgres', CURRENT_TIMESTAMP)
-ON CONFLICT DO NOTHING;
+INSERT INTO
+  case_management.action_type_action_xref (
+    action_type_code,
+    action_code,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+VALUES
+  (
+    'COSPRV&EDU',
+    'CNTCTREHFT',
+    70,
+    true,
+    'postgres',
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
 
-INSERT INTO case_management.action_type_action_xref (action_type_code, action_code, display_order, active_ind, create_user_id, create_utc_timestamp)
-VALUES('COSPRV&EDU', 'CNTCTREHFT', 70, true, 'postgres', CURRENT_TIMESTAMP)
-ON CONFLICT DO NOTHING;
+UPDATE case_management.action_type_action_xref
+SET
+  display_order = 10,
+  update_user_id = 'postgres',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  action_type_code = 'COSPRV&EDU'
+  AND action_code = 'PROVSFTYIN';
 
-UPDATE case_management.action_type_action_xref SET  display_order=10, update_user_id='postgres', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE action_type_code='COSPRV&EDU' AND action_code='PROVSFTYIN';
+UPDATE case_management.action_type_action_xref
+SET
+  display_order = 20,
+  update_user_id = 'postgres',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  action_type_code = 'COSPRV&EDU'
+  AND action_code = 'PROVAMHSIN';
 
-UPDATE case_management.action_type_action_xref SET  display_order=20, update_user_id='postgres', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE action_type_code='COSPRV&EDU' AND action_code='PROVAMHSIN';
+UPDATE case_management.action_type_action_xref
+SET
+  display_order = 30,
+  update_user_id = 'postgres',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  action_type_code = 'COSPRV&EDU'
+  AND action_code = 'CNTCTBIOVT';
 
-UPDATE case_management.action_type_action_xref SET  display_order=30, update_user_id='postgres', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE action_type_code='COSPRV&EDU' AND action_code='CNTCTBIOVT';
+UPDATE case_management.action_type_action_xref
+SET
+  display_order = 40,
+  update_user_id = 'postgres',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  action_type_code = 'COSPRV&EDU'
+  AND action_code = 'CNTCTBYLAW';
 
-UPDATE case_management.action_type_action_xref SET  display_order=40, update_user_id='postgres', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE action_type_code='COSPRV&EDU' AND action_code='CNTCTBYLAW';
+UPDATE case_management.action_type_action_xref
+SET
+  display_order = 50,
+  update_user_id = 'postgres',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  action_type_code = 'COSPRV&EDU'
+  AND action_code = 'CNTCTGROUP';
 
-UPDATE case_management.action_type_action_xref SET  display_order=50, update_user_id='postgres', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE action_type_code='COSPRV&EDU' AND action_code='CNTCTGROUP';
+UPDATE case_management.action_type_action_xref
+SET
+  display_order = 80,
+  update_user_id = 'postgres',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  action_type_code = 'COSPRV&EDU'
+  AND action_code = 'CONTACTLPP';
 
-UPDATE case_management.action_type_action_xref SET  display_order=80, update_user_id='postgres', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE action_type_code='COSPRV&EDU' AND action_code='CONTACTLPP';
+UPDATE case_management.action_type_action_xref
+SET
+  display_order = 90,
+  update_user_id = 'postgres',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  action_type_code = 'COSPRV&EDU'
+  AND action_code = 'CDCTMEDREL';
 
-UPDATE case_management.action_type_action_xref SET  display_order=90, update_user_id='postgres', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE action_type_code='COSPRV&EDU' AND action_code='CDCTMEDREL';
+UPDATE case_management.action_type_action_xref
+SET
+  display_order = 100,
+  update_user_id = 'postgres',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  action_type_code = 'COSPRV&EDU'
+  AND action_code = 'DIRLOWLACT';
 
-UPDATE case_management.action_type_action_xref SET  display_order=100, update_user_id='postgres', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE action_type_code='COSPRV&EDU' AND action_code='DIRLOWLACT';
+INSERT INTO
+  case_management.action_type_action_xref (
+    action_type_code,
+    action_code,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+VALUES
+  (
+    'PRKPRV&EDU',
+    'CNTCTPOLIC',
+    50,
+    true,
+    'postgres',
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
 
-INSERT INTO case_management.action_type_action_xref (action_type_code, action_code, display_order, active_ind, create_user_id, create_utc_timestamp)
-VALUES('PRKPRV&EDU', 'CNTCTPOLIC', 50, true, 'postgres', CURRENT_TIMESTAMP)
-ON CONFLICT DO NOTHING;
+INSERT INTO
+  case_management.action_type_action_xref (
+    action_type_code,
+    action_code,
+    display_order,
+    active_ind,
+    create_user_id,
+    create_utc_timestamp
+  )
+VALUES
+  (
+    'PRKPRV&EDU',
+    'CNTCTREHFT',
+    60,
+    true,
+    'postgres',
+    CURRENT_TIMESTAMP
+  ) ON CONFLICT DO NOTHING;
 
-INSERT INTO case_management.action_type_action_xref (action_type_code, action_code, display_order, active_ind, create_user_id, create_utc_timestamp)
-VALUES('PRKPRV&EDU', 'CNTCTREHFT', 60, true, 'postgres', CURRENT_TIMESTAMP)
-ON CONFLICT DO NOTHING;
+UPDATE case_management.action_type_action_xref
+SET
+  display_order = 10,
+  update_user_id = 'postgres',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  action_type_code = 'PRKPRV&EDU'
+  AND action_code = 'PROVSFTYIN';
 
-UPDATE case_management.action_type_action_xref SET  display_order=10, update_user_id='postgres', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE action_type_code='PRKPRV&EDU' AND action_code='PROVSFTYIN';
+UPDATE case_management.action_type_action_xref
+SET
+  display_order = 20,
+  update_user_id = 'postgres',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  action_type_code = 'PRKPRV&EDU'
+  AND action_code = 'PROVAMHSIN';
 
-UPDATE case_management.action_type_action_xref SET  display_order=20, update_user_id='postgres', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE action_type_code='PRKPRV&EDU' AND action_code='PROVAMHSIN';
+UPDATE case_management.action_type_action_xref
+SET
+  display_order = 30,
+  update_user_id = 'postgres',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  action_type_code = 'PRKPRV&EDU'
+  AND action_code = 'CNTCTBIOVT';
 
-UPDATE case_management.action_type_action_xref SET  display_order=30, update_user_id='postgres', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE action_type_code='PRKPRV&EDU' AND action_code='CNTCTBIOVT';
-
-UPDATE case_management.action_type_action_xref SET  display_order=40, update_user_id='postgres', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE action_type_code='PRKPRV&EDU' AND action_code='CNTCTGROUP';
+UPDATE case_management.action_type_action_xref
+SET
+  display_order = 40,
+  update_user_id = 'postgres',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  action_type_code = 'PRKPRV&EDU'
+  AND action_code = 'CNTCTGROUP';
 
 UPDATE case_management.hwcr_outcome_code
-SET active_ind=false, update_user_id='FLYWAY', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE hwcr_outcome_code='REFRTOBIO';
+SET
+  active_ind = false,
+  update_user_id = 'FLYWAY',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  hwcr_outcome_code = 'REFRTOBIO';
 
 UPDATE case_management.hwcr_outcome_code
-SET short_description='Transferred to rehabilitation facility',   long_description='Transferred to rehabilitation facility',  
-    display_order=120, update_user_id='FLYWAY', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE hwcr_outcome_code='TRANSREHB';
+SET
+  short_description = 'Transferred to rehabilitation facility',
+  long_description = 'Transferred to rehabilitation facility',
+  display_order = 120,
+  update_user_id = 'FLYWAY',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  hwcr_outcome_code = 'TRANSREHB';
 
 UPDATE case_management.hwcr_outcome_code
-SET display_order=10, update_user_id='FLYWAY', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE hwcr_outcome_code='DEADONARR';
+SET
+  display_order = 10,
+  update_user_id = 'FLYWAY',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  hwcr_outcome_code = 'DEADONARR';
 
 UPDATE case_management.hwcr_outcome_code
-SET display_order=40, update_user_id='FLYWAY', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE hwcr_outcome_code='DISPTCHD';
+SET
+  display_order = 40,
+  update_user_id = 'FLYWAY',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  hwcr_outcome_code = 'DISPTCHD';
 
 UPDATE case_management.hwcr_outcome_code
-SET display_order=70, update_user_id='FLYWAY', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE hwcr_outcome_code='EUTHNIZD';
+SET
+  display_order = 70,
+  update_user_id = 'FLYWAY',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  hwcr_outcome_code = 'EUTHNIZD';
 
 UPDATE case_management.hwcr_outcome_code
-SET display_order=80, update_user_id='FLYWAY', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE hwcr_outcome_code='GONEONARR';
+SET
+  display_order = 80,
+  update_user_id = 'FLYWAY',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  hwcr_outcome_code = 'GONEONARR';
 
 UPDATE case_management.hwcr_outcome_code
-SET display_order=90, update_user_id='FLYWAY', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE hwcr_outcome_code='NOTRCVD';
+SET
+  display_order = 90,
+  update_user_id = 'FLYWAY',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  hwcr_outcome_code = 'NOTRCVD';
 
 UPDATE case_management.hwcr_outcome_code
-SET display_order=100, update_user_id='FLYWAY', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE hwcr_outcome_code='RELSITE';
+SET
+  display_order = 100,
+  update_user_id = 'FLYWAY',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  hwcr_outcome_code = 'RELSITE';
 
 UPDATE case_management.hwcr_outcome_code
-SET display_order=110, update_user_id='FLYWAY', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE hwcr_outcome_code='SHRTRELOC';
+SET
+  display_order = 110,
+  update_user_id = 'FLYWAY',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  hwcr_outcome_code = 'SHRTRELOC';
 
 UPDATE case_management.hwcr_outcome_code
-SET display_order=130, update_user_id='FLYWAY', update_utc_timestamp=CURRENT_TIMESTAMP
-WHERE hwcr_outcome_code='TRANSLCTD';
+SET
+  display_order = 130,
+  update_user_id = 'FLYWAY',
+  update_utc_timestamp = CURRENT_TIMESTAMP
+WHERE
+  hwcr_outcome_code = 'TRANSLCTD';
 
 --------------------------
 -- New Changes above this line

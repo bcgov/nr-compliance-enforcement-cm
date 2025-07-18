@@ -63,7 +63,6 @@ export class CaseFileService {
 
     try {
       const caseRecord = {
-        case_code: input.caseCode,
         owned_by_agency_code: input.agencyCode,
         create_user_id: input.createUserId,
         update_user_id: input.createUserId,
@@ -116,11 +115,6 @@ export class CaseFileService {
               },
               create_user_id: model.createUserId,
               create_utc_timestamp: new Date(),
-              case_code_case_file_case_codeTocase_code: {
-                connect: {
-                  case_code: model.caseCode,
-                },
-              },
             },
           });
 
@@ -1027,11 +1021,6 @@ export class CaseFileService {
             },
             create_user_id: model.createUserId,
             create_utc_timestamp: new Date(),
-            case_code_case_file_case_codeTocase_code: {
-              connect: {
-                case_code: model.caseCode,
-              },
-            },
           },
         });
 
@@ -1250,11 +1239,6 @@ export class CaseFileService {
               create_user_id: reviewInput.userId,
               create_utc_timestamp: new Date(),
               review_required_ind: true,
-              case_code_case_file_case_codeTocase_code: {
-                connect: {
-                  case_code: reviewInput.caseCode,
-                },
-              },
             },
           });
           caseFileId = caseFile.case_file_guid;
@@ -2413,7 +2397,7 @@ export class CaseFileService {
       let result: CaseFile;
 
       await this.prisma.$transaction(async (db) => {
-        const { leadIdentifier, agencyCode, caseCode, createUserId, wildlife } = model;
+        const { leadIdentifier, createUserId, wildlife } = model;
         const { tags, drugs, actions } = wildlife;
 
         const caseFile = await this.findOneByLeadId(leadIdentifier);
@@ -3209,7 +3193,7 @@ export class CaseFileService {
       let result: CaseFile;
 
       await this.prisma.$transaction(async (db) => {
-        const { leadIdentifier, agencyCode, caseCode, createUserId, decision } = model;
+        const { leadIdentifier, createUserId, decision } = model;
 
         const caseFile = await this.findOneByLeadId(leadIdentifier);
 
