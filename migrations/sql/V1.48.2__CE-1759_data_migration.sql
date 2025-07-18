@@ -1,6 +1,3 @@
-GRANT INSERT ON ALL TABLES IN SCHEMA shared TO case_management;
-GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA shared TO case_management;
-
 INSERT INTO shared.case_file (
     case_file_guid,
     owned_by_agency,
@@ -36,7 +33,3 @@ SELECT
     now()
 FROM
     case_management.lead l;
-
-
-REVOKE INSERT ON ALL TABLES IN SCHEMA shared FROM case_management;
-REVOKE USAGE, SELECT ON ALL SEQUENCES IN SCHEMA shared FROM case_management;
