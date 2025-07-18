@@ -180,6 +180,55 @@ COMMENT on column shared.case_activity_h.operation_user_id is 'The id of the use
 COMMENT on column shared.case_activity_h.operation_executed_at is 'The timestamp when the data in the case activity table was created or modified.  The timestamp is stored in UTC with no Offset.';
 COMMENT on column shared.case_activity_h.data_after_executed_operation is 'A JSON representation of the row in the table after the operation was completed successfully.   This implies that the latest row in the audit table will always match with the current row in the live table.';
 
+----------------------------------------------------------
+-- Ensure code table data is present before the script runs
+----------------------------------------------------------
+INSERT INTO shared.agency_code (
+    agency_code, short_description, long_description, display_order, active_ind, create_user_id, create_utc_timestamp, external_agency_ind
+) VALUES
+    ('PARKS', 'BC Parks', 'BC Parks', 10, TRUE, 'FLYWAY', NOW(), false),
+    ('COS', 'COS', 'Conservation Officer Service', 20, TRUE, 'FLYWAY', NOW(), false),
+    ('EPO', 'CEEB', 'Compliance and Environmental Enforcement Branch', 30, TRUE, 'FLYWAY', NOW(), false),
+    ('ECCC', 'Environment and Climate Change Canada', 'Environment and Climate Change Canada', 40, TRUE, 'FLYWAY', NOW(), true),
+    ('DFO', 'Fisheries and Oceans Canada', 'Fisheries and Oceans Canada', 50, TRUE, 'FLYWAY', NOW(), true),
+    ('NROS', 'Natural Resource Officer Service', 'Natural Resource Officer Service', 60, TRUE, 'FLYWAY', NOW(), true),
+    ('NRS', 'Natural Resource Sector', 'Natural Resource Sector', 70, TRUE, 'FLYWAY', NOW(), false),
+    ('OTH', 'Other', 'Other', 80, TRUE, 'FLYWAY', NOW(), true),
+    ('POL', 'Police', 'Police', 90, TRUE, 'FLYWAY', NOW(), true)
+ON CONFLICT (agency_code) DO UPDATE SET
+    short_description = EXCLUDED.short_description,
+    long_description = EXCLUDED.long_description,
+    display_order = EXCLUDED.display_order,
+    active_ind = EXCLUDED.active_ind,
+    external_agency_ind = EXCLUDED.external_agency_ind,
+    update_user_id = 'FLYWAY',
+    update_utc_timestamp = NOW();
+    
+INSERT INTO shared.case_status_code (
+    case_status_code, short_description, long_description, display_order, active_ind, create_user_id, create_utc_timestamp
+) VALUES
+    ('OPEN', 'Open', 'Open', 10, TRUE, 'FLYWAY', NOW()),
+    ('CLOSED', 'Closed', 'Closed', 20, TRUE, 'FLYWAY', NOW())
+ON CONFLICT (case_status_code) DO UPDATE SET
+    short_description = EXCLUDED.short_description,
+    long_description = EXCLUDED.long_description,
+    display_order = EXCLUDED.display_order,
+    active_ind = EXCLUDED.active_ind,
+    update_user_id = 'FLYWAY',
+    update_utc_timestamp = NOW();
+
+INSERT INTO shared.case_activity_type_code (
+    case_activity_type_code, short_description, long_description, display_order, active_ind, create_user_id, create_utc_timestamp
+) VALUES
+    ('COMP', 'Complaint', 'Complaint', 10, TRUE, 'FLYWAY', NOW())
+ON CONFLICT (case_activity_type_code) DO UPDATE SET
+    short_description = EXCLUDED.short_description,
+    long_description = EXCLUDED.long_description,
+    display_order = EXCLUDED.display_order,
+    active_ind = EXCLUDED.active_ind,
+    update_user_id = 'FLYWAY',
+    update_utc_timestamp = NOW();
+    
 -- Clean up old objects
 DROP TABLE IF EXISTS shared.temp_poc;
 DROP SEQUENCE IF EXISTS shared.TEMP_POC_SEQ;
