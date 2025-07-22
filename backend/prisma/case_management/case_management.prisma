@@ -191,13 +191,13 @@ model case_file {
   create_utc_timestamp DateTime               @db.Timestamp(6)
   update_user_id       String?                @db.VarChar(32)
   update_utc_timestamp DateTime?              @db.Timestamp(6)
+  complaint_identifier String?                @db.VarChar(20)
   action               action[]
   assessment           assessment[]
   authorization_permit authorization_permit[]
   agency_code          agency_code            @relation(fields: [owned_by_agency_code], references: [agency_code], onDelete: NoAction, onUpdate: NoAction, map: "FK_case_file__owned_by_agency_code")
   case_note            case_note[]
   decision             decision[]
-  lead                 lead[]
   prevention_education prevention_education[]
   site                 site[]
   wildlife             wildlife[]
@@ -568,27 +568,6 @@ model ipm_auth_category_code {
   update_user_id                                                   String?    @db.VarChar(32)
   update_utc_timestamp                                             DateTime?  @db.Timestamp(6)
   decision_decision_ipm_auth_category_codeToipm_auth_category_code decision[] @relation("decision_ipm_auth_category_codeToipm_auth_category_code")
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model lead {
-  lead_identifier      String    @id(map: "PK_lead_identifier") @db.VarChar(20)
-  case_identifier      String    @db.Uuid
-  create_user_id       String    @db.VarChar(32)
-  create_utc_timestamp DateTime  @db.Timestamp(6)
-  update_user_id       String?   @db.VarChar(32)
-  update_utc_timestamp DateTime? @db.Timestamp(6)
-  case_file            case_file @relation(fields: [case_identifier], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "FK_lead__case_identifier")
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model lead_h {
-  h_lead_guid                   String   @id(map: "PK_h_lead") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  target_row_id                 String   @db.VarChar(20)
-  operation_type                String   @db.Char(1)
-  operation_user_id             String   @default(dbgenerated("CURRENT_USER")) @db.VarChar(32)
-  operation_executed_at         DateTime @default(now()) @db.Timestamp(6)
-  data_after_executed_operation Json?
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments

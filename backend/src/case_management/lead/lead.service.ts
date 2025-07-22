@@ -40,19 +40,20 @@ export class LeadService {
       caseGuids.push(action.case_guid);
     }
 
-    const leadResults = await this.prisma.lead.findMany({
+    const leadResults = await this.prisma.case_file.findMany({
       where: {
-        case_identifier: {
+        case_file_guid: {
           in: caseGuids,
         },
       },
       select: {
-        lead_identifier: true,
+        complaint_identifier: true,
       },
     });
     const leadIdentifiers: string[] = [];
     for (let leadId of leadResults) {
-      leadIdentifiers.push(leadId.lead_identifier);
+      // leadIdentifiers.push(leadId.lead_identifier);
+      leadIdentifiers.push(leadId.complaint_identifier);
     }
     return leadIdentifiers;
   }
@@ -124,20 +125,20 @@ export class LeadService {
       caseGuids = Array.from(new Set(duplicates));
     }
 
-    const leadResults = await this.prisma.lead.findMany({
+    const leadResults = await this.prisma.case_file.findMany({
       where: {
-        case_identifier: {
+        case_file_guid: {
           in: caseGuids,
         },
       },
       select: {
-        lead_identifier: true,
+        complaint_identifier: true,
       },
     });
 
     const leadIdentifiers: string[] = [];
     for (let leadId of leadResults) {
-      leadIdentifiers.push(leadId.lead_identifier);
+      leadIdentifiers.push(leadId.complaint_identifier);
     }
 
     return leadIdentifiers;
@@ -269,20 +270,20 @@ export class LeadService {
     }
 
     //Return lead id
-    const leadResults = await this.prisma.lead.findMany({
+    const leadResults = await this.prisma.case_file.findMany({
       where: {
-        case_identifier: {
+        case_file_guid: {
           in: [...targetCaseGuids],
         },
       },
       select: {
-        lead_identifier: true,
+        complaint_identifier: true,
       },
     });
 
     const leadIdentifiers: string[] = [];
     for (let leadId of leadResults) {
-      leadIdentifiers.push(leadId.lead_identifier);
+      leadIdentifiers.push(leadId.complaint_identifier);
     }
 
     return leadIdentifiers;

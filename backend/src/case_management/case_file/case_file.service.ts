@@ -64,6 +64,7 @@ export class CaseFileService {
     try {
       const caseRecord = {
         owned_by_agency_code: input.agencyCode,
+        complaint_identifier: input.leadIdentifier,
         create_user_id: input.createUserId,
         update_user_id: input.createUserId,
         create_utc_timestamp: new Date(),
@@ -75,15 +76,6 @@ export class CaseFileService {
       });
 
       caseFileGuid = case_file.case_file_guid;
-
-      const lead = await db.lead.create({
-        data: {
-          lead_identifier: input.leadIdentifier,
-          case_identifier: caseFileGuid,
-          create_user_id: input.createUserId,
-          create_utc_timestamp: new Date(),
-        },
-      });
     } catch (exception) {
       this.logger.warn(exception);
       throw new GraphQLError("Exception occurred. See server log for details", exception);
@@ -113,6 +105,7 @@ export class CaseFileService {
                   agency_code: model.agencyCode,
                 },
               },
+              complaint_identifier: model.leadIdentifier,
               create_user_id: model.createUserId,
               create_utc_timestamp: new Date(),
             },
@@ -121,17 +114,7 @@ export class CaseFileService {
           caseFileGuid = case_file.case_file_guid;
 
           this.logger.log(`Case file created with case_file_guid: ${caseFileGuid}`);
-
-          const lead = await db.lead.create({
-            data: {
-              lead_identifier: model.leadIdentifier,
-              case_identifier: caseFileGuid,
-              create_user_id: model.createUserId,
-              create_utc_timestamp: new Date(),
-            },
-          });
-
-          this.logger.log(`Lead created with lead_identifier: ${lead.lead_identifier}`);
+          this.logger.log(`Lead created with lead_identifier: ${case_file.complaint_identifier}`);
         } else {
           caseFileGuid = model.caseIdentifier;
         }
@@ -296,11 +279,7 @@ export class CaseFileService {
       select: {
         case_file_guid: true,
         review_required_ind: true,
-        lead: {
-          select: {
-            lead_identifier: true,
-          },
-        },
+        complaint_identifier: true,
         assessment: {
           select: {
             assessment_guid: true,
@@ -550,7 +529,11 @@ export class CaseFileService {
 
     const results: CaseFile[] = [];
     for (const queryResult of queryResults) {
-      const { case_file_guid: caseFileId, lead, review_required_ind: isReviewRequired } = queryResult;
+      const {
+        case_file_guid: caseFileId,
+        complaint_identifier: complaintId,
+        review_required_ind: isReviewRequired,
+      } = queryResult;
 
       const equipmentDetails = await this.findEquipmentDetails(caseFileId);
       const caseNotes = await this.findCaseNotes(caseFileId);
@@ -562,7 +545,7 @@ export class CaseFileService {
 
       let caseFile: CaseFile = {
         caseIdentifier: caseFileId,
-        leadIdentifier: lead[0]?.lead_identifier ?? "",
+        leadIdentifier: complaintId ?? "",
         prevention: preventions,
         isReviewRequired: isReviewRequired,
         reviewComplete: reviewCompleteAction ?? null,
@@ -689,82 +672,84 @@ export class CaseFileService {
   };
 
   async findOneByLeadId(leadIdentifier: string) {
+    //TODO: optimize this one later, not to query case_file 2 times
     let caseFileOutput: CaseFile = new CaseFile();
-    const caseIdRecord = await this.prisma.lead.findFirst({
+    const caseIdRecord = await this.prisma.case_file.findFirst({
       where: {
-        lead_identifier: leadIdentifier,
+        complaint_identifier: leadIdentifier,
       },
       select: {
-        case_identifier: true,
+        case_file_guid: true,
       },
     });
-    if (caseIdRecord?.case_identifier) {
-      caseFileOutput = await this.findOne(caseIdRecord.case_identifier);
+    if (caseIdRecord?.case_file_guid) {
+      caseFileOutput = await this.findOne(caseIdRecord.case_file_guid);
     }
-
     return caseFileOutput;
   }
 
   async findManyByLeadId(leadIdentifier: string[]) {
-    let caseFileOutput: CaseFile[];
-    const caseIdRecords = await this.prisma.lead.findMany({
+    return await this.prisma.case_file.findMany({
       where: {
-        lead_identifier: {
+        complaint_identifier: {
           in: leadIdentifier,
         },
       },
-      select: {
-        case_identifier: true,
-      },
     });
-    const caseFileIds = caseIdRecords.map((caseIdRecord) => caseIdRecord.case_identifier);
-    if (caseFileIds.length > 0) {
-      caseFileOutput = await this.find(caseFileIds);
-    }
-    return caseFileOutput ?? [];
+    // let caseFileOutput: CaseFile[];
+    // const caseIdRecords = await this.prisma.lead.findMany({
+    //   where: {
+    //     lead_identifier: {
+    //       in: leadIdentifier,
+    //     },
+    //   },
+    //   select: {
+    //     case_identifier: true,
+    //   },
+    // });
+    // const caseFileIds = caseIdRecords.map((caseIdRecord) => caseIdRecord.case_identifier);
+    // if (caseFileIds.length > 0) {
+    //   caseFileOutput = await this.find(caseFileIds);
+    // }
+    // return caseFileOutput ?? [];
   }
 
   async findManyBySearchString(searchString: string) {
     let caseFileOutput: Array<CaseFile> = [];
-
-    const caseIdRecords = await this.prisma.lead.findMany({
+    const caseIdRecords = await this.prisma.case_file.findMany({
       where: {
         OR: [
           {
-            case_file: {
-              authorization_permit: {
-                some: {
-                  authorization_permit_id: {
-                    contains: searchString,
-                  },
-                  active_ind: true,
+            authorization_permit: {
+              some: {
+                authorization_permit_id: {
+                  contains: searchString,
                 },
+                active_ind: true,
               },
             },
           },
           {
-            case_file: {
-              site: {
-                some: {
-                  site_id: {
-                    contains: searchString,
-                  },
-                  active_ind: true,
+            site: {
+              some: {
+                site_id: {
+                  contains: searchString,
                 },
+                active_ind: true,
               },
             },
           },
         ],
       },
       select: {
-        lead_identifier: true,
-        case_identifier: true,
+        complaint_identifier: true,
+        case_file_guid: true,
       },
     });
     for (const caseIdRecord of caseIdRecords) {
       caseFileOutput.push({
-        caseIdentifier: caseIdRecord.case_identifier,
-        leadIdentifier: caseIdRecord.lead_identifier,
+        caseIdentifier: caseIdRecord.case_file_guid,
+        leadIdentifier: caseIdRecord.complaint_identifier,
       });
     }
     return caseFileOutput;
@@ -825,15 +810,6 @@ export class CaseFileService {
               : {
                   disconnect: true,
                 },
-            update_user_id: model.updateUserId,
-            update_utc_timestamp: new Date(),
-          },
-        });
-
-        await db.lead.updateMany({
-          where: { case_identifier: model.caseIdentifier },
-          data: {
-            lead_identifier: model.leadIdentifier,
             update_user_id: model.updateUserId,
             update_utc_timestamp: new Date(),
           },
@@ -1019,6 +995,7 @@ export class CaseFileService {
                 agency_code: model.agencyCode,
               },
             },
+            complaint_identifier: model.leadIdentifier,
             create_user_id: model.createUserId,
             create_utc_timestamp: new Date(),
           },
@@ -1027,17 +1004,7 @@ export class CaseFileService {
         caseFileGuid = case_file.case_file_guid;
 
         this.logger.log(`Case file created with case_file_guid: ${caseFileGuid}`);
-
-        const lead = await db.lead.create({
-          data: {
-            lead_identifier: model.leadIdentifier,
-            case_identifier: caseFileGuid,
-            create_user_id: model.createUserId,
-            create_utc_timestamp: new Date(),
-          },
-        });
-
-        this.logger.log(`Lead created with lead_identifier: ${lead.lead_identifier}`);
+        this.logger.log(`Lead created with lead_identifier: ${case_file.complaint_identifier}`);
       } else {
         caseFileGuid = model.caseIdentifier;
       }
@@ -1236,21 +1203,13 @@ export class CaseFileService {
                   agency_code: reviewInput.agencyCode,
                 },
               },
+              complaint_identifier: reviewInput.leadIdentifier,
               create_user_id: reviewInput.userId,
               create_utc_timestamp: new Date(),
               review_required_ind: true,
             },
           });
           caseFileId = caseFile.case_file_guid;
-
-          await db.lead.create({
-            data: {
-              lead_identifier: reviewInput.leadIdentifier,
-              case_identifier: caseFile.case_file_guid,
-              create_user_id: reviewInput.userId,
-              create_utc_timestamp: new Date(),
-            },
-          });
         });
         return caseFileId;
       } catch (err) {
