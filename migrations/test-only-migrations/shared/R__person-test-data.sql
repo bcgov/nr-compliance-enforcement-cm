@@ -26,7 +26,7 @@ VALUES
     ('550e8400-e29b-41d4-a716-446655440023', 'Nellie', NULL, NULL, 'Bertram', 'system', NOW());
 
 -- Insert contact methods
-INSERT INTO shared.contact_method (contact_method_guid, person_guid, contact_method_type_code, contact_value, create_user_id, create_utc_timestamp)
+INSERT INTO shared.contact_method (contact_method_guid, person_guid, contact_method_type, contact_value, create_user_id, create_utc_timestamp)
 VALUES
     ('660e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440001', 'PRIMPHONE', '570-555-0001', 'system', NOW()),
     ('660e8400-e29b-41d4-a716-446655440002', '550e8400-e29b-41d4-a716-446655440002', 'EMAILADDR', 'jim.halpert@dundermifflin.com', 'system', NOW()),

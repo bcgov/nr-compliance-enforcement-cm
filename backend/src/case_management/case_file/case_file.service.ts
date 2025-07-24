@@ -3414,6 +3414,7 @@ export class CaseFileService {
           let data: any = {
             action_type_action_xref_guid: xref,
             actor_guid: assignedTo,
+            action_date: actionTakenDate,
             update_user_id: updateUserId,
             update_utc_timestamp: current,
           };
