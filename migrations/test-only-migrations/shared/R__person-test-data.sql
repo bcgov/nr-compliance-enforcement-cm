@@ -26,6 +26,7 @@ VALUES
     ('550e8400-e29b-41d4-a716-446655440023', 'Nellie', NULL, NULL, 'Bertram', 'system', NOW())
 on conflict do nothing;
 
+
 -- Insert contact methods
 INSERT INTO shared.contact_method (contact_method_guid, person_guid, contact_method_type, contact_value, create_user_id, create_utc_timestamp)
 VALUES
