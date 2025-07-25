@@ -3407,7 +3407,7 @@ export class CaseFileService {
               active_ind: true,
             },
             select: {
-              action_guid: true, //comment
+              action_guid: true,
             },
           });
 
