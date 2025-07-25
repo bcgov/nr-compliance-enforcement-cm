@@ -31,18 +31,18 @@ export class LeadService {
         action_type_action_xref_guid: xrefResult.action_type_action_xref_guid,
       },
       select: {
-        case_guid: true,
+        complaint_outcome_guid: true,
       },
     });
 
     const caseGuids: string[] = [];
     for (let action of actionResults) {
-      caseGuids.push(action.case_guid);
+      caseGuids.push(action.complaint_outcome_guid);
     }
 
-    const leadResults = await this.prisma.case_file.findMany({
+    const leadResults = await this.prisma.complaint_outcome.findMany({
       where: {
-        case_file_guid: {
+        complaint_outcome_guid: {
           in: caseGuids,
         },
       },
@@ -71,7 +71,7 @@ export class LeadService {
             hwcr_outcome_code: outcomeAnimalCode,
           },
           select: {
-            case_file_guid: true,
+            complaint_outcome_guid: true,
           },
         });
       } else {
@@ -81,12 +81,12 @@ export class LeadService {
             hwcr_outcome_actioned_by_code: outcomeActionedByCode,
           },
           select: {
-            case_file_guid: true,
+            complaint_outcome_guid: true,
           },
         });
       }
       for (let outcome of outcomeResultByCode) {
-        caseGuids.push(outcome.case_file_guid);
+        caseGuids.push(outcome.complaint_outcome_guid);
       }
     }
 
@@ -110,24 +110,24 @@ export class LeadService {
           },
         },
         select: {
-          case_guid: true,
+          complaint_outcome_guid: true,
         },
       });
 
       for (let outcome of outcomeResultByDate) {
-        caseGuids.push(outcome.case_guid);
+        caseGuids.push(outcome.complaint_outcome_guid);
       }
     }
 
-    //if 2 filters are on, get the mutual case_guid
+    //if 2 filters are on, get the mutual complaint_outcome_guid
     if (outcomeAnimalCode !== "undefined" && startDate !== "undefined") {
       const duplicates = caseGuids.filter((item, index) => caseGuids.indexOf(item) !== index);
       caseGuids = Array.from(new Set(duplicates));
     }
 
-    const leadResults = await this.prisma.case_file.findMany({
+    const leadResults = await this.prisma.complaint_outcome.findMany({
       where: {
-        case_file_guid: {
+        complaint_outcome_guid: {
           in: caseGuids,
         },
       },
@@ -171,7 +171,7 @@ export class LeadService {
         active_ind: true,
       },
       select: {
-        case_guid: true,
+        complaint_outcome_guid: true,
         equipment_guid: true,
         equipment: {
           select: {
@@ -191,7 +191,7 @@ export class LeadService {
         active_ind: true,
       },
       select: {
-        case_guid: true,
+        complaint_outcome_guid: true,
         equipment_guid: true,
       },
     });
@@ -201,7 +201,7 @@ export class LeadService {
 
     // Process "set" actions
     setActions.forEach((action) => {
-      const caseGuid = action.case_guid;
+      const caseGuid = action.complaint_outcome_guid;
       const equipmentGuid = action.equipment_guid;
       const equipmentCode = action.equipment?.equipment_code;
 
@@ -217,7 +217,7 @@ export class LeadService {
 
     // Process "remove" actions to mark equipment as inactive
     removeActions.forEach((action) => {
-      const caseGuid = action.case_guid;
+      const caseGuid = action.complaint_outcome_guid;
       const equipmentGuid = action.equipment_guid;
 
       if (!equipmentGuid || !equipmentStatusMap.has(caseGuid)) return;
@@ -248,8 +248,9 @@ export class LeadService {
         let matchesCondition = false;
 
         for (const [equipmentGuid, isActive] of equipmentMap) {
-          const equipmentCode = setActions.find((a) => a.case_guid === caseGuid && a.equipment_guid === equipmentGuid)
-            ?.equipment?.equipment_code;
+          const equipmentCode = setActions.find(
+            (a) => a.complaint_outcome_guid === caseGuid && a.equipment_guid === equipmentGuid,
+          )?.equipment?.equipment_code;
 
           if (!equipmentCode || !equipmentCodes.includes(equipmentCode)) continue;
 
@@ -270,9 +271,9 @@ export class LeadService {
     }
 
     //Return lead id
-    const leadResults = await this.prisma.case_file.findMany({
+    const leadResults = await this.prisma.complaint_outcome.findMany({
       where: {
-        case_file_guid: {
+        complaint_outcome_guid: {
           in: [...targetCaseGuids],
         },
       },

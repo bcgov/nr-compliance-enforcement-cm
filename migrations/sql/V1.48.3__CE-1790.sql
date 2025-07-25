@@ -4,11 +4,10 @@ DROP TABLE IF EXISTS case_management.case_code CASCADE;
 ALTER TABLE case_management.case_file
 DROP COLUMN IF EXISTS case_code;
 
--- Add complaint_identifier column to case_file
+-- Drop lead table and migrate lead_identifier to case_file.complaint_identifier
 ALTER TABLE case_management.case_file
 ADD COLUMN complaint_identifier VARCHAR(20);
 
--- Migrate lead_identifier data from lead to case_file.complaint_identifier
 UPDATE case_management.case_file
 SET
   complaint_identifier = (
@@ -30,3 +29,44 @@ DROP TRIGGER IF EXISTS lead_history_trigger ON case_management.lead;
 DROP TABLE IF EXISTS case_management.lead CASCADE;
 
 DROP TABLE IF EXISTS case_management.lead_h CASCADE;
+
+-- Rename case_file to complaint_outcome
+ALTER TABLE IF EXISTS case_management.case_file
+RENAME TO complaint_outcome;
+
+ALTER TABLE IF EXISTS case_management.case_file_h
+RENAME TO complaint_outcome_h;
+
+ALTER TABLE case_management.complaint_outcome
+RENAME COLUMN case_file_guid TO complaint_outcome_guid;
+
+ALTER TABLE case_management.prevention_education
+RENAME COLUMN case_file_guid TO complaint_outcome_guid;
+
+ALTER TABLE case_management.assessment
+RENAME COLUMN case_file_guid TO complaint_outcome_guid;
+
+ALTER TABLE case_management.case_note
+RENAME COLUMN case_file_guid TO complaint_outcome_guid;
+
+ALTER TABLE case_management.decision
+RENAME COLUMN case_file_guid TO complaint_outcome_guid;
+
+ALTER TABLE case_management.action
+RENAME COLUMN case_guid TO complaint_outcome_guid;
+
+ALTER TABLE case_management.wildlife
+RENAME COLUMN case_file_guid TO complaint_outcome_guid;
+
+ALTER TABLE case_management.site
+RENAME COLUMN case_file_guid TO complaint_outcome_guid;
+
+ALTER TABLE case_management.authorization_permit
+RENAME COLUMN case_file_guid TO complaint_outcome_guid;
+
+DROP TRIGGER IF EXISTS case_file_history_trigger ON case_management.complaint_outcome;
+
+CREATE TRIGGER complaint_outcome_history_trigger BEFORE INSERT
+OR DELETE
+OR
+UPDATE ON case_management.complaint_outcome FOR EACH ROW EXECUTE FUNCTION case_management.audit_history ('complaint_outcome_h', 'complaint_outcome_guid');

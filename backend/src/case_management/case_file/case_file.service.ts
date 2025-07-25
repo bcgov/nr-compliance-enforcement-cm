@@ -59,7 +59,7 @@ export class CaseFileService {
     >,
     input: CreateCaseInput,
   ): Promise<string> {
-    let caseFileGuid: string;
+    let complaintOutcomeGuid: string;
 
     try {
       const caseRecord = {
@@ -71,23 +71,23 @@ export class CaseFileService {
         update_utc_timestamp: new Date(),
       };
 
-      const case_file = await db.case_file.create({
+      const case_file = await db.complaint_outcome.create({
         data: caseRecord,
       });
 
-      caseFileGuid = case_file.case_file_guid;
+      complaintOutcomeGuid = case_file.complaint_outcome_guid;
     } catch (exception) {
       this.logger.warn(exception);
       throw new GraphQLError("Exception occurred. See server log for details", exception);
     }
-    return caseFileGuid;
+    return complaintOutcomeGuid;
   }
 
   //------------------
   //-- assessments
   //------------------
   async createAssessment(model: CreateAssessmentInput): Promise<CaseFile> {
-    let caseFileGuid: string;
+    let complaintOutcomeGuid: string;
     let caseFileOutput: CaseFile;
 
     try {
@@ -98,7 +98,7 @@ export class CaseFileService {
         let case_file: any;
 
         if (!model.caseIdentifier) {
-          case_file = await db.case_file.create({
+          case_file = await db.complaint_outcome.create({
             data: {
               agency_code: {
                 connect: {
@@ -111,21 +111,21 @@ export class CaseFileService {
             },
           });
 
-          caseFileGuid = case_file.case_file_guid;
+          complaintOutcomeGuid = case_file.complaint_outcome_guid;
 
-          this.logger.log(`Case file created with case_file_guid: ${caseFileGuid}`);
+          this.logger.log(`Case file created with complaint_outcome_guid: ${complaintOutcomeGuid}`);
           this.logger.log(`Lead created with lead_identifier: ${case_file.complaint_identifier}`);
         } else {
-          caseFileGuid = model.caseIdentifier;
+          complaintOutcomeGuid = model.caseIdentifier;
         }
 
-        this.logger.log(`Creating assessment for case file: ${caseFileGuid}`);
+        this.logger.log(`Creating assessment for case file: ${complaintOutcomeGuid}`);
 
         const assessment = await db.assessment.create({
           data: {
-            case_file: {
+            complaint_outcome: {
               connect: {
-                case_file_guid: caseFileGuid,
+                complaint_outcome_guid: complaintOutcomeGuid,
               },
             },
             agency_code: {
@@ -200,7 +200,7 @@ export class CaseFileService {
           });
           await db.action.create({
             data: {
-              case_guid: caseFileGuid,
+              complaint_outcome_guid: complaintOutcomeGuid,
               assessment_guid: assessmentId,
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
               actor_guid: action.actor,
@@ -240,7 +240,7 @@ export class CaseFileService {
           });
           await db.action.create({
             data: {
-              case_guid: caseFileGuid,
+              complaint_outcome_guid: complaintOutcomeGuid,
               assessment_guid: assessmentId,
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
               actor_guid: action.actor,
@@ -255,7 +255,7 @@ export class CaseFileService {
         this.logger.log(`Actions created for assessment: ${assessmentId}`);
       });
       this.logger.log(`Transaction completed successfully, returning updated case file`);
-      caseFileOutput = await this.findOne(caseFileGuid);
+      caseFileOutput = await this.findOne(complaintOutcomeGuid);
     } catch (exception) {
       throw new GraphQLError(
         `Exception occurred. See server log for details: ${exception.message}, ${JSON.stringify(exception)}`,
@@ -274,10 +274,10 @@ export class CaseFileService {
   };
 
   find = async (ids: string[]): Promise<CaseFile[]> => {
-    const queryResults = await this.prisma.case_file.findMany({
-      where: { case_file_guid: { in: ids } },
+    const queryResults = await this.prisma.complaint_outcome.findMany({
+      where: { complaint_outcome_guid: { in: ids } },
       select: {
-        case_file_guid: true,
+        complaint_outcome_guid: true,
         review_required_ind: true,
         complaint_identifier: true,
         assessment: {
@@ -530,7 +530,7 @@ export class CaseFileService {
     const results: CaseFile[] = [];
     for (const queryResult of queryResults) {
       const {
-        case_file_guid: caseFileId,
+        complaint_outcome_guid: caseFileId,
         complaint_identifier: complaintId,
         review_required_ind: isReviewRequired,
       } = queryResult;
@@ -674,22 +674,22 @@ export class CaseFileService {
   async findOneByLeadId(leadIdentifier: string) {
     //TODO: optimize this one later, not to query case_file 2 times
     let caseFileOutput: CaseFile = new CaseFile();
-    const caseIdRecord = await this.prisma.case_file.findFirst({
+    const caseIdRecord = await this.prisma.complaint_outcome.findFirst({
       where: {
         complaint_identifier: leadIdentifier,
       },
       select: {
-        case_file_guid: true,
+        complaint_outcome_guid: true,
       },
     });
-    if (caseIdRecord?.case_file_guid) {
-      caseFileOutput = await this.findOne(caseIdRecord.case_file_guid);
+    if (caseIdRecord?.complaint_outcome_guid) {
+      caseFileOutput = await this.findOne(caseIdRecord.complaint_outcome_guid);
     }
     return caseFileOutput;
   }
 
   async findManyByLeadId(leadIdentifier: string[]) {
-    return await this.prisma.case_file.findMany({
+    return await this.prisma.complaint_outcome.findMany({
       where: {
         complaint_identifier: {
           in: leadIdentifier,
@@ -716,7 +716,7 @@ export class CaseFileService {
 
   async findManyBySearchString(searchString: string) {
     let caseFileOutput: Array<CaseFile> = [];
-    const caseIdRecords = await this.prisma.case_file.findMany({
+    const caseIdRecords = await this.prisma.complaint_outcome.findMany({
       where: {
         OR: [
           {
@@ -743,12 +743,12 @@ export class CaseFileService {
       },
       select: {
         complaint_identifier: true,
-        case_file_guid: true,
+        complaint_outcome_guid: true,
       },
     });
     for (const caseIdRecord of caseIdRecords) {
       caseFileOutput.push({
-        caseIdentifier: caseIdRecord.case_file_guid,
+        caseIdentifier: caseIdRecord.complaint_outcome_guid,
         leadIdentifier: caseIdRecord.complaint_identifier,
       });
     }
@@ -855,7 +855,7 @@ export class CaseFileService {
           } else {
             await db.action.create({
               data: {
-                case_guid: model.caseIdentifier,
+                complaint_outcome_guid: model.caseIdentifier,
                 action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
                 actor_guid: action.actor,
                 action_date: action.date,
@@ -911,7 +911,7 @@ export class CaseFileService {
   findPreventions = async (caseIdentifier: string): Promise<Array<Prevention>> => {
     const queryResult = await this.prisma.prevention_education.findMany({
       where: {
-        case_file_guid: caseIdentifier,
+        complaint_outcome_guid: caseIdentifier,
         active_ind: true,
       },
       select: {
@@ -980,7 +980,7 @@ export class CaseFileService {
   };
 
   async createPrevention(model: CreatePreventionInput): Promise<CaseFile> {
-    let caseFileGuid: string;
+    let complaintOutcomeGuid: string;
     let caseFileOutput: CaseFile;
 
     await this.prisma.$transaction(async (db) => {
@@ -988,7 +988,7 @@ export class CaseFileService {
       let case_file: any;
 
       if (!model.caseIdentifier) {
-        case_file = await db.case_file.create({
+        case_file = await db.complaint_outcome.create({
           data: {
             agency_code: {
               connect: {
@@ -1001,20 +1001,20 @@ export class CaseFileService {
           },
         });
 
-        caseFileGuid = case_file.case_file_guid;
+        complaintOutcomeGuid = case_file.complaint_outcome_guid;
 
-        this.logger.log(`Case file created with case_file_guid: ${caseFileGuid}`);
+        this.logger.log(`Case file created with complaint_outcome_guid: ${complaintOutcomeGuid}`);
         this.logger.log(`Lead created with lead_identifier: ${case_file.complaint_identifier}`);
       } else {
-        caseFileGuid = model.caseIdentifier;
+        complaintOutcomeGuid = model.caseIdentifier;
       }
 
-      this.logger.log(`Creating prevention for case file: ${caseFileGuid}`);
+      this.logger.log(`Creating prevention for case file: ${complaintOutcomeGuid}`);
 
       const prevention = await db.prevention_education.create({
         data: {
           agency_code: model.agencyCode,
-          case_file_guid: caseFileGuid,
+          complaint_outcome_guid: complaintOutcomeGuid,
           create_user_id: model.createUserId,
           create_utc_timestamp: new Date(),
         },
@@ -1054,7 +1054,7 @@ export class CaseFileService {
         });
         await db.action.create({
           data: {
-            case_guid: caseFileGuid,
+            complaint_outcome_guid: complaintOutcomeGuid,
             prevention_education_guid: prevention.prevention_education_guid,
             action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
             actor_guid: action.actor,
@@ -1066,7 +1066,7 @@ export class CaseFileService {
         });
       }
     });
-    caseFileOutput = await this.findOne(caseFileGuid);
+    caseFileOutput = await this.findOne(complaintOutcomeGuid);
     return caseFileOutput;
   }
 
@@ -1099,7 +1099,7 @@ export class CaseFileService {
         let actionXref = await this.prisma.action.findFirst({
           where: {
             action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
-            case_guid: model.caseIdentifier,
+            complaint_outcome_guid: model.caseIdentifier,
             prevention_education_guid: model.prevention.id,
           },
           select: {
@@ -1110,7 +1110,7 @@ export class CaseFileService {
         if (actionXref) {
           await db.action.updateMany({
             where: {
-              case_guid: model.caseIdentifier,
+              complaint_outcome_guid: model.caseIdentifier,
               prevention_education_guid: model.prevention.id,
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
             },
@@ -1125,7 +1125,7 @@ export class CaseFileService {
         } else {
           await db.action.create({
             data: {
-              case_guid: model.caseIdentifier,
+              complaint_outcome_guid: model.caseIdentifier,
               prevention_education_guid: model.prevention.id,
               action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
               actor_guid: action.actor,
@@ -1140,7 +1140,7 @@ export class CaseFileService {
       let preventionCount: number = model.prevention.actions.length;
       if (preventionCount === 0) {
         await db.action.updateMany({
-          where: { case_guid: model.caseIdentifier },
+          where: { complaint_outcome_guid: model.caseIdentifier },
           data: { active_ind: false },
         });
       }
@@ -1159,7 +1159,7 @@ export class CaseFileService {
       await db.action.updateMany({
         where: {
           prevention_education_guid: model.id,
-          case_guid: caseIdentifier,
+          complaint_outcome_guid: caseIdentifier,
         },
         data: {
           active_ind: false,
@@ -1196,7 +1196,7 @@ export class CaseFileService {
         let caseFileId: string;
         await this.prisma.$transaction(async (db) => {
           //create case
-          const caseFile = await db.case_file.create({
+          const caseFile = await db.complaint_outcome.create({
             data: {
               agency_code: {
                 connect: {
@@ -1209,7 +1209,7 @@ export class CaseFileService {
               review_required_ind: true,
             },
           });
-          caseFileId = caseFile.case_file_guid;
+          caseFileId = caseFile.complaint_outcome_guid;
         });
         return caseFileId;
       } catch (err) {
@@ -1239,7 +1239,7 @@ export class CaseFileService {
         });
         const reviewAction = await db.action.create({
           data: {
-            case_guid: reviewInput.caseIdentifier,
+            complaint_outcome_guid: reviewInput.caseIdentifier,
             action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
             actor_guid: reviewInput.reviewComplete.actor,
             action_date: reviewInput.reviewComplete.date,
@@ -1269,9 +1269,9 @@ export class CaseFileService {
         }
         //Else update review_required_ind
         else {
-          const caseFile = await db.case_file.update({
+          const caseFile = await db.complaint_outcome.update({
             where: {
-              case_file_guid: reviewInput.caseIdentifier,
+              complaint_outcome_guid: reviewInput.caseIdentifier,
             },
             data: {
               review_required_ind: reviewInput.isReviewRequired,
@@ -1298,9 +1298,9 @@ export class CaseFileService {
       const { isReviewRequired, caseIdentifier, reviewComplete, leadIdentifier } = reviewInput;
       await this.prisma.$transaction(async (db) => {
         // Update review_required_ind in table case_file
-        await db.case_file.update({
+        await db.complaint_outcome.update({
           where: {
-            case_file_guid: caseIdentifier,
+            complaint_outcome_guid: caseIdentifier,
           },
           data: {
             review_required_ind: isReviewRequired,
@@ -1336,7 +1336,7 @@ export class CaseFileService {
   findCaseNotes = async (caseIdentifier: string): Promise<Array<Note>> => {
     const queryResult = await this.prisma.case_note.findMany({
       where: {
-        case_file_guid: caseIdentifier,
+        complaint_outcome_guid: caseIdentifier,
         active_ind: true,
       },
       select: {
@@ -1484,7 +1484,7 @@ export class CaseFileService {
       if (!id) {
         const case_note = await db.case_note.create({
           data: {
-            case_file_guid: caseIdentifier,
+            complaint_outcome_guid: caseIdentifier,
             case_note: note,
             create_user_id: userId,
             create_utc_timestamp: current,
@@ -1510,7 +1510,7 @@ export class CaseFileService {
       // Create the update note action record
       await db.action.create({
         data: {
-          case_guid: caseIdentifier,
+          complaint_outcome_guid: caseIdentifier,
           case_note_guid: id,
           action_type_action_xref_guid: xrefId,
           actor_guid: actor,
@@ -1567,7 +1567,7 @@ export class CaseFileService {
 
         await db.action.create({
           data: {
-            case_guid: caseIdentifier,
+            complaint_outcome_guid: caseIdentifier,
             case_note_guid: id,
             action_type_action_xref_guid: xrefId,
             actor_guid: actor,
@@ -1593,15 +1593,15 @@ export class CaseFileService {
   //------------------
   async createEquipment(createEquipmentInput: CreateCaseInput): Promise<CaseFile> {
     let caseFileOutput: CaseFile;
-    let caseFileGuid;
+    let complaintOutcomeGuid;
     try {
       await this.prisma.$transaction(async (db) => {
         let caseFile = await this.findOneByLeadId(createEquipmentInput.leadIdentifier);
 
         if (caseFile?.caseIdentifier) {
-          caseFileGuid = caseFile.caseIdentifier;
+          complaintOutcomeGuid = caseFile.caseIdentifier;
         } else {
-          caseFileGuid = await this.createCase(db, createEquipmentInput);
+          complaintOutcomeGuid = await this.createCase(db, createEquipmentInput);
         }
 
         const createdDate = new Date();
@@ -1677,7 +1677,7 @@ export class CaseFileService {
 
           // create the action records (this may either be setting an equipment or removing an equipment)
           const data = {
-            case_guid: caseFileGuid,
+            complaint_outcome_guid: complaintOutcomeGuid,
             action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
             actor_guid: action.actor,
             action_date: action.date,
@@ -1693,7 +1693,7 @@ export class CaseFileService {
           });
         }
       });
-      caseFileOutput = await this.findOne(caseFileGuid);
+      caseFileOutput = await this.findOne(complaintOutcomeGuid);
     } catch (exception) {
       this.logger.error("An error occurred during equipment creation:", exception);
       throw new GraphQLError("An error occurred during equipment creation. See server log for details");
@@ -1789,11 +1789,11 @@ export class CaseFileService {
             });
 
             this.logger.debug(`Found action xref`);
-            const caseFileGuid = caseFile.caseIdentifier;
+            const complaintOutcomeGuid = caseFile.caseIdentifier;
             if (action.actor && action.date) {
               // create the action records (this may either be setting an equipment or removing an equipment)
               const data = {
-                case_guid: caseFileGuid,
+                complaint_outcome_guid: complaintOutcomeGuid,
                 action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
                 actor_guid: action.actor,
                 action_date: action.date,
@@ -1810,10 +1810,12 @@ export class CaseFileService {
               });
             } else if (action.actionCode == "REMEQUIPMT" && action.activeIndicator === false) {
               // user tries to clear equipment removal info
-              this.logger.debug(`Inactivate equipment removal action for case_guid: ${caseFileGuid}`);
+              this.logger.debug(
+                `Inactivate equipment removal action for complaint_outcome_guid: ${complaintOutcomeGuid}`,
+              );
               await db.action.updateMany({
                 where: {
-                  case_guid: caseFileGuid,
+                  complaint_outcome_guid: complaintOutcomeGuid,
                   action_type_action_xref_guid: actionTypeActionXref.action_type_action_xref_guid,
                 },
                 data: {
@@ -1827,8 +1829,8 @@ export class CaseFileService {
         }
       });
 
-      const caseFileGuid = caseFile.caseIdentifier;
-      caseFileOutput = await this.findOne(caseFileGuid);
+      const complaintOutcomeGuid = caseFile.caseIdentifier;
+      caseFileOutput = await this.findOne(complaintOutcomeGuid);
     } catch (error) {
       this.logger.error("An error occurred during equipment update:", error);
       throw new GraphQLError("An error occurred during equipment update. See server log for details", error);
@@ -1876,7 +1878,7 @@ export class CaseFileService {
   // transform the actions with equipment to equipment with actions.
   private findEquipmentDetails = async (caseIdentifier: string): Promise<Equipment[]> => {
     const actions = await this.prisma.action.findMany({
-      where: { case_guid: caseIdentifier },
+      where: { complaint_outcome_guid: caseIdentifier },
       select: {
         action_type_action_xref_guid: true,
         action_guid: true,
@@ -2175,7 +2177,7 @@ export class CaseFileService {
         const { species } = wildlife;
 
         let record: any = {
-          case_file_guid: caseId,
+          complaint_outcome_guid: caseId,
           species_code: species,
           active_ind: true,
           create_user_id: userId,
@@ -2331,7 +2333,7 @@ export class CaseFileService {
             const xref = xrefs.find((item) => item.action_code === action);
 
             return {
-              case_guid: caseId,
+              complaint_outcome_guid: caseId,
               wildlife_guid: wildlifeId,
               action_type_action_xref_guid: xref.action_type_action_xref_guid,
               actor_guid,
@@ -2774,7 +2776,7 @@ export class CaseFileService {
 
         await db.action.create({
           data: {
-            case_guid: caseIdentifier,
+            complaint_outcome_guid: caseIdentifier,
             wildlife_guid: wildlifeId,
             action_type_action_xref_guid: reference,
             actor_guid: data.actor,
@@ -2827,7 +2829,7 @@ export class CaseFileService {
         if (!actions || actions?.length === 0) {
           await db.action.updateMany({
             where: {
-              case_guid: caseIdentifier,
+              complaint_outcome_guid: caseIdentifier,
               wildlife_guid: wildlifeId,
             },
             data: {
@@ -2867,7 +2869,7 @@ export class CaseFileService {
               const xref = xrefs.find((item) => item.action_code === action);
 
               return {
-                case_guid: caseIdentifier,
+                complaint_outcome_guid: caseIdentifier,
                 wildlife_guid: wildlifeId,
                 action_type_action_xref_guid: xref.action_type_action_xref_guid,
                 actor_guid,
@@ -2918,7 +2920,7 @@ export class CaseFileService {
         //-- apply updates to it
         const source = await db.wildlife.findUnique({
           where: {
-            case_file_guid: caseIdentifier,
+            complaint_outcome_guid: caseIdentifier,
             wildlife_guid: wildlifeId,
           },
         });
@@ -2959,7 +2961,7 @@ export class CaseFileService {
         //-- find the wildlife entry to delete
         const wildlife = await db.wildlife.findUnique({
           where: {
-            case_file_guid: caseIdentifier,
+            complaint_outcome_guid: caseIdentifier,
             wildlife_guid: wildlifeId,
           },
         });
@@ -2990,7 +2992,9 @@ export class CaseFileService {
         await db.wildlife.update({ where: { wildlife_guid: wildlifeId }, data: softDeleteFragment });
 
         //-- if there are actions perform soft delete
-        const actions = await db.action.findMany({ where: { case_guid: caseIdentifier, wildlife_guid: wildlifeId } });
+        const actions = await db.action.findMany({
+          where: { complaint_outcome_guid: caseIdentifier, wildlife_guid: wildlifeId },
+        });
         if (actions && actions.length !== 0) {
           await db.wildlife.updateMany({
             where: { wildlife_guid: wildlifeId },
@@ -3043,7 +3047,7 @@ export class CaseFileService {
 
         let record: any = {
           decision_guid: randomUUID(),
-          case_file_guid: caseId,
+          complaint_outcome_guid: caseId,
           schedule_sector_xref_guid: scheduleSectorXref,
           discharge_code: discharge,
           rationale_text: rationale,
@@ -3126,7 +3130,7 @@ export class CaseFileService {
 
         let record: any = {
           action_guid: randomUUID(),
-          case_guid: caseFileId,
+          complaint_outcome_guid: caseFileId,
           action_type_action_xref_guid: xref,
           actor_guid: assignedTo,
           action_date: actionTakenDate,
@@ -3331,7 +3335,7 @@ export class CaseFileService {
           await db.action.updateMany({
             where: {
               decision_guid: decisionId,
-              case_guid: caseIdentifier,
+              complaint_outcome_guid: caseIdentifier,
             },
             data: {
               active_ind: false,
@@ -3345,7 +3349,7 @@ export class CaseFileService {
 
           const source = await db.action.findFirst({
             where: {
-              case_guid: caseIdentifier,
+              complaint_outcome_guid: caseIdentifier,
               decision_guid: decisionId,
               active_ind: true,
             },
@@ -3382,7 +3386,7 @@ export class CaseFileService {
         //-- apply updates to it
         const source = await db.decision.findUnique({
           where: {
-            case_file_guid: caseIdentifier,
+            complaint_outcome_guid: caseIdentifier,
             decision_guid: decisonId,
           },
         });
@@ -3397,7 +3401,7 @@ export class CaseFileService {
           //-- make sure that there is an action to update first
           //-- otherwise create a new action
           const currentAction = await db.action.findFirst({
-            where: { case_guid: caseIdentifier, decision_guid: decisonId, active_ind: true },
+            where: { complaint_outcome_guid: caseIdentifier, decision_guid: decisonId, active_ind: true },
           });
 
           if (!currentAction && decision.actionTaken && decision.assignedTo && decision.actionTakenDate) {
@@ -3437,7 +3441,7 @@ export class CaseFileService {
   ): Promise<any> => {
     try {
       let record: any = {
-        case_file_guid: caseId,
+        complaint_outcome_guid: caseId,
         create_user_id: userId,
         update_user_id: userId,
         create_utc_timestamp: new Date(),
@@ -3669,7 +3673,7 @@ export class CaseFileService {
 
       let record: any = {
         action_guid: randomUUID(),
-        case_guid: caseFileId,
+        complaint_outcome_guid: caseFileId,
         action_type_action_xref_guid: xref,
         decision_guid: decisionId,
         actor_guid: actor,
