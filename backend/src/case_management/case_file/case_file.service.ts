@@ -3407,13 +3407,14 @@ export class CaseFileService {
               active_ind: true,
             },
             select: {
-              action_guid: true,
+              action_guid: true, //comment
             },
           });
 
           let data: any = {
             action_type_action_xref_guid: xref,
             actor_guid: assignedTo,
+            action_date: actionTakenDate,
             update_user_id: updateUserId,
             update_utc_timestamp: current,
           };
