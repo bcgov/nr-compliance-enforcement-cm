@@ -37,7 +37,37 @@ export class CaseFileService {
     }
   }
 
-  async findMany(
+  async findMany(ids: string[]): Promise<CaseFile[]> {
+    if (!ids || ids.length === 0) {
+      return [];
+    }
+
+    const prismaCaseFiles = await this.prisma.case_file.findMany({
+      where: {
+        case_file_guid: {
+          in: ids,
+        },
+      },
+      include: {
+        agency_code: true,
+        case_status_code: true,
+        case_activity: {
+          include: {
+            case_activity_type_code: true,
+          },
+        },
+      },
+    });
+
+    try {
+      return this.mapper.mapArray<case_file, CaseFile>(prismaCaseFiles as Array<case_file>, "case_file", "CaseFile");
+    } catch (error) {
+      this.logger.error("Error fetching case files by IDs:", error);
+      throw error;
+    }
+  }
+
+  async search(
     page: number = 1,
     pageSize: number = 25,
     filters?: CaseMomsSpaghettiFileFilters,

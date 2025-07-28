@@ -26,4 +26,6 @@ input CaseMomsSpaghettiFileFilters {
   search: String
   agencyCode: String
   caseStatus: String
+  sortBy: String
+  sortOrder: String
 }

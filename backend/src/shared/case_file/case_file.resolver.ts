@@ -30,16 +30,31 @@ export class CaseFileResolver {
 
   @Query("caseMomsSpaghettiFiles")
   @Roles(coreRoles)
-  async findMany(
+  async findMany(@Args("ids", { type: () => [String] }) ids: string[]) {
+    try {
+      return await this.caseFileService.findMany(ids);
+    } catch (error) {
+      this.logger.error(error);
+      throw new GraphQLError("Error fetching case files by IDs from Shared schema", {
+        extensions: {
+          code: "INTERNAL_SERVER_ERROR",
+        },
+      });
+    }
+  }
+
+  @Query("searchCaseMomsSpaghettiFiles")
+  @Roles(coreRoles)
+  async search(
     @Args("page", { type: () => Int, nullable: true, defaultValue: 1 }) page: number,
     @Args("pageSize", { type: () => Int, nullable: true, defaultValue: 25 }) pageSize: number,
     @Args("filters", { nullable: true }) filters?: CaseMomsSpaghettiFileFilters,
   ) {
     try {
-      return await this.caseFileService.findMany(page, pageSize, filters);
+      return await this.caseFileService.search(page, pageSize, filters);
     } catch (error) {
       this.logger.error(error);
-      throw new GraphQLError("Error fetching paginated data from Shared schema", {
+      throw new GraphQLError("Error searching paginated data from Shared schema", {
         extensions: {
           code: "INTERNAL_SERVER_ERROR",
         },
