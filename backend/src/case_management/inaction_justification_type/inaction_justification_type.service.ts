@@ -12,11 +12,11 @@ export class InactionJustificationTypeService {
 
     queryResult = await dataContext.findMany({
       where: {
-        agency_code: agencyCode ? agencyCode : undefined,
+        outcome_agency_code: agencyCode ? agencyCode : undefined,
       },
       select: {
         inaction_reason_code: true,
-        agency_code: true,
+        outcome_agency_code: true,
         short_description: true,
         long_description: true,
         display_order: true,

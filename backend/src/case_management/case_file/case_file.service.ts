@@ -102,7 +102,7 @@ export class CaseFileService {
             data: {
               agency_code: {
                 connect: {
-                  agency_code: model.agencyCode,
+                  outcome_agency_code: model.agencyCode,
                 },
               },
               complaint_identifier: model.leadIdentifier,
@@ -128,9 +128,9 @@ export class CaseFileService {
                 complaint_outcome_guid: complaintOutcomeGuid,
               },
             },
-            agency_code: {
+            outcome_agency_code_assessment_outcome_agency_codeTooutcome_agency_code: {
               connect: {
-                agency_code: model.agencyCode,
+                outcome_agency_code: model.agencyCode,
               },
             },
             inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: model.assessment
@@ -283,7 +283,7 @@ export class CaseFileService {
         assessment: {
           select: {
             assessment_guid: true,
-            assessed_by_agency_code: true,
+            outcome_agency_code: true,
             inaction_reason_code: true,
             inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: {
               select: {
@@ -469,9 +469,9 @@ export class CaseFileService {
             },
             rationale_text: true,
             inspection_number: true,
-            agency_code: {
+            outcome_agency_code_decision_outcome_agency_codeTooutcome_agency_code: {
               select: {
-                agency_code: true,
+                outcome_agency_code: true,
                 long_description: true,
               },
             },
@@ -562,7 +562,7 @@ export class CaseFileService {
           queryResult.assessment.map(async (assessment) => {
             const {
               assessment_guid: id,
-              assessed_by_agency_code: agencyCode,
+              outcome_agency_code: agencyCode,
               inaction_reason_code: actionJustificationCode,
               inaction_reason_code_assessment_inaction_reason_codeToinaction_reason_code: reason,
               action_not_required_ind: actionNotRequired,
@@ -658,9 +658,17 @@ export class CaseFileService {
         if (decision[0].inspection_number) {
           record = { ...record, inspectionNumber: decision[0].inspection_number.toString() };
         }
-        if (decision[0].agency_code) {
-          record = { ...record, leadAgency: decision[0].agency_code.agency_code };
-          record = { ...record, leadAgencyLongDescription: decision[0].agency_code.long_description };
+        if (decision[0].outcome_agency_code_decision_outcome_agency_codeTooutcome_agency_code) {
+          record = {
+            ...record,
+            leadAgency:
+              decision[0].outcome_agency_code_decision_outcome_agency_codeTooutcome_agency_code.outcome_agency_code,
+          };
+          record = {
+            ...record,
+            leadAgencyLongDescription:
+              decision[0].outcome_agency_code_decision_outcome_agency_codeTooutcome_agency_code.long_description,
+          };
         }
         caseFile.decision = record;
       }
@@ -766,7 +774,7 @@ export class CaseFileService {
             ...(model.agencyCode && {
               agency_code: {
                 connect: {
-                  agency_code: model.agencyCode,
+                  outcome_agency_code: model.agencyCode,
                 },
               },
             }),
@@ -916,7 +924,7 @@ export class CaseFileService {
       },
       select: {
         prevention_education_guid: true,
-        agency_code: true,
+        outcome_agency_code: true,
         update_user_id: true,
         update_utc_timestamp: true,
         action: {
@@ -953,7 +961,7 @@ export class CaseFileService {
     const preventions: Array<Prevention> = queryResult.map((prevention) => {
       return {
         id: prevention.prevention_education_guid,
-        agencyCode: prevention.agency_code,
+        agencyCode: prevention.outcome_agency_code,
         actions: prevention.action
           .sort(
             (left, right) => left.action_type_action_xref.display_order - right.action_type_action_xref.display_order,
@@ -992,7 +1000,7 @@ export class CaseFileService {
           data: {
             agency_code: {
               connect: {
-                agency_code: model.agencyCode,
+                outcome_agency_code: model.agencyCode,
               },
             },
             complaint_identifier: model.leadIdentifier,
@@ -1013,7 +1021,7 @@ export class CaseFileService {
 
       const prevention = await db.prevention_education.create({
         data: {
-          agency_code: model.agencyCode,
+          outcome_agency_code: model.agencyCode,
           complaint_outcome_guid: complaintOutcomeGuid,
           create_user_id: model.createUserId,
           create_utc_timestamp: new Date(),
@@ -1200,7 +1208,7 @@ export class CaseFileService {
             data: {
               agency_code: {
                 connect: {
-                  agency_code: reviewInput.agencyCode,
+                  outcome_agency_code: reviewInput.agencyCode,
                 },
               },
               complaint_identifier: reviewInput.leadIdentifier,
@@ -1344,7 +1352,7 @@ export class CaseFileService {
         case_note: true,
         update_user_id: true,
         update_utc_timestamp: true,
-        agency_code: true,
+        outcome_agency_code: true,
         action: {
           select: {
             action_guid: true,
@@ -1379,7 +1387,7 @@ export class CaseFileService {
       return {
         id: note.case_note_guid,
         note: note.case_note,
-        agencyCode: note.agency_code,
+        agencyCode: note.outcome_agency_code,
         actions: note.action.map((action) => {
           return {
             actionId: action.action_guid,
@@ -1490,7 +1498,7 @@ export class CaseFileService {
             create_utc_timestamp: current,
             update_user_id: userId,
             update_utc_timestamp: current,
-            agency_code: agencyCode,
+            outcome_agency_code: agencyCode,
           },
         });
         id = case_note.case_note_guid;

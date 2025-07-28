@@ -64,9 +64,36 @@ RENAME COLUMN case_file_guid TO complaint_outcome_guid;
 ALTER TABLE case_management.authorization_permit
 RENAME COLUMN case_file_guid TO complaint_outcome_guid;
 
+ALTER TABLE case_management.complaint_outcome_h
+RENAME COLUMN h_case_file_guid TO h_complaint_outcome_guid;
+
 DROP TRIGGER IF EXISTS case_file_history_trigger ON case_management.complaint_outcome;
 
 CREATE TRIGGER complaint_outcome_history_trigger BEFORE INSERT
 OR DELETE
 OR
 UPDATE ON case_management.complaint_outcome FOR EACH ROW EXECUTE FUNCTION case_management.audit_history ('complaint_outcome_h', 'complaint_outcome_guid');
+
+ALTER TABLE IF EXISTS case_management.agency_code
+RENAME TO outcome_agency_code;
+
+ALTER TABLE case_management.outcome_agency_code
+RENAME COLUMN agency_code TO outcome_agency_code;
+
+ALTER TABLE case_management.hwcr_outcome_actioned_by_code
+RENAME COLUMN agency_code TO outcome_agency_code;
+
+ALTER TABLE case_management.inaction_reason_code
+RENAME COLUMN agency_code TO outcome_agency_code;
+
+ALTER TABLE case_management.case_note
+RENAME COLUMN agency_code TO outcome_agency_code;
+
+ALTER TABLE case_management.prevention_education
+RENAME COLUMN agency_code TO outcome_agency_code;
+
+ALTER TABLE case_management.decision
+RENAME COLUMN lead_agency_code TO outcome_agency_code;
+
+ALTER TABLE case_management.assessment
+RENAME COLUMN assessed_by_agency_code TO outcome_agency_code;

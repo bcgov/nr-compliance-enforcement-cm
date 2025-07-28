@@ -7,9 +7,9 @@ export class AgencyCodeService {
   constructor(private readonly prisma: CaseManagementPrismaService) {}
 
   async findAll() {
-    const prismaAgencyCodes = await this.prisma.agency_code.findMany({
+    const prismaAgencyCodes = await this.prisma.outcome_agency_code.findMany({
       select: {
-        agency_code: true,
+        outcome_agency_code: true,
         short_description: true,
         long_description: true,
         display_order: true,
@@ -19,7 +19,7 @@ export class AgencyCodeService {
     });
 
     const agencyCodes: AgencyCode[] = prismaAgencyCodes.map((prismaAgencyCodes) => ({
-      agencyCode: prismaAgencyCodes.agency_code,
+      agencyCode: prismaAgencyCodes.outcome_agency_code,
       shortDescription: prismaAgencyCodes.short_description,
       longDescription: prismaAgencyCodes.long_description,
       displayOrder: prismaAgencyCodes.display_order,
@@ -30,9 +30,9 @@ export class AgencyCodeService {
   }
 
   findOne(id: string) {
-    return this.prisma.agency_code.findUnique({
+    return this.prisma.outcome_agency_code.findUnique({
       where: {
-        agency_code: id,
+        outcome_agency_code: id,
         active_ind: true,
       },
     });
