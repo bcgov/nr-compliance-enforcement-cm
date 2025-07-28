@@ -1,3 +1,8 @@
 type Query {
   caseMomsSpaghettiFile(caseFileGuid: String!): CaseMomsSpaghettiFile
+  caseMomsSpaghettiFiles(
+    page: Int = 1
+    pageSize: Int = 25
+    filters: CaseMomsSpaghettiFileFilters
+  ): CaseMomsSpaghettiFileResult!
 }
