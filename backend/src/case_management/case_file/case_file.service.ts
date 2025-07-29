@@ -63,6 +63,7 @@ export class CaseFileService {
 
     try {
       const caseRecord = {
+        case_code: input.caseCode,
         owned_by_agency_code: input.agencyCode,
         complaint_identifier: input.leadIdentifier,
         create_user_id: input.createUserId,
@@ -91,8 +92,6 @@ export class CaseFileService {
     let caseFileOutput: CaseFile;
 
     try {
-      let assessmentId: string = "";
-
       await this.prisma.$transaction(async (db) => {
         let assessmentId: string;
         let case_file: any;
@@ -108,6 +107,7 @@ export class CaseFileService {
               complaint_identifier: model.leadIdentifier,
               create_user_id: model.createUserId,
               create_utc_timestamp: new Date(),
+              case_code: model.caseCode,
             },
           });
 
@@ -992,7 +992,6 @@ export class CaseFileService {
     let caseFileOutput: CaseFile;
 
     await this.prisma.$transaction(async (db) => {
-      let assessmentId: string;
       let case_file: any;
 
       if (!model.caseIdentifier) {
@@ -1006,6 +1005,7 @@ export class CaseFileService {
             complaint_identifier: model.leadIdentifier,
             create_user_id: model.createUserId,
             create_utc_timestamp: new Date(),
+            case_code: model.caseCode,
           },
         });
 
@@ -1215,6 +1215,7 @@ export class CaseFileService {
               create_user_id: reviewInput.userId,
               create_utc_timestamp: new Date(),
               review_required_ind: true,
+              case_code: reviewInput.caseCode,
             },
           });
           caseFileId = caseFile.complaint_outcome_guid;

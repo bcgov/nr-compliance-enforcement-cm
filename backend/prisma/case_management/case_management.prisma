@@ -683,6 +683,7 @@ model prevention_education {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model complaint_outcome {
   complaint_outcome_guid String                 @id(map: "PK_case_file_guid") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  case_code              String                 @db.VarChar(10)
   owned_by_agency_code   String                 @db.VarChar(10)
   review_required_ind    Boolean?
   create_user_id         String                 @db.VarChar(32)

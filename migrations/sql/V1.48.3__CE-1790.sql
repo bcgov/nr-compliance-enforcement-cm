@@ -1,9 +1,9 @@
 -- Drop case_code table
 DROP TABLE IF EXISTS case_management.case_code CASCADE;
 
-ALTER TABLE case_management.case_file
-DROP COLUMN IF EXISTS case_code;
-
+-- Check with Alec if case_code column is needed for exporting report's script 
+-- ALTER TABLE case_management.case_file
+-- DROP COLUMN IF EXISTS case_code;
 -- Drop lead table and migrate lead_identifier to case_file.complaint_identifier
 ALTER TABLE case_management.case_file
 ADD COLUMN complaint_identifier VARCHAR(20);
