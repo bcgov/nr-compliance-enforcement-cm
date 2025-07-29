@@ -192,8 +192,8 @@ values
     ) on conflict do nothing;
 
 insert into
-    case_management.agency_code (
-        agency_code,
+    case_management.outcome_agency_code (
+        outcome_agency_code,
         short_description,
         long_description,
         active_ind,
@@ -213,7 +213,7 @@ values
 insert into
     case_management.inaction_reason_code (
         inaction_reason_code,
-        agency_code,
+        outcome_agency_code,
         short_description,
         long_description,
         active_ind,

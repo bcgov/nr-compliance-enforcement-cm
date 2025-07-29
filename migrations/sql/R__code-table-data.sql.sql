@@ -1,7 +1,7 @@
 insert into
   case_management.inaction_reason_code (
     inaction_reason_code,
-    agency_code,
+    outcome_agency_code,
     short_description,
     long_description,
     display_order,
@@ -1558,8 +1558,8 @@ VALUES
 -- add new EPO agency code
 --
 insert into
-  case_management.agency_code (
-    agency_code,
+  case_management.outcome_agency_code (
+    outcome_agency_code,
     short_description,
     long_description,
     active_ind,
@@ -1584,8 +1584,8 @@ values
 -- INSERT data AGENCY_CODE
 --
 insert into
-  case_management.agency_code (
-    agency_code,
+  case_management.outcome_agency_code (
+    outcome_agency_code,
     short_description,
     long_description,
     display_order,
@@ -1602,19 +1602,7 @@ values
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) on conflict do nothing;
-
-insert into
-  case_management.agency_code (
-    agency_code,
-    short_description,
-    long_description,
-    display_order,
-    active_ind,
-    create_user_id,
-    create_utc_timestamp
-  )
-values
+  ),
   (
     'ENERGY',
     'BC Energy Regulator ',
@@ -1623,19 +1611,7 @@ values
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) on conflict do nothing;
-
-insert into
-  case_management.agency_code (
-    agency_code,
-    short_description,
-    long_description,
-    display_order,
-    active_ind,
-    create_user_id,
-    create_utc_timestamp
-  )
-values
+  ),
   (
     'PARKS',
     'BC Parks',
@@ -1644,19 +1620,7 @@ values
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) on conflict do nothing;
-
-insert into
-  case_management.agency_code (
-    agency_code,
-    short_description,
-    long_description,
-    display_order,
-    active_ind,
-    create_user_id,
-    create_utc_timestamp
-  )
-values
+  ),
   (
     'CEB',
     'Compliance and Enforcement Branch',
@@ -1665,19 +1629,7 @@ values
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) on conflict do nothing;
-
-insert into
-  case_management.agency_code (
-    agency_code,
-    short_description,
-    long_description,
-    display_order,
-    active_ind,
-    create_user_id,
-    create_utc_timestamp
-  )
-values
+  ),
   (
     'EPO',
     'CEEB',
@@ -1686,19 +1638,7 @@ values
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) ON CONFLICT DO NOTHING;
-
-insert into
-  case_management.agency_code (
-    agency_code,
-    short_description,
-    long_description,
-    display_order,
-    active_ind,
-    create_user_id,
-    create_utc_timestamp
-  )
-values
+  ),
   (
     'ECCC',
     'Environment and Climate Change Canada',
@@ -1707,19 +1647,7 @@ values
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) on conflict do nothing;
-
-insert into
-  case_management.agency_code (
-    agency_code,
-    short_description,
-    long_description,
-    display_order,
-    active_ind,
-    create_user_id,
-    create_utc_timestamp
-  )
-values
+  ),
   (
     'EAO',
     'Environmental Assessment Office',
@@ -1728,19 +1656,7 @@ values
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) on conflict do nothing;
-
-insert into
-  case_management.agency_code (
-    agency_code,
-    short_description,
-    long_description,
-    display_order,
-    active_ind,
-    create_user_id,
-    create_utc_timestamp
-  )
-values
+  ),
   (
     'FSIB',
     'Food Safety Inspection Branch',
@@ -1749,19 +1665,7 @@ values
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) on conflict do nothing;
-
-insert into
-  case_management.agency_code (
-    agency_code,
-    short_description,
-    long_description,
-    display_order,
-    active_ind,
-    create_user_id,
-    create_utc_timestamp
-  )
-values
+  ),
   (
     'HEALTH',
     'Health Authority',
@@ -1770,19 +1674,7 @@ values
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) on conflict do nothing;
-
-insert into
-  case_management.agency_code (
-    agency_code,
-    short_description,
-    long_description,
-    display_order,
-    active_ind,
-    create_user_id,
-    create_utc_timestamp
-  )
-values
+  ),
   (
     'MHSED',
     'Mines Health, Safety and Enforcement Division',
@@ -1791,19 +1683,7 @@ values
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) on conflict do nothing;
-
-insert into
-  case_management.agency_code (
-    agency_code,
-    short_description,
-    long_description,
-    display_order,
-    active_ind,
-    create_user_id,
-    create_utc_timestamp
-  )
-values
+  ),
   (
     'MUNI',
     'Municipality / Regional District',
@@ -1812,19 +1692,7 @@ values
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) on conflict do nothing;
-
-insert into
-  case_management.agency_code (
-    agency_code,
-    short_description,
-    long_description,
-    display_order,
-    active_ind,
-    create_user_id,
-    create_utc_timestamp
-  )
-values
+  ),
   (
     'MOTI',
     'Transport Canada / MOTI',
@@ -1833,19 +1701,7 @@ values
     'Y',
     CURRENT_USER,
     CURRENT_TIMESTAMP
-  ) on conflict do nothing;
-
-insert into
-  case_management.agency_code (
-    agency_code,
-    short_description,
-    long_description,
-    display_order,
-    active_ind,
-    create_user_id,
-    create_utc_timestamp
-  )
-values
+  ),
   (
     'OTHER',
     'Other',
@@ -1856,17 +1712,17 @@ values
     CURRENT_TIMESTAMP
   ) on conflict do nothing;
 
-update case_management.agency_code
+update case_management.outcome_agency_code
 set
   display_order = 60
 where
-  agency_code = 'COS';
+  outcome_agency_code = 'COS';
 
-update case_management.agency_code
+update case_management.outcome_agency_code
 set
   display_order = 50
 where
-  agency_code = 'EPO';
+  outcome_agency_code = 'EPO';
 
 --------------------
 -- CE-1054 Schedule Sector XREFs
@@ -4942,8 +4798,8 @@ VALUES
   ) ON CONFLICT DO NOTHING;
 
 insert into
-  case_management.agency_code (
-    agency_code,
+  case_management.outcome_agency_code (
+    outcome_agency_code,
     short_description,
     long_description,
     display_order,
@@ -4962,12 +4818,12 @@ values
     CURRENT_TIMESTAMP
   ) on conflict do nothing;
 
-update case_management.agency_code
+update case_management.outcome_agency_code
 set
   short_description = 'MOTI',
   long_description = 'MOTI'
 where
-  agency_code = 'MOTI';
+  outcome_agency_code = 'MOTI';
 
 INSERT INTO
   case_management.action_code (
@@ -5468,7 +5324,7 @@ where
 insert into
   hwcr_outcome_actioned_by_code (
     hwcr_outcome_actioned_by_code,
-    agency_code,
+    outcome_agency_code,
     short_description,
     long_description,
     display_order,
@@ -5961,7 +5817,7 @@ VALUES
 insert into
   case_management.inaction_reason_code (
     inaction_reason_code,
-    agency_code,
+    outcome_agency_code,
     short_description,
     long_description,
     active_ind,
