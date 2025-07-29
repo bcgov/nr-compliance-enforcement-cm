@@ -81,8 +81,10 @@ export class CaseFileService {
     const where: any = {};
 
     if (filters?.search) {
-      // Search across multiple text fields
-      where.OR = [{ case_file_guid: { contains: filters.search, mode: "insensitive" } }];
+      // Partial UUID search options
+      where.OR = [
+        { case_file_guid: { equals: filters.search } }, // Exact matching
+      ];
     }
 
     if (filters?.agencyCode) {
