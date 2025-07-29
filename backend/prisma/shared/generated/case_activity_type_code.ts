@@ -1,9 +1,9 @@
-import { contact_method } from "./contact_method";
+import { case_activity } from "./case_activity";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-export class contact_method_type_code {
+export class case_activity_type_code {
   @ApiProperty({ type: String })
-  contact_method_type_code: string;
+  case_activity_type_code: string;
 
   @ApiProperty({ type: String })
   short_description: string;
@@ -29,6 +29,6 @@ export class contact_method_type_code {
   @ApiPropertyOptional({ type: Date })
   update_utc_timestamp?: Date;
 
-  @ApiProperty({ isArray: true, type: () => contact_method })
-  contact_method: contact_method[];
+  @ApiProperty({ isArray: true, type: () => case_activity })
+  case_activity: case_activity[];
 }

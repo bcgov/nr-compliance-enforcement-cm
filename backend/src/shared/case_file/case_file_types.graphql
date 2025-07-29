@@ -1,0 +1,9 @@
+scalar Date
+
+type CaseMomsSpaghettiFile {
+  caseIdentifier: String
+  leadAgency: AgencyMomsSpaghettiCode
+  caseStatus: CaseStatusCode
+  caseOpenedTimestamp: Date
+  caseActivities: [CaseActivity]
+}

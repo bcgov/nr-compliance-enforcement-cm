@@ -1,9 +1,9 @@
-import { contact_method } from "./contact_method";
+import { case_file } from "./case_file";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-export class contact_method_type_code {
+export class agency_code {
   @ApiProperty({ type: String })
-  contact_method_type_code: string;
+  agency_code: string;
 
   @ApiProperty({ type: String })
   short_description: string;
@@ -17,6 +17,9 @@ export class contact_method_type_code {
   @ApiProperty({ type: Boolean })
   active_ind: boolean = true;
 
+  @ApiProperty({ type: Boolean })
+  external_agency_ind: boolean;
+
   @ApiProperty({ type: String })
   create_user_id: string;
 
@@ -29,6 +32,6 @@ export class contact_method_type_code {
   @ApiPropertyOptional({ type: Date })
   update_utc_timestamp?: Date;
 
-  @ApiProperty({ isArray: true, type: () => contact_method })
-  contact_method: contact_method[];
+  @ApiProperty({ isArray: true, type: () => case_file })
+  case_file: case_file[];
 }
