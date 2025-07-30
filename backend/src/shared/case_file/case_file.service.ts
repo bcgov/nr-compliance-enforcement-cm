@@ -4,12 +4,14 @@ import { InjectMapper } from "@automapper/nestjs";
 import { Mapper } from "@automapper/core";
 import { case_file } from "../../../prisma/shared/generated/case_file";
 import { CaseFile, CaseMomsSpaghettiFileFilters, CaseMomsSpaghettiFileResult, PageInfo } from "./dto/case_file";
+import { PaginationUtility } from "../../common/pagination.utility";
 
 @Injectable()
 export class CaseFileService {
   constructor(
     private readonly prisma: SharedPrismaService,
     @InjectMapper() private readonly mapper: Mapper,
+    private readonly paginationUtility: PaginationUtility,
   ) {}
 
   private readonly logger = new Logger(CaseFileService.name);
@@ -72,19 +74,11 @@ export class CaseFileService {
     pageSize: number = 25,
     filters?: CaseMomsSpaghettiFileFilters,
   ): Promise<CaseMomsSpaghettiFileResult> {
-    // Constrain input parameters
-    page = Math.max(1, page);
-    pageSize = Math.min(Math.max(1, pageSize), 100); // Limit max page size to 100
-    const skip = (page - 1) * pageSize;
-
-    // Build where clause based on filters
     const where: any = {};
 
     if (filters?.search) {
-      // Partial UUID search options
-      where.OR = [
-        { case_file_guid: { equals: filters.search } }, // Exact matching
-      ];
+      // UUID column only supports exact matching
+      where.OR = [{ case_file_guid: { equals: filters.search } }];
     }
 
     if (filters?.agencyCode) {
@@ -114,14 +108,17 @@ export class CaseFileService {
       }
     }
 
-    try {
-      // Get total count for pagination metadata
-      const totalCount = await this.prisma.case_file.count({ where });
-
-      // Get the actual data
-      const prismaCaseFiles = await this.prisma.case_file.findMany({
-        where,
-        include: {
+    // Use the pagination utility to handle pagination logic and return pageInfo meta
+    const result = await this.paginationUtility.paginate<case_file, CaseFile>(
+      { page, pageSize },
+      {
+        prismaService: this.prisma,
+        modelName: "case_file",
+        sourceTypeName: "case_file",
+        destinationTypeName: "CaseFile",
+        mapper: this.mapper,
+        whereClause: where,
+        includeClause: {
           agency_code: true,
           case_status_code: true,
           case_activity: {
@@ -130,39 +127,13 @@ export class CaseFileService {
             },
           },
         },
-        skip,
-        take: pageSize,
-        orderBy,
-      });
+        orderByClause: orderBy,
+      },
+    );
 
-      // Map the data
-      const items = this.mapper.mapArray<case_file, CaseFile>(
-        prismaCaseFiles as Array<case_file>,
-        "case_file",
-        "CaseFile",
-      );
-
-      // Calculate pagination metadata
-      const totalPages = Math.ceil(totalCount / pageSize);
-      const hasNextPage = page < totalPages;
-      const hasPreviousPage = page > 1;
-
-      const pageInfo: PageInfo = {
-        hasNextPage,
-        hasPreviousPage,
-        totalCount,
-        totalPages,
-        currentPage: page,
-        pageSize: pageSize,
-      };
-
-      return {
-        items,
-        pageInfo,
-      };
-    } catch (error) {
-      this.logger.error("Error fetching paginated case files:", error);
-      throw error;
-    }
+    return {
+      items: result.items,
+      pageInfo: result.pageInfo as PageInfo,
+    };
   }
 }

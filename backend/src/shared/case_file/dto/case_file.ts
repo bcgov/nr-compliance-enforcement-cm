@@ -5,6 +5,7 @@ import { CaseStatusCode } from "../../case_status_code/dto/case_status_code";
 import { case_file } from "../../../../prisma/shared/generated/case_file";
 import { Field, InputType, ObjectType, Int } from "@nestjs/graphql";
 import { IsOptional, Min, Max } from "class-validator";
+import { PaginationMetadata, PaginatedResult } from "../../../common/pagination.utility";
 
 export class CaseFile {
   caseIdentifier: string;
@@ -38,7 +39,7 @@ export class CaseMomsSpaghettiFileFilters {
 }
 
 @ObjectType()
-export class PageInfo {
+export class PageInfo implements PaginationMetadata {
   @Field(() => Boolean)
   hasNextPage: boolean;
 
@@ -59,7 +60,7 @@ export class PageInfo {
 }
 
 @ObjectType()
-export class CaseMomsSpaghettiFileResult {
+export class CaseMomsSpaghettiFileResult implements PaginatedResult<CaseFile> {
   @Field(() => [CaseFile])
   items: CaseFile[];
 
