@@ -89,6 +89,20 @@ export class CaseFileService {
       where.case_status = filters.caseStatus;
     }
 
+    if (filters?.startDate || filters?.endDate) {
+      where.case_opened_utc_timestamp = {};
+
+      if (filters?.startDate) {
+        where.case_opened_utc_timestamp.gte = filters.startDate;
+      }
+
+      if (filters?.endDate) {
+        const endOfDay = new Date(filters.endDate);
+        endOfDay.setHours(23, 59, 59, 999);
+        where.case_opened_utc_timestamp.lte = endOfDay;
+      }
+    }
+
     // map filters to db columns
     const sortFieldMap: Record<string, string> = {
       caseIdentifier: "case_file_guid",

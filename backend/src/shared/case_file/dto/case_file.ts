@@ -29,6 +29,14 @@ export class CaseMomsSpaghettiFileFilters {
   @IsOptional()
   caseStatus?: string;
 
+  @Field(() => Date, { nullable: true })
+  @IsOptional()
+  startDate?: Date;
+
+  @Field(() => Date, { nullable: true })
+  @IsOptional()
+  endDate?: Date;
+
   @Field(() => String, { nullable: true })
   @IsOptional()
   sortBy?: string;
