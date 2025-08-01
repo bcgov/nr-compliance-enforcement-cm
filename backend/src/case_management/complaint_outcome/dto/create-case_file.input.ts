@@ -1,0 +1,36 @@
+import { AssessmentInput } from "./assessment.input";
+import { CreateEquipmentDetailsInput } from "./equipment/create-equipment-details.input";
+import { PreventionInput } from "./prevention.input";
+
+export class CreateComplaintOutcomeInput {
+  complaintId: string;
+  equipment?: [CreateEquipmentDetailsInput];
+  outcomeAgencyCode: string;
+  caseCode: string;
+  createUserId: string;
+}
+export class CreateAssessmentInput {
+  complaintId: string;
+  complaintOutcomeGuid: string;
+  assessment: AssessmentInput;
+  outcomeAgencyCode: string;
+  caseCode: string;
+  createUserId: string;
+}
+
+export class CreatePreventionInput {
+  complaintId: string;
+  complaintOutcomeGuid: string;
+  prevention: PreventionInput;
+  outcomeAgencyCode: string;
+  caseCode: string;
+  createUserId: string;
+}
+
+export class CreateEquipmentInput {
+  complaintId: string;
+  equipment: [CreateEquipmentDetailsInput];
+  outcomeAgencyCode: string;
+  caseCode: string;
+  createUserId: string;
+}
