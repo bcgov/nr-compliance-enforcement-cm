@@ -708,22 +708,6 @@ export class ComplaintOutcomeService {
         },
       },
     });
-    // let complaintOutcomeOutput: CaseFile[];
-    // const caseIdRecords = await this.prisma.lead.findMany({
-    //   where: {
-    //     lead_identifier: {
-    //       in: complaintId,
-    //     },
-    //   },
-    //   select: {
-    //     case_identifier: true,
-    //   },
-    // });
-    // const caseFileIds = caseIdRecords.map((caseIdRecord) => caseIdRecord.case_identifier);
-    // if (caseFileIds.length > 0) {
-    //   complaintOutcomeOutput = await this.find(caseFileIds);
-    // }
-    // return complaintOutcomeOutput ?? [];
   }
 
   async findManyBySearchString(searchString: string) {
