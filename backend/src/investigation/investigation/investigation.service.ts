@@ -13,6 +13,7 @@ export class InvestigationService {
   ) {}
 
   private readonly logger = new Logger(InvestigationService.name);
+
   async findOne(investigationGuid: string) {
     const prismaInvestigation = await this.prisma.investigation.findUnique({
       where: {
@@ -26,8 +27,7 @@ export class InvestigationService {
     if (!prismaInvestigation) {
       throw new Error(`Investigation with guid ${investigationGuid} not found`);
     }
-    console.log("MIKE       /////////     investigationGuid", investigationGuid);
-    console.log("MIKE       /////////     prismaInvestigation", prismaInvestigation);
+
     try {
       return this.mapper.map<investigation, Investigation>(
         prismaInvestigation as investigation,
