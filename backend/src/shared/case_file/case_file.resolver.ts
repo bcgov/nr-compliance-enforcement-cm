@@ -1,11 +1,15 @@
 import { Logger, UseGuards } from "@nestjs/common";
 import { JwtRoleGuard } from "../../auth/jwtrole.guard";
-import { Args, Query, Resolver, Int } from "@nestjs/graphql";
+import { Args, Query, Mutation, Resolver, Int } from "@nestjs/graphql";
 import { Roles } from "../../auth/decorators/roles.decorator";
 import { coreRoles } from "../../enum/role.enum";
 import { GraphQLError } from "graphql";
 import { CaseFileService } from "./case_file.service";
-import { CaseMomsSpaghettiFileFilters } from "./dto/case_file";
+import {
+  CaseMomsSpaghettiFileFilters,
+  CaseMomsSpaghettiFileCreateInput,
+  CaseMomsSpaghettiFileUpdateInput,
+} from "./dto/case_file";
 
 @UseGuards(JwtRoleGuard)
 @Resolver("CaseMomsSpaghettiFile")
@@ -58,6 +62,32 @@ export class CaseFileResolver {
         extensions: {
           code: "INTERNAL_SERVER_ERROR",
         },
+      });
+    }
+  }
+
+  @Mutation("createCaseMomsSpaghettiFile")
+  @Roles(coreRoles)
+  async create(@Args("input") input: CaseMomsSpaghettiFileCreateInput) {
+    try {
+      return await this.caseFileService.create(input);
+    } catch (error) {
+      this.logger.error("Create case file error:", error);
+      throw new GraphQLError("Error creating case file", {
+        extensions: { code: "INTERNAL_SERVER_ERROR" },
+      });
+    }
+  }
+
+  @Mutation("updateCaseMomsSpaghettiFile")
+  @Roles(coreRoles)
+  async update(@Args("caseFileGuid") caseFileGuid: string, @Args("input") input: CaseMomsSpaghettiFileUpdateInput) {
+    try {
+      return await this.caseFileService.update(caseFileGuid, input);
+    } catch (error) {
+      this.logger.error("Update case file error:", error);
+      throw new GraphQLError("Error updating case file", {
+        extensions: { code: "INTERNAL_SERVER_ERROR" },
       });
     }
   }

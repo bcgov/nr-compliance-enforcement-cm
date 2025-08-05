@@ -8,11 +8,31 @@ import { IsOptional, Min, Max } from "class-validator";
 import { PaginationMetadata, PaginatedResult } from "../../../common/pagination.utility";
 
 export class CaseFile {
-  caseIdentifier: string;
+  caseFileGuid: string;
   caseOpenedTimestamp: Date;
   leadAgency: AgencyCode;
   caseStatus: CaseStatusCode;
   caseActivities: CaseActivity[];
+}
+
+@InputType()
+export class CaseMomsSpaghettiFileCreateInput {
+  @Field(() => String)
+  leadAgencyCode: string;
+
+  @Field(() => String)
+  caseStatus: string;
+}
+
+@InputType()
+export class CaseMomsSpaghettiFileUpdateInput {
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  leadAgencyCode?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  caseStatus?: string;
 }
 
 @InputType()
@@ -82,7 +102,7 @@ export const mapPrismaCaseFileToCaseFile = (mapper: Mapper) => {
     "case_file",
     "CaseFile",
     forMember(
-      (dest) => dest.caseIdentifier,
+      (dest) => dest.caseFileGuid,
       mapFrom((src) => src.case_file_guid),
     ),
     forMember(

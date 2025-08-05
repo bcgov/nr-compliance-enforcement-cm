@@ -7,3 +7,8 @@ type Query {
     filters: CaseMomsSpaghettiFileFilters
   ): CaseMomsSpaghettiFileResult!
 }
+
+type Mutation {
+  createCaseMomsSpaghettiFile(input: CaseMomsSpaghettiFileCreateInput!): CaseMomsSpaghettiFile!
+  updateCaseMomsSpaghettiFile(caseFileGuid: String!, input: CaseMomsSpaghettiFileUpdateInput!): CaseMomsSpaghettiFile!
+}
