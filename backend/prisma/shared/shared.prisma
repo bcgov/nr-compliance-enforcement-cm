@@ -150,7 +150,7 @@ model case_activity {
   case_activity_guid           String                  @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
   case_file_guid               String                  @db.Uuid
   case_activity_type           String                  @db.VarChar(10)
-  case_activity_identifier_ref String                  @db.VarChar(20)
+  case_activity_identifier_ref String                  @db.VarChar(50)
   effective_utc_timestamp      DateTime                @default(now()) @db.Timestamp(6)
   expiry_utc_timestamp         DateTime?               @db.Timestamp(6)
   create_user_id               String                  @db.VarChar(32)

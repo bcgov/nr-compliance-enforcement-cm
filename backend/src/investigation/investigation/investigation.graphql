@@ -1,0 +1,13 @@
+scalar Date
+
+type Investigation {
+  investigationGuid: String
+  investigationDescription: String
+  leadAgency: String
+  investigationStatus: InvestigationStatusCode
+  investigationStartedTimestamp: Date
+}
+
+type Query {
+  getInvestigation(investigationGuid: String): Investigation
+}

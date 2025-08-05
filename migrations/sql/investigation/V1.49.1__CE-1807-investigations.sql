@@ -115,8 +115,10 @@ comment on column investigation.investigation_status_code_h.data_after_executed_
 -- Create investigation table
 CREATE TABLE investigation.investigation (
     investigation_guid uuid NULL DEFAULT uuid_generate_v4(),
+    investigation_description varchar(4000) NULL,
     owned_by_agency_ref varchar(10) NOT NULL,
     investigation_status varchar(10) NOT NULL,
+    investigation_started_utc_timestamp timestamp NOT NULL,
     create_user_id varchar(32) NOT NULL,
     create_utc_timestamp timestamp NOT NULL,
     update_user_id varchar(32) NULL,
@@ -128,7 +130,7 @@ CREATE TABLE investigation.investigation (
 CREATE TABLE investigation.investigation_h
 (
   h_investigation_guid uuid NOT NULL  DEFAULT uuid_generate_v4(),
-  target_row_id varchar(20) NOT NULL,
+  target_row_id uuid NOT NULL,
   operation_type char(1) NOT NULL,
   operation_user_id varchar(32) NOT NULL DEFAULT current_user,
   operation_executed_at timestamp NOT NULL DEFAULT now(),
@@ -142,8 +144,10 @@ CREATE or REPLACE TRIGGER investigation_history_trigger
 
 comment on table investigation.investigation is 'The central entity of the investigations system.';	
 comment on column investigation.investigation.investigation_guid is 'System generated unique key for a case.  This key should never be exposed to users via any system utilizing the tables.';
+comment on column investigation.investigation.investigation_description is 'A summary of the investigation as provided by users.';
 comment on column investigation.investigation.owned_by_agency_ref is 'A reference to the human readable code used to identify the agency that owns this case, found in the shared schema.';
 comment on column investigation.investigation.owned_by_agency_ref is 'A reference to the human readable code used to identify the agency that owns this case, found in the shared schema.';
+comment on column investigation.investigation.investigation_started_utc_timestamp is 'UTC timestamp of when the investigation was started.';
 comment on column investigation.investigation.create_user_id is 'The id of the user that created the case.';
 comment on column investigation.investigation.create_utc_timestamp is 'The timestamp when the case was created.  The timestamp is stored in UTC with no Offset.';
 comment on column investigation.investigation.update_user_id is 'The id of the user that updated the case.';
@@ -224,7 +228,7 @@ CREATE TABLE investigation.officer_investigation_xref (
 CREATE TABLE investigation.officer_investigation_xref_h
 (
   h_officer_investigation_xref_guid uuid NOT NULL  DEFAULT uuid_generate_v4(),
-  target_row_id varchar(20) NOT NULL,
+  target_row_id uuid NOT NULL,
   operation_type char(1) NOT NULL,
   operation_user_id varchar(32) NOT NULL DEFAULT current_user,
   operation_executed_at timestamp NOT NULL DEFAULT now(),
