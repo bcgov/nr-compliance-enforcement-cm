@@ -18,12 +18,7 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    "lib": ["es2022"],
-    "paths": {
-      ".prisma/investigation": ["node_modules/.prisma/investigation/index"],
-      ".prisma/shared": ["node_modules/.prisma/shared/index"],
-      ".prisma/case_management": ["node_modules/.prisma/case_management/index"]
-    }
+    "lib": ["es2022"]
   },
   "include": ["src/**/*.ts"]
 }
