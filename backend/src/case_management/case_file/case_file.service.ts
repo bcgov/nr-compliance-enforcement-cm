@@ -3432,7 +3432,7 @@ export class CaseFileService {
     };
 
     try {
-      let result: CaseFile;
+      let results: CaseFile;
       const current = new Date();
 
       await this.prisma.$transaction(async (db) => {
@@ -3471,9 +3471,9 @@ export class CaseFileService {
         }
       });
 
-      result = await this.findOne(caseIdentifier);
+      results = await this.findOne(caseIdentifier);
 
-      return result;
+      return results;
     } catch (error) {
       console.log("exception: unable to update decision", error);
       throw new GraphQLError("Exception occurred. See server log for details", {});
