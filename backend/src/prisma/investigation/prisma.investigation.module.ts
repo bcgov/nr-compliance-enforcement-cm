@@ -7,7 +7,7 @@ import { PrismaClient } from ".prisma/investigation"; // NOSONAR
   providers: [
     {
       provide: InvestigationPrismaService,
-      useValue: new PrismaClient(), // Initialize the Prisma client for case management
+      useValue: new PrismaClient(), // Initialize the Prisma client for investigation
     },
   ],
   exports: [InvestigationPrismaService],

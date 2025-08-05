@@ -47,12 +47,14 @@ import { EquipmentStatusCodeModule } from "src/case_management/equipment_status_
 import { ImportCommand } from "./app.commands";
 import { CaseMomsSpaghettiFileModule } from "./shared/case_file/case_file.module";
 import { InvestigationModule } from "./investigation/investigation/investigation.module";
+import { PrismaModuleInvestigation } from "./prisma/investigation/prisma.investigation.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     PrismaModuleCaseManagement,
     PrismaModuleShared,
+    PrismaModuleInvestigation,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ["./dist/**/*.graphql", "./src/**/*.graphql"],
