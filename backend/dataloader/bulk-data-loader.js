@@ -84,8 +84,7 @@ const generateWildlifeData = async (complaint_outcome_guid) => {
     sex_code: faker.random.arrayElement(['M', 'F', 'U']), // Random sex code
     age_code: faker.random.arrayElement(['ADLT', 'YRLN', 'YOFY', 'UNKN']), // Random age code
     hwcr_outcome_code: faker.random.arrayElement(['LESSLETHAL', 
-      'DEADONARR', 'GONEONARR', 'REFRTOBIO', 'SHRTRELOC', 'TRANSLCTD', 'TRANSREHB', 
-      'EUTHCOS', 'EUTHOTH', 'DESTRYCOS', 'DESTRYOTH']), // Random outcome code
+      'DEADONARR', 'GONEONARR', 'REFRTOBIO', 'SHRTRELOC', 'TRANSLCTD', 'TRANSREHB']), // Random outcome code
     species_code: faker.random.arrayElement(['BISON', 
       'BLKBEAR', 'RACCOON', 'MTNGOAT', 'MOOSE', 'WOLVERN', 'LYNX', 
       'FERALHOG', 'GRZBEAR', 'FOX', 'ELK']), // Random outcome code
