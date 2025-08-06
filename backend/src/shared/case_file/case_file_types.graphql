@@ -7,3 +7,27 @@ type CaseMomsSpaghettiFile {
   caseOpenedTimestamp: Date
   caseActivities: [CaseActivity]
 }
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  totalCount: Int!
+  totalPages: Int!
+  currentPage: Int!
+  pageSize: Int!
+}
+
+type CaseMomsSpaghettiFileResult {
+  items: [CaseMomsSpaghettiFile!]!
+  pageInfo: PageInfo!
+}
+
+input CaseMomsSpaghettiFileFilters {
+  search: String
+  agencyCode: String
+  caseStatus: String
+  startDate: Date
+  endDate: Date
+  sortBy: String
+  sortOrder: String
+}
