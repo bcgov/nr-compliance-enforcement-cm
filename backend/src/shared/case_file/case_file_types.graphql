@@ -1,7 +1,7 @@
 scalar Date
 
 type CaseMomsSpaghettiFile {
-  caseFileGuid: String
+  caseIdentifier: String
   leadAgency: AgencyMomsSpaghettiCode
   caseStatus: CaseStatusCode
   caseOpenedTimestamp: Date

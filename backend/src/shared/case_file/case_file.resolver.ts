@@ -19,7 +19,7 @@ export class CaseFileResolver {
 
   @Query("caseMomsSpaghettiFile")
   @Roles(coreRoles)
-  async findOne(@Args("caseFileGuid") id: string) {
+  async findOne(@Args("caseIdentifier") id: string) {
     try {
       return await this.caseFileService.findOne(id);
     } catch (error) {
@@ -81,9 +81,9 @@ export class CaseFileResolver {
 
   @Mutation("updateCaseMomsSpaghettiFile")
   @Roles(coreRoles)
-  async update(@Args("caseFileGuid") caseFileGuid: string, @Args("input") input: CaseMomsSpaghettiFileUpdateInput) {
+  async update(@Args("caseIdentifier") caseIdentifier: string, @Args("input") input: CaseMomsSpaghettiFileUpdateInput) {
     try {
-      return await this.caseFileService.update(caseFileGuid, input);
+      return await this.caseFileService.update(caseIdentifier, input);
     } catch (error) {
       this.logger.error("Update case file error:", error);
       throw new GraphQLError("Error updating case file", {

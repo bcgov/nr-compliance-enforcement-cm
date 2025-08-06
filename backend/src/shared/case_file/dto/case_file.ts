@@ -8,7 +8,7 @@ import { IsOptional, Min, Max } from "class-validator";
 import { PaginationMetadata, PaginatedResult } from "../../../common/pagination.utility";
 
 export class CaseFile {
-  caseFileGuid: string;
+  caseIdentifier: string;
   caseOpenedTimestamp: Date;
   leadAgency: AgencyCode;
   caseStatus: CaseStatusCode;
@@ -102,7 +102,7 @@ export const mapPrismaCaseFileToCaseFile = (mapper: Mapper) => {
     "case_file",
     "CaseFile",
     forMember(
-      (dest) => dest.caseFileGuid,
+      (dest) => dest.caseIdentifier,
       mapFrom((src) => src.case_file_guid),
     ),
     forMember(

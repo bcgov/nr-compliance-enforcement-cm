@@ -103,9 +103,9 @@ export class CaseFileService {
     }
   }
 
-  async update(caseFileGuid: string, input: CaseMomsSpaghettiFileUpdateInput): Promise<CaseFile> {
+  async update(caseIdentifier: string, input: CaseMomsSpaghettiFileUpdateInput): Promise<CaseFile> {
     const existingCaseFile = await this.prisma.case_file.findUnique({
-      where: { case_file_guid: caseFileGuid },
+      where: { case_file_guid: caseIdentifier },
     });
     if (!existingCaseFile) throw new Error("Case file not found");
 
@@ -122,7 +122,7 @@ export class CaseFileService {
     }
 
     const caseFile = await this.prisma.case_file.update({
-      where: { case_file_guid: caseFileGuid },
+      where: { case_file_guid: caseIdentifier },
       data: updateData,
       include: {
         agency_code: true,
@@ -179,7 +179,7 @@ export class CaseFileService {
 
     // map filters to db columns
     const sortFieldMap: Record<string, string> = {
-      caseFileGuid: "case_file_guid",
+      caseIdentifier: "case_file_guid",
       caseOpenedTimestamp: "case_opened_utc_timestamp",
       leadAgency: "owned_by_agency",
       caseStatus: "case_status",
