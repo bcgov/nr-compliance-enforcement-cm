@@ -6,13 +6,13 @@ import { InactionJustificationCode } from "./entities/inaction_justification_cod
 export class InactionJustificationTypeService {
   constructor(private readonly prisma: CaseManagementPrismaService) {}
 
-  async find(agencyCode?: string) {
+  async find(outcomeAgencyCode?: string) {
     let queryResult = null;
     const dataContext = this.prisma.inaction_reason_code;
 
     queryResult = await dataContext.findMany({
       where: {
-        outcome_agency_code: agencyCode ? agencyCode : undefined,
+        outcome_agency_code: outcomeAgencyCode ?? undefined,
       },
       select: {
         inaction_reason_code: true,
@@ -26,7 +26,7 @@ export class InactionJustificationTypeService {
 
     const inactionJustificationCodes: InactionJustificationCode[] = queryResult.map((queryResult) => ({
       inactionJustificationCode: queryResult.inaction_reason_code,
-      agencyCode: queryResult.agency_code,
+      outcomeAgencyCode: queryResult.outcome_agency_code,
       shortDescription: queryResult.short_description,
       longDescription: queryResult.long_description,
       displayOrder: queryResult.display_order,

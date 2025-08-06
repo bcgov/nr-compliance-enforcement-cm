@@ -3192,6 +3192,7 @@ export class ComplaintOutcomeService {
 
       return result;
     } catch (error) {
+      console.log(error);
       const { message } = error;
       throw new Error("Exception occurred in _findWdrXref. See server log for details", message);
     }
@@ -3242,24 +3243,67 @@ export class ComplaintOutcomeService {
           decision;
 
         let data: any = {
-          discharge_code: discharge,
+          discharge_code_decision_discharge_codeTodischarge_code: {
+            connect: {
+              discharge_code: discharge,
+            },
+          },
           rationale_text: rationale,
-          non_compliance_decision_matrix_code: nonCompliance,
-          ipm_auth_category_code: ipmAuthCategory !== "" ? ipmAuthCategory : null,
+          non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code:
+            {
+              connect: {
+                non_compliance_decision_matrix_code: nonCompliance,
+              },
+            },
           update_user_id: updateUserId,
           update_utc_timestamp: current,
         };
 
         if (actionTaken === "FWDLEADAGN") {
-          data = { ...data, inspection_number: null, lead_agency_code: leadAgency };
+          data = {
+            ...data,
+            inspection_number: null,
+            outcome_agency_code_decision_outcome_agency_codeTooutcome_agency_code: {
+              connect: {
+                outcome_agency_code: leadAgency,
+              },
+            },
+          };
         }
 
         if (actionTaken === "RESPREC") {
-          data = { ...data, lead_agency_code: null, inspection_number: parseInt(inspectionNumber) };
+          data = {
+            ...data,
+            outcome_agency_code_decision_outcome_agency_codeTooutcome_agency_code: {
+              connect: {
+                outcome_agency_code: null,
+              },
+            },
+            inspection_number: parseInt(inspectionNumber),
+          };
         }
 
         if (actionTaken !== "RESPREC" && actionTaken !== "FWDLEADAGN") {
-          data = { ...data, inspection_number: null, lead_agency_code: null };
+          data = {
+            ...data,
+            inspection_number: null,
+            outcome_agency_code_decision_outcome_agency_codeTooutcome_agency_code: {
+              connect: {
+                outcome_agency_code: null,
+              },
+            },
+          };
+        }
+
+        if (ipmAuthCategory && ipmAuthCategory !== "") {
+          data = {
+            ...data,
+            ipm_auth_category_code_decision_ipm_auth_category_codeToipm_auth_category_code: {
+              connect: {
+                ipm_auth_category_code: ipmAuthCategory,
+              },
+            },
+          };
         }
 
         const result = await db.decision.update({
