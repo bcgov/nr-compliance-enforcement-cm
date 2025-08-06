@@ -1,3 +1,9 @@
 type Query {
   caseMomsSpaghettiFile(caseFileGuid: String!): CaseMomsSpaghettiFile
+  caseMomsSpaghettiFiles(ids: [String!]!): [CaseMomsSpaghettiFile!]!
+  searchCaseMomsSpaghettiFiles(
+    page: Int = 1
+    pageSize: Int = 25
+    filters: CaseMomsSpaghettiFileFilters
+  ): CaseMomsSpaghettiFileResult!
 }
