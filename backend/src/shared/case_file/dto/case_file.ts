@@ -3,6 +3,9 @@ import { AgencyCode } from "../../agency_code/dto/agency_code";
 import { CaseActivity } from "../../case_activity/dto/case_activity";
 import { CaseStatusCode } from "../../case_status_code/dto/case_status_code";
 import { case_file } from "../../../../prisma/shared/generated/case_file";
+import { Field, InputType, ObjectType, Int } from "@nestjs/graphql";
+import { IsOptional, Min, Max } from "class-validator";
+import { PaginationMetadata, PaginatedResult } from "../../../common/pagination.utility";
 
 export class CaseFile {
   caseIdentifier: string;
@@ -10,6 +13,67 @@ export class CaseFile {
   leadAgency: AgencyCode;
   caseStatus: CaseStatusCode;
   caseActivities: CaseActivity[];
+}
+
+@InputType()
+export class CaseMomsSpaghettiFileFilters {
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  search?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  agencyCode?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  caseStatus?: string;
+
+  @Field(() => Date, { nullable: true })
+  @IsOptional()
+  startDate?: Date;
+
+  @Field(() => Date, { nullable: true })
+  @IsOptional()
+  endDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  sortBy?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  sortOrder?: string;
+}
+
+@ObjectType()
+export class PageInfo implements PaginationMetadata {
+  @Field(() => Boolean)
+  hasNextPage: boolean;
+
+  @Field(() => Boolean)
+  hasPreviousPage: boolean;
+
+  @Field(() => Int)
+  totalCount: number;
+
+  @Field(() => Int)
+  totalPages: number;
+
+  @Field(() => Int)
+  currentPage: number;
+
+  @Field(() => Int)
+  pageSize: number;
+}
+
+@ObjectType()
+export class CaseMomsSpaghettiFileResult implements PaginatedResult<CaseFile> {
+  @Field(() => [CaseFile])
+  items: CaseFile[];
+
+  @Field(() => PageInfo)
+  pageInfo: PageInfo;
 }
 
 export const mapPrismaCaseFileToCaseFile = (mapper: Mapper) => {
