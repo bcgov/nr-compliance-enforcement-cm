@@ -13,7 +13,6 @@ export class InvestigationResolver {
   @Query("getInvestigation")
   @Roles(coreRoles)
   async findOne(@Args("investigationGuid") investigationGuid: string) {
-    console.log("MIKE       //////////       investigationGuid in resolver", investigationGuid);
     try {
       return await this.investigationService.findOne(investigationGuid);
     } catch (error) {
