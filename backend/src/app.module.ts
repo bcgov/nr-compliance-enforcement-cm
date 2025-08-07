@@ -58,6 +58,7 @@ import { PrismaModuleInvestigation } from "./prisma/investigation/prisma.investi
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ["./dist/**/*.graphql", "./src/**/*.graphql"],
+      context: ({ req }) => ({ req }),
     }),
     AutomapperModule.forRoot({
       strategyInitializer: pojos(),

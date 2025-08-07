@@ -16,6 +16,26 @@ export class CaseFile {
 }
 
 @InputType()
+export class CaseMomsSpaghettiFileCreateInput {
+  @Field(() => String)
+  leadAgencyCode: string;
+
+  @Field(() => String)
+  caseStatus: string;
+}
+
+@InputType()
+export class CaseMomsSpaghettiFileUpdateInput {
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  leadAgencyCode?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  caseStatus?: string;
+}
+
+@InputType()
 export class CaseMomsSpaghettiFileFilters {
   @Field(() => String, { nullable: true })
   @IsOptional()

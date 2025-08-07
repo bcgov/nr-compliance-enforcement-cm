@@ -22,6 +22,16 @@ type CaseMomsSpaghettiFileResult {
   pageInfo: PageInfo!
 }
 
+input CaseMomsSpaghettiFileCreateInput {
+  leadAgencyCode: String!
+  caseStatus: String!
+}
+
+input CaseMomsSpaghettiFileUpdateInput {
+  leadAgencyCode: String
+  caseStatus: String
+}
+
 input CaseMomsSpaghettiFileFilters {
   search: String
   agencyCode: String
