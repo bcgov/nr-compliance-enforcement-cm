@@ -12,10 +12,12 @@ import {
   PageInfo,
 } from "./dto/case_file";
 import { PaginationUtility } from "../../common/pagination.utility";
+import { UserService } from "../../common/user.service";
 
 @Injectable()
 export class CaseFileService {
   constructor(
+    private readonly user: UserService,
     private readonly prisma: SharedPrismaService,
     @InjectMapper() private readonly mapper: Mapper,
     private readonly paginationUtility: PaginationUtility,
@@ -82,7 +84,7 @@ export class CaseFileService {
         owned_by_agency: input.leadAgencyCode,
         case_status: input.caseStatus,
         case_opened_utc_timestamp: new Date(),
-        create_user_id: "system",
+        create_user_id: this.user.getIdirUsername(),
       },
       include: {
         agency_code: true,
@@ -110,7 +112,7 @@ export class CaseFileService {
     if (!existingCaseFile) throw new Error("Case file not found");
 
     const updateData: any = {
-      update_user_id: "system", // TODO: Get user from request
+      update_user_id: this.user.getIdirUsername(),
       update_utc_timestamp: new Date(),
     };
 
