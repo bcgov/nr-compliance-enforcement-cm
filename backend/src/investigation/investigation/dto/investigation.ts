@@ -5,10 +5,10 @@ import { InvestigationStatusCode } from "../../../investigation/investigation_st
 
 export class Investigation {
   investigationGuid: string;
-  investigationDescription?: string;
+  description?: string;
   leadAgency: string;
-  investigationStatus: InvestigationStatusCode;
-  investigationStartedTimestamp: Date;
+  status: InvestigationStatusCode;
+  openedTimestamp: Date;
 }
 
 export const mapPrismaInvestigationToInvestigation = (mapper: Mapper) => {
@@ -21,7 +21,7 @@ export const mapPrismaInvestigationToInvestigation = (mapper: Mapper) => {
       mapFrom((src) => src.investigation_guid),
     ),
     forMember(
-      (dest) => dest.investigationDescription,
+      (dest) => dest.description,
       mapFrom((src) => src.investigation_description),
     ),
     forMember(
@@ -29,14 +29,14 @@ export const mapPrismaInvestigationToInvestigation = (mapper: Mapper) => {
       mapFrom((src) => src.owned_by_agency_ref),
     ),
     forMember(
-      (dest) => dest.investigationStatus,
+      (dest) => dest.status,
       mapFrom((src) =>
         mapper.map(src.investigation_status_code, "investigation_status_code", "InvestigationStatusCode"),
       ),
     ),
     forMember(
-      (dest) => dest.investigationStartedTimestamp,
-      mapFrom((src) => src.investigation_started_utc_timestamp),
+      (dest) => dest.openedTimestamp,
+      mapFrom((src) => src.investigation_opened_utc_timestamp),
     ),
   );
 };

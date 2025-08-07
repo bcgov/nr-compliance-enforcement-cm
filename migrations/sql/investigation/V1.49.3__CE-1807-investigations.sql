@@ -118,7 +118,7 @@ CREATE TABLE investigation.investigation (
     investigation_description varchar(4000) NULL,
     owned_by_agency_ref varchar(10) NOT NULL,
     investigation_status varchar(10) NOT NULL,
-    investigation_started_utc_timestamp timestamp NOT NULL,
+    investigation_opened_utc_timestamp timestamp NOT NULL,
     create_user_id varchar(32) NOT NULL,
     create_utc_timestamp timestamp NOT NULL,
     update_user_id varchar(32) NULL,
@@ -147,7 +147,7 @@ comment on column investigation.investigation.investigation_guid is 'System gene
 comment on column investigation.investigation.investigation_description is 'A summary of the investigation as provided by users.';
 comment on column investigation.investigation.owned_by_agency_ref is 'A reference to the human readable code used to identify the agency that owns this case, found in the shared schema.';
 comment on column investigation.investigation.owned_by_agency_ref is 'A reference to the human readable code used to identify the agency that owns this case, found in the shared schema.';
-comment on column investigation.investigation.investigation_started_utc_timestamp is 'UTC timestamp of when the investigation was started.';
+comment on column investigation.investigation.investigation_opened_utc_timestamp is 'UTC timestamp of when the investigation was started.';
 comment on column investigation.investigation.create_user_id is 'The id of the user that created the case.';
 comment on column investigation.investigation.create_utc_timestamp is 'The timestamp when the case was created.  The timestamp is stored in UTC with no Offset.';
 comment on column investigation.investigation.update_user_id is 'The id of the user that updated the case.';

@@ -16,7 +16,7 @@ export class investigation {
   investigation_status: string;
 
   @ApiProperty({ type: Date })
-  investigation_started_utc_timestamp: Date;
+  investigation_opened_utc_timestamp: Date;
 
   @ApiProperty({ type: String })
   create_user_id: string;
