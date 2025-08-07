@@ -3,12 +3,21 @@ import { SharedPrismaService } from "../../prisma/shared/prisma.shared.service";
 import { InjectMapper } from "@automapper/nestjs";
 import { Mapper } from "@automapper/core";
 import { case_file } from "../../../prisma/shared/generated/case_file";
-import { CaseFile, CaseMomsSpaghettiFileFilters, CaseMomsSpaghettiFileResult, PageInfo } from "./dto/case_file";
+import {
+  CaseFile,
+  CaseMomsSpaghettiFileFilters,
+  CaseMomsSpaghettiFileResult,
+  CaseMomsSpaghettiFileCreateInput,
+  CaseMomsSpaghettiFileUpdateInput,
+  PageInfo,
+} from "./dto/case_file";
 import { PaginationUtility } from "../../common/pagination.utility";
+import { UserService } from "../../common/user.service";
 
 @Injectable()
 export class CaseFileService {
   constructor(
+    private readonly user: UserService,
     private readonly prisma: SharedPrismaService,
     @InjectMapper() private readonly mapper: Mapper,
     private readonly paginationUtility: PaginationUtility,
@@ -65,6 +74,73 @@ export class CaseFileService {
       return this.mapper.mapArray<case_file, CaseFile>(prismaCaseFiles as Array<case_file>, "case_file", "CaseFile");
     } catch (error) {
       this.logger.error("Error fetching case files by IDs:", error);
+      throw error;
+    }
+  }
+
+  async create(input: CaseMomsSpaghettiFileCreateInput): Promise<CaseFile> {
+    const caseFile = await this.prisma.case_file.create({
+      data: {
+        owned_by_agency: input.leadAgencyCode,
+        case_status: input.caseStatus,
+        case_opened_utc_timestamp: new Date(),
+        create_user_id: this.user.getIdirUsername(),
+      },
+      include: {
+        agency_code: true,
+        case_status_code: true,
+        case_activity: {
+          include: {
+            case_activity_type_code: true,
+          },
+        },
+      },
+    });
+
+    try {
+      return this.mapper.map<case_file, CaseFile>(caseFile as case_file, "case_file", "CaseFile");
+    } catch (error) {
+      this.logger.error("Error creating case file:", error);
+      throw error;
+    }
+  }
+
+  async update(caseIdentifier: string, input: CaseMomsSpaghettiFileUpdateInput): Promise<CaseFile> {
+    const existingCaseFile = await this.prisma.case_file.findUnique({
+      where: { case_file_guid: caseIdentifier },
+    });
+    if (!existingCaseFile) throw new Error("Case file not found");
+
+    const updateData: any = {
+      update_user_id: this.user.getIdirUsername(),
+      update_utc_timestamp: new Date(),
+    };
+
+    if (input.leadAgencyCode !== undefined) {
+      updateData.owned_by_agency = input.leadAgencyCode;
+    }
+    if (input.caseStatus !== undefined) {
+      updateData.case_status = input.caseStatus;
+    }
+
+    const caseFile = await this.prisma.case_file.update({
+      where: { case_file_guid: caseIdentifier },
+      data: updateData,
+      include: {
+        agency_code: true,
+        case_status_code: true,
+        case_activity: {
+          include: {
+            case_activity_type_code: true,
+          },
+        },
+      },
+    });
+
+    try {
+      return this.mapper.map<case_file, CaseFile>(caseFile as case_file, "case_file", "CaseFile");
+    } catch (error) {
+      this.logger.error("Error updating case file:", error);
       throw error;
     }
   }
