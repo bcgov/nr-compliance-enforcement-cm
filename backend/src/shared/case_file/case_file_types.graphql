@@ -3,9 +3,9 @@ scalar Date
 type CaseFile {
   caseIdentifier: String
   leadAgency: AgencyCode
-  caseStatus: CaseStatusCode
-  caseOpenedTimestamp: Date
-  caseActivities: [CaseActivity]
+  status: CaseStatusCode
+  openedTimestamp: Date
+  activities: [CaseActivity]
 }
 
 type PageInfo {
@@ -23,19 +23,19 @@ type CaseFileResult {
 }
 
 input CaseFileCreateInput {
-  leadAgencyCode: String!
-  caseStatus: String!
+  leadAgency: String!
+  status: String!
 }
 
 input CaseFileUpdateInput {
-  leadAgencyCode: String
-  caseStatus: String
+  leadAgency: String
+  status: String
 }
 
 input CaseFileFilters {
   search: String
-  agencyCode: String
-  caseStatus: String
+  leadAgency: String
+  status: String
   startDate: Date
   endDate: Date
   sortBy: String

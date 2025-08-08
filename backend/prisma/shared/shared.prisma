@@ -147,18 +147,18 @@ model agency_code {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model case_activity {
-  case_activity_guid           String                  @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
-  case_file_guid               String                  @db.Uuid
-  case_activity_type           String                  @db.VarChar(10)
-  case_activity_identifier_ref String                  @db.VarChar(20)
-  effective_utc_timestamp      DateTime                @default(now()) @db.Timestamp(6)
-  expiry_utc_timestamp         DateTime?               @db.Timestamp(6)
-  create_user_id               String                  @db.VarChar(32)
-  create_utc_timestamp         DateTime                @default(now()) @db.Timestamp(6)
-  update_user_id               String?                 @db.VarChar(32)
-  update_utc_timestamp         DateTime?               @db.Timestamp(6)
-  case_activity_type_code      case_activity_type_code @relation(fields: [case_activity_type], references: [case_activity_type_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_case_activity__case_activity_type_code")
-  case_file                    case_file               @relation(fields: [case_file_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_case_activity__case_file")
+  case_activity_guid      String                  @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
+  case_file_guid          String                  @db.Uuid
+  activity_type           String                  @db.VarChar(10)
+  activity_identifier_ref String                  @db.VarChar(20)
+  effective_utc_timestamp DateTime                @default(now()) @db.Timestamp(6)
+  expiry_utc_timestamp    DateTime?               @db.Timestamp(6)
+  create_user_id          String                  @db.VarChar(32)
+  create_utc_timestamp    DateTime                @default(now()) @db.Timestamp(6)
+  update_user_id          String?                 @db.VarChar(32)
+  update_utc_timestamp    DateTime?               @db.Timestamp(6)
+  case_activity_type_code case_activity_type_code @relation(fields: [activity_type], references: [case_activity_type_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_case_activity__case_activity_type_code")
+  case_file               case_file               @relation(fields: [case_file_guid], references: [case_file_guid], onDelete: NoAction, onUpdate: NoAction, map: "fk_case_activity__case_file")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -177,17 +177,17 @@ model case_activity_type_code {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model case_file {
-  case_file_guid            String           @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
-  owned_by_agency           String           @db.VarChar(10)
-  case_status               String           @db.VarChar(10)
-  case_opened_utc_timestamp DateTime         @default(now()) @db.Timestamp(6)
-  create_user_id            String           @db.VarChar(32)
-  create_utc_timestamp      DateTime         @default(now()) @db.Timestamp(6)
-  update_user_id            String?          @db.VarChar(32)
-  update_utc_timestamp      DateTime?        @db.Timestamp(6)
-  case_activity             case_activity[]
-  agency_code               agency_code      @relation(fields: [owned_by_agency], references: [agency_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_case_file__agency_code")
-  case_status_code          case_status_code @relation(fields: [case_status], references: [case_status_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_case_file__case_status_code")
+  case_file_guid       String           @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
+  lead_agency          String           @db.VarChar(10)
+  status               String           @db.VarChar(10)
+  opened_utc_timestamp DateTime         @default(now()) @db.Timestamp(6)
+  create_user_id       String           @db.VarChar(32)
+  create_utc_timestamp DateTime         @default(now()) @db.Timestamp(6)
+  update_user_id       String?          @db.VarChar(32)
+  update_utc_timestamp DateTime?        @db.Timestamp(6)
+  case_activity        case_activity[]
+  agency_code          agency_code      @relation(fields: [lead_agency], references: [agency_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_case_file__agency_code")
+  case_status_code     case_status_code @relation(fields: [status], references: [case_status_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_case_file__case_status_code")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
