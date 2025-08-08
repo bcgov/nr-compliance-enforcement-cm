@@ -1,0 +1,14 @@
+type Query {
+  caseMomsSpaghettiFile(caseIdentifier: String!): CaseMomsSpaghettiFile
+  caseMomsSpaghettiFiles(caseIdentifiers: [String!]!): [CaseMomsSpaghettiFile!]!
+  searchCaseMomsSpaghettiFiles(
+    page: Int = 1
+    pageSize: Int = 25
+    filters: CaseMomsSpaghettiFileFilters
+  ): CaseMomsSpaghettiFileResult!
+}
+
+type Mutation {
+  createCaseMomsSpaghettiFile(input: CaseMomsSpaghettiFileCreateInput!): CaseMomsSpaghettiFile!
+  updateCaseMomsSpaghettiFile(caseIdentifier: String!, input: CaseMomsSpaghettiFileUpdateInput!): CaseMomsSpaghettiFile!
+}

@@ -6548,6 +6548,19 @@ UPDATE case_management.hwcr_outcome_code
 SET display_order=130, update_user_id='FLYWAY', update_utc_timestamp=CURRENT_TIMESTAMP
 WHERE hwcr_outcome_code='TRANSLCTD';
 
+
+DELETE FROM case_management.hwcr_outcome_code 
+where hwcr_outcome_code IN ('EUTHCOS', 'DESTRYCOS', 'EUTHOTH', 'DESTRYOTH');
+
+UPDATE case_management.hwcr_outcome_code
+SET display_order=85, update_user_id='FLYWAY', update_utc_timestamp=CURRENT_TIMESTAMP
+WHERE hwcr_outcome_code='LESSLETHAL';
+
+UPDATE case_management.hwcr_outcome_code
+SET display_order=95, update_user_id='FLYWAY', update_utc_timestamp=CURRENT_TIMESTAMP
+WHERE hwcr_outcome_code='REFRTOBIO';
+
+
 --------------------------
 -- New Changes above this line
 -------------------------

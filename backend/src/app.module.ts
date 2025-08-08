@@ -38,12 +38,14 @@ import { CaseLocationCodeModule } from "./case_management/code-tables/case_locat
 import { IpmAuthCategoryCodeModule } from "./case_management/ipm_auth_category_code/ipm_auth_category_code.module";
 import { PersonModule } from "./shared/person/person.module";
 import { ParkModule } from "./shared/park/park.module";
+import { AgencyMomsSpaghettiCodeModule } from "./shared/agency_code/agency_code.module";
 import { AutomapperModule, InjectMapper } from "@automapper/nestjs";
 import { pojos } from "@automapper/pojos";
 import { Mapper } from "@automapper/core";
 import { initializeMappings } from "./middleware/mapper";
 import { EquipmentStatusCodeModule } from "src/case_management/equipment_status_code/equipment_status_code.module";
 import { ImportCommand } from "./app.commands";
+import { CaseMomsSpaghettiFileModule } from "./shared/case_file/case_file.module";
 
 @Module({
   imports: [
@@ -53,6 +55,7 @@ import { ImportCommand } from "./app.commands";
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ["./dist/**/*.graphql", "./src/**/*.graphql"],
+      context: ({ req }) => ({ req }),
     }),
     AutomapperModule.forRoot({
       strategyInitializer: pojos(),
@@ -87,6 +90,8 @@ import { ImportCommand } from "./app.commands";
     PersonModule,
     ParkModule,
     EquipmentStatusCodeModule,
+    AgencyMomsSpaghettiCodeModule,
+    CaseMomsSpaghettiFileModule,
   ],
   controllers: [AppController],
   providers: [AppService, ImportCommand, DateScalar],

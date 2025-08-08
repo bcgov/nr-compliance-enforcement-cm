@@ -1,0 +1,8 @@
+scalar Date
+
+type CaseActivity {
+  caseActivityType: CaseActivityTypeCode
+  caseActivityIdentifier: String
+  effectiveDate: Date
+  expiryDate: Date
+}

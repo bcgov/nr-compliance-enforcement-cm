@@ -1,0 +1,43 @@
+scalar Date
+
+type CaseMomsSpaghettiFile {
+  caseIdentifier: String
+  leadAgency: AgencyMomsSpaghettiCode
+  caseStatus: CaseStatusCode
+  caseOpenedTimestamp: Date
+  caseActivities: [CaseActivity]
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  totalCount: Int!
+  totalPages: Int!
+  currentPage: Int!
+  pageSize: Int!
+}
+
+type CaseMomsSpaghettiFileResult {
+  items: [CaseMomsSpaghettiFile!]!
+  pageInfo: PageInfo!
+}
+
+input CaseMomsSpaghettiFileCreateInput {
+  leadAgencyCode: String!
+  caseStatus: String!
+}
+
+input CaseMomsSpaghettiFileUpdateInput {
+  leadAgencyCode: String
+  caseStatus: String
+}
+
+input CaseMomsSpaghettiFileFilters {
+  search: String
+  agencyCode: String
+  caseStatus: String
+  startDate: Date
+  endDate: Date
+  sortBy: String
+  sortOrder: String
+}
