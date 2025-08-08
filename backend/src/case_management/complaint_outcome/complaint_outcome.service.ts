@@ -67,7 +67,6 @@ export class ComplaintOutcomeService {
 
     try {
       const caseRecord = {
-        case_code: input.caseCode,
         owned_by_agency_code: input.outcomeAgencyCode,
         complaint_identifier: input.complaintId,
         create_user_id: input.createUserId,
@@ -111,7 +110,6 @@ export class ComplaintOutcomeService {
               complaint_identifier: model.complaintId,
               create_user_id: model.createUserId,
               create_utc_timestamp: new Date(),
-              case_code: model.caseCode,
             },
           });
 
@@ -993,7 +991,6 @@ export class ComplaintOutcomeService {
             complaint_identifier: model.complaintId,
             create_user_id: model.createUserId,
             create_utc_timestamp: new Date(),
-            case_code: model.caseCode,
           },
         });
 
@@ -1203,7 +1200,6 @@ export class ComplaintOutcomeService {
               create_user_id: reviewInput.userId,
               create_utc_timestamp: new Date(),
               review_required_ind: true,
-              case_code: reviewInput.caseCode,
             },
           });
           caseFileId = caseFile.complaint_outcome_guid;
@@ -3069,7 +3065,7 @@ export class ComplaintOutcomeService {
         }
 
         if (decision.leadAgency) {
-          record = { ...record, lead_agency_code: decision.leadAgency };
+          record = { ...record, outcome_agency_code: decision.leadAgency };
         }
 
         const result = await db.decision.create({
@@ -3077,9 +3073,8 @@ export class ComplaintOutcomeService {
         });
 
         return result?.decision_guid;
-      } catch (exception) {
-        const { message } = exception;
-        throw new Error("Exception occurred in _addDecision. See server log for details", message);
+      } catch (error) {
+        throw new Error("Exception occurred in _addDecision. See server log for details", error);
       }
     };
 
@@ -3111,48 +3106,6 @@ export class ComplaintOutcomeService {
       } catch (exception) {
         const { message } = exception;
         throw new Error("Exception occurred in _findWdrXref. See server log for details", message);
-      }
-    };
-
-    //--
-    //-- creates an action_type_action xref
-    //--
-    const _applyAction = async (
-      db: Omit<
-        PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
-        "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
-      >,
-      caseFileId: string,
-      decision: DecisionInput,
-      userId: string,
-    ): Promise<any> => {
-      try {
-        const { actionTaken, assignedTo, actionTakenDate } = decision;
-
-        //-- get the action_type_action xref
-        const xref = await this._getActionXref(db, actionTaken, ACTION_TYPE_CODES.CEEBACTION);
-
-        let record: any = {
-          action_guid: randomUUID(),
-          complaint_outcome_guid: caseFileId,
-          action_type_action_xref_guid: xref,
-          actor_guid: assignedTo,
-          action_date: actionTakenDate,
-          active_ind: true,
-          create_user_id: userId,
-          update_user_id: userId,
-          create_utc_timestamp: new Date(),
-          update_utc_timestamp: new Date(),
-        };
-
-        const result = await db.action.create({
-          data: record,
-        });
-
-        return result?.action_guid;
-      } catch (exception) {
-        const { message } = exception;
-        throw new Error("Exception occurred in _applyAction. See server log for details", message);
       }
     };
 
@@ -3193,8 +3146,7 @@ export class ComplaintOutcomeService {
       return result;
     } catch (error) {
       console.log(error);
-      const { message } = error;
-      throw new Error("Exception occurred in _findWdrXref. See server log for details", message);
+      throw new Error("Exception occurred in _findWdrXref. See server log for details", error);
     }
   };
 
@@ -3243,67 +3195,24 @@ export class ComplaintOutcomeService {
           decision;
 
         let data: any = {
-          discharge_code_decision_discharge_codeTodischarge_code: {
-            connect: {
-              discharge_code: discharge,
-            },
-          },
+          discharge_code: discharge,
           rationale_text: rationale,
-          non_compliance_decision_matrix_code_decision_non_compliance_decision_matrix_codeTonon_compliance_decision_matrix_code:
-            {
-              connect: {
-                non_compliance_decision_matrix_code: nonCompliance,
-              },
-            },
+          non_compliance_decision_matrix_code: nonCompliance,
+          ipm_auth_category_code: ipmAuthCategory !== "" ? ipmAuthCategory : null,
           update_user_id: updateUserId,
           update_utc_timestamp: current,
         };
 
         if (actionTaken === "FWDLEADAGN") {
-          data = {
-            ...data,
-            inspection_number: null,
-            outcome_agency_code_decision_outcome_agency_codeTooutcome_agency_code: {
-              connect: {
-                outcome_agency_code: leadAgency,
-              },
-            },
-          };
+          data = { ...data, inspection_number: null, outcome_agency_code: leadAgency };
         }
 
         if (actionTaken === "RESPREC") {
-          data = {
-            ...data,
-            outcome_agency_code_decision_outcome_agency_codeTooutcome_agency_code: {
-              connect: {
-                outcome_agency_code: null,
-              },
-            },
-            inspection_number: parseInt(inspectionNumber),
-          };
+          data = { ...data, outcome_agency_code: null, inspection_number: parseInt(inspectionNumber) };
         }
 
         if (actionTaken !== "RESPREC" && actionTaken !== "FWDLEADAGN") {
-          data = {
-            ...data,
-            inspection_number: null,
-            outcome_agency_code_decision_outcome_agency_codeTooutcome_agency_code: {
-              connect: {
-                outcome_agency_code: null,
-              },
-            },
-          };
-        }
-
-        if (ipmAuthCategory && ipmAuthCategory !== "") {
-          data = {
-            ...data,
-            ipm_auth_category_code_decision_ipm_auth_category_codeToipm_auth_category_code: {
-              connect: {
-                ipm_auth_category_code: ipmAuthCategory,
-              },
-            },
-          };
+          data = { ...data, inspection_number: null, outcome_agency_code: null };
         }
 
         const result = await db.decision.update({
@@ -3371,7 +3280,7 @@ export class ComplaintOutcomeService {
         PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
         "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
       >,
-      complaintOutcomeGuid: string,
+      caseIdentifier: string,
       decisionId: string,
       decision: DecisionInput,
       updateUserId: string,
@@ -3383,7 +3292,7 @@ export class ComplaintOutcomeService {
           await db.action.updateMany({
             where: {
               decision_guid: decisionId,
-              complaint_outcome_guid: complaintOutcomeGuid,
+              complaint_outcome_guid: caseIdentifier,
             },
             data: {
               active_ind: false,
@@ -3397,7 +3306,7 @@ export class ComplaintOutcomeService {
 
           const source = await db.action.findFirst({
             where: {
-              complaint_outcome_guid: complaintOutcomeGuid,
+              complaint_outcome_guid: caseIdentifier,
               decision_guid: decisionId,
               active_ind: true,
             },

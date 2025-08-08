@@ -10,7 +10,6 @@ input CreateAssessmentInput {
   complaintId: String
   assessment: AssessmentInput!
   outcomeAgencyCode: String!
-  caseCode: String!
   createUserId: String!
 }
 
@@ -42,7 +41,6 @@ input UpdateAssessmentInput {
   complaintId: String
   assessment: AssessmentInput!
   outcomeAgencyCode: String!
-  caseCode: String!
   updateUserId: String!
 }
 
@@ -51,7 +49,6 @@ input CreatePreventionInput {
   complaintId: String
   prevention: PreventionInput!
   outcomeAgencyCode: String!
-  caseCode: String!
   createUserId: String!
 }
 
@@ -72,7 +69,6 @@ input UpdatePreventionInput {
   complaintId: String
   prevention: PreventionInput!
   outcomeAgencyCode: String!
-  caseCode: String!
   updateUserId: String!
 }
 
@@ -85,7 +81,6 @@ input DeletePreventionInput {
 input ReviewInput {
   complaintId: String!
   outcomeAgencyCode: String!
-  caseCode: String!
   userId: String!
   isReviewRequired: Boolean!
   complaintOutcomeGuid: String
@@ -105,7 +100,6 @@ input CreateNoteInput {
   note: String!
   actor: String!
   outcomeAgencyCode: String!
-  caseCode: String!
   createUserId: String!
 }
 
@@ -128,7 +122,6 @@ input CreateEquipmentInput {
   complaintId: String!
   createUserId: String!
   outcomeAgencyCode: String!
-  caseCode: String!
   equipment: [EquipmentDetailsInput]!
 }
 
@@ -136,7 +129,6 @@ input UpdateEquipmentInput {
   complaintId: String!
   updateUserId: String!
   outcomeAgencyCode: String!
-  caseCode: String!
   equipment: [EquipmentDetailsInput]!
 }
 
@@ -175,7 +167,6 @@ input DeleteWildlifeInput {
 input CreateWildlifeInput {
   complaintId: String!
   outcomeAgencyCode: String!
-  caseCode: String!
   createUserId: String!
   wildlife: WildlifeInput!
 }
@@ -233,7 +224,6 @@ input WildlifeActionInput {
 input CreateDecisionInput {
   complaintId: String
   outcomeAgencyCode: String
-  caseCode: String
   actor: String
   createUserId: String
   decision: DecisionInput
@@ -242,7 +232,6 @@ input CreateDecisionInput {
 input UpdateDecisionInput {
   complaintOutcomeGuid: String
   outcomeAgencyCode: String
-  caseCode: String
   actor: String
   updateUserId: String
   decision: DecisionInput
@@ -266,7 +255,6 @@ input DecisionInput {
 input CreateAuthorizationOutcomeInput {
   complaintId: String!
   outcomeAgencyCode: String!
-  caseCode: String!
   createUserId: String!
   input: PermitSiteInput!
 }
@@ -274,7 +262,6 @@ input CreateAuthorizationOutcomeInput {
 input UpdateAuthorizationOutcomeInput {
   complaintOutcomeGuid: String
   outcomeAgencyCode: String
-  caseCode: String
   updateUserId: String
   input: PermitSiteInput
 }

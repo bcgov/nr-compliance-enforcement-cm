@@ -6,7 +6,6 @@ export class CreateComplaintOutcomeInput {
   complaintId: string;
   equipment?: [CreateEquipmentDetailsInput];
   outcomeAgencyCode: string;
-  caseCode: string;
   createUserId: string;
 }
 export class CreateAssessmentInput {
@@ -14,7 +13,6 @@ export class CreateAssessmentInput {
   complaintOutcomeGuid: string;
   assessment: AssessmentInput;
   outcomeAgencyCode: string;
-  caseCode: string;
   createUserId: string;
 }
 
@@ -23,7 +21,6 @@ export class CreatePreventionInput {
   complaintOutcomeGuid: string;
   prevention: PreventionInput;
   outcomeAgencyCode: string;
-  caseCode: string;
   createUserId: string;
 }
 
@@ -31,6 +28,5 @@ export class CreateEquipmentInput {
   complaintId: string;
   equipment: [CreateEquipmentDetailsInput];
   outcomeAgencyCode: string;
-  caseCode: string;
   createUserId: string;
 }

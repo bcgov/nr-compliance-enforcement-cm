@@ -7,7 +7,6 @@ export class UpdateAssessmentInput {
   complaintId: string;
   assessment: AssessmentInput;
   outcomeAgencyCode: string;
-  caseCode: string;
   updateUserId: string;
 }
 
@@ -16,7 +15,6 @@ export class UpdatePreventionInput {
   complaintId: string;
   prevention: PreventionInput;
   outcomeAgencyCode: string;
-  caseCode: string;
   updateUserId: string;
 }
 
