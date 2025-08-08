@@ -6,11 +6,11 @@ import { coreRoles } from "../../enum/role.enum";
 import { Roles } from "../../auth/decorators/roles.decorator";
 
 @UseGuards(JwtRoleGuard)
-@Resolver("AgencyMomsSpaghettiCode")
+@Resolver("AgencyCode")
 export class AgencyCodeResolver {
   constructor(private readonly agencyCodeService: AgencyCodeService) {}
 
-  @Query("agencyMomsSpaghettiCodes")
+  @Query("agencyCodes")
   @Roles(coreRoles)
   findAll() {
     return this.agencyCodeService.findAll();

@@ -5,10 +5,10 @@ import { Mapper } from "@automapper/core";
 import { case_file } from "../../../prisma/shared/generated/case_file";
 import {
   CaseFile,
-  CaseMomsSpaghettiFileFilters,
-  CaseMomsSpaghettiFileResult,
-  CaseMomsSpaghettiFileCreateInput,
-  CaseMomsSpaghettiFileUpdateInput,
+  CaseFileFilters,
+  CaseFileResult,
+  CaseFileCreateInput,
+  CaseFileUpdateInput,
   PageInfo,
 } from "./dto/case_file";
 import { PaginationUtility } from "../../common/pagination.utility";
@@ -78,7 +78,7 @@ export class CaseFileService {
     }
   }
 
-  async create(input: CaseMomsSpaghettiFileCreateInput): Promise<CaseFile> {
+  async create(input: CaseFileCreateInput): Promise<CaseFile> {
     const caseFile = await this.prisma.case_file.create({
       data: {
         owned_by_agency: input.leadAgencyCode,
@@ -105,7 +105,7 @@ export class CaseFileService {
     }
   }
 
-  async update(caseIdentifier: string, input: CaseMomsSpaghettiFileUpdateInput): Promise<CaseFile> {
+  async update(caseIdentifier: string, input: CaseFileUpdateInput): Promise<CaseFile> {
     const existingCaseFile = await this.prisma.case_file.findUnique({
       where: { case_file_guid: caseIdentifier },
     });
@@ -145,11 +145,7 @@ export class CaseFileService {
     }
   }
 
-  async search(
-    page: number = 1,
-    pageSize: number = 25,
-    filters?: CaseMomsSpaghettiFileFilters,
-  ): Promise<CaseMomsSpaghettiFileResult> {
+  async search(page: number = 1, pageSize: number = 25, filters?: CaseFileFilters): Promise<CaseFileResult> {
     const where: any = {};
 
     if (filters?.search) {

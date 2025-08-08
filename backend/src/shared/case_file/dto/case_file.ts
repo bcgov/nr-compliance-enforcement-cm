@@ -16,7 +16,7 @@ export class CaseFile {
 }
 
 @InputType()
-export class CaseMomsSpaghettiFileCreateInput {
+export class CaseFileCreateInput {
   @Field(() => String)
   leadAgencyCode: string;
 
@@ -25,7 +25,7 @@ export class CaseMomsSpaghettiFileCreateInput {
 }
 
 @InputType()
-export class CaseMomsSpaghettiFileUpdateInput {
+export class CaseFileUpdateInput {
   @Field(() => String, { nullable: true })
   @IsOptional()
   leadAgencyCode?: string;
@@ -36,7 +36,7 @@ export class CaseMomsSpaghettiFileUpdateInput {
 }
 
 @InputType()
-export class CaseMomsSpaghettiFileFilters {
+export class CaseFileFilters {
   @Field(() => String, { nullable: true })
   @IsOptional()
   search?: string;
@@ -88,7 +88,7 @@ export class PageInfo implements PaginationMetadata {
 }
 
 @ObjectType()
-export class CaseMomsSpaghettiFileResult implements PaginatedResult<CaseFile> {
+export class CaseFileResult implements PaginatedResult<CaseFile> {
   @Field(() => [CaseFile])
   items: CaseFile[];
 
