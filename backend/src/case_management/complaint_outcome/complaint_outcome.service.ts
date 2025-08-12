@@ -1193,7 +1193,7 @@ export class ComplaintOutcomeService {
             data: {
               agency_code: {
                 connect: {
-                  outcome_agency_code: reviewInput.agencyCode,
+                  outcome_agency_code: reviewInput.outcomeAgencyCode,
                 },
               },
               complaint_identifier: reviewInput.complaintId,

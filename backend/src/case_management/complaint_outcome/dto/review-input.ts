@@ -1,6 +1,6 @@
 export class ReviewInput {
   complaintId: string;
-  agencyCode: string;
+  outcomeAgencyCode: string;
   userId: string;
   isReviewRequired: boolean;
   complaintOutcomeGuid?: string;
