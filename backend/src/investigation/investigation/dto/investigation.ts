@@ -7,7 +7,7 @@ export class Investigation {
   investigationGuid: string;
   description?: string;
   leadAgency: string;
-  status: InvestigationStatusCode;
+  investigationStatus: InvestigationStatusCode;
   openedTimestamp: Date;
 }
 
@@ -29,7 +29,7 @@ export const mapPrismaInvestigationToInvestigation = (mapper: Mapper) => {
       mapFrom((src) => src.owned_by_agency_ref),
     ),
     forMember(
-      (dest) => dest.status,
+      (dest) => dest.investigationStatus,
       mapFrom((src) =>
         mapper.map(src.investigation_status_code, "investigation_status_code", "InvestigationStatusCode"),
       ),
