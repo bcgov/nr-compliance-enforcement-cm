@@ -1,11 +1,11 @@
 scalar Date
 
-type CaseMomsSpaghettiFile {
+type CaseFile {
   caseIdentifier: String
-  leadAgency: AgencyMomsSpaghettiCode
-  caseStatus: CaseStatusCode
-  caseOpenedTimestamp: Date
-  caseActivities: [CaseActivity]
+  leadAgency: AgencyCode
+  status: CaseStatusCode
+  openedTimestamp: Date
+  activities: [CaseActivity]
 }
 
 type PageInfo {
@@ -17,25 +17,25 @@ type PageInfo {
   pageSize: Int!
 }
 
-type CaseMomsSpaghettiFileResult {
-  items: [CaseMomsSpaghettiFile!]!
+type CaseFileResult {
+  items: [CaseFile!]!
   pageInfo: PageInfo!
 }
 
-input CaseMomsSpaghettiFileCreateInput {
-  leadAgencyCode: String!
-  caseStatus: String!
+input CaseFileCreateInput {
+  leadAgency: String!
+  status: String!
 }
 
-input CaseMomsSpaghettiFileUpdateInput {
-  leadAgencyCode: String
-  caseStatus: String
+input CaseFileUpdateInput {
+  leadAgency: String
+  status: String
 }
 
-input CaseMomsSpaghettiFileFilters {
+input CaseFileFilters {
   search: String
-  agencyCode: String
-  caseStatus: String
+  leadAgency: String
+  status: String
   startDate: Date
   endDate: Date
   sortBy: String
