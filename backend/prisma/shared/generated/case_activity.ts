@@ -10,10 +10,10 @@ export class case_activity {
   case_file_guid: string;
 
   @ApiProperty({ type: String })
-  case_activity_type: string;
+  activity_type: string;
 
   @ApiProperty({ type: String })
-  case_activity_identifier_ref: string;
+  activity_identifier_ref: string;
 
   @ApiProperty({ type: Date })
   effective_utc_timestamp: Date;

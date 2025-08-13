@@ -9,26 +9,26 @@ import { PaginationMetadata, PaginatedResult } from "../../../common/pagination.
 
 export class CaseFile {
   caseIdentifier: string;
-  caseOpenedTimestamp: Date;
+  openedTimestamp: Date;
   leadAgency: AgencyCode;
   caseStatus: CaseStatusCode;
-  caseActivities: CaseActivity[];
+  activities: CaseActivity[];
 }
 
 @InputType()
-export class CaseMomsSpaghettiFileCreateInput {
+export class CaseFileCreateInput {
   @Field(() => String)
-  leadAgencyCode: string;
+  leadAgency: string;
 
   @Field(() => String)
   caseStatus: string;
 }
 
 @InputType()
-export class CaseMomsSpaghettiFileUpdateInput {
+export class CaseFileUpdateInput {
   @Field(() => String, { nullable: true })
   @IsOptional()
-  leadAgencyCode?: string;
+  leadAgency?: string;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -36,14 +36,14 @@ export class CaseMomsSpaghettiFileUpdateInput {
 }
 
 @InputType()
-export class CaseMomsSpaghettiFileFilters {
+export class CaseFileFilters {
   @Field(() => String, { nullable: true })
   @IsOptional()
   search?: string;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  agencyCode?: string;
+  leadAgency?: string;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -88,7 +88,7 @@ export class PageInfo implements PaginationMetadata {
 }
 
 @ObjectType()
-export class CaseMomsSpaghettiFileResult implements PaginatedResult<CaseFile> {
+export class CaseFileResult implements PaginatedResult<CaseFile> {
   @Field(() => [CaseFile])
   items: CaseFile[];
 
@@ -106,8 +106,8 @@ export const mapPrismaCaseFileToCaseFile = (mapper: Mapper) => {
       mapFrom((src) => src.case_file_guid),
     ),
     forMember(
-      (dest) => dest.caseOpenedTimestamp,
-      mapFrom((src) => src.case_opened_utc_timestamp),
+      (dest) => dest.openedTimestamp,
+      mapFrom((src) => src.opened_utc_timestamp),
     ),
     forMember(
       (dest) => dest.leadAgency,
@@ -118,7 +118,7 @@ export const mapPrismaCaseFileToCaseFile = (mapper: Mapper) => {
       mapFrom((src) => mapper.map(src.case_status_code, "case_status_code", "CaseStatusCode")),
     ),
     forMember(
-      (dest) => dest.caseActivities,
+      (dest) => dest.activities,
       mapWithArguments((src) => mapper.mapArray(src.case_activity ?? [], "case_activity", "CaseActivity")),
     ),
   );

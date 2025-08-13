@@ -1,4 +1,4 @@
-type AgencyMomsSpaghettiCode {
+type AgencyCode {
   agencyCode: String
   shortDescription: String
   longDescription: String
