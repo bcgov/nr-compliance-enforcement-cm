@@ -7,4 +7,4 @@ import { PrismaModuleShared } from "../../prisma/shared/prisma.shared.module";
   imports: [PrismaModuleShared],
   providers: [AgencyCodeResolver, AgencyCodeService],
 })
-export class AgencyMomsSpaghettiCodeModule {}
+export class AgencyCodeModule {}
