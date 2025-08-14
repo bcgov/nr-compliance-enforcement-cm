@@ -82,7 +82,7 @@ export class CaseFileService {
     const caseFile = await this.prisma.case_file.create({
       data: {
         lead_agency: input.leadAgency,
-        status: input.status,
+        case_status: input.caseStatus,
         opened_utc_timestamp: new Date(),
         create_user_id: this.user.getIdirUsername(),
       },
@@ -119,8 +119,8 @@ export class CaseFileService {
     if (input.leadAgency !== undefined) {
       updateData.lead_agency = input.leadAgency;
     }
-    if (input.status !== undefined) {
-      updateData.case_status = input.status;
+    if (input.caseStatus !== undefined) {
+      updateData.case_status = input.caseStatus;
     }
 
     const caseFile = await this.prisma.case_file.update({
@@ -157,8 +157,8 @@ export class CaseFileService {
       where.lead_agency = filters.leadAgency;
     }
 
-    if (filters?.status) {
-      where.case_status = filters.status;
+    if (filters?.caseStatus) {
+      where.case_status = filters.caseStatus;
     }
 
     if (filters?.startDate || filters?.endDate) {
@@ -180,7 +180,7 @@ export class CaseFileService {
       caseIdentifier: "case_file_guid",
       openedTimestamp: "opened_utc_timestamp",
       leadAgency: "lead_agency",
-      status: "case_status",
+      caseStatus: "case_status",
     };
 
     let orderBy: any = { opened_utc_timestamp: "desc" }; // Default sort
