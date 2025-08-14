@@ -45,6 +45,8 @@ import { Mapper } from "@automapper/core";
 import { initializeMappings } from "./middleware/mapper";
 import { EquipmentStatusCodeModule } from "src/case_management/equipment_status_code/equipment_status_code.module";
 import { ImportCommand } from "./app.commands";
+import { InvestigationModule } from "./investigation/investigation/investigation.module";
+import { PrismaModuleInvestigation } from "./prisma/investigation/prisma.investigation.module";
 import { CaseFileModule } from "./shared/case_file/case_file.module";
 
 @Module({
@@ -52,6 +54,7 @@ import { CaseFileModule } from "./shared/case_file/case_file.module";
     ConfigModule.forRoot(),
     PrismaModuleCaseManagement,
     PrismaModuleShared,
+    PrismaModuleInvestigation,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ["./dist/**/*.graphql", "./src/**/*.graphql"],
@@ -89,9 +92,10 @@ import { CaseFileModule } from "./shared/case_file/case_file.module";
     IpmAuthCategoryCodeModule,
     PersonModule,
     ParkModule,
-    EquipmentStatusCodeModule,
     AgencyCodeModule,
     CaseFileModule,
+    EquipmentStatusCodeModule,
+    InvestigationModule,
   ],
   controllers: [AppController],
   providers: [AppService, ImportCommand, DateScalar],

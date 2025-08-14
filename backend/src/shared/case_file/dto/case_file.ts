@@ -11,7 +11,7 @@ export class CaseFile {
   caseIdentifier: string;
   openedTimestamp: Date;
   leadAgency: AgencyCode;
-  status: CaseStatusCode;
+  caseStatus: CaseStatusCode;
   activities: CaseActivity[];
 }
 
@@ -21,7 +21,7 @@ export class CaseFileCreateInput {
   leadAgency: string;
 
   @Field(() => String)
-  status: string;
+  caseStatus: string;
 }
 
 @InputType()
@@ -32,7 +32,7 @@ export class CaseFileUpdateInput {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  status?: string;
+  caseStatus?: string;
 }
 
 @InputType()
@@ -47,7 +47,7 @@ export class CaseFileFilters {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  status?: string;
+  caseStatus?: string;
 
   @Field(() => Date, { nullable: true })
   @IsOptional()
@@ -114,7 +114,7 @@ export const mapPrismaCaseFileToCaseFile = (mapper: Mapper) => {
       mapFrom((src) => mapper.map(src.agency_code, "agency_code", "AgencyCode")),
     ),
     forMember(
-      (dest) => dest.status,
+      (dest) => dest.caseStatus,
       mapFrom((src) => mapper.map(src.case_status_code, "case_status_code", "CaseStatusCode")),
     ),
     forMember(

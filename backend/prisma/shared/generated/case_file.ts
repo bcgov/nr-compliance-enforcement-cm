@@ -11,7 +11,7 @@ export class case_file {
   lead_agency: string;
 
   @ApiProperty({ type: String })
-  status: string;
+  case_status: string;
 
   @ApiProperty({ type: Date })
   opened_utc_timestamp: Date;

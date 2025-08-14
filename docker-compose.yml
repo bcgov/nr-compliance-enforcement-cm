@@ -6,6 +6,7 @@ x-var:
   - &POSTGRES_PASSWORD default
   - &SHARED_PASSWORD default2
   - &CM_PASSWORD default3
+  - &INV_PASSWORD default4
   - &POSTGRES_DATABASE postgres
 
 x-postgres-vars: &postgres-vars
@@ -13,6 +14,7 @@ x-postgres-vars: &postgres-vars
   POSTGRES_USER: *POSTGRES_USER
   POSTGRES_PASSWORD: *POSTGRES_PASSWORD
   SHARED_PASSWORD: *SHARED_PASSWORD
+  INV_PASSWORD: *INV_PASSWORD
   CM_PASSWORD: *CM_PASSWORD
   POSTGRES_DATABASE: *POSTGRES_DATABASE
 
@@ -23,8 +25,8 @@ services:
     environment:
       <<: *postgres-vars
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", *POSTGRES_USER ]
-    ports: [ "5433:5432" ]
+      test: ["CMD", "pg_isready", "-U", *POSTGRES_USER]
+    ports: ["5433:5432"]
 
   migrations:
     image: flyway/flyway:9.22-alpine
@@ -42,7 +44,7 @@ services:
       FLYWAY_PASSWORD: *POSTGRES_PASSWORD
       FLYWAY_PLACEHOLDERS_SHARED_PASSWORD: *SHARED_PASSWORD
       FLYWAY_PLACEHOLDERS_CM_PASSWORD: *CM_PASSWORD
-      FLYWAY_PLACEHOLDERS_INV_PASSWORD: *CM_PASSWORD
+      FLYWAY_PLACEHOLDERS_INV_PASSWORD: *INV_PASSWORD
       FLYWAY_BASELINE_ON_MIGRATE: true
       FLYWAY_DEFAULT_SCHEMA: case_management
       FLYWAY_LOCATIONS: filesystem:./sql, filesystem:./sql-test
@@ -52,7 +54,10 @@ services:
 
   backend:
     container_name: cm-backend
-    entrypoint: sh -c "npm i && npm run prisma-generate-cm && npm run prisma-generate-shared && npm run start:dev"
+    entrypoint: sh -c "npm i && npm run prisma-generate-cm && \
+      npm run prisma-generate-shared && \
+      npm run prisma-generate-investigation && \
+      npm run start:dev"
     environment:
       <<: *postgres-vars
       NODE_ENV: development
@@ -62,10 +67,10 @@ services:
       JWKS_URI: https://dev.loginproxy.gov.bc.ca/auth/realms/standard/protocol/openid-connect/certs
       JWT_ISSUER: https://dev.loginproxy.gov.bc.ca/auth/realms/standard
     image: node:20-bullseye
-    ports: [ "3003:3000" ]
-    volumes: [ "./backend:/app", "/app/node_modules" ]
+    ports: ["3003:3000"]
+    volumes: ["./backend:/app", "/app/node_modules"]
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:3000/api" ]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api"]
     working_dir: "/app"
     depends_on:
       migrations:

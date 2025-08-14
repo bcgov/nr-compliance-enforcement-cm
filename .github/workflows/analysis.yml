@@ -44,6 +44,7 @@ jobs:
             npm ci
             npm run prisma-generate-cm
             npm run prisma-generate-shared
+            npm run prisma-generate-investigation
             npm run test:cov
           dir: ${{ matrix.dir }}
           node_version: "20"
