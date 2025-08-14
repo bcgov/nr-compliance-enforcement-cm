@@ -82,7 +82,7 @@ export class CaseFileService {
     const caseFile = await this.prisma.case_file.create({
       data: {
         lead_agency: input.leadAgency,
-        caseStatus: input.caseStatus,
+        case_status: input.caseStatus,
         opened_utc_timestamp: new Date(),
         create_user_id: this.user.getIdirUsername(),
       },
