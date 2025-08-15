@@ -708,38 +708,84 @@ export class ComplaintOutcomeService {
     });
   }
 
-  async findManyBySearchString(searchString: string) {
+  async findManyBySearchString(complaintType: string, searchString: string) {
     let complaintOutcomeOutput: Array<ComplaintOutcome> = [];
-    const caseIdRecords = await this.prisma.complaint_outcome.findMany({
-      where: {
-        OR: [
-          {
-            authorization_permit: {
-              some: {
-                authorization_permit_id: {
-                  contains: searchString,
+    let caseIdRecords;
+    if (complaintType === "HWCR") {
+      caseIdRecords = await this.prisma.complaint_outcome.findMany({
+        where: {
+          OR: [
+            {
+              wildlife: {
+                some: {
+                  ear_tag: {
+                    some: {
+                      ear_tag_identifier: {
+                        contains: searchString,
+                      },
+                      active_ind: true,
+                    },
+                  },
                 },
-                active_ind: true,
               },
             },
-          },
-          {
-            site: {
-              some: {
-                site_id: {
-                  contains: searchString,
+          ],
+        },
+        select: {
+          complaint_identifier: true,
+          complaint_outcome_guid: true,
+        },
+      });
+    } else if (complaintType === "ERS") {
+      const complaintOutcomeIds = await this.prisma.complaint_outcome.findMany({
+        where: {
+          OR: [
+            {
+              authorization_permit: {
+                some: {
+                  authorization_permit_id: {
+                    contains: searchString,
+                  },
+                  active_ind: true,
                 },
-                active_ind: true,
               },
             },
-          },
-        ],
-      },
-      select: {
-        complaint_identifier: true,
-        complaint_outcome_guid: true,
-      },
-    });
+            {
+              site: {
+                some: {
+                  site_id: {
+                    contains: searchString,
+                  },
+                  active_ind: true,
+                },
+              },
+            },
+          ],
+        },
+        select: {
+          complaint_identifier: true,
+          complaint_outcome_guid: true,
+        },
+      });
+
+      //Search for inspection_number partial match
+      const rawResults = await this.prisma.$queryRaw<
+        { complaint_identifier: string; complaint_outcome_guid: string }[]
+      >`
+        SELECT co.complaint_identifier, co.complaint_outcome_guid
+        FROM complaint_outcome co
+        INNER JOIN decision d ON co.complaint_outcome_guid = d.complaint_outcome_guid
+        WHERE CAST(d.inspection_number AS TEXT) LIKE ${`%${searchString}%`}
+        AND d.active_ind = true
+      `;
+      caseIdRecords = [
+        ...complaintOutcomeIds,
+        ...rawResults.map((record) => ({
+          complaint_identifier: record.complaint_identifier,
+          complaint_outcome_guid: record.complaint_outcome_guid,
+        })),
+      ];
+    }
     for (const caseIdRecord of caseIdRecords) {
       complaintOutcomeOutput.push({
         complaintOutcomeGuid: caseIdRecord.complaint_outcome_guid,

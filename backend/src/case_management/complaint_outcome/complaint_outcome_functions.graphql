@@ -2,7 +2,7 @@ type Query {
   getComplaintOutcome(complaintOutcomeGuid: String!): ComplaintOutcome
   getComplaintOutcomeByComplaintId(complaintId: String!): ComplaintOutcome
   getComplaintOutcomesByComplaintId(complaintIds: [String!]!): [ComplaintOutcome]
-  getComplaintOutcomesBySearchString(searchString: String!): [ComplaintOutcome]
+  getComplaintOutcomesBySearchString(complaintType: String!, searchString: String!): [ComplaintOutcome]
 }
 
 type Mutation {
