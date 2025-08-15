@@ -128,6 +128,11 @@ export class LeadService {
       caseGuids = [...animalFilterGuids, ...dateFilterGuids];
     }
 
+    // Return empty result if no matching GUIDs found
+    if (caseGuids.length === 0) {
+      return [];
+    }
+
     const leadResults = await this.prisma.complaint_outcome.findMany({
       where: {
         complaint_outcome_guid: {
