@@ -13,6 +13,7 @@ import {
 } from "./dto/case_file";
 import { PaginationUtility } from "../../common/pagination.utility";
 import { UserService } from "../../common/user.service";
+import { CaseActivityTypeCode } from "src/shared/case_activity_type_code/dto/case_activity_type_code";
 
 @Injectable()
 export class CaseFileService {
@@ -76,6 +77,20 @@ export class CaseFileService {
       this.logger.error("Error fetching case files by IDs:", error);
       throw error;
     }
+  }
+
+  async findCaseFileByActivityId(activityType: string, activityIdentifier: string) {
+    const caseActivityXrefRecord = await this.prisma.case_activity.findFirst({
+      where: {
+        activity_type: activityType,
+        activity_identifier_ref: activityIdentifier,
+      },
+    });
+
+    if (!caseActivityXrefRecord) {
+      throw new Error(`No case activity found for activity type ${activityType} with identifier ${activityIdentifier}`);
+    }
+    return await this.findOne(caseActivityXrefRecord.case_file_guid);
   }
 
   async create(input: CaseFileCreateInput): Promise<CaseFile> {
