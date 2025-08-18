@@ -41,7 +41,7 @@ CREATE TABLE shared.party_h (
 -- Create BUSINESS table
 CREATE TABLE shared.business (
     business_guid UUID NOT NULL DEFAULT uuid_generate_v4 () PRIMARY KEY,
-    business_name VARCHAR(128) NOT NULL,
+    name VARCHAR(128) NOT NULL,
     create_user_id VARCHAR(32) NOT NULL,
     create_utc_timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
     update_user_id VARCHAR(32),
@@ -78,7 +78,7 @@ FOR EACH ROW EXECUTE PROCEDURE shared.audit_history('party_h', 'party_guid');
 
 -- Column comments for BUSINESS
 COMMENT ON COLUMN shared.business.business_guid IS 'Primary key: System generated unique identifier for a business.';
-COMMENT ON COLUMN shared.business.business_name IS 'Name of the business.';
+COMMENT ON COLUMN shared.business.name IS 'Name of the business.';
 COMMENT ON COLUMN shared.business.create_user_id IS 'The id of the user that created the business.';
 COMMENT ON COLUMN shared.business.create_utc_timestamp IS 'The timestamp when the business was created. The timestamp is stored in UTC with no offset.';
 COMMENT ON COLUMN shared.business.update_user_id IS 'The id of the user that updated the business.';

@@ -1,0 +1,11 @@
+scalar Date
+
+type Party {
+  partyIdentifier: String
+  partyTypeCode: String
+  partyTypeLongDescription: String
+  partyTypeShortDescription: String
+  partyCreatedDateTime: Date
+  person: Person
+  business: Business
+}
