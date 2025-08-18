@@ -62,8 +62,6 @@ export class LeadService {
     let outcomeResultByCode;
     let outcomeResultByDate;
     let caseGuids: string[] = [];
-    let animalFilterGuids: string[] = [];
-    let dateFilterGuids: string[] = [];
 
     //Check if filter Outcome Animal by code is on
     if (outcomeAnimalCode !== "undefined") {
@@ -71,7 +69,6 @@ export class LeadService {
         outcomeResultByCode = await this.prisma.wildlife.findMany({
           where: {
             hwcr_outcome_code: outcomeAnimalCode,
-            active_ind: true,
           },
           select: {
             complaint_outcome_guid: true,
@@ -89,7 +86,7 @@ export class LeadService {
         });
       }
       for (let outcome of outcomeResultByCode) {
-        animalFilterGuids.push(outcome.complaint_outcome_guid);
+        caseGuids.push(outcome.complaint_outcome_guid);
       }
     }
 
@@ -118,20 +115,14 @@ export class LeadService {
       });
 
       for (let outcome of outcomeResultByDate) {
-        dateFilterGuids.push(outcome.complaint_outcome_guid);
+        caseGuids.push(outcome.complaint_outcome_guid);
       }
     }
 
     //if 2 filters are on, get the mutual complaint_outcome_guid
     if (outcomeAnimalCode !== "undefined" && startDate !== "undefined") {
-      caseGuids = animalFilterGuids.filter((guid) => new Set(dateFilterGuids).has(guid));
-    } else {
-      caseGuids = [...animalFilterGuids, ...dateFilterGuids];
-    }
-
-    // Return empty result if no matching GUIDs found
-    if (caseGuids.length === 0) {
-      return [];
+      const duplicates = caseGuids.filter((item, index) => caseGuids.indexOf(item) !== index);
+      caseGuids = Array.from(new Set(duplicates));
     }
 
     const leadResults = await this.prisma.complaint_outcome.findMany({
