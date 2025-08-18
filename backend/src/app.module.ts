@@ -48,6 +48,7 @@ import { ImportCommand } from "./app.commands";
 import { InvestigationModule } from "./investigation/investigation/investigation.module";
 import { PrismaModuleInvestigation } from "./prisma/investigation/prisma.investigation.module";
 import { CaseFileModule } from "./shared/case_file/case_file.module";
+import { PartyModule } from "./shared/party/party.module";
 
 @Module({
   imports: [
@@ -96,6 +97,7 @@ import { CaseFileModule } from "./shared/case_file/case_file.module";
     CaseFileModule,
     EquipmentStatusCodeModule,
     InvestigationModule,
+    PartyModule,
   ],
   controllers: [AppController],
   providers: [AppService, ImportCommand, DateScalar],

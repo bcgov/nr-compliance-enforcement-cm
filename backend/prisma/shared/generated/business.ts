@@ -1,22 +1,12 @@
-import { contact_method } from "./contact_method";
 import { party } from "./party";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-export class person {
+export class business {
   @ApiProperty({ type: String })
-  person_guid: string;
-
-  @ApiProperty({ type: String })
-  first_name: string;
-
-  @ApiPropertyOptional({ type: String })
-  middle_name?: string;
-
-  @ApiPropertyOptional({ type: String })
-  middle_name_2?: string;
+  business_guid: string;
 
   @ApiProperty({ type: String })
-  last_name: string;
+  name: string;
 
   @ApiProperty({ type: String })
   create_user_id: string;
@@ -32,9 +22,6 @@ export class person {
 
   @ApiPropertyOptional({ type: String })
   party_guid?: string;
-
-  @ApiProperty({ isArray: true, type: () => contact_method })
-  contact_method: contact_method[];
 
   @ApiPropertyOptional({ type: () => party })
   party?: party;
