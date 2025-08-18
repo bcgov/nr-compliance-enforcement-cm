@@ -92,6 +92,10 @@ export class LeadService {
       for (let outcome of outcomeResultByCode) {
         animalFilterGuids.push(outcome.complaint_outcome_guid);
       }
+
+      if (animalFilterGuids.length === 0) {
+        return [];
+      }
     }
 
     //Check if filter Outcome Animal date range is on
