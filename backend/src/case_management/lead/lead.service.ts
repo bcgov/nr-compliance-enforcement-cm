@@ -62,6 +62,8 @@ export class LeadService {
     let outcomeResultByCode;
     let outcomeResultByDate;
     let caseGuids: string[] = [];
+    let animalFilterGuids: string[] = [];
+    let dateFilterGuids: string[] = [];
 
     //Check if filter Outcome Animal by code is on
     if (outcomeAnimalCode !== "undefined") {
@@ -86,7 +88,7 @@ export class LeadService {
         });
       }
       for (let outcome of outcomeResultByCode) {
-        caseGuids.push(outcome.complaint_outcome_guid);
+        animalFilterGuids.push(outcome.complaint_outcome_guid);
       }
     }
 
@@ -101,28 +103,39 @@ export class LeadService {
           action_type_action_xref_guid: true,
         },
       });
-      outcomeResultByDate = await this.prisma.action.findMany({
-        where: {
-          action_type_action_xref_guid: xrefResult.action_type_action_xref_guid,
-          action_date: {
-            gte: new Date(startDate),
-            lte: endDate !== "undefined" ? new Date(endDate) : new Date().toISOString(), //utc time,
-          },
+
+      const whereClause: any = {
+        action_type_action_xref_guid: xrefResult.action_type_action_xref_guid,
+        action_date: {
+          gte: new Date(startDate),
+          lte: endDate !== "undefined" ? new Date(endDate) : new Date().toISOString(), //utc time,
         },
+      };
+
+      if (animalFilterGuids.length > 0) {
+        whereClause.complaint_outcome_guid = {
+          in: animalFilterGuids,
+        };
+      }
+
+      outcomeResultByDate = await this.prisma.action.findMany({
+        where: whereClause,
         select: {
           complaint_outcome_guid: true,
         },
       });
 
       for (let outcome of outcomeResultByDate) {
-        caseGuids.push(outcome.complaint_outcome_guid);
+        dateFilterGuids.push(outcome.complaint_outcome_guid);
       }
+      caseGuids = dateFilterGuids;
+    } else {
+      caseGuids = animalFilterGuids;
     }
 
-    //if 2 filters are on, get the mutual complaint_outcome_guid
-    if (outcomeAnimalCode !== "undefined" && startDate !== "undefined") {
-      const duplicates = caseGuids.filter((item, index) => caseGuids.indexOf(item) !== index);
-      caseGuids = Array.from(new Set(duplicates));
+    // Return empty result if no matching GUIDs found
+    if (caseGuids.length === 0) {
+      return [];
     }
 
     const leadResults = await this.prisma.complaint_outcome.findMany({
