@@ -71,7 +71,6 @@ export class LeadService {
         outcomeResultByCode = await this.prisma.wildlife.findMany({
           where: {
             hwcr_outcome_code: outcomeAnimalCode,
-            active_ind: true,
           },
           select: {
             complaint_outcome_guid: true,
@@ -104,14 +103,23 @@ export class LeadService {
           action_type_action_xref_guid: true,
         },
       });
-      outcomeResultByDate = await this.prisma.action.findMany({
-        where: {
-          action_type_action_xref_guid: xrefResult.action_type_action_xref_guid,
-          action_date: {
-            gte: new Date(startDate),
-            lte: endDate !== "undefined" ? new Date(endDate) : new Date().toISOString(), //utc time,
-          },
+
+      const whereClause: any = {
+        action_type_action_xref_guid: xrefResult.action_type_action_xref_guid,
+        action_date: {
+          gte: new Date(startDate),
+          lte: endDate !== "undefined" ? new Date(endDate) : new Date().toISOString(), //utc time,
         },
+      };
+
+      if (animalFilterGuids.length > 0) {
+        whereClause.complaint_outcome_guid = {
+          in: animalFilterGuids,
+        };
+      }
+
+      outcomeResultByDate = await this.prisma.action.findMany({
+        where: whereClause,
         select: {
           complaint_outcome_guid: true,
         },
@@ -120,13 +128,9 @@ export class LeadService {
       for (let outcome of outcomeResultByDate) {
         dateFilterGuids.push(outcome.complaint_outcome_guid);
       }
-    }
-
-    //if 2 filters are on, get the mutual complaint_outcome_guid
-    if (outcomeAnimalCode !== "undefined" && startDate !== "undefined") {
-      caseGuids = animalFilterGuids.filter((guid) => new Set(dateFilterGuids).has(guid));
+      caseGuids = dateFilterGuids;
     } else {
-      caseGuids = [...animalFilterGuids, ...dateFilterGuids];
+      caseGuids = animalFilterGuids;
     }
 
     // Return empty result if no matching GUIDs found
