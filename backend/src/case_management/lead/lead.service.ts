@@ -71,6 +71,7 @@ export class LeadService {
         outcomeResultByCode = await this.prisma.wildlife.findMany({
           where: {
             hwcr_outcome_code: outcomeAnimalCode,
+            active_ind: true,
           },
           select: {
             complaint_outcome_guid: true,
@@ -81,6 +82,7 @@ export class LeadService {
           where: {
             hwcr_outcome_code: outcomeAnimalCode,
             hwcr_outcome_actioned_by_code: outcomeActionedByCode,
+            active_ind: true,
           },
           select: {
             complaint_outcome_guid: true,
@@ -122,6 +124,7 @@ export class LeadService {
         where: whereClause,
         select: {
           complaint_outcome_guid: true,
+          active_ind: true,
         },
       });
 
