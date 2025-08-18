@@ -64,8 +64,8 @@ export class ComplaintOutcomeResolver {
 
   @Query("getComplaintOutcomesBySearchString")
   @Roles(coreRoles)
-  findManyBySearchString(@Args("searchString") searchString: string) {
-    return this.complaintOutcomeService.findManyBySearchString(searchString);
+  findManyBySearchString(@Args("complaintType") complaintType: string, @Args("searchString") searchString: string) {
+    return this.complaintOutcomeService.findManyBySearchString(complaintType, searchString);
   }
 
   @Mutation("updateAssessment")
