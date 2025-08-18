@@ -768,7 +768,8 @@ export class ComplaintOutcomeService {
         },
       });
 
-      //Search for inspection_number partial match
+      //Search for inspection_number using rawSQL to do partial match
+      //Because inspection_number stored as an integer, and can only do exact match if we're using prisma
       const rawResults = await this.prisma.$queryRaw<
         { complaint_identifier: string; complaint_outcome_guid: string }[]
       >`
