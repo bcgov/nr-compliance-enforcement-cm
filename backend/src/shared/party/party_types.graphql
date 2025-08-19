@@ -3,9 +3,9 @@ scalar Date
 type Party {
   partyIdentifier: String
   partyTypeCode: String
-  partyTypeLongDescription: String
-  partyTypeShortDescription: String
-  partyCreatedDateTime: Date
+  longDescription: String
+  shortDescription: String
+  createdDateTime: Date
   person: Person
   business: Business
 }

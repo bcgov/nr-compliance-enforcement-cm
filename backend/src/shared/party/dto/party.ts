@@ -8,9 +8,9 @@ import { Business } from "src/shared/business/dto/business";
 export class Party {
   partyIdentifier: String;
   partyTypeCode: String;
-  partyTypeLongDescription: String;
-  partyTypeShortDescription: String;
-  partyCreatedDateTime: Date;
+  longDescription: String;
+  shortDescription: String;
+  createdDateTime: Date;
   person: Person;
   business: Business;
 }
@@ -32,17 +32,17 @@ export const mapPrismaPartyToParty = (mapper: Mapper) => {
     ),
 
     forMember(
-      (dest) => dest.partyTypeShortDescription,
+      (dest) => dest.shortDescription,
       mapFrom((src) => src.party_type_code.short_description),
     ),
 
     forMember(
-      (dest) => dest.partyTypeLongDescription,
+      (dest) => dest.longDescription,
       mapFrom((src) => src.party_type_code.long_description),
     ),
 
     forMember(
-      (dest) => dest.partyCreatedDateTime,
+      (dest) => dest.createdDateTime,
       mapFrom((src) => src.create_utc_timestamp),
     ),
 
