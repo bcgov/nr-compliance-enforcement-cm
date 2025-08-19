@@ -102,7 +102,7 @@ export class ComplaintOutcomeService {
         if (!model.complaintOutcomeGuid) {
           case_file = await db.complaint_outcome.create({
             data: {
-              agency_code: {
+              outcome_agency_code: {
                 connect: {
                   outcome_agency_code: model.outcomeAgencyCode,
                 },
@@ -1030,7 +1030,7 @@ export class ComplaintOutcomeService {
       if (!model.complaintOutcomeGuid) {
         case_file = await db.complaint_outcome.create({
           data: {
-            agency_code: {
+            outcome_agency_code: {
               connect: {
                 outcome_agency_code: model.outcomeAgencyCode,
               },
@@ -1238,7 +1238,7 @@ export class ComplaintOutcomeService {
           //create case
           const caseFile = await db.complaint_outcome.create({
             data: {
-              agency_code: {
+              outcome_agency_code: {
                 connect: {
                   outcome_agency_code: reviewInput.outcomeAgencyCode,
                 },
