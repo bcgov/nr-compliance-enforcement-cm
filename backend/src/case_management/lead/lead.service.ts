@@ -59,40 +59,13 @@ export class LeadService {
   }
 
   async getLeadsByOutcomeAnimal(outcomeAnimalCode, outcomeActionedByCode, startDate, endDate): Promise<string[]> {
-    let outcomeResultByCode;
-    let outcomeResultByDate;
     let caseGuids: string[] = [];
 
-    //Check if filter Outcome Animal by code is on
-    if (outcomeAnimalCode !== "undefined") {
-      if (outcomeActionedByCode === "undefined") {
-        outcomeResultByCode = await this.prisma.wildlife.findMany({
-          where: {
-            hwcr_outcome_code: outcomeAnimalCode,
-          },
-          select: {
-            complaint_outcome_guid: true,
-          },
-        });
-      } else {
-        outcomeResultByCode = await this.prisma.wildlife.findMany({
-          where: {
-            hwcr_outcome_code: outcomeAnimalCode,
-            hwcr_outcome_actioned_by_code: outcomeActionedByCode,
-          },
-          select: {
-            complaint_outcome_guid: true,
-          },
-        });
-      }
-      for (let outcome of outcomeResultByCode) {
-        caseGuids.push(outcome.complaint_outcome_guid);
-      }
-    }
+    const hasOutcomeFilter = outcomeAnimalCode !== "undefined";
+    const hasDateFilter = startDate !== "undefined";
 
-    //Check if filter Outcome Animal date range is on
-    if (startDate !== "undefined") {
-      //Find action_type_action_xref_guid that represents outcome animal action
+    if (hasOutcomeFilter && hasDateFilter) {
+      // Combined search: find actions within date range AND ensure the corresponding wildlife records have the specified outcome code
       const xrefResult = await this.prisma.action_type_action_xref.findFirst({
         where: {
           action_code: ACTION_CODES.RECOUTCOME,
@@ -101,28 +74,98 @@ export class LeadService {
           action_type_action_xref_guid: true,
         },
       });
-      outcomeResultByDate = await this.prisma.action.findMany({
+
+      const wildlifeWhere: any = {
+        hwcr_outcome_code: outcomeAnimalCode,
+        active_ind: true,
+      };
+
+      if (outcomeActionedByCode !== "undefined") {
+        wildlifeWhere.hwcr_outcome_actioned_by_code = outcomeActionedByCode;
+      }
+
+      const wildlifeRecords = await this.prisma.wildlife.findMany({
+        where: wildlifeWhere,
+        select: {
+          wildlife_guid: true,
+          complaint_outcome_guid: true,
+        },
+      });
+
+      if (wildlifeRecords.length === 0) {
+        caseGuids = [];
+      } else {
+        const wildlifeGuids = wildlifeRecords.map((w) => w.wildlife_guid);
+
+        const combinedResults = await this.prisma.action.findMany({
+          where: {
+            action_type_action_xref_guid: xrefResult.action_type_action_xref_guid,
+            action_date: {
+              gte: new Date(startDate),
+              lte: endDate !== "undefined" ? new Date(endDate) : new Date().toISOString(),
+            },
+            active_ind: true,
+            wildlife_guid: {
+              in: wildlifeGuids,
+            },
+          },
+          select: {
+            complaint_outcome_guid: true,
+          },
+        });
+
+        caseGuids = combinedResults.map((action) => action.complaint_outcome_guid);
+      }
+    } else if (hasOutcomeFilter) {
+      // Only outcome animal code filter
+      const wildlifeWhere: any = {
+        hwcr_outcome_code: outcomeAnimalCode,
+        active_ind: true,
+      };
+
+      if (outcomeActionedByCode !== "undefined") {
+        wildlifeWhere.hwcr_outcome_actioned_by_code = outcomeActionedByCode;
+      }
+
+      const outcomeResults = await this.prisma.wildlife.findMany({
+        where: wildlifeWhere,
+        select: {
+          complaint_outcome_guid: true,
+        },
+      });
+
+      caseGuids = outcomeResults.map((outcome) => outcome.complaint_outcome_guid);
+    } else if (hasDateFilter) {
+      // Only date range filter
+      const xrefResult = await this.prisma.action_type_action_xref.findFirst({
+        where: {
+          action_code: ACTION_CODES.RECOUTCOME,
+        },
+        select: {
+          action_type_action_xref_guid: true,
+        },
+      });
+
+      const dateResults = await this.prisma.action.findMany({
         where: {
           action_type_action_xref_guid: xrefResult.action_type_action_xref_guid,
           action_date: {
             gte: new Date(startDate),
-            lte: endDate !== "undefined" ? new Date(endDate) : new Date().toISOString(), //utc time,
+            lte: endDate !== "undefined" ? new Date(endDate) : new Date().toISOString(),
           },
+          active_ind: true,
         },
         select: {
           complaint_outcome_guid: true,
         },
       });
 
-      for (let outcome of outcomeResultByDate) {
-        caseGuids.push(outcome.complaint_outcome_guid);
-      }
+      caseGuids = dateResults.map((action) => action.complaint_outcome_guid);
     }
 
-    //if 2 filters are on, get the mutual complaint_outcome_guid
-    if (outcomeAnimalCode !== "undefined" && startDate !== "undefined") {
-      const duplicates = caseGuids.filter((item, index) => caseGuids.indexOf(item) !== index);
-      caseGuids = Array.from(new Set(duplicates));
+    // Return empty result if no matching GUIDs found
+    if (caseGuids.length === 0) {
+      return [];
     }
 
     const leadResults = await this.prisma.complaint_outcome.findMany({
