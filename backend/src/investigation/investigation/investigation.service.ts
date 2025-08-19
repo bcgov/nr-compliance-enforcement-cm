@@ -2,7 +2,7 @@ import { Mapper } from "@automapper/core";
 import { InjectMapper } from "@automapper/nestjs";
 import { Injectable, Logger } from "@nestjs/common";
 import { investigation } from "../../../prisma/investigation/generated/investigation";
-import { Investigation } from "./dto/investigation";
+import { CreateInvestigationInput, Investigation } from "./dto/investigation";
 import { InvestigationPrismaService } from "../../prisma/investigation/prisma.investigation.service";
 
 @Injectable()
@@ -39,4 +39,6 @@ export class InvestigationService {
       throw error;
     }
   }
+
+  async create(input: CreateInvestigationInput): Promise<Investigation> {}
 }

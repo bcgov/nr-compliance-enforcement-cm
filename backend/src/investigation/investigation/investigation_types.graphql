@@ -6,6 +6,8 @@ type Investigation {
   openedTimestamp: Date
 }
 
-type Query {
-  getInvestigation(investigationGuid: String): Investigation
+input CreateInvestigationInput {
+  caseIdentifier: String!
+  leadAgency: String!
+  description: String
 }

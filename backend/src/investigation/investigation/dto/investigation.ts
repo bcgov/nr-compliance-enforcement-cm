@@ -2,6 +2,7 @@ import { createMap, forMember, mapFrom, Mapper, mapWithArguments } from "@automa
 
 import { investigation } from "../../../../prisma/investigation/generated/investigation";
 import { InvestigationStatusCode } from "../../../investigation/investigation_status_code/dto/investigation_status_code";
+import { Field, InputType } from "@nestjs/graphql";
 
 export class Investigation {
   investigationGuid: string;
@@ -9,6 +10,18 @@ export class Investigation {
   leadAgency: string;
   investigationStatus: InvestigationStatusCode;
   openedTimestamp: Date;
+}
+
+@InputType()
+export class CreateInvestigationInput {
+  @Field(() => String)
+  caseGuid: string;
+
+  @Field(() => String)
+  leadAgency: string;
+
+  @Field(() => String)
+  description: string;
 }
 
 export const mapPrismaInvestigationToInvestigation = (mapper: Mapper) => {
