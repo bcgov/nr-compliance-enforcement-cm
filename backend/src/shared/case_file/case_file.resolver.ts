@@ -43,6 +43,24 @@ export class CaseFileResolver {
     }
   }
 
+  @Query("caseFileByActivityId")
+  @Roles(coreRoles)
+  async findCaseFileByActivityId(
+    @Args("activityType") activityType: string,
+    @Args("activityIdentifier") activityIdentifier: string,
+  ) {
+    try {
+      return await this.caseFileService.findCaseFileByActivityId(activityType, activityIdentifier);
+    } catch (error) {
+      this.logger.error(error);
+      throw new GraphQLError("Error fetching case file by activity ID from Shared schema", {
+        extensions: {
+          code: "INTERNAL_SERVER_ERROR",
+        },
+      });
+    }
+  }
+
   @Query("searchCaseFiles")
   @Roles(coreRoles)
   async search(
