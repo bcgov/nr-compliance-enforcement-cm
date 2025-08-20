@@ -5,6 +5,7 @@ type CaseFile {
   leadAgency: AgencyCode
   caseStatus: CaseStatusCode
   openedTimestamp: Date
+  description: String
   activities: [CaseActivity]
 }
 
@@ -25,11 +26,13 @@ type CaseFileResult {
 input CaseFileCreateInput {
   leadAgency: String!
   caseStatus: String!
+  description: String
 }
 
 input CaseFileUpdateInput {
   leadAgency: String
   caseStatus: String
+  description: String
 }
 
 input CaseFileFilters {

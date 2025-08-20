@@ -7,6 +7,7 @@ export class CaseActivity {
   caseFileGuid: string;
   activityType: CaseActivityTypeCode;
   activityIdentifier: string;
+  caseActivityIdentifier: string;
   effectiveDate: Date;
   expiryDate: Date;
 }
@@ -26,6 +27,10 @@ export const mapPrismaCaseActivityToCaseActivity = (mapper: Mapper) => {
     ),
     forMember(
       (dest) => dest.activityIdentifier,
+      mapFrom((src) => src.activity_identifier_ref),
+    ),
+    forMember(
+      (dest) => dest.caseActivityIdentifier,
       mapFrom((src) => src.activity_identifier_ref),
     ),
     forMember(
