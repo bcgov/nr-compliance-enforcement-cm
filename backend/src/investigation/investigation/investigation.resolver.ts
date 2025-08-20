@@ -24,4 +24,19 @@ export class InvestigationResolver {
       });
     }
   }
+
+  @Query("getInvestigations")
+  @Roles(coreRoles)
+  async findMany(@Args("ids", { type: () => [String] }) ids: string[]) {
+    try {
+      return await this.investigationService.findMany(ids);
+    } catch (error) {
+      this.logger.error(error);
+      throw new GraphQLError("Error fetching investigations by IDs from investigation schema", {
+        extensions: {
+          code: "INTERNAL_SERVER_ERROR",
+        },
+      });
+    }
+  }
 }

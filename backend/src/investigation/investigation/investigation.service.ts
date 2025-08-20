@@ -39,4 +39,32 @@ export class InvestigationService {
       throw error;
     }
   }
+
+  async findMany(ids: string[]): Promise<Investigation[]> {
+    if (!ids || ids.length === 0) {
+      return [];
+    }
+
+    const prismaInvestigations = await this.prisma.investigation.findMany({
+      where: {
+        investigation_guid: {
+          in: ids,
+        },
+      },
+      include: {
+        investigation_status_code: true,
+      },
+    });
+
+    try {
+      return this.mapper.mapArray<investigation, Investigation>(
+        prismaInvestigations as Array<investigation>,
+        "investigation",
+        "Investigation",
+      );
+    } catch (error) {
+      this.logger.error("Error fetching investigations by IDs:", error);
+      throw error;
+    }
+  }
 }

@@ -28,6 +28,9 @@ export class case_file {
   @ApiPropertyOptional({ type: Date })
   update_utc_timestamp?: Date;
 
+  @ApiPropertyOptional({ type: String })
+  description?: string;
+
   @ApiProperty({ isArray: true, type: () => case_activity })
   case_activity: case_activity[];
 

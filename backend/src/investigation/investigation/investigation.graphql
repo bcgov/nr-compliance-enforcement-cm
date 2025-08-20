@@ -8,4 +8,5 @@ type Investigation {
 
 type Query {
   getInvestigation(investigationGuid: String): Investigation
+  getInvestigations(ids: [String]): [Investigation]
 }

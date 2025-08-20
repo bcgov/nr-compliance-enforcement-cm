@@ -98,6 +98,7 @@ export class CaseFileService {
       data: {
         lead_agency: input.leadAgency,
         case_status: input.caseStatus,
+        description: input.description,
         opened_utc_timestamp: new Date(),
         create_user_id: this.user.getIdirUsername(),
       },
@@ -136,6 +137,9 @@ export class CaseFileService {
     }
     if (input.caseStatus !== undefined) {
       updateData.case_status = input.caseStatus;
+    }
+    if (input.description !== undefined) {
+      updateData.description = input.description;
     }
 
     const caseFile = await this.prisma.case_file.update({
