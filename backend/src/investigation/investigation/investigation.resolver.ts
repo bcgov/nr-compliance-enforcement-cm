@@ -4,6 +4,7 @@ import { Logger } from "@nestjs/common";
 import { GraphQLError } from "graphql";
 import { coreRoles } from "../../enum/role.enum";
 import { Roles } from "../../auth/decorators/roles.decorator";
+import { CreateInvestigationInput } from "src/investigation/investigation/dto/investigation";
 
 @Resolver("Investigation")
 export class InvestigationResolver {
@@ -21,6 +22,19 @@ export class InvestigationResolver {
         extensions: {
           code: "INTERNAL_SERVER_ERROR",
         },
+      });
+    }
+  }
+
+  @Mutation("createInvestigation")
+  @Roles(coreRoles)
+  async create(@Args("input") input: CreateInvestigationInput) {
+    try {
+      return await this.investigationService.create(input);
+    } catch (error) {
+      this.logger.error("Create investigation error:", error);
+      throw new GraphQLError("Error creating investigation", {
+        extensions: { code: "INTERNAL_SERVER_ERROR" },
       });
     }
   }

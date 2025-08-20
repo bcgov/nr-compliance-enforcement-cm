@@ -4,12 +4,14 @@ import { Injectable, Logger } from "@nestjs/common";
 import { investigation } from "../../../prisma/investigation/generated/investigation";
 import { CreateInvestigationInput, Investigation } from "./dto/investigation";
 import { InvestigationPrismaService } from "../../prisma/investigation/prisma.investigation.service";
+import { UserService } from "../../common/user.service";
 
 @Injectable()
 export class InvestigationService {
   constructor(
     private readonly prisma: InvestigationPrismaService,
     @InjectMapper() private readonly mapper: Mapper,
+    private readonly user: UserService,
   ) {}
 
   private readonly logger = new Logger(InvestigationService.name);
@@ -40,5 +42,52 @@ export class InvestigationService {
     }
   }
 
-  async create(input: CreateInvestigationInput): Promise<Investigation> {}
+  async create(input: CreateInvestigationInput): Promise<Investigation> {
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        // Verify case file exists
+        const caseFile = await tx.case_file.findUnique({
+          where: {
+            case_file_guid: input.caseGuid,
+          },
+        });
+
+        if (!caseFile) {
+          throw new Error(`Case file with guid ${input.caseGuid} not found`);
+        }
+
+        // Create investigation
+        const investigation = await tx.investigation.create({
+          data: {
+            investigation_status: "OPEN",
+            description: input.description,
+            create_user_id: this.user.getIdirUsername(),
+            create_utc_timestamp: new Date(),
+          },
+          include: {
+            investigation_status_code: true,
+          },
+        });
+
+        // Create case activity record
+        await tx.case_activity.create({
+          data: {
+            case_file_guid: input.caseGuid,
+            activity_type: "INVSTGTN",
+            activity_identifier_ref: investigation.investigation_guid,
+            create_user_id: this.user.getIdirUsername(),
+            create_utc_timestamp: new Date(),
+          },
+        });
+        return this.mapper.map<investigation, Investigation>(
+          investigation as investigation,
+          "investigation",
+          "Investigation",
+        );
+      });
+    } catch (error) {
+      this.logger.error("Error mapping investigation:", error);
+      throw error;
+    }
+  }
 }
