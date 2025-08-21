@@ -1,5 +1,6 @@
 type Query {
   getInvestigation(investigationGuid: String): Investigation
+  getInvestigations(ids: [String]): [Investigation]
 }
 
 type Mutation {

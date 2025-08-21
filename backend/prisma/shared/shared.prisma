@@ -64,7 +64,9 @@ model person {
   create_utc_timestamp DateTime         @default(now()) @db.Timestamp(6)
   update_user_id       String?          @db.VarChar(32)
   update_utc_timestamp DateTime?        @db.Timestamp(6)
+  party_guid           String?          @unique(map: "UQ_person_party_guid") @db.Uuid
   contact_method       contact_method[]
+  party                party?           @relation(fields: [party_guid], references: [party_guid], onDelete: NoAction, onUpdate: NoAction, map: "FK_person_party")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
@@ -185,6 +187,7 @@ model case_file {
   create_utc_timestamp DateTime         @default(now()) @db.Timestamp(6)
   update_user_id       String?          @db.VarChar(32)
   update_utc_timestamp DateTime?        @db.Timestamp(6)
+  description          String?
   case_activity        case_activity[]
   agency_code          agency_code      @relation(fields: [lead_agency], references: [agency_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_case_file__agency_code")
   case_status_code     case_status_code @relation(fields: [case_status], references: [case_status_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_case_file__case_status_code")
@@ -222,4 +225,64 @@ model case_file_h {
   operation_user_id             String   @default(dbgenerated("CURRENT_USER")) @db.VarChar(32)
   operation_executed_at         DateTime @default(now()) @db.Timestamp(6)
   data_after_executed_operation Json?
+  description                   String?
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model business {
+  business_guid        String    @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
+  name                 String    @db.VarChar(128)
+  create_user_id       String    @db.VarChar(32)
+  create_utc_timestamp DateTime  @default(now()) @db.Timestamp(6)
+  update_user_id       String?   @db.VarChar(32)
+  update_utc_timestamp DateTime? @db.Timestamp(6)
+  party_guid           String?   @unique(map: "UQ_business_party_guid") @db.Uuid
+  party                party?    @relation(fields: [party_guid], references: [party_guid], onDelete: NoAction, onUpdate: NoAction, map: "FK_business_party")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model business_h {
+  h_business_guid               String   @id(map: "PK_h_business") @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
+  target_row_id                 String   @db.Uuid
+  operation_type                String   @db.Char(1)
+  operation_user_id             String   @default(dbgenerated("CURRENT_USER")) @db.VarChar(32)
+  operation_executed_at         DateTime @default(now()) @db.Timestamp(6)
+  data_after_executed_operation Json?
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model party {
+  party_guid           String           @id @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
+  party_type           String?          @db.VarChar(16)
+  create_user_id       String           @db.VarChar(32)
+  create_utc_timestamp DateTime         @default(now()) @db.Timestamp(6)
+  update_user_id       String?          @db.VarChar(32)
+  update_utc_timestamp DateTime?        @db.Timestamp(6)
+  business             business?
+  party_type_code      party_type_code? @relation(fields: [party_type], references: [party_type_code], onDelete: NoAction, onUpdate: NoAction, map: "fk_party__party_type")
+  person               person?
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model party_h {
+  h_party_guid                  String   @id(map: "PK_h_party") @default(dbgenerated("case_management.uuid_generate_v4()")) @db.Uuid
+  target_row_id                 String   @db.Uuid
+  operation_type                String   @db.Char(1)
+  operation_user_id             String   @default(dbgenerated("CURRENT_USER")) @db.VarChar(32)
+  operation_executed_at         DateTime @default(now()) @db.Timestamp(6)
+  data_after_executed_operation Json?
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model party_type_code {
+  party_type_code      String    @id @db.VarChar(16)
+  short_description    String    @db.VarChar(64)
+  long_description     String?   @db.VarChar(256)
+  display_order        Int?
+  active_ind           Boolean   @default(true)
+  create_user_id       String    @db.VarChar(32)
+  create_utc_timestamp DateTime  @default(now()) @db.Timestamp(6)
+  update_user_id       String?   @db.VarChar(32)
+  update_utc_timestamp DateTime? @db.Timestamp(6)
+  party                party[]
 }
