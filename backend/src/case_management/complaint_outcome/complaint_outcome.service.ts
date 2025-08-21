@@ -699,13 +699,25 @@ export class ComplaintOutcomeService {
   }
 
   async findManyByLeadId(complaintId: string[]) {
-    return await this.prisma.complaint_outcome.findMany({
+    const caseIdRecords = await this.prisma.complaint_outcome.findMany({
       where: {
         complaint_identifier: {
           in: complaintId,
         },
       },
+      select: {
+        complaint_outcome_guid: true,
+      },
     });
+
+    const complaintOutcomeGuids = caseIdRecords.map((record) => record.complaint_outcome_guid);
+
+    if (complaintOutcomeGuids.length === 0) {
+      return [];
+    }
+
+    const results = await this.find(complaintOutcomeGuids);
+    return results;
   }
 
   async findManyBySearchString(complaintType: string, searchString: string) {
