@@ -5,19 +5,15 @@ import { Roles } from "../../auth/decorators/roles.decorator";
 import { coreRoles } from "../../enum/role.enum";
 import { GraphQLError } from "graphql";
 import { CaseFileService } from "./case_file.service";
-import {
-  CaseMomsSpaghettiFileFilters,
-  CaseMomsSpaghettiFileCreateInput,
-  CaseMomsSpaghettiFileUpdateInput,
-} from "./dto/case_file";
+import { CaseFileFilters, CaseFileCreateInput, CaseFileUpdateInput } from "./dto/case_file";
 
 @UseGuards(JwtRoleGuard)
-@Resolver("CaseMomsSpaghettiFile")
+@Resolver("CaseFile")
 export class CaseFileResolver {
   constructor(private readonly caseFileService: CaseFileService) {}
   private readonly logger = new Logger(CaseFileResolver.name);
 
-  @Query("caseMomsSpaghettiFile")
+  @Query("caseFile")
   @Roles(coreRoles)
   async findOne(@Args("caseIdentifier") id: string) {
     try {
@@ -32,7 +28,7 @@ export class CaseFileResolver {
     }
   }
 
-  @Query("caseMomsSpaghettiFiles")
+  @Query("caseFiles")
   @Roles(coreRoles)
   async findMany(@Args("ids", { type: () => [String] }) ids: string[]) {
     try {
@@ -47,12 +43,30 @@ export class CaseFileResolver {
     }
   }
 
-  @Query("searchCaseMomsSpaghettiFiles")
+  @Query("caseFileByActivityId")
+  @Roles(coreRoles)
+  async findCaseFileByActivityId(
+    @Args("activityType") activityType: string,
+    @Args("activityIdentifier") activityIdentifier: string,
+  ) {
+    try {
+      return await this.caseFileService.findCaseFileByActivityId(activityType, activityIdentifier);
+    } catch (error) {
+      this.logger.error(error);
+      throw new GraphQLError("Error fetching case file by activity ID from Shared schema", {
+        extensions: {
+          code: "INTERNAL_SERVER_ERROR",
+        },
+      });
+    }
+  }
+
+  @Query("searchCaseFiles")
   @Roles(coreRoles)
   async search(
     @Args("page", { type: () => Int, nullable: true, defaultValue: 1 }) page: number,
     @Args("pageSize", { type: () => Int, nullable: true, defaultValue: 25 }) pageSize: number,
-    @Args("filters", { nullable: true }) filters?: CaseMomsSpaghettiFileFilters,
+    @Args("filters", { nullable: true }) filters?: CaseFileFilters,
   ) {
     try {
       return await this.caseFileService.search(page, pageSize, filters);
@@ -66,9 +80,9 @@ export class CaseFileResolver {
     }
   }
 
-  @Mutation("createCaseMomsSpaghettiFile")
+  @Mutation("createCaseFile")
   @Roles(coreRoles)
-  async create(@Args("input") input: CaseMomsSpaghettiFileCreateInput) {
+  async create(@Args("input") input: CaseFileCreateInput) {
     try {
       return await this.caseFileService.create(input);
     } catch (error) {
@@ -79,9 +93,9 @@ export class CaseFileResolver {
     }
   }
 
-  @Mutation("updateCaseMomsSpaghettiFile")
+  @Mutation("updateCaseFile")
   @Roles(coreRoles)
-  async update(@Args("caseIdentifier") caseIdentifier: string, @Args("input") input: CaseMomsSpaghettiFileUpdateInput) {
+  async update(@Args("caseIdentifier") caseIdentifier: string, @Args("input") input: CaseFileUpdateInput) {
     try {
       return await this.caseFileService.update(caseIdentifier, input);
     } catch (error) {

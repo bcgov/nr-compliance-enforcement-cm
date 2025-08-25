@@ -9,6 +9,10 @@ import { mapPrismaCaseStatusCodeToCaseStatusCode } from "../shared/case_status_c
 import { mapPrismaCaseActivityTypeCodeToCaseActivityTypeCode } from "../shared/case_activity_type_code/dto/case_activity_type_code";
 import { mapPrismaCaseActivityToCaseActivity } from "../shared/case_activity/dto/case_activity";
 import { mapPrismaCaseFileToCaseFile } from "../shared/case_file/dto/case_file";
+import { mapPrismaInvestigationToInvestigation } from "../investigation/investigation/dto/investigation";
+import { mapPrismaInvestigationStatusCodeToInvestigationStatusCode } from "../investigation/investigation_status_code/dto/investigation_status_code";
+import { mapPrismaPartyToParty } from "src/shared/party/dto/party";
+import { mapPrismaBusinessToBusiness } from "src/shared/business/dto/business";
 
 export const initializeMappings = (mapper: Mapper) => {
   mapPrismaContactMethodToContactMethod(mapper);
@@ -21,4 +25,8 @@ export const initializeMappings = (mapper: Mapper) => {
   mapPrismaCaseActivityTypeCodeToCaseActivityTypeCode(mapper);
   mapPrismaCaseActivityToCaseActivity(mapper);
   mapPrismaCaseFileToCaseFile(mapper);
+  mapPrismaInvestigationToInvestigation(mapper);
+  mapPrismaInvestigationStatusCodeToInvestigationStatusCode(mapper);
+  mapPrismaBusinessToBusiness(mapper);
+  mapPrismaPartyToParty(mapper);
 };

@@ -21,7 +21,7 @@ import { DrugRemainingOutcomeCodeModule } from "./case_management/drug_remaining
 import { HwcrOutcomeCodeModule } from "./case_management/hwcr_outcome_code/hwcr_outcome_code.module";
 import { HwcrOutcomeActionedByCodeModule } from "./case_management/hwcr_outcome_actioned_by_code/hwcr_outcome_actioned_by_code.module";
 import { ConfigurationModule } from "./case_management/configuration/configuration.module";
-import { CaseFileModule } from "./case_management/case_file/case_file.module";
+import { ComplaintOutcomeModule } from "./case_management/complaint_outcome/complaint_outcome.module";
 import { InactionJustificationTypeModule } from "./case_management/inaction_justification_type/inaction_justification_type.module";
 import { DateScalar } from "./common/custom_scalars";
 import { HWCRPreventionActionModule } from "./case_management/hwcr_prevention_action/hwcr_prevention_action.module";
@@ -31,27 +31,31 @@ import { DischargeCodeModule } from "./case_management/code-tables/discharge_cod
 import { NonComplianceCodeModule } from "./case_management/code-tables/non_compliance_code/non_compliance_code.module";
 import { SectorCodeModule } from "./case_management/code-tables/sector_code/sector_code.module";
 import { CEEBDecisionActionModule } from "./case_management/ceeb_decision_action/ceeb_decision_action.module";
-import { AgencyCodeModule } from "./case_management/agency_code/agency_code.module";
+import { OutcomeAgencyCodeModule } from "./case_management/agency_code/outcome_agency_code.module";
 import { ScheduleSectorXrefModule } from "./case_management/schedule_sector_xref/schedule_sector_xref.module";
 import { LeadModule } from "./case_management/lead/lead.module";
 import { CaseLocationCodeModule } from "./case_management/code-tables/case_location_code/case_location_code.module";
 import { IpmAuthCategoryCodeModule } from "./case_management/ipm_auth_category_code/ipm_auth_category_code.module";
 import { PersonModule } from "./shared/person/person.module";
 import { ParkModule } from "./shared/park/park.module";
-import { AgencyMomsSpaghettiCodeModule } from "./shared/agency_code/agency_code.module";
+import { AgencyCodeModule } from "./shared/agency_code/agency_code.module";
 import { AutomapperModule, InjectMapper } from "@automapper/nestjs";
 import { pojos } from "@automapper/pojos";
 import { Mapper } from "@automapper/core";
 import { initializeMappings } from "./middleware/mapper";
 import { EquipmentStatusCodeModule } from "src/case_management/equipment_status_code/equipment_status_code.module";
 import { ImportCommand } from "./app.commands";
-import { CaseMomsSpaghettiFileModule } from "./shared/case_file/case_file.module";
+import { InvestigationModule } from "./investigation/investigation/investigation.module";
+import { PrismaModuleInvestigation } from "./prisma/investigation/prisma.investigation.module";
+import { CaseFileModule } from "./shared/case_file/case_file.module";
+import { PartyModule } from "./shared/party/party.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     PrismaModuleCaseManagement,
     PrismaModuleShared,
+    PrismaModuleInvestigation,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ["./dist/**/*.graphql", "./src/**/*.graphql"],
@@ -62,7 +66,7 @@ import { CaseMomsSpaghettiFileModule } from "./shared/case_file/case_file.module
     }),
     JwtAuthModule,
     AgeCodeModule,
-    AgencyCodeModule,
+    OutcomeAgencyCodeModule,
     EquipmentCodeModule,
     SexCodeModule,
     ThreatLevelCodeModule,
@@ -76,7 +80,7 @@ import { CaseMomsSpaghettiFileModule } from "./shared/case_file/case_file.module
     ConfigurationModule,
     HWCRAssessmentActionModule,
     HWCRPreventionActionModule,
-    CaseFileModule,
+    ComplaintOutcomeModule,
     InactionJustificationTypeModule,
     ScheduleCodeModule,
     DischargeCodeModule,
@@ -89,9 +93,11 @@ import { CaseMomsSpaghettiFileModule } from "./shared/case_file/case_file.module
     IpmAuthCategoryCodeModule,
     PersonModule,
     ParkModule,
+    AgencyCodeModule,
+    CaseFileModule,
     EquipmentStatusCodeModule,
-    AgencyMomsSpaghettiCodeModule,
-    CaseMomsSpaghettiFileModule,
+    InvestigationModule,
+    PartyModule,
   ],
   controllers: [AppController],
   providers: [AppService, ImportCommand, DateScalar],

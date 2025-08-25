@@ -10,4 +10,4 @@ import { UserModule } from "../../common/user.module";
   imports: [PrismaModuleShared, AutomapperModule, PaginationModule, UserModule],
   providers: [CaseFileResolver, CaseFileService],
 })
-export class CaseMomsSpaghettiFileModule {}
+export class CaseFileModule {}

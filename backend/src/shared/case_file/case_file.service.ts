@@ -5,14 +5,15 @@ import { Mapper } from "@automapper/core";
 import { case_file } from "../../../prisma/shared/generated/case_file";
 import {
   CaseFile,
-  CaseMomsSpaghettiFileFilters,
-  CaseMomsSpaghettiFileResult,
-  CaseMomsSpaghettiFileCreateInput,
-  CaseMomsSpaghettiFileUpdateInput,
+  CaseFileFilters,
+  CaseFileResult,
+  CaseFileCreateInput,
+  CaseFileUpdateInput,
   PageInfo,
 } from "./dto/case_file";
 import { PaginationUtility } from "../../common/pagination.utility";
 import { UserService } from "../../common/user.service";
+import { CaseActivityTypeCode } from "src/shared/case_activity_type_code/dto/case_activity_type_code";
 
 @Injectable()
 export class CaseFileService {
@@ -78,12 +79,27 @@ export class CaseFileService {
     }
   }
 
-  async create(input: CaseMomsSpaghettiFileCreateInput): Promise<CaseFile> {
+  async findCaseFileByActivityId(activityType: string, activityIdentifier: string) {
+    const caseActivityXrefRecord = await this.prisma.case_activity.findFirst({
+      where: {
+        activity_type: activityType,
+        activity_identifier_ref: activityIdentifier,
+      },
+    });
+
+    if (!caseActivityXrefRecord) {
+      throw new Error(`No case activity found for activity type ${activityType} with identifier ${activityIdentifier}`);
+    }
+    return await this.findOne(caseActivityXrefRecord.case_file_guid);
+  }
+
+  async create(input: CaseFileCreateInput): Promise<CaseFile> {
     const caseFile = await this.prisma.case_file.create({
       data: {
-        owned_by_agency: input.leadAgencyCode,
+        lead_agency: input.leadAgency,
         case_status: input.caseStatus,
-        case_opened_utc_timestamp: new Date(),
+        description: input.description,
+        opened_utc_timestamp: new Date(),
         create_user_id: this.user.getIdirUsername(),
       },
       include: {
@@ -105,7 +121,7 @@ export class CaseFileService {
     }
   }
 
-  async update(caseIdentifier: string, input: CaseMomsSpaghettiFileUpdateInput): Promise<CaseFile> {
+  async update(caseIdentifier: string, input: CaseFileUpdateInput): Promise<CaseFile> {
     const existingCaseFile = await this.prisma.case_file.findUnique({
       where: { case_file_guid: caseIdentifier },
     });
@@ -116,11 +132,14 @@ export class CaseFileService {
       update_utc_timestamp: new Date(),
     };
 
-    if (input.leadAgencyCode !== undefined) {
-      updateData.owned_by_agency = input.leadAgencyCode;
+    if (input.leadAgency !== undefined) {
+      updateData.lead_agency = input.leadAgency;
     }
     if (input.caseStatus !== undefined) {
       updateData.case_status = input.caseStatus;
+    }
+    if (input.description !== undefined) {
+      updateData.description = input.description;
     }
 
     const caseFile = await this.prisma.case_file.update({
@@ -145,11 +164,7 @@ export class CaseFileService {
     }
   }
 
-  async search(
-    page: number = 1,
-    pageSize: number = 25,
-    filters?: CaseMomsSpaghettiFileFilters,
-  ): Promise<CaseMomsSpaghettiFileResult> {
+  async search(page: number = 1, pageSize: number = 25, filters?: CaseFileFilters): Promise<CaseFileResult> {
     const where: any = {};
 
     if (filters?.search) {
@@ -157,8 +172,8 @@ export class CaseFileService {
       where.OR = [{ case_file_guid: { equals: filters.search } }];
     }
 
-    if (filters?.agencyCode) {
-      where.owned_by_agency = filters.agencyCode;
+    if (filters?.leadAgency) {
+      where.lead_agency = filters.leadAgency;
     }
 
     if (filters?.caseStatus) {
@@ -166,28 +181,28 @@ export class CaseFileService {
     }
 
     if (filters?.startDate || filters?.endDate) {
-      where.case_opened_utc_timestamp = {};
+      where.opened_utc_timestamp = {};
 
       if (filters?.startDate) {
-        where.case_opened_utc_timestamp.gte = filters.startDate;
+        where.opened_utc_timestamp.gte = filters.startDate;
       }
 
       if (filters?.endDate) {
         const endOfDay = new Date(filters.endDate);
         endOfDay.setHours(23, 59, 59, 999);
-        where.case_opened_utc_timestamp.lte = endOfDay;
+        where.opened_utc_timestamp.lte = endOfDay;
       }
     }
 
     // map filters to db columns
     const sortFieldMap: Record<string, string> = {
       caseIdentifier: "case_file_guid",
-      caseOpenedTimestamp: "case_opened_utc_timestamp",
-      leadAgency: "owned_by_agency",
+      openedTimestamp: "opened_utc_timestamp",
+      leadAgency: "lead_agency",
       caseStatus: "case_status",
     };
 
-    let orderBy: any = { case_opened_utc_timestamp: "desc" }; // Default sort
+    let orderBy: any = { opened_utc_timestamp: "desc" }; // Default sort
 
     if (filters?.sortBy && filters?.sortOrder) {
       const dbField = sortFieldMap[filters.sortBy];

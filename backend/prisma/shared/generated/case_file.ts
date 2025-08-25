@@ -8,13 +8,13 @@ export class case_file {
   case_file_guid: string;
 
   @ApiProperty({ type: String })
-  owned_by_agency: string;
+  lead_agency: string;
 
   @ApiProperty({ type: String })
   case_status: string;
 
   @ApiProperty({ type: Date })
-  case_opened_utc_timestamp: Date;
+  opened_utc_timestamp: Date;
 
   @ApiProperty({ type: String })
   create_user_id: string;
@@ -27,6 +27,9 @@ export class case_file {
 
   @ApiPropertyOptional({ type: Date })
   update_utc_timestamp?: Date;
+
+  @ApiPropertyOptional({ type: String })
+  description?: string;
 
   @ApiProperty({ isArray: true, type: () => case_activity })
   case_activity: case_activity[];
