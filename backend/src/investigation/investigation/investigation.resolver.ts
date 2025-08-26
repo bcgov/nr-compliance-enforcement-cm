@@ -1,9 +1,10 @@
-import { Resolver, Query, Mutation, Args } from "@nestjs/graphql";
+import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
 import { InvestigationService } from "./investigation.service";
 import { Logger } from "@nestjs/common";
 import { GraphQLError } from "graphql";
 import { coreRoles } from "../../enum/role.enum";
 import { Roles } from "../../auth/decorators/roles.decorator";
+import { InvestigationFilters } from "src/investigation/investigation/dto/investigation";
 
 @Resolver("Investigation")
 export class InvestigationResolver {
@@ -33,6 +34,25 @@ export class InvestigationResolver {
     } catch (error) {
       this.logger.error(error);
       throw new GraphQLError("Error fetching investigations by IDs from investigation schema", {
+        extensions: {
+          code: "INTERNAL_SERVER_ERROR",
+        },
+      });
+    }
+  }
+
+  @Query("searchInvestigations")
+  @Roles(coreRoles)
+  async search(
+    @Args("page", { type: () => Int, nullable: true, defaultValue: 1 }) page: number,
+    @Args("pageSize", { type: () => Int, nullable: true, defaultValue: 25 }) pageSize: number,
+    @Args("filters", { nullable: true }) filters?: InvestigationFilters,
+  ) {
+    try {
+      return await this.investigationService.search(page, pageSize, filters);
+    } catch (error) {
+      this.logger.error(error);
+      throw new GraphQLError("Error searching paginated investigation data from Shared schema", {
         extensions: {
           code: "INTERNAL_SERVER_ERROR",
         },
