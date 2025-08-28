@@ -2,7 +2,10 @@ import { createMap, forMember, mapFrom, Mapper, mapWithArguments } from "@automa
 
 import { investigation } from "../../../../prisma/investigation/generated/investigation";
 import { InvestigationStatusCode } from "../../../investigation/investigation_status_code/dto/investigation_status_code";
-import { Field, InputType } from "@nestjs/graphql";
+import { Field, InputType, ObjectType } from "@nestjs/graphql";
+import { PaginatedResult } from "src/common/pagination.utility";
+import { PageInfo } from "src/shared/case_file/dto/case_file";
+import { IsOptional } from "class-validator";
 
 export class Investigation {
   investigationGuid: string;
@@ -10,6 +13,38 @@ export class Investigation {
   leadAgency: string;
   investigationStatus: InvestigationStatusCode;
   openedTimestamp: Date;
+  caseIdentifier: string;
+}
+
+@InputType()
+export class InvestigationFilters {
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  search?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  leadAgency?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  investigationStatus?: string;
+
+  @Field(() => Date, { nullable: true })
+  @IsOptional()
+  startDate?: Date;
+
+  @Field(() => Date, { nullable: true })
+  @IsOptional()
+  endDate?: Date;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  sortBy?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  sortOrder?: string;
 }
 
 @InputType()
@@ -68,3 +103,12 @@ export const mapPrismaInvestigationToInvestigation = (mapper: Mapper) => {
     ),
   );
 };
+
+@ObjectType()
+export class InvestigationResult implements PaginatedResult<Investigation> {
+  @Field(() => [Investigation])
+  items: Investigation[];
+
+  @Field(() => PageInfo)
+  pageInfo: PageInfo;
+}

@@ -1,6 +1,7 @@
 type Query {
   getInvestigation(investigationGuid: String): Investigation
   getInvestigations(ids: [String]): [Investigation]
+  searchInvestigations(page: Int = 1, pageSize: Int = 25, filters: InvestigationFilters): InvestigationResult!
 }
 
 type Mutation {

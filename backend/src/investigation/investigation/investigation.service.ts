@@ -2,10 +2,19 @@ import { Mapper } from "@automapper/core";
 import { InjectMapper } from "@automapper/nestjs";
 import { Injectable, Logger } from "@nestjs/common";
 import { investigation } from "../../../prisma/investigation/generated/investigation";
-import { CreateInvestigationInput, Investigation, UpdateInvestigationInput } from "./dto/investigation";
+import {
+  CreateInvestigationInput,
+  Investigation,
+  UpdateInvestigationInput,
+  InvestigationFilters,
+  InvestigationResult,
+} from "./dto/investigation";
 import { InvestigationPrismaService } from "../../prisma/investigation/prisma.investigation.service";
 import { UserService } from "../../common/user.service";
 import { SharedPrismaService } from "../../prisma/shared/prisma.shared.service";
+import { PaginationUtility } from "src/common/pagination.utility";
+import { PageInfo } from "src/shared/case_file/dto/case_file";
+import { CaseFileService } from "src/shared/case_file/case_file.service";
 
 @Injectable()
 export class InvestigationService {
@@ -14,6 +23,8 @@ export class InvestigationService {
     @InjectMapper() private readonly mapper: Mapper,
     private readonly user: UserService,
     private readonly shared: SharedPrismaService,
+    private readonly paginationUtility: PaginationUtility,
+    private readonly caseFileService: CaseFileService,
   ) {}
 
   private readonly logger = new Logger(InvestigationService.name);
@@ -199,5 +210,91 @@ export class InvestigationService {
       this.logger.error(`Error mapping investigation with guid ${investigationGuid}:`, error);
       throw error;
     }
+  }
+
+  async search(page: number = 1, pageSize: number = 25, filters?: InvestigationFilters): Promise<InvestigationResult> {
+    const where: any = {};
+
+    if (filters?.search) {
+      // UUID column only supports exact matching
+      where.OR = [{ investigation_guid: { equals: filters.search } }];
+    }
+
+    if (filters?.leadAgency) {
+      where.owned_by_agency_ref = filters.leadAgency;
+    }
+
+    if (filters?.investigationStatus) {
+      where.investigation_status = filters.investigationStatus;
+    }
+
+    if (filters?.startDate || filters?.endDate) {
+      where.investigation_opened_utc_timestamp = {};
+
+      if (filters?.startDate) {
+        where.investigation_opened_utc_timestamp.gte = filters.startDate;
+      }
+
+      if (filters?.endDate) {
+        const endOfDay = new Date(filters.endDate);
+        endOfDay.setHours(23, 59, 59, 999);
+        where.investigation_opened_utc_timestamp.lte = endOfDay;
+      }
+    }
+
+    // map filters to db columns
+    const sortFieldMap: Record<string, string> = {
+      investigationGuid: "investigation_guid",
+      openedTimestamp: "investigation_opened_utc_timestamp",
+      leadAgency: "owned_by_agency_ref",
+      investigationStatus: "investigation_status",
+    };
+
+    let orderBy: any = { investigation_opened_utc_timestamp: "desc" }; // Default sort
+
+    if (filters?.sortBy && filters?.sortOrder) {
+      const dbField = sortFieldMap[filters.sortBy];
+      const validSortOrder = filters.sortOrder.toLowerCase() === "asc" ? "asc" : "desc";
+
+      if (dbField) {
+        orderBy = { [dbField]: validSortOrder };
+      }
+    }
+
+    // Use the pagination utility to handle pagination logic and return pageInfo meta
+    const result = await this.paginationUtility.paginate<investigation, Investigation>(
+      { page, pageSize },
+      {
+        prismaService: this.prisma,
+        modelName: "investigation",
+        sourceTypeName: "investigation",
+        destinationTypeName: "Investigation",
+        mapper: this.mapper,
+        whereClause: where,
+        includeClause: {
+          officer_investigation_xref: true,
+          investigation_status_code: true,
+        },
+        orderByClause: orderBy,
+      },
+    );
+    const res = await Promise.all(
+      result.items.map(async (inv) => {
+        const caseFile = await this.caseFileService.findCaseFileByActivityId("INVSTGTN", inv.investigationGuid);
+
+        return { ...inv, caseIdentifier: caseFile.caseIdentifier };
+      }),
+    );
+
+    if (filters?.sortBy === "caseIdentifier") {
+      if (filters?.sortOrder?.toLowerCase() === "desc") {
+        res.sort((a, b) => b.caseIdentifier.localeCompare(a.caseIdentifier));
+      } else res.sort((a, b) => a.caseIdentifier.localeCompare(b.caseIdentifier));
+    }
+
+    return {
+      items: res,
+      pageInfo: result.pageInfo as PageInfo,
+    };
   }
 }
