@@ -153,29 +153,50 @@ export class InvestigationService {
   }
 
   async update(investigationGuid: string, input: UpdateInvestigationInput): Promise<Investigation> {
+    // Check if the investigation exists
+    const existingInvestigation = await this.prisma.investigation.findUnique({
+      where: { investigation_guid: investigationGuid },
+    });
+
+    if (!existingInvestigation) {
+      throw new Error(`Investigation with guid ${investigationGuid} not found.`);
+    }
+    let updatedInvestigation;
     try {
-      // Check if the investigation exists
-      const existingInvestigation = await this.prisma.investigation.findUnique({
-        where: { investigation_guid: investigationGuid },
-      });
+      const updateData: any = {
+        update_user_id: this.user.getIdirUsername(),
+        update_utc_timestamp: new Date(),
+      };
 
-      if (!existingInvestigation) {
-        throw new Error(`Investigation with guid ${investigationGuid} not found.`);
+      if (input.leadAgency !== undefined) {
+        updateData.owned_by_agency_ref = input.leadAgency;
       }
-
+      if (input.investigationStatus !== undefined) {
+        updateData.investigation_status = input.investigationStatus;
+      }
+      if (input.description !== undefined) {
+        updateData.investigation_description = input.description;
+      }
       // Perform the update
-      const updated = await this.prisma.investigation.update({
+      updatedInvestigation = await this.prisma.investigation.update({
         where: { investigation_guid: investigationGuid },
-        data: {
-          ...input,
-          update_user_id: this.user.getIdirUsername(),
-          update_utc_timestamp: new Date(),
+        data: updateData,
+        include: {
+          investigation_status_code: true,
         },
       });
-
-      return this.mapper.map<investigation, Investigation>(updated as investigation, "investigation", "Investigation");
     } catch (error) {
       this.logger.error(`Error updating investigation with guid ${investigationGuid}:`, error);
+      throw error;
+    }
+    try {
+      return this.mapper.map<investigation, Investigation>(
+        updatedInvestigation as investigation,
+        "investigation",
+        "Investigation",
+      );
+    } catch (error) {
+      this.logger.error(`Error mapping investigation with guid ${investigationGuid}:`, error);
       throw error;
     }
   }
