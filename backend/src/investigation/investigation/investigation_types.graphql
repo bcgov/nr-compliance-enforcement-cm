@@ -10,4 +10,11 @@ input CreateInvestigationInput {
   caseIdentifier: String!
   leadAgency: String!
   description: String
+  investigationStatus: String
+}
+
+input UpdateInvestigationInput {
+  leadAgency: String
+  description: String
+  investigationStatus: String
 }

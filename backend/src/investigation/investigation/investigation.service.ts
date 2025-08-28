@@ -2,7 +2,7 @@ import { Mapper } from "@automapper/core";
 import { InjectMapper } from "@automapper/nestjs";
 import { Injectable, Logger } from "@nestjs/common";
 import { investigation } from "../../../prisma/investigation/generated/investigation";
-import { CreateInvestigationInput, Investigation } from "./dto/investigation";
+import { CreateInvestigationInput, Investigation, UpdateInvestigationInput } from "./dto/investigation";
 import { InvestigationPrismaService } from "../../prisma/investigation/prisma.investigation.service";
 import { UserService } from "../../common/user.service";
 import { SharedPrismaService } from "../../prisma/shared/prisma.shared.service";
@@ -73,22 +73,23 @@ export class InvestigationService {
   }
 
   async create(input: CreateInvestigationInput): Promise<Investigation> {
+    // Verify case file exists
+    const caseFile = await this.shared.case_file.findUnique({
+      where: {
+        case_file_guid: input.caseIdentifier,
+      },
+    });
+
+    if (!caseFile) {
+      throw new Error(`Case file with guid ${input.caseIdentifier} not found`);
+    }
+
+    // Create the investigation
+    let investigation;
     try {
-      // Verify case file exists
-      const caseFile = await this.shared.case_file.findUnique({
-        where: {
-          case_file_guid: input.caseGuid,
-        },
-      });
-
-      if (!caseFile) {
-        throw new Error(`Case file with guid ${input.caseGuid} not found`);
-      }
-
-      // Create investigation
-      const investigation = await this.prisma.investigation.create({
+      investigation = await this.prisma.investigation.create({
         data: {
-          investigation_status: "OPEN",
+          investigation_status: input.investigationStatus,
           investigation_description: input.description,
           owned_by_agency_ref: input.leadAgency,
           investigation_opened_utc_timestamp: new Date(),
@@ -99,24 +100,82 @@ export class InvestigationService {
           investigation_status_code: true,
         },
       });
+    } catch (error) {
+      this.logger.error("Error creating investigation:", error);
+      throw error;
+    }
 
-      // Create case activity record
+    // Try to create case activity record, and if it fails, delete the investigation
+    try {
       await this.shared.case_activity.create({
         data: {
-          case_file_guid: input.caseGuid,
+          case_file_guid: input.caseIdentifier,
           activity_type: "INVSTGTN",
           activity_identifier_ref: investigation.investigation_guid,
           create_user_id: this.user.getIdirUsername(),
           create_utc_timestamp: new Date(),
         },
       });
+    } catch (activityError) {
+      // Attempt to delete the investigation that was just created since the case activity creation failed
+      // This is done to prevent orphaned investigations as this violates the current understanding of the business rules
+      try {
+        await this.prisma.investigation.delete({
+          where: { investigation_guid: investigation.investigation_guid },
+        });
+      } catch (deleteError) {
+        this.logger.error(
+          `Error creating case activity, cleanup deletion of investigation with guid ${investigation.investigation_guid} failed:`,
+          deleteError,
+        );
+        // Throw a combined error
+        throw new Error(
+          `Error deleting investigation record after case activity creation failed. Activity error: ${activityError}. Cleanup error: ${deleteError}`,
+        );
+      }
+      // Successfully deleted the investigation record
+      this.logger.error("Error creating case activity, investigation record deleted:", activityError);
+      throw new Error(
+        `Failed to create case activity for investigation. The investigation was rolled back. Error: ${activityError}`,
+      );
+    }
+
+    try {
       return this.mapper.map<investigation, Investigation>(
         investigation as investigation,
         "investigation",
         "Investigation",
       );
     } catch (error) {
-      this.logger.error("Error creating investigation:", error);
+      this.logger.error("Error mapping investigation:", error);
+      throw error;
+    }
+  }
+
+  async update(investigationGuid: string, input: UpdateInvestigationInput): Promise<Investigation> {
+    try {
+      // Check if the investigation exists
+      const existingInvestigation = await this.prisma.investigation.findUnique({
+        where: { investigation_guid: investigationGuid },
+      });
+
+      if (!existingInvestigation) {
+        throw new Error(`Investigation with guid ${investigationGuid} not found.`);
+      }
+
+      // Perform the update
+      const updated = await this.prisma.investigation.update({
+        where: { investigation_guid: investigationGuid },
+        data: {
+          ...input,
+          update_user_id: this.user.getIdirUsername(),
+          update_utc_timestamp: new Date(),
+        },
+      });
+
+      return this.mapper.map<investigation, Investigation>(updated as investigation, "investigation", "Investigation");
+    } catch (error) {
+      this.logger.error(`Error updating investigation with guid ${investigationGuid}:`, error);
       throw error;
     }
   }
