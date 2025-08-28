@@ -18,7 +18,4 @@ export class case_file_h {
 
   @ApiPropertyOptional({ type: Object })
   data_after_executed_operation?: object;
-
-  @ApiPropertyOptional({ type: String })
-  description?: string;
 }
