@@ -1,4 +1,4 @@
--- Create case files for the investigations to be added to
+-- Create case files for the inspections to be added to
 insert into
   shared.case_file (
     case_file_guid,
@@ -36,13 +36,13 @@ values
     now ()
   ) on conflict do nothing;
 
--- Create test investigations
+-- Create test inspections
 insert into
-  investigation.investigation (
-    investigation_guid,
+  inspection.inspection (
+    inspection_guid,
     owned_by_agency_ref,
-    investigation_status,
-    investigation_opened_utc_timestamp,
+    inspection_status,
+    inspection_opened_utc_timestamp,
     create_user_id,
     create_utc_timestamp
   )
@@ -80,7 +80,7 @@ values
     now ()
   ) on conflict do nothing;
 
--- Add the investigations to the cases
+-- Add the inspections to the cases
 INSERT INTO
   shared.case_activity (
     case_file_guid,
