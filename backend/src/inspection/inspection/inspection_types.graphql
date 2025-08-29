@@ -1,0 +1,5 @@
+type Query {
+  getInspection(inspectionGuid: String): Inspection
+  getInspections(ids: [String]): [Inspection]
+  searchInspections(page: Int = 1, pageSize: Int = 25, filters: InspectionFilters): InspectionResult!
+}
