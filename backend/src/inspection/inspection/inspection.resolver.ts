@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
+import { Resolver, Query, Args, Int } from "@nestjs/graphql";
 import { InspectionService } from "./inspection.service";
 import { Logger } from "@nestjs/common";
 import { GraphQLError } from "graphql";
