@@ -11,6 +11,8 @@ import { mapPrismaCaseActivityToCaseActivity } from "../shared/case_activity/dto
 import { mapPrismaCaseFileToCaseFile } from "../shared/case_file/dto/case_file";
 import { mapPrismaInvestigationToInvestigation } from "../investigation/investigation/dto/investigation";
 import { mapPrismaInvestigationStatusCodeToInvestigationStatusCode } from "../investigation/investigation_status_code/dto/investigation_status_code";
+import { mapPrismaInspectionToInspection } from "../inspection/inspection/dto/inspection";
+import { mapPrismaInspectionStatusCodeToInspectionStatusCode } from "../inspection/inspection_status_code/dto/inspection_status_code";
 import { mapPrismaPartyToParty } from "src/shared/party/dto/party";
 import { mapPrismaBusinessToBusiness } from "src/shared/business/dto/business";
 
@@ -27,6 +29,8 @@ export const initializeMappings = (mapper: Mapper) => {
   mapPrismaCaseFileToCaseFile(mapper);
   mapPrismaInvestigationToInvestigation(mapper);
   mapPrismaInvestigationStatusCodeToInvestigationStatusCode(mapper);
+  mapPrismaInspectionToInspection(mapper);
+  mapPrismaInspectionStatusCodeToInspectionStatusCode(mapper);
   mapPrismaBusinessToBusiness(mapper);
   mapPrismaPartyToParty(mapper);
 };

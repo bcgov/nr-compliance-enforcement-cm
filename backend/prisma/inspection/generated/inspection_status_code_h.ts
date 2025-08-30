@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-export class case_file_h {
+export class inspection_status_code_h {
   @ApiProperty({ type: String })
-  h_case_file_guid: string;
+  h_inspection_status_code_guid: string;
 
   @ApiProperty({ type: String })
   target_row_id: string;
