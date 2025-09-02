@@ -47,6 +47,33 @@ export class InvestigationFilters {
   sortOrder?: string;
 }
 
+@InputType()
+export class CreateInvestigationInput {
+  @Field(() => String)
+  caseIdentifier: string;
+
+  @Field(() => String)
+  leadAgency: string;
+
+  @Field(() => String)
+  description: string;
+
+  @Field(() => String)
+  investigationStatus: string;
+}
+
+@InputType()
+export class UpdateInvestigationInput {
+  @Field(() => String)
+  leadAgency: string;
+
+  @Field(() => String)
+  description: string;
+
+  @Field(() => String)
+  investigationStatus: string;
+}
+
 export const mapPrismaInvestigationToInvestigation = (mapper: Mapper) => {
   createMap<investigation, Investigation>(
     mapper,
