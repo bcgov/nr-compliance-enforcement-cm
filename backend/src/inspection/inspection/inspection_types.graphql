@@ -1,5 +1,32 @@
-type Query {
-  getInspection(inspectionGuid: String): Inspection
-  getInspections(ids: [String]): [Inspection]
-  searchInspections(page: Int = 1, pageSize: Int = 25, filters: InspectionFilters): InspectionResult!
+type Inspection {
+  inspectionGuid: String
+  description: String
+  leadAgency: String
+  inspectionStatus: InspectionStatusCode
+  openedTimestamp: Date
+  caseIdentifier: String
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  totalCount: Int!
+  totalPages: Int!
+  currentPage: Int!
+  pageSize: Int!
+}
+
+type InspectionResult {
+  items: [Inspection!]!
+  pageInfo: PageInfo!
+}
+
+input InspectionFilters {
+  search: String
+  leadAgency: String
+  inspectionStatus: String
+  startDate: Date
+  endDate: Date
+  sortBy: String
+  sortOrder: String
 }
