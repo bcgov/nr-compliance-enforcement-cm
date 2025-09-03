@@ -9,3 +9,19 @@ type Party {
   person: Person
   business: Business
 }
+
+input PartyCreateInput {
+  partyTypeCode: String!
+  longDescription: String
+  shortDescription: String
+  person: PersonInput
+  business: BusinessInput
+}
+
+input PartyUpdateInput {
+  partyTypeCode: String!
+  longDescription: String
+  shortDescription: String
+  person: PersonInput
+  business: BusinessInput
+}
