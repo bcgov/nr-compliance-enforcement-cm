@@ -51,6 +51,7 @@ import { CaseFileModule } from "./shared/case_file/case_file.module";
 import { PartyModule } from "./shared/party/party.module";
 import { InspectionModule } from "./inspection/inspection/inspection.module";
 import { PrismaModuleInspection } from "./prisma/inspection/prisma.inspection.module";
+import { PartyTypeCodeModule } from "./shared/party_type_code/party_type_code.module";
 
 @Module({
   imports: [
@@ -102,6 +103,7 @@ import { PrismaModuleInspection } from "./prisma/inspection/prisma.inspection.mo
     InvestigationModule,
     PartyModule,
     InspectionModule,
+    PartyTypeCodeModule,
   ],
   controllers: [AppController],
   providers: [AppService, ImportCommand, DateScalar],

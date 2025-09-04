@@ -4,6 +4,8 @@ import { person } from "../../../../prisma/shared/generated/person";
 import { business } from "../../../../prisma/shared/generated/business";
 import { Person } from "src/shared/person/dto/person";
 import { Business } from "src/shared/business/dto/business";
+import { Field, InputType, ObjectType, Int } from "@nestjs/graphql";
+import { IsOptional } from "class-validator";
 
 export class Party {
   partyIdentifier: String;
@@ -13,6 +15,34 @@ export class Party {
   createdDateTime: Date;
   person: Person;
   business: Business;
+}
+
+@InputType()
+export class PartyCreateInput {
+  @Field(() => String)
+  partyTypeCode: string;
+
+  @Field(() => Person, { nullable: true })
+  @IsOptional()
+  person?: Person;
+
+  @Field(() => Business, { nullable: true })
+  @IsOptional()
+  business?: Business;
+}
+
+@InputType()
+export class PartyUpdateInput {
+  @Field(() => String)
+  partyTypeCode: string;
+
+  @Field(() => Person, { nullable: true })
+  @IsOptional()
+  person?: Person;
+
+  @Field(() => Business, { nullable: true })
+  @IsOptional()
+  business?: Business;
 }
 
 export const mapPrismaPartyToParty = (mapper: Mapper) => {

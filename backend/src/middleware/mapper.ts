@@ -15,6 +15,7 @@ import { mapPrismaInspectionToInspection } from "../inspection/inspection/dto/in
 import { mapPrismaInspectionStatusCodeToInspectionStatusCode } from "../inspection/inspection_status_code/dto/inspection_status_code";
 import { mapPrismaPartyToParty } from "src/shared/party/dto/party";
 import { mapPrismaBusinessToBusiness } from "src/shared/business/dto/business";
+import { mapPrismaPartyTypeCodeToPartyTypeCode } from "../shared/party_type_code/dto/party_type_code";
 
 export const initializeMappings = (mapper: Mapper) => {
   mapPrismaContactMethodToContactMethod(mapper);
@@ -33,4 +34,5 @@ export const initializeMappings = (mapper: Mapper) => {
   mapPrismaInspectionStatusCodeToInspectionStatusCode(mapper);
   mapPrismaBusinessToBusiness(mapper);
   mapPrismaPartyToParty(mapper);
+  mapPrismaPartyTypeCodeToPartyTypeCode(mapper);
 };
