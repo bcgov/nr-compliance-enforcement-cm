@@ -49,6 +49,8 @@ import { InvestigationModule } from "./investigation/investigation/investigation
 import { PrismaModuleInvestigation } from "./prisma/investigation/prisma.investigation.module";
 import { CaseFileModule } from "./shared/case_file/case_file.module";
 import { PartyModule } from "./shared/party/party.module";
+import { InspectionModule } from "./inspection/inspection/inspection.module";
+import { PrismaModuleInspection } from "./prisma/inspection/prisma.inspection.module";
 import { PartyTypeCodeModule } from "./shared/party_type_code/party_type_code.module";
 
 @Module({
@@ -57,6 +59,7 @@ import { PartyTypeCodeModule } from "./shared/party_type_code/party_type_code.mo
     PrismaModuleCaseManagement,
     PrismaModuleShared,
     PrismaModuleInvestigation,
+    PrismaModuleInspection,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       typePaths: ["./dist/**/*.graphql", "./src/**/*.graphql"],
@@ -99,6 +102,7 @@ import { PartyTypeCodeModule } from "./shared/party_type_code/party_type_code.mo
     EquipmentStatusCodeModule,
     InvestigationModule,
     PartyModule,
+    InspectionModule,
     PartyTypeCodeModule,
   ],
   controllers: [AppController],
