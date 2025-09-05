@@ -30,3 +30,16 @@ input InspectionFilters {
   sortBy: String
   sortOrder: String
 }
+
+input CreateInspectionInput {
+  caseIdentifier: String!
+  leadAgency: String!
+  description: String
+  inspectionStatus: String
+}
+
+input UpdateInspectionInput {
+  leadAgency: String
+  description: String
+  inspectionStatus: String
+}

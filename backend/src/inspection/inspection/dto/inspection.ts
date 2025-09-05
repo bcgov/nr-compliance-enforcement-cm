@@ -47,6 +47,33 @@ export class InspectionFilters {
   sortOrder?: string;
 }
 
+@InputType()
+export class CreateInspectionInput {
+  @Field(() => String)
+  caseIdentifier: string;
+
+  @Field(() => String)
+  leadAgency: string;
+
+  @Field(() => String)
+  description: string;
+
+  @Field(() => String)
+  inspectionStatus: string;
+}
+
+@InputType()
+export class UpdateInspectionInput {
+  @Field(() => String)
+  leadAgency: string;
+
+  @Field(() => String)
+  description: string;
+
+  @Field(() => String)
+  inspectionStatus: string;
+}
+
 export const mapPrismaInspectionToInspection = (mapper: Mapper) => {
   createMap<inspection, Inspection>(
     mapper,

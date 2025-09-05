@@ -3,3 +3,8 @@ type Query {
   getInspections(ids: [String]): [Inspection]
   searchInspections(page: Int = 1, pageSize: Int = 25, filters: InspectionFilters): InspectionResult!
 }
+
+type Mutation {
+  createInspection(input: CreateInspectionInput!): Inspection!
+  updateInspection(inspectionGuid: String!, input: UpdateInspectionInput!): Inspection!
+}
