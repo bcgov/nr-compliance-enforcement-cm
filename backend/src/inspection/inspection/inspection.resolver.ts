@@ -1,10 +1,10 @@
-import { Resolver, Query, Args, Int } from "@nestjs/graphql";
+import { Resolver, Query, Args, Int, Mutation } from "@nestjs/graphql";
 import { InspectionService } from "./inspection.service";
 import { Logger } from "@nestjs/common";
 import { GraphQLError } from "graphql";
 import { coreRoles } from "../../enum/role.enum";
 import { Roles } from "../../auth/decorators/roles.decorator";
-import { InspectionFilters } from "./dto/inspection";
+import { InspectionFilters, CreateInspectionInput, UpdateInspectionInput } from "./dto/inspection";
 
 @Resolver("Inspection")
 export class InspectionResolver {
@@ -37,6 +37,32 @@ export class InspectionResolver {
         extensions: {
           code: "INTERNAL_SERVER_ERROR",
         },
+      });
+    }
+  }
+
+  @Mutation("createInspection")
+  @Roles(coreRoles)
+  async create(@Args("input") input: CreateInspectionInput) {
+    try {
+      return await this.inspectionService.create(input);
+    } catch (error) {
+      this.logger.error("Create inspection error:", error);
+      throw new GraphQLError("Error creating inspection", {
+        extensions: { code: "INTERNAL_SERVER_ERROR" },
+      });
+    }
+  }
+
+  @Mutation("updateInspection")
+  @Roles(coreRoles)
+  async update(@Args("inspectionGuid") inspectionGuid: string, @Args("input") input: UpdateInspectionInput) {
+    try {
+      return await this.inspectionService.update(inspectionGuid, input);
+    } catch (error) {
+      this.logger.error("Update inspection error:", error);
+      throw new GraphQLError("Error updating inspection", {
+        extensions: { code: "INTERNAL_SERVER_ERROR" },
       });
     }
   }
